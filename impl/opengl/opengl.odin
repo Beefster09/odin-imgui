@@ -10,7 +10,7 @@ import imgui "../..";
 
 OpenGL_State :: struct {
     shader_program: u32,
-    
+
     uniform_tex:       i32,
     uniform_proj_mtx:  i32,
 
@@ -51,7 +51,7 @@ setup_state :: proc(using state: ^OpenGL_State) {
     io := imgui.get_io();
     io.backend_renderer_name = "OpenGL";
     io.backend_flags |= .RendererHasVtxOffset;
-    
+
     shader_program = setup_imgui_shaders();
 
     uniform_tex      = gl.GetUniformLocation(shader_program, "Texture");
@@ -115,20 +115,20 @@ imgui_render :: proc(data: ^imgui.Draw_Data, state: OpenGL_State) {
                 clip_rect.z = (cmd.clip_rect.z - clip_off.x) * clip_scale.x;
                 clip_rect.w = (cmd.clip_rect.w - clip_off.y) * clip_scale.y;
 
-                if (clip_rect.x < fb_width && 
-                    clip_rect.y < fb_height && 
-                    clip_rect.z >= 0 && 
+                if (clip_rect.x < fb_width &&
+                    clip_rect.y < fb_height &&
+                    clip_rect.z >= 0 &&
                     clip_rect.w >= 0) {
-                    gl.Scissor(i32(clip_rect.x), 
-                               i32(fb_height - clip_rect.w), 
-                               i32(clip_rect.z - clip_rect.x), 
+                    gl.Scissor(i32(clip_rect.x),
+                               i32(fb_height - clip_rect.w),
+                               i32(clip_rect.z - clip_rect.x),
                                i32(clip_rect.w - clip_rect.y));
                     gl.BindTexture(gl.TEXTURE_2D, u32(uintptr(cmd.texture_id)));
                     //glDrawElementsBaseVertex(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, (void*)(intptr_t)(pcmd->IdxOffset * sizeof(ImDrawIdx)), (GLint)pcmd->VtxOffset);
                     gl.DrawElementsBaseVertex(gl.TRIANGLES, i32(cmd.elem_count), gl.UNSIGNED_SHORT, rawptr(uintptr(cmd.idx_offset * size_of(imgui.Draw_Idx))), i32(cmd.vtx_offset));
-                    gl.DrawElements(gl.TRIANGLES, 
-                                    i32(cmd.elem_count), 
-                                    gl.UNSIGNED_SHORT, 
+                    gl.DrawElements(gl.TRIANGLES,
+                                    i32(cmd.elem_count),
+                                    gl.UNSIGNED_SHORT,
                                     rawptr(uintptr(cmd.idx_offset * size_of(imgui.Draw_Idx))));
                 }
             }
@@ -206,9 +206,9 @@ restore_opengl_state :: proc(state: OpenGL_Backup_State) {
     gl.BindBuffer(gl.ARRAY_BUFFER, u32(state.last_array_buffer));
 
     gl.BlendEquationSeparate(u32(state.last_blend_equation_rgb), u32(state.last_blend_equation_alpha));
-    gl.BlendFuncSeparate(u32(state.last_blend_src_rgb), 
-                         u32(state.last_blend_dst_rgb), 
-                         u32(state.last_blend_src_alpha), 
+    gl.BlendFuncSeparate(u32(state.last_blend_src_rgb),
+                         u32(state.last_blend_dst_rgb),
+                         u32(state.last_blend_src_alpha),
                          u32(state.last_blend_dst_alpha));
 
     if state.last_enabled_blend {
