@@ -1,15 +1,5 @@
 package imgui;
 
-ImID :: distinct u32;
-
-Draw_Idx :: distinct u16;
-
-Wchar :: distinct u16;
-
-Wchar16 :: distinct u16;
-
-Wchar32 :: distinct u32;
-
 Texture_ID :: distinct rawptr;
 
 File_Handle :: distinct uintptr;
@@ -31,12 +21,6 @@ Draw_Callback :: #type proc "c" (parent_list: ^Draw_List, cmd: ^Draw_Cmd);
 Input_Text_Callback :: #type proc "c" (data: ^Input_Text_Callback_Data) -> int;
 
 Size_Callback :: #type proc "c" (data: ^Size_Callback_Data);
-
-Draw_List_Shared_Data :: struct {};
-
-Context :: struct {};
-
-Font_Builder_Io :: struct {};
 
 Vector :: struct(T : typeid) {
     size:     i32, 

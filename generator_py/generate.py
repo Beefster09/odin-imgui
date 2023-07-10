@@ -29,36 +29,130 @@ def main():
         if is_cimgui(node)
     ]
 
-    generate_structs(header_ast)
-    generate_enums(header_ast)
+    generate_types(header_ast)
     # generate_structs(header_ast)
     # generate_structs(header_ast)
 
 
-def generate_structs(ast):
-    class SV(c_ast.NodeVisitor):
-        def __init__(self, fp):
-            self.fp = fp
+class TypegenVisitor(c_ast.NodeVisitor):
+    def __init__(self, fp):
+        self.fp = fp
 
-        def visit_Struct(self, struct: c_ast.Struct):
-            if struct.decls is None:
-                return
+    def visit_Struct(self, struct: c_ast.Struct):
+        if struct.decls is None:
+            return
 
-            if struct.name.startswith(('ImVec', 'ImSpan_', 'BitArray_')):
-                return
+        if struct.name.startswith(('ImVec', 'ImSpan_', 'BitArray_')):
+            return
 
-            self.fp.write(f"{odin_typename(struct.name)} :: struct {{\n")
-            for i, decl in enumerate(struct.decls):
-                using = '' if decl.name is not None else 'using '
-                field_name = odin_id(decl.name or f'_field_{i}')
-                self.fp.write(f"\t{using}{field_name}: {type_as_odin(decl.type)},\n")
-            self.fp.write("}\n\n")
+        self.fp.write(f"\n{odin_typename(struct.name)} :: struct {{\n")
+        for i, decl in enumerate(struct.decls):
+            using = '' if decl.name is not None else 'using '
+            field_name = odin_id(decl.name or f'_field_{i}')
+            self.fp.write(f"\t{using}{field_name}: {type_as_odin(decl.type)},\n")
+        self.fp.write("}\n")
 
-    with open(ODIN_DIR / 'structs.odin', 'w') as fp:
+    def visit_Enum(self, enum: c_ast.Enum, name=None):
+        name = name or enum.name
+
+        if name is None:
+            return
+
+        if name.endswith(('Flags_', 'Cond_')):
+            composite_flags = []
+
+            self.fp.write(f"\n{name} :: enum {{\n")
+
+            for flag in enum.values:
+                flag_name = odin_enumname(flag.name)
+
+                # TODO: handle ImGuiMod_ constants in ImGuiKey_ enum correctly
+                # TODO: handle ImGuiTableFlags
+
+                if isinstance(flag.value, c_ast.BinaryOp) and flag.value.op == '<<':
+                    assert isinstance(flag.value.left, c_ast.Constant)
+                    assert isinstance(flag.value.right, c_ast.Constant)
+                    if flag.value.left.value == '1':
+                        self.fp.write(f"\t{flag_name} = {flag.value.right.value},\n")
+                    else:
+                        self.fp.write(f"\t// {flag_name} = {value_as_odin(flag.value)}, // Cannot represent cleanly :-/ \n")
+
+                elif (
+                    isinstance(flag.value, c_ast.BinaryOp) and flag.value.op == '|'
+                    or isinstance(flag.value, c_ast.Constant) and flag.value == '0'
+                ):
+                    composite_flags.append(flag)
+
+            self.fp.write('}\n')
+
+            for flag in composite_flags:
+                bit_set_name = odin_typename(name.rstrip('_'))
+                ename, vname = flag.name.rstrip('_').split('_', 1)
+
+                bit_set_values = []
+
+                class CV(c_ast.NodeVisitor):  # quick and dirty hack that makes assumptions
+                    def visit_ID(self, ident: c_ast.ID):
+                        bit_set_values.append('.' + odin_enumname(ident.name))
+
+                CV().visit(flag)
+
+                self.fp.write(f"{odin_typename(ename)}_{odin_id(vname).upper()} :: {bit_set_name}{{ {', '.join(bit_set_values)} }}\n")
+
+        else:
+            special_enum_values = []
+            enum_typename = odin_typename(name)
+
+            self.fp.write(f"\n{enum_typename} :: enum i32 {{\n")
+
+            for enum_value in enum.values:
+                enum_name = odin_enumname(enum_value.name)
+                enum_name_end = enum_value.name.split('_')[-1]
+
+                if enum_name_end in ('BEGIN', 'END', 'COUNT', 'SIZE', 'OFFSET'):
+                    special_enum_values.append(enum_value)
+
+                elif enum_value.value is None:
+                    self.fp.write(f"\t{enum_name},\n")
+
+                else:
+                    self.fp.write(f"\t{enum_name} = {value_as_odin(enum_value.value)},\n")
+
+            self.fp.write("}\n")
+
+            for enum_value in special_enum_values:
+                enum_name = odin_enumname(enum_value.name)
+
+                if enum_name == 'COUNT':
+                    self.fp.write(f"{enum_value.name} :: len({enum_typename})\n")
+                else:
+                    self.fp.write(f"{enum_value.name} :: {value_as_odin(enum_value.value)}\n")
+
+
+    def visit_Typedef(self, typedef: c_ast.Typedef):
+        if (
+            isinstance(typedef.type, c_ast.TypeDecl)
+            and isinstance(typedef.type.type, c_ast.IdentifierType)
+            and typedef.name not in TYPE_MAP
+        ):
+            if typedef.name.endswith(('Flags', 'Cond')):
+                self.fp.write(f"{odin_typename(typedef.name)} :: bit_set[{typedef.name}_; u32]\n")
+            else:
+                self.fp.write(f"{odin_typename(typedef.name)} :: distinct {type_as_odin(typedef.type)}\n")
+        elif (
+            isinstance(typedef.type, c_ast.TypeDecl)
+            and isinstance(typedef.type.type, c_ast.Enum)
+        ):
+            self.visit_Enum(typedef.type.type, typedef.name)
+        else:
+            return self.generic_visit(typedef)
+
+def generate_types(ast):
+    with open(ODIN_DIR / 'types.odin', 'w') as fp:
         fp.write("package imgui\n\n")
-        sv = SV(fp)
+        visitor = TypegenVisitor(fp)
         for node in ast:
-            sv.visit(node)
+            visitor.visit(node)
 
 
 def generate_foreign(ast):
@@ -82,6 +176,9 @@ def value_as_odin(value_node) -> str:
 
     elif isinstance(value_node, c_ast.BinaryOp):
         return f"({value_as_odin(value_node.left)} {value_node.op} {value_as_odin(value_node.right)})"
+
+    elif isinstance(value_node, c_ast.UnaryOp):
+        return f"({value_node.op}{value_as_odin(value_node.expr)})"
 
     raise Exception(f"Unhandled {type(value_node)} at {value_node.coord}")
 
@@ -138,18 +235,28 @@ TYPE_MAP = {
     'ImS64': 'i64',
     'ImU64': 'u64',
     'bool': 'bool',
-    'unsigned int': 'i32',
+    'unsigned int': 'u32',
+    'int': 'i32',
+    'unsigned short': 'u16',
+    'char': 'i8',
+    'signed char': 'i8',
+    'unsigned char': 'u8',
     'short': 'i16',
     'float': 'f32',
     'double': 'f64',
-    'unsigned char': 'u8',
     'ImWchar': 'u16',
+    'ImWchar16': 'u16',
+    'ImWchar32': 'rune',
     'ImVec1': '[1]f32',
     'ImVec2': '[2]f32',
     'ImVec3': '[3]f32',
     'ImVec4': '[4]f32',
     'ImVec2ih': '[2]i16',
 }
+
+for k, v in list(TYPE_MAP.items()):
+    if ' ' in k:
+        TYPE_MAP[k.replace(' ', '_')] = v
 
 
 def odin_typename(name: str) -> str:
@@ -158,12 +265,21 @@ def odin_typename(name: str) -> str:
 
     if name.startswith('ImVector_'):
         _, elem = name.split('_', 1)
+
+        if elem.endswith('Ptr'):
+            return f"Vector(^{odin_typename(elem[:-3])})"
+        elif elem.endswith('PPtr'):
+            return f"Vector(^^{odin_typename(elem[:-4])})"
+
         return f"Vector({odin_typename(elem)})"
+
     elif name.startswith('ImSpan_'):
         _, elem = name.split('_', 1)
         return f"Span({odin_typename(elem)})"
+
     elif name.startswith('ImGui'):
         name = name[5:]
+
     elif name.startswith('Im'):
         name = name[2:]
 
@@ -171,10 +287,29 @@ def odin_typename(name: str) -> str:
 
 
 def odin_id(name: str) -> str:
-    return '_'.join(map(str.lower, camel_split(name)))
+    base_id = '_'.join(map(str.lower, camel_split(name)))
+
+    if base_id in ('where', 'map'):
+        return base_id + '_'
+
+    return base_id
 
 
-ACRONYMS = 'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA'
+def odin_enumname(name: str) -> str:
+    if '_' not in name:
+        return '_no_name_'
+
+    _, valname = name.split('_', 1)
+
+    if not valname:
+        return ''
+
+    if valname[0].isnumeric():
+        valname = '_' + valname
+    return '_'.join(camel_split(valname))
+
+
+ACRONYMS = 'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'NS', 'EW', 'NESW', 'NWSE', 'HSV'
 
 
 def camel_split(s: str) -> List[str]:
