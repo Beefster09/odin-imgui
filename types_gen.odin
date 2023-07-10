@@ -4,7 +4,6 @@
 
 package imgui
 
-
 Col :: distinct i32
 Cond :: bit_set[ImGuiCond_; u32]
 Data_Type :: distinct i32
@@ -734,8 +733,8 @@ IO :: struct {
 	display_size: [2]f32,
 	delta_time: f32,
 	ini_saving_rate: f32,
-	ini_filename: ^i8,
-	log_filename: ^i8,
+	ini_filename: cstring,
+	log_filename: cstring,
 	mouse_double_click_time: f32,
 	mouse_double_click_max_dist: f32,
 	mouse_drag_threshold: f32,
@@ -760,13 +759,13 @@ IO :: struct {
 	config_memory_compact_timer: f32,
 	config_debug_begin_return_value_once: bool,
 	config_debug_begin_return_value_loop: bool,
-	backend_platform_name: ^i8,
-	backend_renderer_name: ^i8,
+	backend_platform_name: cstring,
+	backend_renderer_name: cstring,
 	backend_platform_user_data: rawptr,
 	backend_renderer_user_data: rawptr,
 	backend_language_user_data: rawptr,
-	get_clipboard_text_fn: proc "c" (user_data: rawptr) -> ^i8,
-	set_clipboard_text_fn: proc "c" (user_data: rawptr, text: ^i8),
+	get_clipboard_text_fn: proc "c" (user_data: rawptr) -> cstring,
+	set_clipboard_text_fn: proc "c" (user_data: rawptr, text: cstring),
 	clipboard_user_data: rawptr,
 	set_platform_ime_data_fn: proc "c" (viewport: ^Viewport, data: ^Platform_Ime_Data),
 	__unused_padding: rawptr,
@@ -875,8 +874,8 @@ Once_Upon_A_Frame :: struct {
 }
 
 Text_Range :: struct {
-	b: ^i8,
-	e: ^i8,
+	b: cstring,
+	e: cstring,
 }
 
 Text_Filter :: struct {
@@ -978,7 +977,7 @@ Draw_List :: struct {
 	flags: Draw_List_Flags,
 	__vtx_current_idx: u32,
 	__data: ^Draw_List_Shared_Data,
-	__owner_name: ^i8,
+	__owner_name: cstring,
 	__vtx_write_ptr: ^Draw_Vert,
 	__idx_write_ptr: ^Draw_Idx,
 	__clip_rect_stack: Vector([4]f32),
@@ -1300,9 +1299,9 @@ Data_Type_Temp_Storage :: struct {
 
 Data_Type_Info :: struct {
 	size: size_t,
-	name: ^i8,
-	print_fmt: ^i8,
-	scan_fmt: ^i8,
+	name: cstring,
+	print_fmt: cstring,
+	scan_fmt: cstring,
 }
 
 Color_Mod :: struct {
@@ -1718,12 +1717,12 @@ Window_Settings :: struct {
 }
 
 Settings_Handler :: struct {
-	type_name: ^i8,
+	type_name: cstring,
 	type_hash: ID,
 	clear_all_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler),
 	read_init_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	read_open_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, name: ^i8) -> rawptr,
-	read_line_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: ^i8),
+	read_open_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, name: cstring) -> rawptr,
+	read_line_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: cstring),
 	apply_all_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler),
 	write_all_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, out_buf: ^Text_Buffer),
 	user_data: rawptr,
@@ -1742,7 +1741,7 @@ ImGuiLocKey_COUNT :: 7
 
 Loc_Entry :: struct {
 	key: Loc_Key,
-	text: ^i8,
+	text: cstring,
 }
 
 ImGuiDebugLogFlags_ :: enum {
@@ -2037,13 +2036,13 @@ Context :: struct {
 	settings_tables: Chunk_Stream__Im_Gui_Table_Settings,
 	hooks: Vector(Context_Hook),
 	hook_id_next: ID,
-	localization_table: [ImGuiLocKey_COUNT]^i8,
+	localization_table: [ImGuiLocKey_COUNT]cstring,
 	log_enabled: bool,
 	log_type: Log_Type,
 	log_file: File_Handle,
 	log_buffer: Text_Buffer,
-	log_next_prefix: ^i8,
-	log_next_suffix: ^i8,
+	log_next_prefix: cstring,
+	log_next_suffix: cstring,
 	log_line_pos_y: f32,
 	log_line_first_item: bool,
 	log_depth_ref: i32,
