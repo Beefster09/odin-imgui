@@ -2,6 +2,7 @@ package imgui_impl_glfw
 
 import "core:runtime"
 import "core:strings"
+import "core:log"
 
 import glfw "vendor:glfw"
 
@@ -109,7 +110,7 @@ update_mouse :: proc() {
     io.mouse_pos = { min(f32), min(f32) };
 
     if glfw.GetWindowAttrib(state.window, glfw.FOCUSED) != 0 {
-        if io.want_set_mouse_pos {
+        if io.want_set_mouse_pos && mouse_pos_backup.x >= 0 && mouse_pos_backup.y >= 0 {
             glfw.SetCursorPos(state.window, f64(mouse_pos_backup.x), f64(mouse_pos_backup.y));
         } else {
             x, y := glfw.GetCursorPos(state.window);

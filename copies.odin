@@ -38,9 +38,14 @@ Context :: struct {};
 
 Font_Builder_Io :: struct {};
 
-Im_Vector :: struct(T : typeid) {
+Vector :: struct(T : typeid) {
     size:     i32, 
     capacity: i32,
-    data:     ^T,
+    data:     [^]T,
+}
+
+Span :: struct(T : typeid) {
+    data:     [^]T,
+    data_end: [^]T,
 }
 
