@@ -1,4 +1,5 @@
 import argparse
+from collections import defaultdict
 import io
 import re
 import sys
@@ -104,6 +105,8 @@ def generate_wrapper(ast):
 
         """))
 
+        overloads = defaultdict(list)
+
         for node in ast:
             if is_exported_proc(node):
                 orig_ret_type = type_as_odin(node.type.type)
@@ -111,6 +114,8 @@ def generate_wrapper(ast):
 
                 if all_params and is_va_list(all_params[-1]):
                     continue  # skip
+
+                overloads[proc_overload_group(node.name)].append(odin_procname(node.name))
 
                 odin_params = []
                 call_args = []
@@ -140,8 +145,8 @@ def generate_wrapper(ast):
                             assert param.name.endswith('_end')
                             pname = odin_id(param.name[:-4])
                             odin_params[-1] = f"{pname}: string"
-                            clone_strings.pop()
                             call_args[-1:] = [f'{pname}_begin', f'{pname}_end']
+                            clone_strings.pop()
                             span_strings.append(pname)
 
                         elif (i == 0 or param.name == 'fmt') and not is_string_span_pair(param, next_param):
@@ -152,6 +157,12 @@ def generate_wrapper(ast):
                             odin_params.append(f"{odin_id(param.name)}: string")
                             clone_strings.append(odin_id(param.name))
                             call_args.append('_temp_' + odin_id(param.name))
+
+                    elif is_slice_pair(prev_param, param) and not is_out_param(prev_param):
+                        pname = odin_id(re.sub("_(?:len(?:gth)?|size|count)$", '', param.name))
+                        len_type = type_as_odin(param.type)
+                        odin_params[-1] = f"{pname}: []{type_as_odin(deref(prev_param.type))}"
+                        call_args[-1:] = [f"raw_data({pname})", f"{f'cast({len_type})' * (len_type != 'int')}len({pname})"]
 
                     else:
                         odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
@@ -185,6 +196,13 @@ def generate_wrapper(ast):
                 else:
                     fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{node.name}({', '.join(call_args)})\n")
 
+                fp.write("}\n")
+
+        for group, impls in overloads.items():
+            if len(impls) > 1:
+                fp.write(f"\n{group} :: proc {{\n")
+                for impl in impls:
+                    fp.write(f"\t{impl},\n")
                 fp.write("}\n")
 
 
@@ -523,12 +541,21 @@ def odin_procname(name: str) -> str:
 
 
 def proc_overload_group(name: str) -> str:
-    ...
+    if name.startswith('ig') and name.count('_') >= 1:
+        group, _ = name.split('_', 1)
+        return odin_procname(group)
+
+    elif name.startswith(('ImGui', 'Im')) and name.count('_') >= 2 and not name.endswith(('_begin', '_end')):
+        typename, method, _ = name.split('_', 2)
+        return odin_procname(f"{typename}_{method}")
+
+    else:
+        return odin_procname(name)
 
 
 ACRONYMS = (
     'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'HSV',
-    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR',
+    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR', 'TTY',
 )
 
 
@@ -622,6 +649,38 @@ def is_string_span_pair(begin, end) -> bool:
     return end.name.startswith(begin_name) and end.name.endswith('_end')
 
 
+def is_slice_pair(ptr, length) -> bool:
+    if ptr is None or length is None:
+        return False
+
+    try:
+        if not isinstance(ptr.type, c_ast.PtrDecl):
+            return False
+
+        if is_cstring(ptr.type):
+            return False
+
+        if not (
+            isinstance(length.type, c_ast.TypeDecl)
+            and isinstance(length.type.type, c_ast.IdentifierType)
+            and (
+                'int' in length.type.type.names
+                or 'size_t' in length.type.type.names
+            )
+        ):
+            return False
+
+    except AttributeError:
+        return False
+
+    base_name = re.sub("_?(?:ptr)$", '', ptr.name)
+
+    return (
+        length.name.startswith(base_name)
+        and length.name.endswith(('_len', '_length', '_size', '_count'))
+    )
+
+
 def is_out_param(ast_node) -> bool:
     if not isinstance(ast_node, c_ast.Decl) or ast_node.name is None:
         return False
@@ -655,6 +714,7 @@ def is_exported_proc(ast_node):
 FUNC_PREFIX_BLACKLIST = (
     'igIm',
     'ImVec',
+    'igGET',
 )
 
 FUNC_PREFIX_WHITELIST = (

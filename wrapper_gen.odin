@@ -583,15 +583,15 @@ v_slider_scalar :: proc (label: cstring, size: [2]f32, data_type: Data_Type, p_d
 	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
 	return igVSliderScalar(label, size, data_type, p_data, p_min, p_max, _temp_format, flags)
 }
-input_text :: proc (label: cstring, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	return igInputText(label, buf, buf_size, flags, callback, user_data)
+input_text :: proc (label: cstring, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+	return igInputText(label, raw_data(buf),  len(buf), flags, callback, user_data)
 }
-input_text_multiline :: proc (label: cstring, buf: ^i8, buf_size: int, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	return igInputTextMultiline(label, buf, buf_size, size, flags, callback, user_data)
+input_text_multiline :: proc (label: cstring, buf: []i8, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+	return igInputTextMultiline(label, raw_data(buf),  len(buf), size, flags, callback, user_data)
 }
-input_text_with_hint :: proc (label: cstring, hint: string, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+input_text_with_hint :: proc (label: cstring, hint: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
 	_temp_hint := strings.clone_to_cstring(hint, context.temp_allocator)
-	return igInputTextWithHint(label, _temp_hint, buf, buf_size, flags, callback, user_data)
+	return igInputTextWithHint(label, _temp_hint, raw_data(buf),  len(buf), flags, callback, user_data)
 }
 input_float :: proc (label: cstring, v: ^f32, step: f32, step_fast: f32, format: string, flags: Input_Text_Flags) -> bool {
 	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
@@ -708,17 +708,17 @@ list_box_str_arr :: proc (label: cstring, current_item: ^i32, items: [^]cstring,
 list_box_fn_bool_ptr :: proc (label: cstring, current_item: ^i32, items_getter: ^#type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
 	return igListBox_FnBoolPtr(label, current_item, items_getter, data, items_count, height_in_items)
 }
-plot_lines_float_ptr :: proc (label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+plot_lines_float_ptr :: proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
 	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
-	igPlotLines_FloatPtr(label, values, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
+	igPlotLines_FloatPtr(label, raw_data(values), cast(i32) len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
 plot_lines_fn_float_ptr :: proc (label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
 	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
 	igPlotLines_FnFloatPtr(label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
 }
-plot_histogram_float_ptr :: proc (label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+plot_histogram_float_ptr :: proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
 	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
-	igPlotHistogram_FloatPtr(label, values, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
+	igPlotHistogram_FloatPtr(label, raw_data(values), cast(i32) len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
 plot_histogram_fn_float_ptr :: proc (label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
 	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
@@ -899,7 +899,7 @@ tab_item_button :: proc (label: cstring, flags: Tab_Item_Flags) -> bool {
 set_tab_item_closed :: proc (tab_or_docked_window_label: cstring) {
 	igSetTabItemClosed(tab_or_docked_window_label)
 }
-log_to_t_t_y :: proc (auto_open_depth: i32) {
+log_to_tty :: proc (auto_open_depth: i32) {
 	igLogToTTY(auto_open_depth)
 }
 log_to_file :: proc (auto_open_depth: i32, filename: string) {
@@ -3350,9 +3350,9 @@ tree_node_update_next_open :: proc (id: ID, flags: Tree_Node_Flags) -> bool {
 data_type_get_info :: proc (data_type: Data_Type) -> ^Data_Type_Info {
 	return igDataTypeGetInfo(data_type)
 }
-data_type_format_string :: proc (buf: ^i8, buf_size: i32, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
+data_type_format_string :: proc (buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
 	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
-	return igDataTypeFormatString(buf, buf_size, data_type, p_data, _temp_format)
+	return igDataTypeFormatString(raw_data(buf), cast(i32) len(buf), data_type, p_data, _temp_format)
 }
 data_type_apply_op :: proc (data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) {
 	igDataTypeApplyOp(data_type, op, output, arg_1, arg_2)
@@ -3367,16 +3367,16 @@ data_type_compare :: proc (data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -
 data_type_clamp :: proc (data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr) -> bool {
 	return igDataTypeClamp(data_type, p_data, p_min, p_max)
 }
-input_text_ex :: proc (label: cstring, hint: string, buf: ^i8, buf_size: i32, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+input_text_ex :: proc (label: cstring, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
 	_temp_hint := strings.clone_to_cstring(hint, context.temp_allocator)
-	return igInputTextEx(label, _temp_hint, buf, buf_size, size_arg, flags, callback, user_data)
+	return igInputTextEx(label, _temp_hint, raw_data(buf), cast(i32) len(buf), size_arg, flags, callback, user_data)
 }
 input_text_deactivate_hook :: proc (id: ID) {
 	igInputTextDeactivateHook(id)
 }
-temp_input_text :: proc (bb: Rect, id: ID, label: string, buf: ^i8, buf_size: i32, flags: Input_Text_Flags) -> bool {
+temp_input_text :: proc (bb: Rect, id: ID, label: string, buf: []i8, flags: Input_Text_Flags) -> bool {
 	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
-	return igTempInputText(bb, id, _temp_label, buf, buf_size, flags)
+	return igTempInputText(bb, id, _temp_label, raw_data(buf), cast(i32) len(buf), flags)
 }
 temp_input_scalar :: proc (bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool {
 	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
@@ -3496,8 +3496,8 @@ debug_node_windows_list :: proc (windows: ^Vector(^Window), label: string) {
 	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
 	igDebugNodeWindowsList(windows, _temp_label)
 }
-debug_node_windows_list_by_begin_stack_parent :: proc (windows: ^^Window, windows_size: i32, parent_in_begin_stack: ^Window) {
-	igDebugNodeWindowsListByBeginStackParent(windows, windows_size, parent_in_begin_stack)
+debug_node_windows_list_by_begin_stack_parent :: proc (windows: []^Window, parent_in_begin_stack: ^Window) {
+	igDebugNodeWindowsListByBeginStackParent(raw_data(windows), cast(i32) len(windows), parent_in_begin_stack)
 }
 debug_node_viewport :: proc (viewport: ^Viewport_P) {
 	igDebugNodeViewport(viewport)
@@ -3546,9 +3546,306 @@ log_text :: proc (fmt: cstring, _args_: ..any) {
 text_buffer_appendf :: proc (buffer: ^Text_Buffer, fmt: cstring, _args_: ..any) {
 	ImGuiTextBuffer_appendf(buffer, fmt, _args_)
 }
-g_e_t_f_l_t_m_a_x :: proc () -> f32 {
-	return igGET_FLT_MAX()
+
+begin_child :: proc {
+	begin_child_str,
+	begin_child_id,
 }
-g_e_t_f_l_t_m_i_n :: proc () -> f32 {
-	return igGET_FLT_MIN()
+
+set_window_pos :: proc {
+	set_window_pos_vec2,
+	set_window_pos_str,
+	set_window_pos_window_ptr,
+}
+
+set_window_size :: proc {
+	set_window_size_vec2,
+	set_window_size_str,
+	set_window_size_window_ptr,
+}
+
+set_window_collapsed :: proc {
+	set_window_collapsed_bool,
+	set_window_collapsed_str,
+	set_window_collapsed_window_ptr,
+}
+
+set_window_focus :: proc {
+	set_window_focus_nil,
+	set_window_focus_str,
+}
+
+set_scroll_x :: proc {
+	set_scroll_x_float,
+	set_scroll_x_window_ptr,
+}
+
+set_scroll_y :: proc {
+	set_scroll_y_float,
+	set_scroll_y_window_ptr,
+}
+
+set_scroll_from_pos_x :: proc {
+	set_scroll_from_pos_x_float,
+	set_scroll_from_pos_x_window_ptr,
+}
+
+set_scroll_from_pos_y :: proc {
+	set_scroll_from_pos_y_float,
+	set_scroll_from_pos_y_window_ptr,
+}
+
+push_style_color :: proc {
+	push_style_color_u32,
+	push_style_color_vec4,
+}
+
+push_style_var :: proc {
+	push_style_var_float,
+	push_style_var_vec2,
+}
+
+get_color_u32 :: proc {
+	get_color_u32_col,
+	get_color_u32_vec4,
+	get_color_u32_u32,
+}
+
+push_id :: proc {
+	push_id_str,
+	push_id_strstr,
+	push_id_ptr,
+	push_id_int,
+}
+
+get_id :: proc {
+	get_id_str,
+	get_id_strstr,
+	get_id_ptr,
+}
+
+checkbox_flags :: proc {
+	checkbox_flags_int_ptr,
+	checkbox_flags_uint_ptr,
+	checkbox_flags_s64_ptr,
+	checkbox_flags_u64_ptr,
+}
+
+radio_button :: proc {
+	radio_button_bool,
+	radio_button_int_ptr,
+}
+
+combo :: proc {
+	combo_str_arr,
+	combo_str,
+	combo_fn_bool_ptr,
+}
+
+tree_node :: proc {
+	tree_node_str,
+	tree_node_str_str,
+	tree_node_ptr,
+}
+
+tree_node_ex :: proc {
+	tree_node_ex_str,
+	tree_node_ex_str_str,
+	tree_node_ex_ptr,
+}
+
+tree_push :: proc {
+	tree_push_str,
+	tree_push_ptr,
+}
+
+collapsing_header :: proc {
+	collapsing_header_tree_node_flags,
+	collapsing_header_bool_ptr,
+}
+
+selectable :: proc {
+	selectable_bool,
+	selectable_bool_ptr,
+}
+
+list_box :: proc {
+	list_box_str_arr,
+	list_box_fn_bool_ptr,
+}
+
+plot_lines :: proc {
+	plot_lines_float_ptr,
+	plot_lines_fn_float_ptr,
+}
+
+plot_histogram :: proc {
+	plot_histogram_float_ptr,
+	plot_histogram_fn_float_ptr,
+}
+
+value :: proc {
+	value_bool,
+	value_int,
+	value_uint,
+	value_float,
+}
+
+menu_item :: proc {
+	menu_item_bool,
+	menu_item_bool_ptr,
+}
+
+open_popup :: proc {
+	open_popup_str,
+	open_popup_id,
+}
+
+is_popup_open :: proc {
+	is_popup_open_str,
+	is_popup_open_id,
+}
+
+table_get_column_name :: proc {
+	table_get_column_name_int,
+	table_get_column_name_table_ptr,
+}
+
+get_background_draw_list :: proc {
+	get_background_draw_list_nil,
+	get_background_draw_list_viewport_ptr,
+}
+
+get_foreground_draw_list :: proc {
+	get_foreground_draw_list_nil,
+	get_foreground_draw_list_window_ptr,
+	get_foreground_draw_list_viewport_ptr,
+}
+
+is_rect_visible :: proc {
+	is_rect_visible_nil,
+	is_rect_visible_vec2,
+}
+
+is_key_down :: proc {
+	is_key_down_nil,
+	is_key_down_id,
+}
+
+is_key_pressed :: proc {
+	is_key_pressed_bool,
+	is_key_pressed_id,
+}
+
+is_key_released :: proc {
+	is_key_released_nil,
+	is_key_released_id,
+}
+
+is_mouse_down :: proc {
+	is_mouse_down_nil,
+	is_mouse_down_id,
+}
+
+is_mouse_clicked :: proc {
+	is_mouse_clicked_bool,
+	is_mouse_clicked_id,
+}
+
+is_mouse_released :: proc {
+	is_mouse_released_nil,
+	is_mouse_released_id,
+}
+
+text_range_new :: proc {
+	text_range_new_nil,
+	text_range_new_str,
+}
+
+storage_pair_new :: proc {
+	storage_pair_new_int,
+	storage_pair_new_float,
+	storage_pair_new_ptr,
+}
+
+color_new :: proc {
+	color_new_nil,
+	color_new_float,
+	color_new_vec4,
+	color_new_int,
+	color_new_u32,
+}
+
+draw_list_add_text :: proc {
+	draw_list_add_text_vec2,
+	draw_list_add_text_font_ptr,
+}
+
+rect_new :: proc {
+	rect_new_nil,
+	rect_new_vec2,
+	rect_new_vec4,
+	rect_new_float,
+}
+
+rect_contains :: proc {
+	rect_contains_vec2,
+	rect_contains_rect,
+}
+
+rect_add :: proc {
+	rect_add_vec2,
+	rect_add_rect,
+}
+
+rect_expand :: proc {
+	rect_expand_float,
+	rect_expand_vec2,
+}
+
+style_mod_new :: proc {
+	style_mod_new_int,
+	style_mod_new_float,
+	style_mod_new_vec2,
+}
+
+ptr_or_index_new :: proc {
+	ptr_or_index_new_ptr,
+	ptr_or_index_new_int,
+}
+
+window_get_id :: proc {
+	window_get_id_str,
+	window_get_id_ptr,
+	window_get_id_int,
+}
+
+mark_ini_settings_dirty :: proc {
+	mark_ini_settings_dirty_nil,
+	mark_ini_settings_dirty_window_ptr,
+}
+
+get_id_with_seed :: proc {
+	get_id_with_seed_str,
+	get_id_with_seed_int,
+}
+
+item_size :: proc {
+	item_size_vec2,
+	item_size_rect,
+}
+
+get_key_data :: proc {
+	get_key_data_context_ptr,
+	get_key_data_key,
+}
+
+table_gc_compact_transient_buffers :: proc {
+	table_gc_compact_transient_buffers_table_ptr,
+	table_gc_compact_transient_buffers_table_temp_data_ptr,
+}
+
+tab_item_calc_size :: proc {
+	tab_item_calc_size_str,
+	tab_item_calc_size_window_ptr,
 }

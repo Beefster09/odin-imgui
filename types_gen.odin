@@ -1266,7 +1266,7 @@ Layout_Type_ :: enum i32 {
 
 Log_Type :: enum i32 {
 	None = 0,
-	T_T_Y,
+	TTY,
 	File,
 	Buffer,
 	Clipboard,
@@ -1754,7 +1754,7 @@ ImGuiDebugLogFlags_ :: enum {
 	Event_Clipper = 4,
 	Event_Selection = 5,
 	Event_IO = 6,
-	Output_To_T_T_Y = 10,
+	Output_To_TTY = 10,
 }
 Debug_Log_Flags_EVENT_MASK :: Debug_Log_Flags{ .Event_Active_Id, .Event_Focus, .Event_Popup, .Event_Nav, .Event_Clipper, .Event_Selection, .Event_IO }
 

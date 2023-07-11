@@ -1145,6 +1145,4 @@ foreign cimgui {
 	igImFontAtlasBuildMultiplyRectAlpha8 :: proc(table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) ---
 	igLogText :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
 	ImGuiTextBuffer_appendf :: proc(buffer: ^Text_Buffer, fmt: cstring, #c_vararg _args_: ..any) ---
-	igGET_FLT_MAX :: proc() -> f32 ---
-	igGET_FLT_MIN :: proc() -> f32 ---
 }
