@@ -225,8 +225,24 @@ class TypeGenVisitor(c_ast.NodeVisitor):
         elif type_name.rstrip('_').endswith('Private'):
             return
 
+        elif type_name == 'ImGuiTableFlags_':
+            self.fp.write("\nTable_Flags :: distinct i32  // SPECIAL CASE GEN\n")
+
+            # HACK for laziness
+            self.fp.write("/* *** UGLY DEFINITIONS ON THIS LINE FOR GENERATOR IMPLEMENTATION CONVENIENCE; DO NOT USE THE CONSTANTS ON THIS LINE! *** */")
+            for flag in enum.values:
+                self.fp.write(f"{flag.name} :: Table_Flags({value_as_odin(flag.value)});")
+
+            self.fp.write("\n// Use the following constants instead:\n")
+            for flag in enum.values:
+                _, vname = flag.name.rstrip('_').split('_', 1)
+                self.fp.write(f"\tTF_{odin_id(vname).upper()} :: {flag.name}\n")
+
+            self.fp.write('// - END OF Table_Flags constants -\n')
+
         elif type_name.endswith(('Flags_', 'Cond_')):
             composite_flags = []
+            members = {}
 
             self.fp.write(f"\n{type_name} :: enum {{\n")
 
@@ -240,6 +256,7 @@ class TypeGenVisitor(c_ast.NodeVisitor):
                     assert isinstance(flag.value.right, c_ast.Constant)
                     if flag.value.left.value == '1':
                         self.fp.write(f"\t{flag_name} = {flag.value.right.value},\n")
+                        members[flag.name] = flag_name
                     else:
                         self.fp.write(f"\t// {flag_name} = {value_as_odin(flag.value)}, // Cannot represent cleanly :-/ \n")
 
@@ -256,14 +273,19 @@ class TypeGenVisitor(c_ast.NodeVisitor):
                 ename, vname = flag.name.rstrip('_').split('_', 1)
 
                 bit_set_values = []
+                masks = []
 
                 class CV(c_ast.NodeVisitor):  # quick and dirty hack that makes assumptions
                     def visit_ID(self, ident: c_ast.ID):
-                        bit_set_values.append('.' + odin_enumname(ident.name))
+                        if ident.name in members:
+                            bit_set_values.append('.' + odin_enumname(ident.name))
+                        else:
+                            ename, vname = ident.name.rstrip('_').split('_', 1)
+                            masks.append(f" | {odin_typename(ename)}_{odin_id(vname).upper()}")
 
                 CV().visit(flag)
 
-                self.fp.write(f"{odin_typename(ename)}_{odin_id(vname).upper()} :: {bit_set_name}{{ {', '.join(bit_set_values)} }}\n")
+                self.fp.write(f"{odin_typename(ename)}_{odin_id(vname).upper()} :: {bit_set_name}{{ {', '.join(bit_set_values)} }}{''.join(masks)}\n")
 
         else:
             special_enum_values = []
@@ -311,7 +333,9 @@ class TypeGenVisitor(c_ast.NodeVisitor):
             and isinstance(typedef.type.type, c_ast.IdentifierType)
             and typedef.name not in TYPE_MAP
         ):
-            if typedef.name.endswith(('Flags', 'Cond')):
+            if typedef.name == 'ImGuiTableFlags':
+                return  # special case b/c weird flags
+            elif typedef.name.endswith(('Flags', 'Cond')):
                 self.fp.write(f"{odin_typename(typedef.name)} :: bit_set[{typedef.name}_; u32]\n")
             else:
                 self.fp.write(f"{odin_typename(typedef.name)} :: distinct {type_as_odin(typedef.type)}\n")

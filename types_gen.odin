@@ -31,7 +31,6 @@ Selectable_Flags :: bit_set[ImGuiSelectableFlags_; u32]
 Slider_Flags :: bit_set[ImGuiSliderFlags_; u32]
 Tab_Bar_Flags :: bit_set[ImGuiTabBarFlags_; u32]
 Tab_Item_Flags :: bit_set[ImGuiTabItemFlags_; u32]
-Table_Flags :: bit_set[ImGuiTableFlags_; u32]
 Table_Column_Flags :: bit_set[ImGuiTableColumnFlags_; u32]
 Table_Row_Flags :: bit_set[ImGuiTableRowFlags_; u32]
 Tree_Node_Flags :: bit_set[ImGuiTreeNodeFlags_; u32]
@@ -164,43 +163,46 @@ ImGuiTabItemFlags_ :: enum {
 	Trailing = 7,
 }
 
-ImGuiTableFlags_ :: enum {
-	Resizable = 0,
-	Reorderable = 1,
-	Hideable = 2,
-	Sortable = 3,
-	No_Saved_Settings = 4,
-	Context_Menu_In_Body = 5,
-	Row_Bg = 6,
-	Borders_Inner_H = 7,
-	Borders_Outer_H = 8,
-	Borders_Inner_V = 9,
-	Borders_Outer_V = 10,
-	No_Borders_In_Body = 11,
-	No_Borders_In_Body_Until_Resize = 12,
-	Sizing_Fixed_Fit = 13,
-	// Sizing_Fixed_Same = (2 << 13), // Cannot represent cleanly :-/ 
-	// Sizing_Stretch_Prop = (3 << 13), // Cannot represent cleanly :-/ 
-	// Sizing_Stretch_Same = (4 << 13), // Cannot represent cleanly :-/ 
-	No_Host_Extend_X = 16,
-	No_Host_Extend_Y = 17,
-	No_Keep_Columns_Visible = 18,
-	Precise_Widths = 19,
-	No_Clip = 20,
-	Pad_Outer_X = 21,
-	No_Pad_Outer_X = 22,
-	No_Pad_Inner_X = 23,
-	Scroll_X = 24,
-	Scroll_Y = 25,
-	Sort_Multi = 26,
-	Sort_Tristate = 27,
-}
-Table_Flags_BORDERS_H :: Table_Flags{ .Borders_Inner_H, .Borders_Outer_H }
-Table_Flags_BORDERS_V :: Table_Flags{ .Borders_Inner_V, .Borders_Outer_V }
-Table_Flags_BORDERS_INNER :: Table_Flags{ .Borders_Inner_V, .Borders_Inner_H }
-Table_Flags_BORDERS_OUTER :: Table_Flags{ .Borders_Outer_V, .Borders_Outer_H }
-Table_Flags_BORDERS :: Table_Flags{ .Borders_Inner, .Borders_Outer }
-Table_Flags_SIZING_MASK :: Table_Flags{ .Sizing_Fixed_Fit, .Sizing_Fixed_Same, .Sizing_Stretch_Prop, .Sizing_Stretch_Same }
+Table_Flags :: distinct i32  // SPECIAL CASE GEN
+/* *** UGLY DEFINITIONS ON THIS LINE FOR GENERATOR IMPLEMENTATION CONVENIENCE; DO NOT USE THE CONSTANTS ON THIS LINE! *** */ImGuiTableFlags_None :: Table_Flags(0);ImGuiTableFlags_Resizable :: Table_Flags((1 << 0));ImGuiTableFlags_Reorderable :: Table_Flags((1 << 1));ImGuiTableFlags_Hideable :: Table_Flags((1 << 2));ImGuiTableFlags_Sortable :: Table_Flags((1 << 3));ImGuiTableFlags_NoSavedSettings :: Table_Flags((1 << 4));ImGuiTableFlags_ContextMenuInBody :: Table_Flags((1 << 5));ImGuiTableFlags_RowBg :: Table_Flags((1 << 6));ImGuiTableFlags_BordersInnerH :: Table_Flags((1 << 7));ImGuiTableFlags_BordersOuterH :: Table_Flags((1 << 8));ImGuiTableFlags_BordersInnerV :: Table_Flags((1 << 9));ImGuiTableFlags_BordersOuterV :: Table_Flags((1 << 10));ImGuiTableFlags_BordersH :: Table_Flags((ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_BordersV :: Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterV));ImGuiTableFlags_BordersInner :: Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH));ImGuiTableFlags_BordersOuter :: Table_Flags((ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_Borders :: Table_Flags((ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersOuter));ImGuiTableFlags_NoBordersInBody :: Table_Flags((1 << 11));ImGuiTableFlags_NoBordersInBodyUntilResize :: Table_Flags((1 << 12));ImGuiTableFlags_SizingFixedFit :: Table_Flags((1 << 13));ImGuiTableFlags_SizingFixedSame :: Table_Flags((2 << 13));ImGuiTableFlags_SizingStretchProp :: Table_Flags((3 << 13));ImGuiTableFlags_SizingStretchSame :: Table_Flags((4 << 13));ImGuiTableFlags_NoHostExtendX :: Table_Flags((1 << 16));ImGuiTableFlags_NoHostExtendY :: Table_Flags((1 << 17));ImGuiTableFlags_NoKeepColumnsVisible :: Table_Flags((1 << 18));ImGuiTableFlags_PreciseWidths :: Table_Flags((1 << 19));ImGuiTableFlags_NoClip :: Table_Flags((1 << 20));ImGuiTableFlags_PadOuterX :: Table_Flags((1 << 21));ImGuiTableFlags_NoPadOuterX :: Table_Flags((1 << 22));ImGuiTableFlags_NoPadInnerX :: Table_Flags((1 << 23));ImGuiTableFlags_ScrollX :: Table_Flags((1 << 24));ImGuiTableFlags_ScrollY :: Table_Flags((1 << 25));ImGuiTableFlags_SortMulti :: Table_Flags((1 << 26));ImGuiTableFlags_SortTristate :: Table_Flags((1 << 27));ImGuiTableFlags_SizingMask_ :: Table_Flags((((ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_SizingFixedSame) | ImGuiTableFlags_SizingStretchProp) | ImGuiTableFlags_SizingStretchSame));
+// Use the following constants instead:
+	TF_NONE :: ImGuiTableFlags_None
+	TF_RESIZABLE :: ImGuiTableFlags_Resizable
+	TF_REORDERABLE :: ImGuiTableFlags_Reorderable
+	TF_HIDEABLE :: ImGuiTableFlags_Hideable
+	TF_SORTABLE :: ImGuiTableFlags_Sortable
+	TF_NO_SAVED_SETTINGS :: ImGuiTableFlags_NoSavedSettings
+	TF_CONTEXT_MENU_IN_BODY :: ImGuiTableFlags_ContextMenuInBody
+	TF_ROW_BG :: ImGuiTableFlags_RowBg
+	TF_BORDERS_INNER_H :: ImGuiTableFlags_BordersInnerH
+	TF_BORDERS_OUTER_H :: ImGuiTableFlags_BordersOuterH
+	TF_BORDERS_INNER_V :: ImGuiTableFlags_BordersInnerV
+	TF_BORDERS_OUTER_V :: ImGuiTableFlags_BordersOuterV
+	TF_BORDERS_H :: ImGuiTableFlags_BordersH
+	TF_BORDERS_V :: ImGuiTableFlags_BordersV
+	TF_BORDERS_INNER :: ImGuiTableFlags_BordersInner
+	TF_BORDERS_OUTER :: ImGuiTableFlags_BordersOuter
+	TF_BORDERS :: ImGuiTableFlags_Borders
+	TF_NO_BORDERS_IN_BODY :: ImGuiTableFlags_NoBordersInBody
+	TF_NO_BORDERS_IN_BODY_UNTIL_RESIZE :: ImGuiTableFlags_NoBordersInBodyUntilResize
+	TF_SIZING_FIXED_FIT :: ImGuiTableFlags_SizingFixedFit
+	TF_SIZING_FIXED_SAME :: ImGuiTableFlags_SizingFixedSame
+	TF_SIZING_STRETCH_PROP :: ImGuiTableFlags_SizingStretchProp
+	TF_SIZING_STRETCH_SAME :: ImGuiTableFlags_SizingStretchSame
+	TF_NO_HOST_EXTEND_X :: ImGuiTableFlags_NoHostExtendX
+	TF_NO_HOST_EXTEND_Y :: ImGuiTableFlags_NoHostExtendY
+	TF_NO_KEEP_COLUMNS_VISIBLE :: ImGuiTableFlags_NoKeepColumnsVisible
+	TF_PRECISE_WIDTHS :: ImGuiTableFlags_PreciseWidths
+	TF_NO_CLIP :: ImGuiTableFlags_NoClip
+	TF_PAD_OUTER_X :: ImGuiTableFlags_PadOuterX
+	TF_NO_PAD_OUTER_X :: ImGuiTableFlags_NoPadOuterX
+	TF_NO_PAD_INNER_X :: ImGuiTableFlags_NoPadInnerX
+	TF_SCROLL_X :: ImGuiTableFlags_ScrollX
+	TF_SCROLL_Y :: ImGuiTableFlags_ScrollY
+	TF_SORT_MULTI :: ImGuiTableFlags_SortMulti
+	TF_SORT_TRISTATE :: ImGuiTableFlags_SortTristate
+	TF_SIZING_MASK :: ImGuiTableFlags_SizingMask_
+// - END OF Table_Flags constants -
 
 ImGuiTableColumnFlags_ :: enum {
 	Disabled = 0,
@@ -961,7 +963,7 @@ Draw_Flags_ROUND_CORNERS_BOTTOM :: Draw_Flags{ .Round_Corners_Bottom_Left, .Roun
 Draw_Flags_ROUND_CORNERS_LEFT :: Draw_Flags{ .Round_Corners_Bottom_Left, .Round_Corners_Top_Left }
 Draw_Flags_ROUND_CORNERS_RIGHT :: Draw_Flags{ .Round_Corners_Bottom_Right, .Round_Corners_Top_Right }
 Draw_Flags_ROUND_CORNERS_ALL :: Draw_Flags{ .Round_Corners_Top_Left, .Round_Corners_Top_Right, .Round_Corners_Bottom_Left, .Round_Corners_Bottom_Right }
-Draw_Flags_ROUND_CORNERS_MASK :: Draw_Flags{ .Round_Corners_All, .Round_Corners_None }
+Draw_Flags_ROUND_CORNERS_MASK :: Draw_Flags{ .Round_Corners_None } | Draw_Flags_ROUND_CORNERS_ALL
 
 ImDrawListFlags_ :: enum {
 	Anti_Aliased_Lines = 0,
@@ -1581,10 +1583,10 @@ Input_Flags_COND_DEFAULT :: Input_Flags{ .Cond_Hovered, .Cond_Active }
 Input_Flags_COND_MASK :: Input_Flags{ .Cond_Hovered, .Cond_Active }
 Input_Flags_ROUTE_MASK :: Input_Flags{ .Route_Focused, .Route_Global, .Route_Global_Low, .Route_Global_High }
 Input_Flags_ROUTE_EXTRA_MASK :: Input_Flags{ .Route_Always, .Route_Unless_Bg_Focused }
-Input_Flags_SUPPORTED_BY_IS_KEY_PRESSED :: Input_Flags{ .Repeat, .Repeat_Rate_Mask_ }
-Input_Flags_SUPPORTED_BY_SHORTCUT :: Input_Flags{ .Repeat, .Repeat_Rate_Mask_, .Route_Mask_, .Route_Extra_Mask_ }
+Input_Flags_SUPPORTED_BY_IS_KEY_PRESSED :: Input_Flags{ .Repeat } | Input_Flags_REPEAT_RATE_MASK
+Input_Flags_SUPPORTED_BY_SHORTCUT :: Input_Flags{ .Repeat } | Input_Flags_REPEAT_RATE_MASK | Input_Flags_ROUTE_MASK | Input_Flags_ROUTE_EXTRA_MASK
 Input_Flags_SUPPORTED_BY_SET_KEY_OWNER :: Input_Flags{ .Lock_This_Frame, .Lock_Until_Release }
-Input_Flags_SUPPORTED_BY_SET_ITEM_KEY_OWNER :: Input_Flags{ .Supported_By_Set_Key_Owner, .Cond_Mask_ }
+Input_Flags_SUPPORTED_BY_SET_ITEM_KEY_OWNER :: Input_Flags{  } | Input_Flags_SUPPORTED_BY_SET_KEY_OWNER | Input_Flags_COND_MASK
 
 List_Clipper_Range :: struct {
 	min: i32,
