@@ -174,7 +174,7 @@ foreign cimgui {
 	igEndCombo :: proc() ---
 	igCombo_Str_arr :: proc(label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool ---
 	igCombo_Str :: proc(label: cstring, current_item: ^i32, items_separated_by_zeros: cstring, popup_max_height_in_items: i32) -> bool ---
-	igCombo_FnBoolPtr :: proc(label: cstring, current_item: ^i32, items_getter: ^#type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool ---
+	igCombo_FnBoolPtr :: proc(label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool ---
 	igDragFloat :: proc(label: cstring, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
 	igDragFloat2 :: proc(label: cstring, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
 	igDragFloat3 :: proc(label: cstring, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
@@ -243,11 +243,11 @@ foreign cimgui {
 	igBeginListBox :: proc(label: cstring, size: [2]f32) -> bool ---
 	igEndListBox :: proc() ---
 	igListBox_Str_arr :: proc(label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool ---
-	igListBox_FnBoolPtr :: proc(label: cstring, current_item: ^i32, items_getter: ^#type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool ---
+	igListBox_FnBoolPtr :: proc(label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool ---
 	igPlotLines_FloatPtr :: proc(label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) ---
-	igPlotLines_FnFloatPtr :: proc(label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
+	igPlotLines_FnFloatPtr :: proc(label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
 	igPlotHistogram_FloatPtr :: proc(label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) ---
-	igPlotHistogram_FnFloatPtr :: proc(label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
+	igPlotHistogram_FnFloatPtr :: proc(label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
 	igValue_Bool :: proc(prefix: cstring, b: bool) ---
 	igValue_Int :: proc(prefix: cstring, v: i32) ---
 	igValue_Uint :: proc(prefix: cstring, v: u32) ---
@@ -1098,7 +1098,7 @@ foreign cimgui {
 	igColorTooltip :: proc(text: cstring, col: ^f32, flags: Color_Edit_Flags) ---
 	igColorEditOptionsPopup :: proc(col: ^f32, flags: Color_Edit_Flags) ---
 	igColorPickerOptionsPopup :: proc(ref_col: ^f32, flags: Color_Edit_Flags) ---
-	igPlotEx :: proc(plot_type: Plot_Type, label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 ---
+	igPlotEx :: proc(plot_type: Plot_Type, label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 ---
 	igShadeVertsLinearColorGradientKeepAlpha :: proc(draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) ---
 	igShadeVertsLinearUV :: proc(draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) ---
 	igGcCompactTransientMiscBuffers :: proc() ---

@@ -99,11 +99,6 @@ def generate_foreign(ast):
 def generate_wrapper(ast):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
-        fp.write(textwrap.dedent("""
-            import "core:strings"
-
-
-        """))
 
         overloads = defaultdict(list)
 
@@ -115,7 +110,8 @@ def generate_wrapper(ast):
                 if all_params and is_va_list(all_params[-1]):
                     continue  # skip
 
-                overloads[proc_overload_group(node.name)].append(odin_procname(node.name))
+                proc_name = odin_procname(node.name)
+                overloads[proc_overload_group(node.name)].append(proc_name)
 
                 odin_params = []
                 call_args = []
@@ -168,6 +164,11 @@ def generate_wrapper(ast):
                         odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
                         call_args.append(odin_id(param.name))
 
+                if defaults := DEFAULT_ARGS.get(proc_name):
+                    for i, value in enumerate(defaults, -len(defaults)):
+                        odin_params[i] += f" = {value}"
+                else:
+                    ... # TODO: automatic defaults for flags
 
                 if orig_ret_type == 'void':
                     if multiple_returns:
@@ -180,10 +181,10 @@ def generate_wrapper(ast):
                     else:
                         ret = f" -> {orig_ret_type}"
 
-                fp.write(f"{odin_procname(node.name)} :: proc ({', '.join(odin_params)}){ret} {{\n")
+                fp.write(f"{proc_name} :: proc ({', '.join(odin_params)}){ret} {{\n")
 
                 for pname in clone_strings:
-                    fp.write(f"\t_temp_{pname} := strings.clone_to_cstring({pname}, context.temp_allocator)\n")
+                    fp.write(f"\t_temp_{pname} := semisafe_string_to_cstring({pname})\n")
 
                 for pname in span_strings:
                     fp.write(f"\t{pname}_begin := raw_data({pname})\n")
@@ -204,6 +205,15 @@ def generate_wrapper(ast):
                 for impl in impls:
                     fp.write(f"\t{impl},\n")
                 fp.write("}\n")
+
+
+DEFAULT_ARGS = {  # default values for the last N parameters of specific procs
+    'create_context': ['nil'],
+    'style_colors_light': ['nil'],
+    'style_colors_dark': ['nil'],
+    'style_colors_classic': ['nil'],
+    # TODO
+}
 
 
 def write_header(fp):
@@ -249,7 +259,7 @@ class TypeGenVisitor(c_ast.NodeVisitor):
             # HACK for laziness
             self.fp.write("/* *** UGLY DEFINITIONS ON THIS LINE FOR GENERATOR IMPLEMENTATION CONVENIENCE; DO NOT USE THE CONSTANTS ON THIS LINE! *** */")
             for flag in enum.values:
-                self.fp.write(f"{flag.name} :: Table_Flags({value_as_odin(flag.value)});")
+                self.fp.write(f"{flag.name}::Table_Flags({value_as_odin(flag.value)});")
 
             self.fp.write("\n// Use the following constants instead:\n")
             for flag in enum.values:
@@ -307,7 +317,7 @@ class TypeGenVisitor(c_ast.NodeVisitor):
 
         else:
             special_enum_values = []
-            enum_typename = odin_typename(type_name)
+            enum_typename = odin_typename(type_name.rstrip('_'))
 
             self.fp.write(f"\n{enum_typename} :: enum i32 {{\n")
 
@@ -333,17 +343,27 @@ class TypeGenVisitor(c_ast.NodeVisitor):
 
             self.fp.write("}\n")
 
+            if special_enum_values:
+                self.fp.write("/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */")
+
             for enum_value in special_enum_values:
                 enum_name = odin_enumname(enum_value.name)
 
                 if enum_name == 'COUNT':
                     if last_value is None:
-                        self.fp.write(f"{enum_value.name} :: len({enum_typename})\n")
+                        self.fp.write(f"{enum_value.name}::len({enum_typename});")
                     else:
-                        self.fp.write(f"{enum_value.name} :: {last_value + 1}\n")
+                        self.fp.write(f"{enum_value.name}::{last_value + 1};")
                 else:
                     assert enum_value.value is not None, f"Unhandled {type(enum_value)} at {enum_value.coord}"
-                    self.fp.write(f"{enum_value.name} :: {value_as_odin(enum_value.value)}\n")
+                    self.fp.write(f"{enum_value.name}::{value_as_odin(enum_value.value)};")
+
+            self.fp.write("\n")
+
+            for enum_value in special_enum_values:
+                self.fp.write(f"{enum_typename}_{odin_enumname(enum_value.name)} :: {enum_value.name}\n")
+
+            self.fp.write("\n")
 
     def visit_Typedef(self, typedef: c_ast.Typedef):
         if (
@@ -355,6 +375,8 @@ class TypeGenVisitor(c_ast.NodeVisitor):
                 return  # special case b/c weird flags
             elif typedef.name.endswith(('Flags', 'Cond')):
                 self.fp.write(f"{odin_typename(typedef.name)} :: bit_set[{typedef.name}_; u32]\n")
+            elif typedef.type.type.names == ['int'] and typedef.name not in ('ImGuiKeyChord', 'ImPoolIdx'):
+                return  # probably an enum, but not flags
             else:
                 self.fp.write(f"{odin_typename(typedef.name)} :: distinct {type_as_odin(typedef.type)}\n")
         elif (
@@ -392,7 +414,7 @@ def type_as_odin(type_node) -> str:
         inner = type_as_odin(type_node.type)
         if inner == 'void':
             return 'rawptr'
-        elif inner.startswith('proc'):  # HACK: would break on pointer to function pointer
+        elif inner.startswith('#type proc'):  # HACK: would break on pointer to function pointer
             return inner
         else:
             return f"^{inner}"
@@ -554,17 +576,23 @@ def proc_overload_group(name: str) -> str:
 
 
 ACRONYMS = (
-    'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'HSV',
+    'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'RGBA32', 'HSV',
     'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR', 'TTY',
 )
 
 
 def camel_split(s: str) -> List[str]:
+    def _is_part_of_acronym(start: int, idx: int):
+        for acro in ACRONYMS:
+            if s.startswith(acro, start) and idx - start < len(acro):
+                return True
+        return False
+
     result = []
     start = 0
     for i, c in enumerate(s):
         if c.isupper():
-            if s[start:].startswith(ACRONYMS) and s[start:i] not in ACRONYMS:
+            if _is_part_of_acronym(start, i):
                 continue
             result.append(s[start:i])
             start = i
@@ -693,7 +721,7 @@ def is_out_param(ast_node) -> bool:
 
     return (
         isinstance(ast_node.type, c_ast.PtrDecl)
-        and isinstance(ast_node.type.type, c_ast.TypeDecl)
+        and isinstance(ast_node.type.type, (c_ast.TypeDecl, c_ast.PtrDecl))
         and 'const' not in ast_node.type.type.quals
     )
 

@@ -4,15 +4,7 @@
 
 package imgui
 
-Col :: distinct i32
 Cond :: bit_set[ImGuiCond_; u32]
-Data_Type :: distinct i32
-Dir :: distinct i32
-Mouse_Button :: distinct i32
-Mouse_Cursor :: distinct i32
-Sort_Direction :: distinct i32
-Style_Var :: distinct i32
-Table_Bg_Target :: distinct i32
 Draw_Flags :: bit_set[ImDrawFlags_; u32]
 Draw_List_Flags :: bit_set[ImDrawListFlags_; u32]
 Font_Atlas_Flags :: bit_set[ImFontAtlasFlags_; u32]
@@ -164,7 +156,7 @@ ImGuiTabItemFlags_ :: enum {
 }
 
 Table_Flags :: distinct i32  // SPECIAL CASE GEN
-/* *** UGLY DEFINITIONS ON THIS LINE FOR GENERATOR IMPLEMENTATION CONVENIENCE; DO NOT USE THE CONSTANTS ON THIS LINE! *** */ImGuiTableFlags_None :: Table_Flags(0);ImGuiTableFlags_Resizable :: Table_Flags((1 << 0));ImGuiTableFlags_Reorderable :: Table_Flags((1 << 1));ImGuiTableFlags_Hideable :: Table_Flags((1 << 2));ImGuiTableFlags_Sortable :: Table_Flags((1 << 3));ImGuiTableFlags_NoSavedSettings :: Table_Flags((1 << 4));ImGuiTableFlags_ContextMenuInBody :: Table_Flags((1 << 5));ImGuiTableFlags_RowBg :: Table_Flags((1 << 6));ImGuiTableFlags_BordersInnerH :: Table_Flags((1 << 7));ImGuiTableFlags_BordersOuterH :: Table_Flags((1 << 8));ImGuiTableFlags_BordersInnerV :: Table_Flags((1 << 9));ImGuiTableFlags_BordersOuterV :: Table_Flags((1 << 10));ImGuiTableFlags_BordersH :: Table_Flags((ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_BordersV :: Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterV));ImGuiTableFlags_BordersInner :: Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH));ImGuiTableFlags_BordersOuter :: Table_Flags((ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_Borders :: Table_Flags((ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersOuter));ImGuiTableFlags_NoBordersInBody :: Table_Flags((1 << 11));ImGuiTableFlags_NoBordersInBodyUntilResize :: Table_Flags((1 << 12));ImGuiTableFlags_SizingFixedFit :: Table_Flags((1 << 13));ImGuiTableFlags_SizingFixedSame :: Table_Flags((2 << 13));ImGuiTableFlags_SizingStretchProp :: Table_Flags((3 << 13));ImGuiTableFlags_SizingStretchSame :: Table_Flags((4 << 13));ImGuiTableFlags_NoHostExtendX :: Table_Flags((1 << 16));ImGuiTableFlags_NoHostExtendY :: Table_Flags((1 << 17));ImGuiTableFlags_NoKeepColumnsVisible :: Table_Flags((1 << 18));ImGuiTableFlags_PreciseWidths :: Table_Flags((1 << 19));ImGuiTableFlags_NoClip :: Table_Flags((1 << 20));ImGuiTableFlags_PadOuterX :: Table_Flags((1 << 21));ImGuiTableFlags_NoPadOuterX :: Table_Flags((1 << 22));ImGuiTableFlags_NoPadInnerX :: Table_Flags((1 << 23));ImGuiTableFlags_ScrollX :: Table_Flags((1 << 24));ImGuiTableFlags_ScrollY :: Table_Flags((1 << 25));ImGuiTableFlags_SortMulti :: Table_Flags((1 << 26));ImGuiTableFlags_SortTristate :: Table_Flags((1 << 27));ImGuiTableFlags_SizingMask_ :: Table_Flags((((ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_SizingFixedSame) | ImGuiTableFlags_SizingStretchProp) | ImGuiTableFlags_SizingStretchSame));
+/* *** UGLY DEFINITIONS ON THIS LINE FOR GENERATOR IMPLEMENTATION CONVENIENCE; DO NOT USE THE CONSTANTS ON THIS LINE! *** */ImGuiTableFlags_None::Table_Flags(0);ImGuiTableFlags_Resizable::Table_Flags((1 << 0));ImGuiTableFlags_Reorderable::Table_Flags((1 << 1));ImGuiTableFlags_Hideable::Table_Flags((1 << 2));ImGuiTableFlags_Sortable::Table_Flags((1 << 3));ImGuiTableFlags_NoSavedSettings::Table_Flags((1 << 4));ImGuiTableFlags_ContextMenuInBody::Table_Flags((1 << 5));ImGuiTableFlags_RowBg::Table_Flags((1 << 6));ImGuiTableFlags_BordersInnerH::Table_Flags((1 << 7));ImGuiTableFlags_BordersOuterH::Table_Flags((1 << 8));ImGuiTableFlags_BordersInnerV::Table_Flags((1 << 9));ImGuiTableFlags_BordersOuterV::Table_Flags((1 << 10));ImGuiTableFlags_BordersH::Table_Flags((ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_BordersV::Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterV));ImGuiTableFlags_BordersInner::Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH));ImGuiTableFlags_BordersOuter::Table_Flags((ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_Borders::Table_Flags((ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersOuter));ImGuiTableFlags_NoBordersInBody::Table_Flags((1 << 11));ImGuiTableFlags_NoBordersInBodyUntilResize::Table_Flags((1 << 12));ImGuiTableFlags_SizingFixedFit::Table_Flags((1 << 13));ImGuiTableFlags_SizingFixedSame::Table_Flags((2 << 13));ImGuiTableFlags_SizingStretchProp::Table_Flags((3 << 13));ImGuiTableFlags_SizingStretchSame::Table_Flags((4 << 13));ImGuiTableFlags_NoHostExtendX::Table_Flags((1 << 16));ImGuiTableFlags_NoHostExtendY::Table_Flags((1 << 17));ImGuiTableFlags_NoKeepColumnsVisible::Table_Flags((1 << 18));ImGuiTableFlags_PreciseWidths::Table_Flags((1 << 19));ImGuiTableFlags_NoClip::Table_Flags((1 << 20));ImGuiTableFlags_PadOuterX::Table_Flags((1 << 21));ImGuiTableFlags_NoPadOuterX::Table_Flags((1 << 22));ImGuiTableFlags_NoPadInnerX::Table_Flags((1 << 23));ImGuiTableFlags_ScrollX::Table_Flags((1 << 24));ImGuiTableFlags_ScrollY::Table_Flags((1 << 25));ImGuiTableFlags_SortMulti::Table_Flags((1 << 26));ImGuiTableFlags_SortTristate::Table_Flags((1 << 27));ImGuiTableFlags_SizingMask_::Table_Flags((((ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_SizingFixedSame) | ImGuiTableFlags_SizingStretchProp) | ImGuiTableFlags_SizingStretchSame));
 // Use the following constants instead:
 	TF_NONE :: ImGuiTableFlags_None
 	TF_RESIZABLE :: ImGuiTableFlags_Resizable
@@ -237,12 +229,14 @@ ImGuiTableRowFlags_ :: enum {
 	Headers = 0,
 }
 
-Table_Bg_Target_ :: enum i32 {
+Table_Bg_Target :: enum i32 {
 	None = 0,
 	Row_Bg0 = 1,
 	Row_Bg1 = 2,
 	Cell_Bg = 3,
 }
+
+
 
 ImGuiFocusedFlags_ :: enum {
 	Child_Windows = 0,
@@ -282,7 +276,7 @@ ImGuiDragDropFlags_ :: enum {
 }
 Drag_Drop_Flags_ACCEPT_PEEK_ONLY :: Drag_Drop_Flags{ .Accept_Before_Delivery, .Accept_No_Draw_Default_Rect }
 
-Data_Type_ :: enum i32 {
+Data_Type :: enum i32 {
 	S8,
 	U8,
 	S16,
@@ -294,22 +288,28 @@ Data_Type_ :: enum i32 {
 	Float,
 	Double,
 }
-ImGuiDataType_COUNT :: len(Data_Type_)
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiDataType_COUNT::len(Data_Type);
+Data_Type_COUNT :: ImGuiDataType_COUNT
 
-Dir_ :: enum i32 {
+
+Dir :: enum i32 {
 	None = (-1),
 	Left = 0,
 	Right = 1,
 	Up = 2,
 	Down = 3,
 }
-ImGuiDir_COUNT :: 4
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiDir_COUNT::4;
+Dir_COUNT :: ImGuiDir_COUNT
 
-Sort_Direction_ :: enum i32 {
+
+Sort_Direction :: enum i32 {
 	None = 0,
 	Ascending = 1,
 	Descending = 2,
 }
+
+
 
 Key :: enum i32 {
 	None = 0,
@@ -454,19 +454,21 @@ Key :: enum i32 {
 	Reserved_For_Mod_Alt = 650,
 	Reserved_For_Mod_Super = 651,
 }
-ImGuiKey_COUNT :: 652
-ImGuiMod_None :: 0
-ImGuiMod_Ctrl :: (1 << 12)
-ImGuiMod_Shift :: (1 << 13)
-ImGuiMod_Alt :: (1 << 14)
-ImGuiMod_Super :: (1 << 15)
-ImGuiMod_Shortcut :: (1 << 11)
-ImGuiMod_Mask_ :: 0xF800
-ImGuiKey_NamedKey_BEGIN :: 512
-ImGuiKey_NamedKey_END :: ImGuiKey_COUNT
-ImGuiKey_NamedKey_COUNT :: (ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN)
-ImGuiKey_KeysData_SIZE :: ImGuiKey_COUNT
-ImGuiKey_KeysData_OFFSET :: 0
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiKey_COUNT::652;ImGuiMod_None::0;ImGuiMod_Ctrl::(1 << 12);ImGuiMod_Shift::(1 << 13);ImGuiMod_Alt::(1 << 14);ImGuiMod_Super::(1 << 15);ImGuiMod_Shortcut::(1 << 11);ImGuiMod_Mask_::0xF800;ImGuiKey_NamedKey_BEGIN::512;ImGuiKey_NamedKey_END::ImGuiKey_COUNT;ImGuiKey_NamedKey_COUNT::(ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN);ImGuiKey_KeysData_SIZE::ImGuiKey_COUNT;ImGuiKey_KeysData_OFFSET::0;
+Key_COUNT :: ImGuiKey_COUNT
+Key_None :: ImGuiMod_None
+Key_Ctrl :: ImGuiMod_Ctrl
+Key_Shift :: ImGuiMod_Shift
+Key_Alt :: ImGuiMod_Alt
+Key_Super :: ImGuiMod_Super
+Key_Shortcut :: ImGuiMod_Shortcut
+Key_Mask_ :: ImGuiMod_Mask_
+Key_Named_Key__BEGIN :: ImGuiKey_NamedKey_BEGIN
+Key_Named_Key__E_N_D :: ImGuiKey_NamedKey_END
+Key_Named_Key__COUNT :: ImGuiKey_NamedKey_COUNT
+Key_Keys_Data__SIZE :: ImGuiKey_KeysData_SIZE
+Key_Keys_Data__O_F_F_S_E_T :: ImGuiKey_KeysData_OFFSET
+
 
 Nav_Input :: enum i32 {
 	Activate,
@@ -486,7 +488,9 @@ Nav_Input :: enum i32 {
 	Tweak_Slow,
 	Tweak_Fast,
 }
-ImGuiNavInput_COUNT :: len(Nav_Input)
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiNavInput_COUNT::len(Nav_Input);
+Nav_Input_COUNT :: ImGuiNavInput_COUNT
+
 
 ImGuiConfigFlags_ :: enum {
 	Nav_Enable_Keyboard = 0,
@@ -506,7 +510,7 @@ ImGuiBackendFlags_ :: enum {
 	Renderer_Has_Vtx_Offset = 3,
 }
 
-Col_ :: enum i32 {
+Col :: enum i32 {
 	Text,
 	Text_Disabled,
 	Window_Bg,
@@ -561,9 +565,11 @@ Col_ :: enum i32 {
 	Nav_Windowing_Dim_Bg,
 	Modal_Window_Dim_Bg,
 }
-ImGuiCol_COUNT :: len(Col_)
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiCol_COUNT::len(Col);
+Col_COUNT :: ImGuiCol_COUNT
 
-Style_Var_ :: enum i32 {
+
+Style_Var :: enum i32 {
 	Alpha,
 	Disabled_Alpha,
 	Window_Padding,
@@ -593,7 +599,9 @@ Style_Var_ :: enum i32 {
 	Separator_Text_Align,
 	Separator_Text_Padding,
 }
-ImGuiStyleVar_COUNT :: len(Style_Var_)
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiStyleVar_COUNT::len(Style_Var);
+Style_Var_COUNT :: ImGuiStyleVar_COUNT
+
 
 ImGuiButtonFlags_ :: enum {
 	Mouse_Button_Left = 0,
@@ -640,14 +648,16 @@ ImGuiSliderFlags_ :: enum {
 	No_Input = 7,
 }
 
-Mouse_Button_ :: enum i32 {
+Mouse_Button :: enum i32 {
 	Left = 0,
 	Right = 1,
 	Middle = 2,
 }
-ImGuiMouseButton_COUNT :: 3
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiMouseButton_COUNT::3;
+Mouse_Button_COUNT :: ImGuiMouseButton_COUNT
 
-Mouse_Cursor_ :: enum i32 {
+
+Mouse_Cursor :: enum i32 {
 	None = (-1),
 	Arrow = 0,
 	Text_Input,
@@ -659,14 +669,18 @@ Mouse_Cursor_ :: enum i32 {
 	Hand,
 	Not_Allowed,
 }
-ImGuiMouseCursor_COUNT :: 9
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiMouseCursor_COUNT::9;
+Mouse_Cursor_COUNT :: ImGuiMouseCursor_COUNT
+
 
 Mouse_Source :: enum i32 {
 	Mouse = 0,
 	Touch_Screen = 1,
 	Pen = 2,
 }
-ImGuiMouseSource_COUNT :: 3
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiMouseSource_COUNT::3;
+Mouse_Source_COUNT :: ImGuiMouseSource_COUNT
+
 
 ImGuiCond_ :: enum {
 	Always = 0,
@@ -766,10 +780,10 @@ IO :: struct {
 	backend_platform_user_data: rawptr,
 	backend_renderer_user_data: rawptr,
 	backend_language_user_data: rawptr,
-	get_clipboard_text_fn: ^#type proc "c" (user_data: rawptr) -> cstring,
-	set_clipboard_text_fn: ^#type proc "c" (user_data: rawptr, text: cstring),
+	get_clipboard_text_fn: #type proc "c" (user_data: rawptr) -> cstring,
+	set_clipboard_text_fn: #type proc "c" (user_data: rawptr, text: cstring),
 	clipboard_user_data: rawptr,
-	set_platform_ime_data_fn: ^#type proc "c" (viewport: ^Viewport, data: ^Platform_Ime_Data),
+	set_platform_ime_data_fn: #type proc "c" (viewport: ^Viewport, data: ^Platform_Ime_Data),
 	__unused_padding: rawptr,
 	want_capture_mouse: bool,
 	want_capture_keyboard: bool,
@@ -1069,7 +1083,7 @@ Font_Atlas :: struct {
 	tex_ready: bool,
 	tex_pixels_use_colors: bool,
 	tex_pixels_alpha8: ^u8,
-	tex_pixels_rgb_a32: ^u32,
+	tex_pixels_rgba32: ^u32,
 	tex_width: i32,
 	tex_height: i32,
 	tex_uv_scale: [2]f32,
@@ -1127,7 +1141,6 @@ Platform_Ime_Data :: struct {
 	input_pos: [2]f32,
 	input_line_height: f32,
 }
-Layout_Type :: distinct i32
 Activate_Flags :: bit_set[ImGuiActivateFlags_; u32]
 Debug_Log_Flags :: bit_set[ImGuiDebugLogFlags_; u32]
 Input_Flags :: bit_set[ImGuiInputFlags_; u32]
@@ -1159,7 +1172,7 @@ Stb_Undo_State :: struct {
 	redo_char_point: i32,
 }
 
-STB_TexteditState :: struct {
+STB__Textedit_State :: struct {
 	cursor: i32,
 	select_start: i32,
 	select_end: i32,
@@ -1259,10 +1272,12 @@ ImGuiTooltipFlags_ :: enum {
 	Override_Previous_Tooltip = 0,
 }
 
-Layout_Type_ :: enum i32 {
+Layout_Type :: enum i32 {
 	Horizontal = 0,
 	Vertical = 1,
 }
+
+
 
 Log_Type :: enum i32 {
 	None = 0,
@@ -1272,22 +1287,30 @@ Log_Type :: enum i32 {
 	Clipboard,
 }
 
+
+
 Axis :: enum i32 {
 	None = (-1),
 	X = 0,
 	Y = 1,
 }
 
+
+
 Plot_Type :: enum i32 {
 	Lines,
 	Histogram,
 }
+
+
 
 Popup_Position_Policy :: enum i32 {
 	Default,
 	Combo_Box,
 	Tooltip,
 }
+
+
 
 Data_Var_Info :: struct {
 	type: Data_Type,
@@ -1369,7 +1392,7 @@ Input_Text_State :: struct {
 	text_a_is_valid: bool,
 	buf_capacity_a: i32,
 	scroll_x: f32,
-	stb: STB_TexteditState,
+	stb: STB__Textedit_State,
 	cursor_anim: f32,
 	cursor_follow: bool,
 	selected_all_mouse_lock: bool,
@@ -1468,10 +1491,10 @@ Ptr_Or_Index :: struct {
 	index: i32,
 }
 
-Bit_Array__Im_Gui_Key__Named_Key__COUNT__lessImGuiKey_NamedKey_BEGIN :: struct {
+Bit_Array__Im_Gui_Key__Named_Key__COUNT__less_Im_Gui_Key__Named_Key__BEGIN :: struct {
 	storage: [((ImGuiKey_NamedKey_COUNT + 31) >> 5)]u32,
 }
-Bit_Array_For_Named_Keys :: distinct Bit_Array__Im_Gui_Key__Named_Key__COUNT__lessImGuiKey_NamedKey_BEGIN
+Bit_Array_For_Named_Keys :: distinct Bit_Array__Im_Gui_Key__Named_Key__COUNT__less_Im_Gui_Key__Named_Key__BEGIN
 
 Input_Event_Type :: enum i32 {
 	None = 0,
@@ -1482,7 +1505,9 @@ Input_Event_Type :: enum i32 {
 	Text,
 	Focus,
 }
-ImGuiInputEventType_COUNT :: 7
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiInputEventType_COUNT::7;
+Input_Event_Type_COUNT :: ImGuiInputEventType_COUNT
+
 
 Input_Source :: enum i32 {
 	None = 0,
@@ -1491,7 +1516,9 @@ Input_Source :: enum i32 {
 	Gamepad,
 	Clipboard,
 }
-ImGuiInputSource_COUNT :: 5
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiInputSource_COUNT::5;
+Input_Source_COUNT :: ImGuiInputSource_COUNT
+
 
 Input_Event_Mouse_Pos :: struct {
 	pos_x: f32,
@@ -1649,7 +1676,9 @@ Nav_Layer :: enum i32 {
 	Main = 0,
 	Menu = 1,
 }
-ImGuiNavLayer_COUNT :: 2
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiNavLayer_COUNT::2;
+Nav_Layer_COUNT :: ImGuiNavLayer_COUNT
+
 
 Nav_Item_Data :: struct {
 	window: ^Window,
@@ -1721,12 +1750,12 @@ Window_Settings :: struct {
 Settings_Handler :: struct {
 	type_name: cstring,
 	type_hash: ID,
-	clear_all_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	read_init_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	read_open_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler, name: cstring) -> rawptr,
-	read_line_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: cstring),
-	apply_all_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	write_all_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler, out_buf: ^Text_Buffer),
+	clear_all_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
+	read_init_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
+	read_open_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler, name: cstring) -> rawptr,
+	read_line_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: cstring),
+	apply_all_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
+	write_all_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler, out_buf: ^Text_Buffer),
 	user_data: rawptr,
 }
 
@@ -1739,7 +1768,9 @@ Loc_Key :: enum i32 {
 	Windowing_Popup = 5,
 	Windowing_Untitled = 6,
 }
-ImGuiLocKey_COUNT :: 7
+/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiLocKey_COUNT::7;
+Loc_Key_COUNT :: ImGuiLocKey_COUNT
+
 
 Loc_Entry :: struct {
 	key: Loc_Key,
@@ -1798,6 +1829,8 @@ Context_Hook_Type :: enum i32 {
 	Shutdown,
 	Pending_Removal_,
 }
+
+
 
 Context_Hook :: struct {
 	hook_id: ID,
@@ -2459,5 +2492,5 @@ Table_Settings :: struct {
 }
 
 Font_Builder_IO :: struct {
-	font_builder__build: ^#type proc "c" (atlas: ^Font_Atlas) -> bool,
+	font_builder__build: #type proc "c" (atlas: ^Font_Atlas) -> bool,
 }

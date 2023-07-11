@@ -4,11 +4,7 @@
 
 package imgui
 
-
-import "core:strings"
-
-
-create_context :: proc (shared_font_atlas: ^Font_Atlas) -> ^Context {
+create_context :: proc (shared_font_atlas: ^Font_Atlas = nil) -> ^Context {
 	return igCreateContext(shared_font_atlas)
 }
 destroy_context :: proc (ctx: ^Context) {
@@ -68,13 +64,13 @@ show_user_guide :: proc () {
 get_version :: proc () -> cstring {
 	return igGetVersion()
 }
-style_colors_dark :: proc (dst: ^Style) {
+style_colors_dark :: proc (dst: ^Style = nil) {
 	igStyleColorsDark(dst)
 }
-style_colors_light :: proc (dst: ^Style) {
+style_colors_light :: proc (dst: ^Style = nil) {
 	igStyleColorsLight(dst)
 }
-style_colors_classic :: proc (dst: ^Style) {
+style_colors_classic :: proc (dst: ^Style = nil) {
 	igStyleColorsClassic(dst)
 }
 begin :: proc (name: cstring, p_open: ^bool, flags: Window_Flags) -> bool {
@@ -369,7 +365,7 @@ get_frame_height_with_spacing :: proc () -> f32 {
 push_id_str :: proc (str_id: cstring) {
 	igPushID_Str(str_id)
 }
-push_id_strstr :: proc (str_id: string) {
+push_id_str_str :: proc (str_id: string) {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	igPushID_StrStr(str_id_begin, str_id_end)
@@ -386,7 +382,7 @@ pop_id :: proc () {
 get_id_str :: proc (str_id: cstring) -> ID {
 	return igGetID_Str(str_id)
 }
-get_id_strstr :: proc (str_id: string) -> ID {
+get_id_str_str :: proc (str_id: string) -> ID {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	return igGetID_StrStr(str_id_begin, str_id_end)
@@ -448,7 +444,7 @@ radio_button_int_ptr :: proc (label: cstring, v: ^i32, v_button: i32) -> bool {
 	return igRadioButton_IntPtr(label, v, v_button)
 }
 progress_bar :: proc (fraction: f32, size_arg: [2]f32, overlay: string) {
-	_temp_overlay := strings.clone_to_cstring(overlay, context.temp_allocator)
+	_temp_overlay := semisafe_string_to_cstring(overlay)
 	igProgressBar(fraction, size_arg, _temp_overlay)
 }
 bullet :: proc () {
@@ -461,7 +457,7 @@ image_button :: proc (str_id: cstring, user_texture_id: Texture_ID, size: [2]f32
 	return igImageButton(str_id, user_texture_id, size, uv0, uv1, bg_col, tint_col)
 }
 begin_combo :: proc (label: cstring, preview_value: string, flags: Combo_Flags) -> bool {
-	_temp_preview_value := strings.clone_to_cstring(preview_value, context.temp_allocator)
+	_temp_preview_value := semisafe_string_to_cstring(preview_value)
 	return igBeginCombo(label, _temp_preview_value, flags)
 }
 end_combo :: proc () {
@@ -471,142 +467,142 @@ combo_str_arr :: proc (label: cstring, current_item: ^i32, items: [^]cstring, it
 	return igCombo_Str_arr(label, current_item, items, items_count, popup_max_height_in_items)
 }
 combo_str :: proc (label: cstring, current_item: ^i32, items_separated_by_zeros: string, popup_max_height_in_items: i32) -> bool {
-	_temp_items_separated_by_zeros := strings.clone_to_cstring(items_separated_by_zeros, context.temp_allocator)
+	_temp_items_separated_by_zeros := semisafe_string_to_cstring(items_separated_by_zeros)
 	return igCombo_Str(label, current_item, _temp_items_separated_by_zeros, popup_max_height_in_items)
 }
-combo_fn_bool_ptr :: proc (label: cstring, current_item: ^i32, items_getter: ^#type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool {
+combo_fn_bool_ptr :: proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool {
 	return igCombo_FnBoolPtr(label, current_item, items_getter, data, items_count, popup_max_height_in_items)
 }
 drag_float :: proc (label: cstring, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_float2 :: proc (label: cstring, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat2(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_float3 :: proc (label: cstring, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat3(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_float4 :: proc (label: cstring, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat4(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_float_range2 :: proc (label: cstring, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, format_max: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
-	_temp_format_max := strings.clone_to_cstring(format_max, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
+	_temp_format_max := semisafe_string_to_cstring(format_max)
 	return igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
 }
 drag_int :: proc (label: cstring, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_int2 :: proc (label: cstring, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt2(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_int3 :: proc (label: cstring, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt3(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_int4 :: proc (label: cstring, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt4(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
 drag_int_range2 :: proc (label: cstring, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, format_max: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
-	_temp_format_max := strings.clone_to_cstring(format_max, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
+	_temp_format_max := semisafe_string_to_cstring(format_max)
 	return igDragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
 }
 drag_scalar :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragScalar(label, data_type, p_data, v_speed, p_min, p_max, _temp_format, flags)
 }
 drag_scalar_n :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragScalarN(label, data_type, p_data, components, v_speed, p_min, p_max, _temp_format, flags)
 }
 slider_float :: proc (label: cstring, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_float2 :: proc (label: cstring, v: [2]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat2(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_float3 :: proc (label: cstring, v: [3]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat3(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_float4 :: proc (label: cstring, v: [4]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat4(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_angle :: proc (label: cstring, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderAngle(label, v_rad, v_degrees_min, v_degrees_max, _temp_format, flags)
 }
 slider_int :: proc (label: cstring, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_int2 :: proc (label: cstring, v: [2]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt2(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_int3 :: proc (label: cstring, v: [3]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt3(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_int4 :: proc (label: cstring, v: [4]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt4(label, v, v_min, v_max, _temp_format, flags)
 }
 slider_scalar :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderScalar(label, data_type, p_data, p_min, p_max, _temp_format, flags)
 }
 slider_scalar_n :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderScalarN(label, data_type, p_data, components, p_min, p_max, _temp_format, flags)
 }
 v_slider_float :: proc (label: cstring, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igVSliderFloat(label, size, v, v_min, v_max, _temp_format, flags)
 }
 v_slider_int :: proc (label: cstring, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igVSliderInt(label, size, v, v_min, v_max, _temp_format, flags)
 }
 v_slider_scalar :: proc (label: cstring, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igVSliderScalar(label, size, data_type, p_data, p_min, p_max, _temp_format, flags)
 }
 input_text :: proc (label: cstring, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	return igInputText(label, raw_data(buf),  len(buf), flags, callback, user_data)
+	return igInputText(label, raw_data(buf), len(buf), flags, callback, user_data)
 }
 input_text_multiline :: proc (label: cstring, buf: []i8, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	return igInputTextMultiline(label, raw_data(buf),  len(buf), size, flags, callback, user_data)
+	return igInputTextMultiline(label, raw_data(buf), len(buf), size, flags, callback, user_data)
 }
 input_text_with_hint :: proc (label: cstring, hint: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	_temp_hint := strings.clone_to_cstring(hint, context.temp_allocator)
-	return igInputTextWithHint(label, _temp_hint, raw_data(buf),  len(buf), flags, callback, user_data)
+	_temp_hint := semisafe_string_to_cstring(hint)
+	return igInputTextWithHint(label, _temp_hint, raw_data(buf), len(buf), flags, callback, user_data)
 }
 input_float :: proc (label: cstring, v: ^f32, step: f32, step_fast: f32, format: string, flags: Input_Text_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat(label, v, step, step_fast, _temp_format, flags)
 }
 input_float2 :: proc (label: cstring, v: [2]f32, format: string, flags: Input_Text_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat2(label, v, _temp_format, flags)
 }
 input_float3 :: proc (label: cstring, v: [3]f32, format: string, flags: Input_Text_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat3(label, v, _temp_format, flags)
 }
 input_float4 :: proc (label: cstring, v: [4]f32, format: string, flags: Input_Text_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat4(label, v, _temp_format, flags)
 }
 input_int :: proc (label: cstring, v: ^i32, step: i32, step_fast: i32, flags: Input_Text_Flags) -> bool {
@@ -622,15 +618,15 @@ input_int4 :: proc (label: cstring, v: [4]i32, flags: Input_Text_Flags) -> bool 
 	return igInputInt4(label, v, flags)
 }
 input_double :: proc (label: cstring, v: ^f64, step: f64, step_fast: f64, format: string, flags: Input_Text_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igInputDouble(label, v, step, step_fast, _temp_format, flags)
 }
 input_scalar :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: string, flags: Input_Text_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igInputScalar(label, data_type, p_data, p_step, p_step_fast, _temp_format, flags)
 }
 input_scalar_n :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: string, flags: Input_Text_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igInputScalarN(label, data_type, p_data, components, p_step, p_step_fast, _temp_format, flags)
 }
 color_edit3 :: proc (label: cstring, col: [3]f32, flags: Color_Edit_Flags) -> bool {
@@ -705,23 +701,23 @@ end_list_box :: proc () {
 list_box_str_arr :: proc (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool {
 	return igListBox_Str_arr(label, current_item, items, items_count, height_in_items)
 }
-list_box_fn_bool_ptr :: proc (label: cstring, current_item: ^i32, items_getter: ^#type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
+list_box_fn_bool_ptr :: proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
 	return igListBox_FnBoolPtr(label, current_item, items_getter, data, items_count, height_in_items)
 }
 plot_lines_float_ptr :: proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
-	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
-	igPlotLines_FloatPtr(label, raw_data(values), cast(i32) len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
+	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
+	igPlotLines_FloatPtr(label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_lines_fn_float_ptr :: proc (label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
-	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
+plot_lines_fn_float_ptr :: proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
+	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotLines_FnFloatPtr(label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
 }
 plot_histogram_float_ptr :: proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
-	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
-	igPlotHistogram_FloatPtr(label, raw_data(values), cast(i32) len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
+	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
+	igPlotHistogram_FloatPtr(label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_histogram_fn_float_ptr :: proc (label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
-	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
+plot_histogram_fn_float_ptr :: proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
+	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotHistogram_FnFloatPtr(label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
 }
 value_bool :: proc (prefix: cstring, b: bool) {
@@ -734,7 +730,7 @@ value_uint :: proc (prefix: cstring, v: u32) {
 	igValue_Uint(prefix, v)
 }
 value_float :: proc (prefix: cstring, v: f32, float_format: string) {
-	_temp_float_format := strings.clone_to_cstring(float_format, context.temp_allocator)
+	_temp_float_format := semisafe_string_to_cstring(float_format)
 	igValue_Float(prefix, v, _temp_float_format)
 }
 begin_menu_bar :: proc () -> bool {
@@ -756,11 +752,11 @@ end_menu :: proc () {
 	igEndMenu()
 }
 menu_item_bool :: proc (label: cstring, shortcut: string, selected: bool, enabled: bool) -> bool {
-	_temp_shortcut := strings.clone_to_cstring(shortcut, context.temp_allocator)
+	_temp_shortcut := semisafe_string_to_cstring(shortcut)
 	return igMenuItem_Bool(label, _temp_shortcut, selected, enabled)
 }
 menu_item_bool_ptr :: proc (label: cstring, shortcut: string, p_selected: ^bool, enabled: bool) -> bool {
-	_temp_shortcut := strings.clone_to_cstring(shortcut, context.temp_allocator)
+	_temp_shortcut := semisafe_string_to_cstring(shortcut)
 	return igMenuItem_BoolPtr(label, _temp_shortcut, p_selected, enabled)
 }
 begin_tooltip :: proc () -> bool {
@@ -857,7 +853,7 @@ table_set_bg_color :: proc (target: Table_Bg_Target, color: u32, column_n: i32) 
 	igTableSetBgColor(target, color, column_n)
 }
 columns :: proc (count: i32, id: string, border: bool) {
-	_temp_id := strings.clone_to_cstring(id, context.temp_allocator)
+	_temp_id := semisafe_string_to_cstring(id)
 	igColumns(count, _temp_id, border)
 }
 next_column :: proc () {
@@ -903,7 +899,7 @@ log_to_tty :: proc (auto_open_depth: i32) {
 	igLogToTTY(auto_open_depth)
 }
 log_to_file :: proc (auto_open_depth: i32, filename: string) {
-	_temp_filename := strings.clone_to_cstring(filename, context.temp_allocator)
+	_temp_filename := semisafe_string_to_cstring(filename)
 	igLogToFile(auto_open_depth, _temp_filename)
 }
 log_to_clipboard :: proc (auto_open_depth: i32) {
@@ -1063,11 +1059,11 @@ color_convert_u32_to_float4 :: proc (in_: u32) -> (p_out: [4]f32) {
 color_convert_float4_to_u32 :: proc (in_: [4]f32) -> u32 {
 	return igColorConvertFloat4ToU32(in_)
 }
-color_convert_rgbtohsv :: proc (r: f32, g: f32, b: f32) -> (out_h: f32, out_s: f32, out_v: f32) {
+color_convert_rgbto_hsv :: proc (r: f32, g: f32, b: f32) -> (out_h: f32, out_s: f32, out_v: f32) {
 	igColorConvertRGBtoHSV(r, g, b, &out_h, &out_s, &out_v)
 	return
 }
-color_convert_hsvtorgb :: proc (h: f32, s: f32, v: f32) -> (out_r: f32, out_g: f32, out_b: f32) {
+color_convert_hsvto_rgb :: proc (h: f32, s: f32, v: f32) -> (out_r: f32, out_g: f32, out_b: f32) {
 	igColorConvertHSVtoRGB(h, s, v, &out_r, &out_g, &out_b)
 	return
 }
@@ -1214,7 +1210,7 @@ io_add_input_character_u_t_f16 :: proc (self: ^IO, c: u16) {
 	ImGuiIO_AddInputCharacterUTF16(self, c)
 }
 io_add_input_characters_u_t_f8 :: proc (self: ^IO, str: string) {
-	_temp_str := strings.clone_to_cstring(str, context.temp_allocator)
+	_temp_str := semisafe_string_to_cstring(str)
 	ImGuiIO_AddInputCharactersUTF8(self, _temp_str)
 }
 io_set_key_event_native_data :: proc (self: ^IO, key: Key, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) {
@@ -1268,7 +1264,7 @@ payload_clear :: proc (self: ^Payload) {
 	ImGuiPayload_Clear(self)
 }
 payload_is_data_type :: proc (self: ^Payload, type: string) -> bool {
-	_temp_type := strings.clone_to_cstring(type, context.temp_allocator)
+	_temp_type := semisafe_string_to_cstring(type)
 	return ImGuiPayload_IsDataType(self, _temp_type)
 }
 payload_is_preview :: proc (self: ^Payload) -> bool {
@@ -1302,7 +1298,7 @@ text_filter_destroy :: proc (self: ^Text_Filter) {
 	ImGuiTextFilter_destroy(self)
 }
 text_filter_draw :: proc (self: ^Text_Filter, label: string, width: f32) -> bool {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	return ImGuiTextFilter_Draw(self, _temp_label, width)
 }
 text_filter_pass_filter :: proc (self: ^Text_Filter, text: string) -> bool {
@@ -1326,7 +1322,7 @@ text_range_destroy :: proc (self: ^Text_Range) {
 	ImGuiTextRange_destroy(self)
 }
 text_range_new_str :: proc (_b: cstring, _e: string) -> ^Text_Range {
-	_temp__e := strings.clone_to_cstring(_e, context.temp_allocator)
+	_temp__e := semisafe_string_to_cstring(_e)
 	return ImGuiTextRange_ImGuiTextRange_Str(_b, _temp__e)
 }
 text_range_empty :: proc (self: ^Text_Range) -> bool {
@@ -1738,7 +1734,7 @@ font_atlas_add_font_default :: proc (self: ^Font_Atlas, font_cfg: ^Font_Config) 
 	return ImFontAtlas_AddFontDefault(self, font_cfg)
 }
 font_atlas_add_font_from_file_t_t_f :: proc (self: ^Font_Atlas, filename: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
-	_temp_filename := strings.clone_to_cstring(filename, context.temp_allocator)
+	_temp_filename := semisafe_string_to_cstring(filename)
 	return ImFontAtlas_AddFontFromFileTTF(self, _temp_filename, size_pixels, font_cfg, glyph_ranges)
 }
 font_atlas_add_font_from_memory_t_t_f :: proc (self: ^Font_Atlas, font_data: rawptr, font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
@@ -1748,7 +1744,7 @@ font_atlas_add_font_from_memory_compressed_t_t_f :: proc (self: ^Font_Atlas, com
 	return ImFontAtlas_AddFontFromMemoryCompressedTTF(self, compressed_font_data, compressed_font_size, size_pixels, font_cfg, glyph_ranges)
 }
 font_atlas_add_font_from_memory_compressed_base85_t_t_f :: proc (self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
-	_temp_compressed_font_data_base85 := strings.clone_to_cstring(compressed_font_data_base85, context.temp_allocator)
+	_temp_compressed_font_data_base85 := semisafe_string_to_cstring(compressed_font_data_base85)
 	return ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self, _temp_compressed_font_data_base85, size_pixels, font_cfg, glyph_ranges)
 }
 font_atlas_clear_input_data :: proc (self: ^Font_Atlas) {
@@ -1766,12 +1762,12 @@ font_atlas_clear :: proc (self: ^Font_Atlas) {
 font_atlas_build :: proc (self: ^Font_Atlas) -> bool {
 	return ImFontAtlas_Build(self)
 }
-font_atlas_get_tex_data_as_alpha8 :: proc (self: ^Font_Atlas, out_pixels: ^^u8) -> (out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
-	ImFontAtlas_GetTexDataAsAlpha8(self, out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
+font_atlas_get_tex_data_as_alpha8 :: proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
+	ImFontAtlas_GetTexDataAsAlpha8(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
 	return
 }
-font_atlas_get_tex_data_as_rgb_a32 :: proc (self: ^Font_Atlas, out_pixels: ^^u8) -> (out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
-	ImFontAtlas_GetTexDataAsRGBA32(self, out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
+font_atlas_get_tex_data_as_rgba32 :: proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
+	ImFontAtlas_GetTexDataAsRGBA32(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
 	return
 }
 font_atlas_is_built :: proc (self: ^Font_Atlas) -> bool {
@@ -2040,15 +2036,15 @@ text_index_size :: proc (self: ^Text_Index) -> i32 {
 	return ImGuiTextIndex_size(self)
 }
 text_index_get_line_begin :: proc (self: ^Text_Index, base: string, n: i32) -> cstring {
-	_temp_base := strings.clone_to_cstring(base, context.temp_allocator)
+	_temp_base := semisafe_string_to_cstring(base)
 	return ImGuiTextIndex_get_line_begin(self, _temp_base, n)
 }
 text_index_get_line_end :: proc (self: ^Text_Index, base: string, n: i32) -> cstring {
-	_temp_base := strings.clone_to_cstring(base, context.temp_allocator)
+	_temp_base := semisafe_string_to_cstring(base)
 	return ImGuiTextIndex_get_line_end(self, _temp_base, n)
 }
 text_index_append :: proc (self: ^Text_Index, base: string, old_size: i32, new_size: i32) {
-	_temp_base := strings.clone_to_cstring(base, context.temp_allocator)
+	_temp_base := semisafe_string_to_cstring(base)
 	ImGuiTextIndex_append(self, _temp_base, old_size, new_size)
 }
 draw_list_shared_data_new :: proc () -> ^Draw_List_Shared_Data {
@@ -2345,7 +2341,7 @@ context_destroy :: proc (self: ^Context) {
 	ImGuiContext_destroy(self)
 }
 window_new :: proc (context_: ^Context, name: string) -> ^Window {
-	_temp_name := strings.clone_to_cstring(name, context.temp_allocator)
+	_temp_name := semisafe_string_to_cstring(name)
 	return ImGuiWindow_ImGuiWindow(context_, _temp_name)
 }
 window_destroy :: proc (self: ^Window) {
@@ -2730,7 +2726,7 @@ log_rendered_text :: proc (ref_pos: ^[2]f32, text: string) {
 	igLogRenderedText(ref_pos, text_begin, text_end)
 }
 log_set_next_text_decoration :: proc (prefix: cstring, suffix: string) {
-	_temp_suffix := strings.clone_to_cstring(suffix, context.temp_allocator)
+	_temp_suffix := semisafe_string_to_cstring(suffix)
 	igLogSetNextTextDecoration(prefix, _temp_suffix)
 }
 begin_child_ex :: proc (name: cstring, id: ID, size_arg: [2]f32, border: bool, flags: Window_Flags) -> bool {
@@ -2779,12 +2775,12 @@ begin_viewport_side_bar :: proc (name: cstring, viewport: ^Viewport, dir: Dir, s
 	return igBeginViewportSideBar(name, viewport, dir, size, window_flags)
 }
 begin_menu_ex :: proc (label: cstring, icon: string, enabled: bool) -> bool {
-	_temp_icon := strings.clone_to_cstring(icon, context.temp_allocator)
+	_temp_icon := semisafe_string_to_cstring(icon)
 	return igBeginMenuEx(label, _temp_icon, enabled)
 }
 menu_item_ex :: proc (label: cstring, icon: string, shortcut: string, selected: bool, enabled: bool) -> bool {
-	_temp_icon := strings.clone_to_cstring(icon, context.temp_allocator)
-	_temp_shortcut := strings.clone_to_cstring(shortcut, context.temp_allocator)
+	_temp_icon := semisafe_string_to_cstring(icon)
+	_temp_shortcut := semisafe_string_to_cstring(shortcut)
 	return igMenuItemEx(label, _temp_icon, _temp_shortcut, selected, enabled)
 }
 begin_combo_popup :: proc (popup_id: ID, bb: Rect, flags: Combo_Flags) -> bool {
@@ -3181,11 +3177,11 @@ tab_bar_process_reorder :: proc (tab_bar: ^Tab_Bar) -> bool {
 	return igTabBarProcessReorder(tab_bar)
 }
 tab_item_ex :: proc (tab_bar: ^Tab_Bar, label: string, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	return igTabItemEx(tab_bar, _temp_label, p_open, flags, docked_window)
 }
 tab_item_calc_size_str :: proc (label: string, has_close_button_or_unsaved_marker: bool) -> (p_out: [2]f32) {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	igTabItemCalcSize_Str(&p_out, _temp_label, has_close_button_or_unsaved_marker)
 	return
 }
@@ -3197,7 +3193,7 @@ tab_item_background :: proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Fl
 	igTabItemBackground(draw_list, bb, flags, col)
 }
 tab_item_label_and_close_button :: proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: string, tab_id: ID, close_button_id: ID, is_contents_visible: bool) -> (out_just_closed: bool, out_text_clipped: bool) {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	igTabItemLabelAndCloseButton(draw_list, bb, flags, frame_padding, _temp_label, tab_id, close_button_id, is_contents_visible, &out_just_closed, &out_text_clipped)
 	return
 }
@@ -3322,11 +3318,11 @@ button_behavior :: proc (bb: Rect, id: ID, flags: Button_Flags) -> (out_hovered:
 	return
 }
 drag_behavior :: proc (id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDragBehavior(id, data_type, p_v, v_speed, p_min, p_max, _temp_format, flags)
 }
 slider_behavior :: proc (bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> (out_grab_bb: Rect, _ret: bool) {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	_ret = igSliderBehavior(bb, id, data_type, p_v, p_min, p_max, _temp_format, flags, &out_grab_bb)
 	return
 }
@@ -3351,14 +3347,14 @@ data_type_get_info :: proc (data_type: Data_Type) -> ^Data_Type_Info {
 	return igDataTypeGetInfo(data_type)
 }
 data_type_format_string :: proc (buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
-	return igDataTypeFormatString(raw_data(buf), cast(i32) len(buf), data_type, p_data, _temp_format)
+	_temp_format := semisafe_string_to_cstring(format)
+	return igDataTypeFormatString(raw_data(buf), cast(i32)len(buf), data_type, p_data, _temp_format)
 }
 data_type_apply_op :: proc (data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) {
 	igDataTypeApplyOp(data_type, op, output, arg_1, arg_2)
 }
 data_type_apply_from_text :: proc (buf: cstring, data_type: Data_Type, p_data: rawptr, format: string) -> bool {
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igDataTypeApplyFromText(buf, data_type, p_data, _temp_format)
 }
 data_type_compare :: proc (data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -> i32 {
@@ -3368,19 +3364,19 @@ data_type_clamp :: proc (data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_
 	return igDataTypeClamp(data_type, p_data, p_min, p_max)
 }
 input_text_ex :: proc (label: cstring, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	_temp_hint := strings.clone_to_cstring(hint, context.temp_allocator)
-	return igInputTextEx(label, _temp_hint, raw_data(buf), cast(i32) len(buf), size_arg, flags, callback, user_data)
+	_temp_hint := semisafe_string_to_cstring(hint)
+	return igInputTextEx(label, _temp_hint, raw_data(buf), cast(i32)len(buf), size_arg, flags, callback, user_data)
 }
 input_text_deactivate_hook :: proc (id: ID) {
 	igInputTextDeactivateHook(id)
 }
 temp_input_text :: proc (bb: Rect, id: ID, label: string, buf: []i8, flags: Input_Text_Flags) -> bool {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
-	return igTempInputText(bb, id, _temp_label, raw_data(buf), cast(i32) len(buf), flags)
+	_temp_label := semisafe_string_to_cstring(label)
+	return igTempInputText(bb, id, _temp_label, raw_data(buf), cast(i32)len(buf), flags)
 }
 temp_input_scalar :: proc (bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
-	_temp_format := strings.clone_to_cstring(format, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
+	_temp_format := semisafe_string_to_cstring(format)
 	return igTempInputScalar(bb, id, _temp_label, data_type, p_data, _temp_format, p_clamp_min, p_clamp_max)
 }
 temp_input_is_active :: proc (id: ID) -> bool {
@@ -3398,9 +3394,9 @@ color_edit_options_popup :: proc (col: ^f32, flags: Color_Edit_Flags) {
 color_picker_options_popup :: proc (ref_col: ^f32, flags: Color_Edit_Flags) {
 	igColorPickerOptionsPopup(ref_col, flags)
 }
-plot_ex :: proc (plot_type: Plot_Type, label: string, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
-	_temp_overlay_text := strings.clone_to_cstring(overlay_text, context.temp_allocator)
+plot_ex :: proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 {
+	_temp_label := semisafe_string_to_cstring(label)
+	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	return igPlotEx(plot_type, _temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, size_arg)
 }
 shade_verts_linear_color_gradient_keep_alpha :: proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) {
@@ -3455,7 +3451,7 @@ debug_node_columns :: proc (columns: ^Old_Columns) {
 	igDebugNodeColumns(columns)
 }
 debug_node_draw_list :: proc (window: ^Window, draw_list: ^Draw_List, label: string) {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeDrawList(window, draw_list, _temp_label)
 }
 debug_node_draw_cmd_show_mesh_and_bounding_box :: proc (draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) -> (out_draw_list: Draw_List) {
@@ -3469,11 +3465,11 @@ debug_node_font_glyph :: proc (font: ^Font, glyph: ^Font_Glyph) {
 	igDebugNodeFontGlyph(font, glyph)
 }
 debug_node_storage :: proc (storage: ^Storage, label: string) {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeStorage(storage, _temp_label)
 }
 debug_node_tab_bar :: proc (tab_bar: ^Tab_Bar, label: string) {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeTabBar(tab_bar, _temp_label)
 }
 debug_node_table :: proc (table: ^Table) {
@@ -3486,18 +3482,18 @@ debug_node_input_text_state :: proc (state: ^Input_Text_State) {
 	igDebugNodeInputTextState(state)
 }
 debug_node_window :: proc (window: ^Window, label: string) {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeWindow(window, _temp_label)
 }
 debug_node_window_settings :: proc (settings: ^Window_Settings) {
 	igDebugNodeWindowSettings(settings)
 }
 debug_node_windows_list :: proc (windows: ^Vector(^Window), label: string) {
-	_temp_label := strings.clone_to_cstring(label, context.temp_allocator)
+	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeWindowsList(windows, _temp_label)
 }
 debug_node_windows_list_by_begin_stack_parent :: proc (windows: []^Window, parent_in_begin_stack: ^Window) {
-	igDebugNodeWindowsListByBeginStackParent(raw_data(windows), cast(i32) len(windows), parent_in_begin_stack)
+	igDebugNodeWindowsListByBeginStackParent(raw_data(windows), cast(i32)len(windows), parent_in_begin_stack)
 }
 debug_node_viewport :: proc (viewport: ^Viewport_P) {
 	igDebugNodeViewport(viewport)
@@ -3527,11 +3523,11 @@ im_font_atlas_build_finish :: proc (atlas: ^Font_Atlas) {
 	igImFontAtlasBuildFinish(atlas)
 }
 im_font_atlas_build_render8bpp_rect_from_string :: proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u8) {
-	_temp_in_str := strings.clone_to_cstring(in_str, context.temp_allocator)
+	_temp_in_str := semisafe_string_to_cstring(in_str)
 	igImFontAtlasBuildRender8bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
 }
 im_font_atlas_build_render32bpp_rect_from_string :: proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u32) {
-	_temp_in_str := strings.clone_to_cstring(in_str, context.temp_allocator)
+	_temp_in_str := semisafe_string_to_cstring(in_str)
 	igImFontAtlasBuildRender32bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
 }
 im_font_atlas_build_multiply_calc_lookup_table :: proc (out_table: [256]u8, in_multiply_factor: f32) {
@@ -3613,14 +3609,14 @@ get_color_u32 :: proc {
 
 push_id :: proc {
 	push_id_str,
-	push_id_strstr,
+	push_id_str_str,
 	push_id_ptr,
 	push_id_int,
 }
 
 get_id :: proc {
 	get_id_str,
-	get_id_strstr,
+	get_id_str_str,
 	get_id_ptr,
 }
 

@@ -50,7 +50,7 @@ OpenGL_Backup_State :: struct {
 setup_state :: proc(using state: ^OpenGL_State) {
     io := imgui.get_io();
     io.backend_renderer_name = "OpenGL";
-    io.backend_flags |= .RendererHasVtxOffset;
+    io.backend_flags |= { .Renderer_Has_Vtx_Offset };
 
     shader_program = setup_imgui_shaders();
 
@@ -66,9 +66,7 @@ setup_state :: proc(using state: ^OpenGL_State) {
 
     //////////////////////
     // Font stuff
-    pixels: ^u8;
-    width, height: i32;
-    imgui.font_atlas_get_tex_data_as_rgba32(io.fonts, &pixels, &width, &height);
+    pixels, width, height, _ := imgui.font_atlas_get_tex_data_as_rgba32(io.fonts);
     font_tex_h: u32;
     gl.GenTextures(1, &font_tex_h);
     gl.BindTexture(gl.TEXTURE_2D, font_tex_h);
@@ -109,7 +107,7 @@ imgui_render :: proc(data: ^imgui.Draw_Data, state: OpenGL_State) {
             } else {
                 clip_off   := data.display_pos;
                 clip_scale := data.framebuffer_scale;
-                clip_rect := imgui.Vec4{};
+                clip_rect := [4]f32{};
                 clip_rect.x = (cmd.clip_rect.x - clip_off.x) * clip_scale.x;
                 clip_rect.y = (cmd.clip_rect.y - clip_off.y) * clip_scale.y;
                 clip_rect.z = (cmd.clip_rect.z - clip_off.x) * clip_scale.x;
