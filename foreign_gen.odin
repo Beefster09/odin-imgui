@@ -393,8 +393,6 @@ foreign cimgui {
 	igDebugCheckVersionAndDataLayout :: proc(version_str: cstring, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool ---
 	igSetAllocatorFunctions :: proc(alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) ---
 	igGetAllocatorFunctions :: proc(p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) ---
-	igMemAlloc :: proc(size: int) -> rawptr ---
-	igMemFree :: proc(ptr: rawptr) ---
 	ImGuiStyle_ImGuiStyle :: proc() -> ^Style ---
 	ImGuiStyle_destroy :: proc(self: ^Style) ---
 	ImGuiStyle_ScaleAllSizes :: proc(self: ^Style, scale_factor: f32) ---
@@ -661,11 +659,6 @@ foreign cimgui {
 	ImRect_Floor :: proc(self: ^Rect) ---
 	ImRect_IsInverted :: proc(self: ^Rect) -> bool ---
 	ImRect_ToVec4 :: proc(p_out: ^[4]f32, self: ^Rect) ---
-	ImBitVector_Create :: proc(self: ^Bit_Vector, sz: i32) ---
-	ImBitVector_Clear :: proc(self: ^Bit_Vector) ---
-	ImBitVector_TestBit :: proc(self: ^Bit_Vector, n: i32) -> bool ---
-	ImBitVector_SetBit :: proc(self: ^Bit_Vector, n: i32) ---
-	ImBitVector_ClearBit :: proc(self: ^Bit_Vector, n: i32) ---
 	ImGuiTextIndex_clear :: proc(self: ^Text_Index) ---
 	ImGuiTextIndex_size :: proc(self: ^Text_Index) -> i32 ---
 	ImGuiTextIndex_get_line_begin :: proc(self: ^Text_Index, base: cstring, n: i32) -> cstring ---

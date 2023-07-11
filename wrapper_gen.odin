@@ -1167,12 +1167,6 @@ set_allocator_functions :: proc (alloc_func: Mem_Alloc_Func, free_func: Mem_Free
 get_allocator_functions :: proc (p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) {
 	igGetAllocatorFunctions(p_alloc_func, p_free_func, p_user_data)
 }
-mem_alloc :: proc (size: int) -> rawptr {
-	return igMemAlloc(size)
-}
-mem_free :: proc (ptr: rawptr) {
-	igMemFree(ptr)
-}
 style_new :: proc () -> ^Style {
 	return ImGuiStyle_ImGuiStyle()
 }
@@ -1646,10 +1640,10 @@ draw_list_prim_unreserve :: proc (self: ^Draw_List, idx_count: i32, vtx_count: i
 draw_list_prim_rect :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, col: u32) {
 	ImDrawList_PrimRect(self, a, b, col)
 }
-draw_list_prim_rect_u_v :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, col: u32) {
+draw_list_prim_rect_uv :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, col: u32) {
 	ImDrawList_PrimRectUV(self, a, b, uv_a, uv_b, col)
 }
-draw_list_prim_quad_u_v :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, c: [2]f32, d: [2]f32, uv_a: [2]f32, uv_b: [2]f32, uv_c: [2]f32, uv_d: [2]f32, col: u32) {
+draw_list_prim_quad_uv :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, c: [2]f32, d: [2]f32, uv_a: [2]f32, uv_b: [2]f32, uv_c: [2]f32, uv_d: [2]f32, col: u32) {
 	ImDrawList_PrimQuadUV(self, a, b, c, d, uv_a, uv_b, uv_c, uv_d, col)
 }
 draw_list_prim_write_vtx :: proc (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) {
@@ -1812,7 +1806,7 @@ font_atlas_add_custom_rect_font_glyph :: proc (self: ^Font_Atlas, font: ^Font, i
 font_atlas_get_custom_rect_by_index :: proc (self: ^Font_Atlas, index: i32) -> ^Font_Atlas_Custom_Rect {
 	return ImFontAtlas_GetCustomRectByIndex(self, index)
 }
-font_atlas_calc_custom_rect_u_v :: proc (self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect) -> (out_uv_min: [2]f32, out_uv_max: [2]f32) {
+font_atlas_calc_custom_rect_uv :: proc (self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect) -> (out_uv_min: [2]f32, out_uv_max: [2]f32) {
 	ImFontAtlas_CalcCustomRectUV(self, rect, &out_uv_min, &out_uv_max)
 	return
 }
@@ -2013,21 +2007,6 @@ rect_is_inverted :: proc (self: ^Rect) -> bool {
 rect_to_vec4 :: proc (self: ^Rect) -> (p_out: [4]f32) {
 	ImRect_ToVec4(&p_out, self)
 	return
-}
-bit_vector_create :: proc (self: ^Bit_Vector, sz: i32) {
-	ImBitVector_Create(self, sz)
-}
-bit_vector_clear :: proc (self: ^Bit_Vector) {
-	ImBitVector_Clear(self)
-}
-bit_vector_test_bit :: proc (self: ^Bit_Vector, n: i32) -> bool {
-	return ImBitVector_TestBit(self, n)
-}
-bit_vector_set_bit :: proc (self: ^Bit_Vector, n: i32) {
-	ImBitVector_SetBit(self, n)
-}
-bit_vector_clear_bit :: proc (self: ^Bit_Vector, n: i32) {
-	ImBitVector_ClearBit(self, n)
 }
 text_index_clear :: proc (self: ^Text_Index) {
 	ImGuiTextIndex_clear(self)
@@ -3402,7 +3381,7 @@ plot_ex :: proc (plot_type: Plot_Type, label: string, values_getter: #type proc 
 shade_verts_linear_color_gradient_keep_alpha :: proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) {
 	igShadeVertsLinearColorGradientKeepAlpha(draw_list, vert_start_idx, vert_end_idx, gradient_p0, gradient_p1, col0, col1)
 }
-shade_verts_linear_u_v :: proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) {
+shade_verts_linear_uv :: proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) {
 	igShadeVertsLinearUV(draw_list, vert_start_idx, vert_end_idx, a, b, uv_a, uv_b, clamp)
 }
 gc_compact_transient_misc_buffers :: proc () {

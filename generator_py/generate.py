@@ -480,6 +480,7 @@ TYPE_MAP = {
     'ImWchar': 'u16',
     'ImWchar16': 'u16',
     'ImWchar32': 'rune',
+    'ImBitArrayPtr': 'rawptr',
     'ImVec1': '[1]f32',
     'ImVec2': '[2]f32',
     'ImVec3': '[3]f32',
@@ -577,7 +578,7 @@ def proc_overload_group(name: str) -> str:
 
 ACRONYMS = (
     'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'RGBA32', 'HSV',
-    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR', 'TTY',
+    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR', 'TTY', 'UV',
 )
 
 
@@ -742,7 +743,11 @@ def is_exported_proc(ast_node):
 FUNC_PREFIX_BLACKLIST = (
     'igIm',
     'ImVec',
+    'ImBitVector',
     'igGET',
+    'igMemAlloc',
+    'igMemFree',
+    'imBitVector',
 )
 
 FUNC_PREFIX_WHITELIST = (

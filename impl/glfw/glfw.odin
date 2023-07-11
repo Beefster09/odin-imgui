@@ -21,7 +21,7 @@ state: GLFW_State
 GLFW_State :: struct {
     window: glfw.WindowHandle,
     time: f64,
-    mouse_just_pressed: [imgui.Mouse_Button_COUNT]bool,
+    mouse_just_pressed: [len(imgui.IO{}.mouse_down)]bool,
     mouse_cursors: [imgui.Mouse_Cursor_COUNT]glfw.CursorHandle,
     installed_callbacks: bool,
     prev_user_callback_mouse_button: glfw.MouseButtonProc,

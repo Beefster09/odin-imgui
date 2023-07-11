@@ -4,8 +4,6 @@ Texture_ID :: distinct rawptr
 
 File_Handle :: distinct uintptr
 
-Bit_Array_Ptr :: distinct [^]u32
-
 Context_Hook_Callback :: #type proc "c" (ctx: ^Context, hook: ^Context_Hook)
 Error_Log_Callback :: #type proc "c" (user_data: rawptr, fmt: cstring, #c_vararg args: ..any)
 Draw_Callback :: #type proc "c" (parent_list: ^Draw_List, cmd: ^Draw_Cmd)
