@@ -99,6 +99,7 @@ def generate_foreign(ast):
 def generate_wrapper(ast):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
+        # fp.write('import "core:c/libc"\n\n')
 
         overloads = defaultdict(list)
 
@@ -111,6 +112,7 @@ def generate_wrapper(ast):
                     continue  # skip
 
                 proc_name = odin_procname(node.name)
+                func_to_call = node.name
                 overloads[proc_overload_group(node.name)].append(proc_name)
 
                 odin_params = []
@@ -119,6 +121,8 @@ def generate_wrapper(ast):
 
                 clone_strings = []
                 span_strings = []
+
+                wrap_func = True
 
                 for i, param in enumerate(all_params):
                     prev_param = all_params[i - 1] if i > 0 else None
@@ -132,8 +136,8 @@ def generate_wrapper(ast):
                         call_args.append('&' + odin_id(param.name))
 
                     elif isinstance(param, c_ast.EllipsisParam):
-                        odin_params.append("_args_: ..any")
-                        call_args.append('_args_')
+                        wrap_func = False
+                        # TODO: figure out how to pass a va_list to the V variant of the function
 
                     elif is_cstring(param.type):
 
@@ -164,11 +168,19 @@ def generate_wrapper(ast):
                         odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
                         call_args.append(odin_id(param.name))
 
+
                 if defaults := DEFAULT_ARGS.get(proc_name):
                     for i, value in enumerate(defaults, -len(defaults)):
                         odin_params[i] += f" = {value}"
                 else:
-                    ... # TODO: automatic defaults for flags
+                    for i in range(len(odin_params) - 1, -1, -1):
+                        name, ptype = map(str.strip, odin_params[i].split(':'))
+                        if ptype == 'Table_Flags':
+                            odin_params[i] = f"{name} := Table_Flags(0)"
+                        elif re.fullmatch(r"\[\d\][uif](8|16|32|64)|[\w_]*(Cond|Flags)", ptype):
+                            odin_params[i] = f"{name} := {ptype}{{}}"
+                        else:
+                            break
 
                 if orig_ret_type == 'void':
                     if multiple_returns:
@@ -181,23 +193,27 @@ def generate_wrapper(ast):
                     else:
                         ret = f" -> {orig_ret_type}"
 
-                fp.write(f"{proc_name} :: proc ({', '.join(odin_params)}){ret} {{\n")
+                if wrap_func:
+                    fp.write(f"{proc_name} :: #force_inline proc ({', '.join(odin_params)}){ret} {{\n")
 
-                for pname in clone_strings:
-                    fp.write(f"\t_temp_{pname} := semisafe_string_to_cstring({pname})\n")
+                    for pname in clone_strings:
+                        fp.write(f"\t_temp_{pname} := semisafe_string_to_cstring({pname})\n")
 
-                for pname in span_strings:
-                    fp.write(f"\t{pname}_begin := raw_data({pname})\n")
-                    fp.write(f"\t{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))\n")
+                    for pname in span_strings:
+                        fp.write(f"\t{pname}_begin := raw_data({pname})\n")
+                        fp.write(f"\t{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))\n")
 
-                if multiple_returns:
-                    fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{node.name}({', '.join(call_args)})\n")
-                    fp.write("\treturn\n")
+                    if multiple_returns:
+                        fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
+                        fp.write("\treturn\n")
+
+                    else:
+                        fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
+
+                    fp.write("}\n")
 
                 else:
-                    fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{node.name}({', '.join(call_args)})\n")
-
-                fp.write("}\n")
+                    fp.write(f"{proc_name} :: {func_to_call}  // Cannot be wrapped due to variadic args\n")
 
         for group, impls in overloads.items():
             if len(impls) > 1:
@@ -578,7 +594,7 @@ def proc_overload_group(name: str) -> str:
 
 ACRONYMS = (
     'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'RGBA32', 'HSV',
-    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR', 'TTY', 'UV',
+    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR', 'TTY', 'UV', 'TTF',
 )
 
 

@@ -4,3523 +4,3495 @@
 
 package imgui
 
-create_context :: proc (shared_font_atlas: ^Font_Atlas = nil) -> ^Context {
+create_context :: #force_inline proc (shared_font_atlas: ^Font_Atlas = nil) -> ^Context {
 	return igCreateContext(shared_font_atlas)
 }
-destroy_context :: proc (ctx: ^Context) {
+destroy_context :: #force_inline proc (ctx: ^Context) {
 	igDestroyContext(ctx)
 }
-get_current_context :: proc () -> ^Context {
+get_current_context :: #force_inline proc () -> ^Context {
 	return igGetCurrentContext()
 }
-set_current_context :: proc (ctx: ^Context) {
+set_current_context :: #force_inline proc (ctx: ^Context) {
 	igSetCurrentContext(ctx)
 }
-get_io :: proc () -> ^IO {
+get_io :: #force_inline proc () -> ^IO {
 	return igGetIO()
 }
-get_style :: proc () -> ^Style {
+get_style :: #force_inline proc () -> ^Style {
 	return igGetStyle()
 }
-new_frame :: proc () {
+new_frame :: #force_inline proc () {
 	igNewFrame()
 }
-end_frame :: proc () {
+end_frame :: #force_inline proc () {
 	igEndFrame()
 }
-render :: proc () {
+render :: #force_inline proc () {
 	igRender()
 }
-get_draw_data :: proc () -> ^Draw_Data {
+get_draw_data :: #force_inline proc () -> ^Draw_Data {
 	return igGetDrawData()
 }
-show_demo_window :: proc (p_open: ^bool) {
+show_demo_window :: #force_inline proc (p_open: ^bool) {
 	igShowDemoWindow(p_open)
 }
-show_metrics_window :: proc (p_open: ^bool) {
+show_metrics_window :: #force_inline proc (p_open: ^bool) {
 	igShowMetricsWindow(p_open)
 }
-show_debug_log_window :: proc (p_open: ^bool) {
+show_debug_log_window :: #force_inline proc (p_open: ^bool) {
 	igShowDebugLogWindow(p_open)
 }
-show_stack_tool_window :: proc (p_open: ^bool) {
+show_stack_tool_window :: #force_inline proc (p_open: ^bool) {
 	igShowStackToolWindow(p_open)
 }
-show_about_window :: proc (p_open: ^bool) {
+show_about_window :: #force_inline proc (p_open: ^bool) {
 	igShowAboutWindow(p_open)
 }
-show_style_editor :: proc (ref: ^Style) {
+show_style_editor :: #force_inline proc (ref: ^Style) {
 	igShowStyleEditor(ref)
 }
-show_style_selector :: proc (label: cstring) -> bool {
+show_style_selector :: #force_inline proc (label: cstring) -> bool {
 	return igShowStyleSelector(label)
 }
-show_font_selector :: proc (label: cstring) {
+show_font_selector :: #force_inline proc (label: cstring) {
 	igShowFontSelector(label)
 }
-show_user_guide :: proc () {
+show_user_guide :: #force_inline proc () {
 	igShowUserGuide()
 }
-get_version :: proc () -> cstring {
+get_version :: #force_inline proc () -> cstring {
 	return igGetVersion()
 }
-style_colors_dark :: proc (dst: ^Style = nil) {
+style_colors_dark :: #force_inline proc (dst: ^Style = nil) {
 	igStyleColorsDark(dst)
 }
-style_colors_light :: proc (dst: ^Style = nil) {
+style_colors_light :: #force_inline proc (dst: ^Style = nil) {
 	igStyleColorsLight(dst)
 }
-style_colors_classic :: proc (dst: ^Style = nil) {
+style_colors_classic :: #force_inline proc (dst: ^Style = nil) {
 	igStyleColorsClassic(dst)
 }
-begin :: proc (name: cstring, p_open: ^bool, flags: Window_Flags) -> bool {
+begin :: #force_inline proc (name: cstring, p_open: ^bool, flags := Window_Flags{}) -> bool {
 	return igBegin(name, p_open, flags)
 }
-end :: proc () {
+end :: #force_inline proc () {
 	igEnd()
 }
-begin_child_str :: proc (str_id: cstring, size: [2]f32, border: bool, flags: Window_Flags) -> bool {
+begin_child_str :: #force_inline proc (str_id: cstring, size: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
 	return igBeginChild_Str(str_id, size, border, flags)
 }
-begin_child_id :: proc (id: ID, size: [2]f32, border: bool, flags: Window_Flags) -> bool {
+begin_child_id :: #force_inline proc (id: ID, size: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
 	return igBeginChild_ID(id, size, border, flags)
 }
-end_child :: proc () {
+end_child :: #force_inline proc () {
 	igEndChild()
 }
-is_window_appearing :: proc () -> bool {
+is_window_appearing :: #force_inline proc () -> bool {
 	return igIsWindowAppearing()
 }
-is_window_collapsed :: proc () -> bool {
+is_window_collapsed :: #force_inline proc () -> bool {
 	return igIsWindowCollapsed()
 }
-is_window_focused :: proc (flags: Focused_Flags) -> bool {
+is_window_focused :: #force_inline proc (flags := Focused_Flags{}) -> bool {
 	return igIsWindowFocused(flags)
 }
-is_window_hovered :: proc (flags: Hovered_Flags) -> bool {
+is_window_hovered :: #force_inline proc (flags := Hovered_Flags{}) -> bool {
 	return igIsWindowHovered(flags)
 }
-get_window_draw_list :: proc () -> ^Draw_List {
+get_window_draw_list :: #force_inline proc () -> ^Draw_List {
 	return igGetWindowDrawList()
 }
-get_window_pos :: proc () -> (p_out: [2]f32) {
+get_window_pos :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetWindowPos(&p_out)
 	return
 }
-get_window_size :: proc () -> (p_out: [2]f32) {
+get_window_size :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetWindowSize(&p_out)
 	return
 }
-get_window_width :: proc () -> f32 {
+get_window_width :: #force_inline proc () -> f32 {
 	return igGetWindowWidth()
 }
-get_window_height :: proc () -> f32 {
+get_window_height :: #force_inline proc () -> f32 {
 	return igGetWindowHeight()
 }
-set_next_window_pos :: proc (pos: [2]f32, cond: Cond, pivot: [2]f32) {
+set_next_window_pos :: #force_inline proc (pos := [2]f32{}, cond := Cond{}, pivot := [2]f32{}) {
 	igSetNextWindowPos(pos, cond, pivot)
 }
-set_next_window_size :: proc (size: [2]f32, cond: Cond) {
+set_next_window_size :: #force_inline proc (size := [2]f32{}, cond := Cond{}) {
 	igSetNextWindowSize(size, cond)
 }
-set_next_window_size_constraints :: proc (size_min: [2]f32, size_max: [2]f32, custom_callback: Size_Callback, custom_callback_data: rawptr) {
+set_next_window_size_constraints :: #force_inline proc (size_min: [2]f32, size_max: [2]f32, custom_callback: Size_Callback, custom_callback_data: rawptr) {
 	igSetNextWindowSizeConstraints(size_min, size_max, custom_callback, custom_callback_data)
 }
-set_next_window_content_size :: proc (size: [2]f32) {
+set_next_window_content_size :: #force_inline proc (size := [2]f32{}) {
 	igSetNextWindowContentSize(size)
 }
-set_next_window_collapsed :: proc (collapsed: bool, cond: Cond) {
+set_next_window_collapsed :: #force_inline proc (collapsed: bool, cond := Cond{}) {
 	igSetNextWindowCollapsed(collapsed, cond)
 }
-set_next_window_focus :: proc () {
+set_next_window_focus :: #force_inline proc () {
 	igSetNextWindowFocus()
 }
-set_next_window_scroll :: proc (scroll: [2]f32) {
+set_next_window_scroll :: #force_inline proc (scroll := [2]f32{}) {
 	igSetNextWindowScroll(scroll)
 }
-set_next_window_bg_alpha :: proc (alpha: f32) {
+set_next_window_bg_alpha :: #force_inline proc (alpha: f32) {
 	igSetNextWindowBgAlpha(alpha)
 }
-set_window_pos_vec2 :: proc (pos: [2]f32, cond: Cond) {
+set_window_pos_vec2 :: #force_inline proc (pos := [2]f32{}, cond := Cond{}) {
 	igSetWindowPos_Vec2(pos, cond)
 }
-set_window_size_vec2 :: proc (size: [2]f32, cond: Cond) {
+set_window_size_vec2 :: #force_inline proc (size := [2]f32{}, cond := Cond{}) {
 	igSetWindowSize_Vec2(size, cond)
 }
-set_window_collapsed_bool :: proc (collapsed: bool, cond: Cond) {
+set_window_collapsed_bool :: #force_inline proc (collapsed: bool, cond := Cond{}) {
 	igSetWindowCollapsed_Bool(collapsed, cond)
 }
-set_window_focus_nil :: proc () {
+set_window_focus_nil :: #force_inline proc () {
 	igSetWindowFocus_Nil()
 }
-set_window_font_scale :: proc (scale: f32) {
+set_window_font_scale :: #force_inline proc (scale: f32) {
 	igSetWindowFontScale(scale)
 }
-set_window_pos_str :: proc (name: cstring, pos: [2]f32, cond: Cond) {
+set_window_pos_str :: #force_inline proc (name: cstring, pos := [2]f32{}, cond := Cond{}) {
 	igSetWindowPos_Str(name, pos, cond)
 }
-set_window_size_str :: proc (name: cstring, size: [2]f32, cond: Cond) {
+set_window_size_str :: #force_inline proc (name: cstring, size := [2]f32{}, cond := Cond{}) {
 	igSetWindowSize_Str(name, size, cond)
 }
-set_window_collapsed_str :: proc (name: cstring, collapsed: bool, cond: Cond) {
+set_window_collapsed_str :: #force_inline proc (name: cstring, collapsed: bool, cond := Cond{}) {
 	igSetWindowCollapsed_Str(name, collapsed, cond)
 }
-set_window_focus_str :: proc (name: cstring) {
+set_window_focus_str :: #force_inline proc (name: cstring) {
 	igSetWindowFocus_Str(name)
 }
-get_content_region_avail :: proc () -> (p_out: [2]f32) {
+get_content_region_avail :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetContentRegionAvail(&p_out)
 	return
 }
-get_content_region_max :: proc () -> (p_out: [2]f32) {
+get_content_region_max :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetContentRegionMax(&p_out)
 	return
 }
-get_window_content_region_min :: proc () -> (p_out: [2]f32) {
+get_window_content_region_min :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetWindowContentRegionMin(&p_out)
 	return
 }
-get_window_content_region_max :: proc () -> (p_out: [2]f32) {
+get_window_content_region_max :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetWindowContentRegionMax(&p_out)
 	return
 }
-get_scroll_x :: proc () -> f32 {
+get_scroll_x :: #force_inline proc () -> f32 {
 	return igGetScrollX()
 }
-get_scroll_y :: proc () -> f32 {
+get_scroll_y :: #force_inline proc () -> f32 {
 	return igGetScrollY()
 }
-set_scroll_x_float :: proc (scroll_x: f32) {
+set_scroll_x_float :: #force_inline proc (scroll_x: f32) {
 	igSetScrollX_Float(scroll_x)
 }
-set_scroll_y_float :: proc (scroll_y: f32) {
+set_scroll_y_float :: #force_inline proc (scroll_y: f32) {
 	igSetScrollY_Float(scroll_y)
 }
-get_scroll_max_x :: proc () -> f32 {
+get_scroll_max_x :: #force_inline proc () -> f32 {
 	return igGetScrollMaxX()
 }
-get_scroll_max_y :: proc () -> f32 {
+get_scroll_max_y :: #force_inline proc () -> f32 {
 	return igGetScrollMaxY()
 }
-set_scroll_here_x :: proc (center_x_ratio: f32) {
+set_scroll_here_x :: #force_inline proc (center_x_ratio: f32) {
 	igSetScrollHereX(center_x_ratio)
 }
-set_scroll_here_y :: proc (center_y_ratio: f32) {
+set_scroll_here_y :: #force_inline proc (center_y_ratio: f32) {
 	igSetScrollHereY(center_y_ratio)
 }
-set_scroll_from_pos_x_float :: proc (local_x: f32, center_x_ratio: f32) {
+set_scroll_from_pos_x_float :: #force_inline proc (local_x: f32, center_x_ratio: f32) {
 	igSetScrollFromPosX_Float(local_x, center_x_ratio)
 }
-set_scroll_from_pos_y_float :: proc (local_y: f32, center_y_ratio: f32) {
+set_scroll_from_pos_y_float :: #force_inline proc (local_y: f32, center_y_ratio: f32) {
 	igSetScrollFromPosY_Float(local_y, center_y_ratio)
 }
-push_font :: proc (font: ^Font) {
+push_font :: #force_inline proc (font: ^Font) {
 	igPushFont(font)
 }
-pop_font :: proc () {
+pop_font :: #force_inline proc () {
 	igPopFont()
 }
-push_style_color_u32 :: proc (idx: Col, col: u32) {
+push_style_color_u32 :: #force_inline proc (idx: Col, col: u32) {
 	igPushStyleColor_U32(idx, col)
 }
-push_style_color_vec4 :: proc (idx: Col, col: [4]f32) {
+push_style_color_vec4 :: #force_inline proc (idx: Col, col := [4]f32{}) {
 	igPushStyleColor_Vec4(idx, col)
 }
-pop_style_color :: proc (count: i32) {
+pop_style_color :: #force_inline proc (count: i32) {
 	igPopStyleColor(count)
 }
-push_style_var_float :: proc (idx: Style_Var, val: f32) {
+push_style_var_float :: #force_inline proc (idx: Style_Var, val: f32) {
 	igPushStyleVar_Float(idx, val)
 }
-push_style_var_vec2 :: proc (idx: Style_Var, val: [2]f32) {
+push_style_var_vec2 :: #force_inline proc (idx: Style_Var, val := [2]f32{}) {
 	igPushStyleVar_Vec2(idx, val)
 }
-pop_style_var :: proc (count: i32) {
+pop_style_var :: #force_inline proc (count: i32) {
 	igPopStyleVar(count)
 }
-push_tab_stop :: proc (tab_stop: bool) {
+push_tab_stop :: #force_inline proc (tab_stop: bool) {
 	igPushTabStop(tab_stop)
 }
-pop_tab_stop :: proc () {
+pop_tab_stop :: #force_inline proc () {
 	igPopTabStop()
 }
-push_button_repeat :: proc (repeat: bool) {
+push_button_repeat :: #force_inline proc (repeat: bool) {
 	igPushButtonRepeat(repeat)
 }
-pop_button_repeat :: proc () {
+pop_button_repeat :: #force_inline proc () {
 	igPopButtonRepeat()
 }
-push_item_width :: proc (item_width: f32) {
+push_item_width :: #force_inline proc (item_width: f32) {
 	igPushItemWidth(item_width)
 }
-pop_item_width :: proc () {
+pop_item_width :: #force_inline proc () {
 	igPopItemWidth()
 }
-set_next_item_width :: proc (item_width: f32) {
+set_next_item_width :: #force_inline proc (item_width: f32) {
 	igSetNextItemWidth(item_width)
 }
-calc_item_width :: proc () -> f32 {
+calc_item_width :: #force_inline proc () -> f32 {
 	return igCalcItemWidth()
 }
-push_text_wrap_pos :: proc (wrap_local_pos_x: f32) {
+push_text_wrap_pos :: #force_inline proc (wrap_local_pos_x: f32) {
 	igPushTextWrapPos(wrap_local_pos_x)
 }
-pop_text_wrap_pos :: proc () {
+pop_text_wrap_pos :: #force_inline proc () {
 	igPopTextWrapPos()
 }
-get_font :: proc () -> ^Font {
+get_font :: #force_inline proc () -> ^Font {
 	return igGetFont()
 }
-get_font_size :: proc () -> f32 {
+get_font_size :: #force_inline proc () -> f32 {
 	return igGetFontSize()
 }
-get_font_tex_uv_white_pixel :: proc () -> (p_out: [2]f32) {
+get_font_tex_uv_white_pixel :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetFontTexUvWhitePixel(&p_out)
 	return
 }
-get_color_u32_col :: proc (idx: Col, alpha_mul: f32) -> u32 {
+get_color_u32_col :: #force_inline proc (idx: Col, alpha_mul: f32) -> u32 {
 	return igGetColorU32_Col(idx, alpha_mul)
 }
-get_color_u32_vec4 :: proc (col: [4]f32) -> u32 {
+get_color_u32_vec4 :: #force_inline proc (col := [4]f32{}) -> u32 {
 	return igGetColorU32_Vec4(col)
 }
-get_color_u32_u32 :: proc (col: u32) -> u32 {
+get_color_u32_u32 :: #force_inline proc (col: u32) -> u32 {
 	return igGetColorU32_U32(col)
 }
-get_style_color_vec4 :: proc (idx: Col) -> ^[4]f32 {
+get_style_color_vec4 :: #force_inline proc (idx: Col) -> ^[4]f32 {
 	return igGetStyleColorVec4(idx)
 }
-separator :: proc () {
+separator :: #force_inline proc () {
 	igSeparator()
 }
-same_line :: proc (offset_from_start_x: f32, spacing: f32) {
+same_line :: #force_inline proc (offset_from_start_x: f32, spacing: f32) {
 	igSameLine(offset_from_start_x, spacing)
 }
-new_line :: proc () {
+new_line :: #force_inline proc () {
 	igNewLine()
 }
-spacing :: proc () {
+spacing :: #force_inline proc () {
 	igSpacing()
 }
-dummy :: proc (size: [2]f32) {
+dummy :: #force_inline proc (size := [2]f32{}) {
 	igDummy(size)
 }
-indent :: proc (indent_w: f32) {
+indent :: #force_inline proc (indent_w: f32) {
 	igIndent(indent_w)
 }
-unindent :: proc (indent_w: f32) {
+unindent :: #force_inline proc (indent_w: f32) {
 	igUnindent(indent_w)
 }
-begin_group :: proc () {
+begin_group :: #force_inline proc () {
 	igBeginGroup()
 }
-end_group :: proc () {
+end_group :: #force_inline proc () {
 	igEndGroup()
 }
-get_cursor_pos :: proc () -> (p_out: [2]f32) {
+get_cursor_pos :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetCursorPos(&p_out)
 	return
 }
-get_cursor_pos_x :: proc () -> f32 {
+get_cursor_pos_x :: #force_inline proc () -> f32 {
 	return igGetCursorPosX()
 }
-get_cursor_pos_y :: proc () -> f32 {
+get_cursor_pos_y :: #force_inline proc () -> f32 {
 	return igGetCursorPosY()
 }
-set_cursor_pos :: proc (local_pos: [2]f32) {
+set_cursor_pos :: #force_inline proc (local_pos := [2]f32{}) {
 	igSetCursorPos(local_pos)
 }
-set_cursor_pos_x :: proc (local_x: f32) {
+set_cursor_pos_x :: #force_inline proc (local_x: f32) {
 	igSetCursorPosX(local_x)
 }
-set_cursor_pos_y :: proc (local_y: f32) {
+set_cursor_pos_y :: #force_inline proc (local_y: f32) {
 	igSetCursorPosY(local_y)
 }
-get_cursor_start_pos :: proc () -> (p_out: [2]f32) {
+get_cursor_start_pos :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetCursorStartPos(&p_out)
 	return
 }
-get_cursor_screen_pos :: proc () -> (p_out: [2]f32) {
+get_cursor_screen_pos :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetCursorScreenPos(&p_out)
 	return
 }
-set_cursor_screen_pos :: proc (pos: [2]f32) {
+set_cursor_screen_pos :: #force_inline proc (pos := [2]f32{}) {
 	igSetCursorScreenPos(pos)
 }
-align_text_to_frame_padding :: proc () {
+align_text_to_frame_padding :: #force_inline proc () {
 	igAlignTextToFramePadding()
 }
-get_text_line_height :: proc () -> f32 {
+get_text_line_height :: #force_inline proc () -> f32 {
 	return igGetTextLineHeight()
 }
-get_text_line_height_with_spacing :: proc () -> f32 {
+get_text_line_height_with_spacing :: #force_inline proc () -> f32 {
 	return igGetTextLineHeightWithSpacing()
 }
-get_frame_height :: proc () -> f32 {
+get_frame_height :: #force_inline proc () -> f32 {
 	return igGetFrameHeight()
 }
-get_frame_height_with_spacing :: proc () -> f32 {
+get_frame_height_with_spacing :: #force_inline proc () -> f32 {
 	return igGetFrameHeightWithSpacing()
 }
-push_id_str :: proc (str_id: cstring) {
+push_id_str :: #force_inline proc (str_id: cstring) {
 	igPushID_Str(str_id)
 }
-push_id_str_str :: proc (str_id: string) {
+push_id_str_str :: #force_inline proc (str_id: string) {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	igPushID_StrStr(str_id_begin, str_id_end)
 }
-push_id_ptr :: proc (ptr_id: rawptr) {
+push_id_ptr :: #force_inline proc (ptr_id: rawptr) {
 	igPushID_Ptr(ptr_id)
 }
-push_id_int :: proc (int_id: i32) {
+push_id_int :: #force_inline proc (int_id: i32) {
 	igPushID_Int(int_id)
 }
-pop_id :: proc () {
+pop_id :: #force_inline proc () {
 	igPopID()
 }
-get_id_str :: proc (str_id: cstring) -> ID {
+get_id_str :: #force_inline proc (str_id: cstring) -> ID {
 	return igGetID_Str(str_id)
 }
-get_id_str_str :: proc (str_id: string) -> ID {
+get_id_str_str :: #force_inline proc (str_id: string) -> ID {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	return igGetID_StrStr(str_id_begin, str_id_end)
 }
-get_id_ptr :: proc (ptr_id: rawptr) -> ID {
+get_id_ptr :: #force_inline proc (ptr_id: rawptr) -> ID {
 	return igGetID_Ptr(ptr_id)
 }
-text_unformatted :: proc (text: string) {
+text_unformatted :: #force_inline proc (text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igTextUnformatted(text_begin, text_end)
 }
-text :: proc (fmt: cstring, _args_: ..any) {
-	igText(fmt, _args_)
-}
-text_colored :: proc (col: [4]f32, fmt: cstring, _args_: ..any) {
-	igTextColored(col, fmt, _args_)
-}
-text_disabled :: proc (fmt: cstring, _args_: ..any) {
-	igTextDisabled(fmt, _args_)
-}
-text_wrapped :: proc (fmt: cstring, _args_: ..any) {
-	igTextWrapped(fmt, _args_)
-}
-label_text :: proc (label: cstring, fmt: cstring, _args_: ..any) {
-	igLabelText(label, fmt, _args_)
-}
-bullet_text :: proc (fmt: cstring, _args_: ..any) {
-	igBulletText(fmt, _args_)
-}
-separator_text :: proc (label: cstring) {
+text :: igText  // Cannot be wrapped due to variadic args
+text_colored :: igTextColored  // Cannot be wrapped due to variadic args
+text_disabled :: igTextDisabled  // Cannot be wrapped due to variadic args
+text_wrapped :: igTextWrapped  // Cannot be wrapped due to variadic args
+label_text :: igLabelText  // Cannot be wrapped due to variadic args
+bullet_text :: igBulletText  // Cannot be wrapped due to variadic args
+separator_text :: #force_inline proc (label: cstring) {
 	igSeparatorText(label)
 }
-button :: proc (label: cstring, size: [2]f32) -> bool {
+button :: #force_inline proc (label: cstring, size := [2]f32{}) -> bool {
 	return igButton(label, size)
 }
-small_button :: proc (label: cstring) -> bool {
+small_button :: #force_inline proc (label: cstring) -> bool {
 	return igSmallButton(label)
 }
-invisible_button :: proc (str_id: cstring, size: [2]f32, flags: Button_Flags) -> bool {
+invisible_button :: #force_inline proc (str_id: cstring, size := [2]f32{}, flags := Button_Flags{}) -> bool {
 	return igInvisibleButton(str_id, size, flags)
 }
-arrow_button :: proc (str_id: cstring, dir: Dir) -> bool {
+arrow_button :: #force_inline proc (str_id: cstring, dir: Dir) -> bool {
 	return igArrowButton(str_id, dir)
 }
-checkbox :: proc (label: cstring, v: ^bool) -> bool {
+checkbox :: #force_inline proc (label: cstring, v: ^bool) -> bool {
 	return igCheckbox(label, v)
 }
-checkbox_flags_int_ptr :: proc (label: cstring, flags: ^i32, flags_value: i32) -> bool {
+checkbox_flags_int_ptr :: #force_inline proc (label: cstring, flags: ^i32, flags_value: i32) -> bool {
 	return igCheckboxFlags_IntPtr(label, flags, flags_value)
 }
-checkbox_flags_uint_ptr :: proc (label: cstring, flags: ^u32, flags_value: u32) -> bool {
+checkbox_flags_uint_ptr :: #force_inline proc (label: cstring, flags: ^u32, flags_value: u32) -> bool {
 	return igCheckboxFlags_UintPtr(label, flags, flags_value)
 }
-radio_button_bool :: proc (label: cstring, active: bool) -> bool {
+radio_button_bool :: #force_inline proc (label: cstring, active: bool) -> bool {
 	return igRadioButton_Bool(label, active)
 }
-radio_button_int_ptr :: proc (label: cstring, v: ^i32, v_button: i32) -> bool {
+radio_button_int_ptr :: #force_inline proc (label: cstring, v: ^i32, v_button: i32) -> bool {
 	return igRadioButton_IntPtr(label, v, v_button)
 }
-progress_bar :: proc (fraction: f32, size_arg: [2]f32, overlay: string) {
+progress_bar :: #force_inline proc (fraction: f32, size_arg: [2]f32, overlay: string) {
 	_temp_overlay := semisafe_string_to_cstring(overlay)
 	igProgressBar(fraction, size_arg, _temp_overlay)
 }
-bullet :: proc () {
+bullet :: #force_inline proc () {
 	igBullet()
 }
-image :: proc (user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, tint_col: [4]f32, border_col: [4]f32) {
+image :: #force_inline proc (user_texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, tint_col := [4]f32{}, border_col := [4]f32{}) {
 	igImage(user_texture_id, size, uv0, uv1, tint_col, border_col)
 }
-image_button :: proc (str_id: cstring, user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32) -> bool {
+image_button :: #force_inline proc (str_id: cstring, user_texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, bg_col := [4]f32{}, tint_col := [4]f32{}) -> bool {
 	return igImageButton(str_id, user_texture_id, size, uv0, uv1, bg_col, tint_col)
 }
-begin_combo :: proc (label: cstring, preview_value: string, flags: Combo_Flags) -> bool {
+begin_combo :: #force_inline proc (label: cstring, preview_value: string, flags := Combo_Flags{}) -> bool {
 	_temp_preview_value := semisafe_string_to_cstring(preview_value)
 	return igBeginCombo(label, _temp_preview_value, flags)
 }
-end_combo :: proc () {
+end_combo :: #force_inline proc () {
 	igEndCombo()
 }
-combo_str_arr :: proc (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool {
+combo_str_arr :: #force_inline proc (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool {
 	return igCombo_Str_arr(label, current_item, items, items_count, popup_max_height_in_items)
 }
-combo_str :: proc (label: cstring, current_item: ^i32, items_separated_by_zeros: string, popup_max_height_in_items: i32) -> bool {
+combo_str :: #force_inline proc (label: cstring, current_item: ^i32, items_separated_by_zeros: string, popup_max_height_in_items: i32) -> bool {
 	_temp_items_separated_by_zeros := semisafe_string_to_cstring(items_separated_by_zeros)
 	return igCombo_Str(label, current_item, _temp_items_separated_by_zeros, popup_max_height_in_items)
 }
-combo_fn_bool_ptr :: proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool {
+combo_fn_bool_ptr :: #force_inline proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool {
 	return igCombo_FnBoolPtr(label, current_item, items_getter, data, items_count, popup_max_height_in_items)
 }
-drag_float :: proc (label: cstring, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+drag_float :: #force_inline proc (label: cstring, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float2 :: proc (label: cstring, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+drag_float2 :: #force_inline proc (label: cstring, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat2(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float3 :: proc (label: cstring, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+drag_float3 :: #force_inline proc (label: cstring, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat3(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float4 :: proc (label: cstring, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+drag_float4 :: #force_inline proc (label: cstring, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragFloat4(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float_range2 :: proc (label: cstring, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, format_max: string, flags: Slider_Flags) -> bool {
+drag_float_range2 :: #force_inline proc (label: cstring, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	_temp_format_max := semisafe_string_to_cstring(format_max)
 	return igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
 }
-drag_int :: proc (label: cstring, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+drag_int :: #force_inline proc (label: cstring, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_int2 :: proc (label: cstring, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+drag_int2 :: #force_inline proc (label: cstring, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt2(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_int3 :: proc (label: cstring, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+drag_int3 :: #force_inline proc (label: cstring, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt3(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_int4 :: proc (label: cstring, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+drag_int4 :: #force_inline proc (label: cstring, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragInt4(label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_int_range2 :: proc (label: cstring, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, format_max: string, flags: Slider_Flags) -> bool {
+drag_int_range2 :: #force_inline proc (label: cstring, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	_temp_format_max := semisafe_string_to_cstring(format_max)
 	return igDragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
 }
-drag_scalar :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
+drag_scalar :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragScalar(label, data_type, p_data, v_speed, p_min, p_max, _temp_format, flags)
 }
-drag_scalar_n :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
+drag_scalar_n :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragScalarN(label, data_type, p_data, components, v_speed, p_min, p_max, _temp_format, flags)
 }
-slider_float :: proc (label: cstring, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+slider_float :: #force_inline proc (label: cstring, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_float2 :: proc (label: cstring, v: [2]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+slider_float2 :: #force_inline proc (label: cstring, v: [2]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat2(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_float3 :: proc (label: cstring, v: [3]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+slider_float3 :: #force_inline proc (label: cstring, v: [3]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat3(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_float4 :: proc (label: cstring, v: [4]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+slider_float4 :: #force_inline proc (label: cstring, v: [4]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderFloat4(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_angle :: proc (label: cstring, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: string, flags: Slider_Flags) -> bool {
+slider_angle :: #force_inline proc (label: cstring, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderAngle(label, v_rad, v_degrees_min, v_degrees_max, _temp_format, flags)
 }
-slider_int :: proc (label: cstring, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+slider_int :: #force_inline proc (label: cstring, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_int2 :: proc (label: cstring, v: [2]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+slider_int2 :: #force_inline proc (label: cstring, v: [2]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt2(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_int3 :: proc (label: cstring, v: [3]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+slider_int3 :: #force_inline proc (label: cstring, v: [3]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt3(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_int4 :: proc (label: cstring, v: [4]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+slider_int4 :: #force_inline proc (label: cstring, v: [4]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderInt4(label, v, v_min, v_max, _temp_format, flags)
 }
-slider_scalar :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
+slider_scalar :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderScalar(label, data_type, p_data, p_min, p_max, _temp_format, flags)
 }
-slider_scalar_n :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
+slider_scalar_n :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igSliderScalarN(label, data_type, p_data, components, p_min, p_max, _temp_format, flags)
 }
-v_slider_float :: proc (label: cstring, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags) -> bool {
+v_slider_float :: #force_inline proc (label: cstring, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igVSliderFloat(label, size, v, v_min, v_max, _temp_format, flags)
 }
-v_slider_int :: proc (label: cstring, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags) -> bool {
+v_slider_int :: #force_inline proc (label: cstring, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igVSliderInt(label, size, v, v_min, v_max, _temp_format, flags)
 }
-v_slider_scalar :: proc (label: cstring, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
+v_slider_scalar :: #force_inline proc (label: cstring, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igVSliderScalar(label, size, data_type, p_data, p_min, p_max, _temp_format, flags)
 }
-input_text :: proc (label: cstring, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+input_text :: #force_inline proc (label: cstring, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
 	return igInputText(label, raw_data(buf), len(buf), flags, callback, user_data)
 }
-input_text_multiline :: proc (label: cstring, buf: []i8, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+input_text_multiline :: #force_inline proc (label: cstring, buf: []i8, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
 	return igInputTextMultiline(label, raw_data(buf), len(buf), size, flags, callback, user_data)
 }
-input_text_with_hint :: proc (label: cstring, hint: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+input_text_with_hint :: #force_inline proc (label: cstring, hint: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
 	_temp_hint := semisafe_string_to_cstring(hint)
 	return igInputTextWithHint(label, _temp_hint, raw_data(buf), len(buf), flags, callback, user_data)
 }
-input_float :: proc (label: cstring, v: ^f32, step: f32, step_fast: f32, format: string, flags: Input_Text_Flags) -> bool {
+input_float :: #force_inline proc (label: cstring, v: ^f32, step: f32, step_fast: f32, format: string, flags := Input_Text_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat(label, v, step, step_fast, _temp_format, flags)
 }
-input_float2 :: proc (label: cstring, v: [2]f32, format: string, flags: Input_Text_Flags) -> bool {
+input_float2 :: #force_inline proc (label: cstring, v: [2]f32, format: string, flags := Input_Text_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat2(label, v, _temp_format, flags)
 }
-input_float3 :: proc (label: cstring, v: [3]f32, format: string, flags: Input_Text_Flags) -> bool {
+input_float3 :: #force_inline proc (label: cstring, v: [3]f32, format: string, flags := Input_Text_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat3(label, v, _temp_format, flags)
 }
-input_float4 :: proc (label: cstring, v: [4]f32, format: string, flags: Input_Text_Flags) -> bool {
+input_float4 :: #force_inline proc (label: cstring, v: [4]f32, format: string, flags := Input_Text_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputFloat4(label, v, _temp_format, flags)
 }
-input_int :: proc (label: cstring, v: ^i32, step: i32, step_fast: i32, flags: Input_Text_Flags) -> bool {
+input_int :: #force_inline proc (label: cstring, v: ^i32, step: i32, step_fast: i32, flags := Input_Text_Flags{}) -> bool {
 	return igInputInt(label, v, step, step_fast, flags)
 }
-input_int2 :: proc (label: cstring, v: [2]i32, flags: Input_Text_Flags) -> bool {
+input_int2 :: #force_inline proc (label: cstring, v := [2]i32{}, flags := Input_Text_Flags{}) -> bool {
 	return igInputInt2(label, v, flags)
 }
-input_int3 :: proc (label: cstring, v: [3]i32, flags: Input_Text_Flags) -> bool {
+input_int3 :: #force_inline proc (label: cstring, v := [3]i32{}, flags := Input_Text_Flags{}) -> bool {
 	return igInputInt3(label, v, flags)
 }
-input_int4 :: proc (label: cstring, v: [4]i32, flags: Input_Text_Flags) -> bool {
+input_int4 :: #force_inline proc (label: cstring, v := [4]i32{}, flags := Input_Text_Flags{}) -> bool {
 	return igInputInt4(label, v, flags)
 }
-input_double :: proc (label: cstring, v: ^f64, step: f64, step_fast: f64, format: string, flags: Input_Text_Flags) -> bool {
+input_double :: #force_inline proc (label: cstring, v: ^f64, step: f64, step_fast: f64, format: string, flags := Input_Text_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputDouble(label, v, step, step_fast, _temp_format, flags)
 }
-input_scalar :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: string, flags: Input_Text_Flags) -> bool {
+input_scalar :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputScalar(label, data_type, p_data, p_step, p_step_fast, _temp_format, flags)
 }
-input_scalar_n :: proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: string, flags: Input_Text_Flags) -> bool {
+input_scalar_n :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputScalarN(label, data_type, p_data, components, p_step, p_step_fast, _temp_format, flags)
 }
-color_edit3 :: proc (label: cstring, col: [3]f32, flags: Color_Edit_Flags) -> bool {
+color_edit3 :: #force_inline proc (label: cstring, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
 	return igColorEdit3(label, col, flags)
 }
-color_edit4 :: proc (label: cstring, col: [4]f32, flags: Color_Edit_Flags) -> bool {
+color_edit4 :: #force_inline proc (label: cstring, col := [4]f32{}, flags := Color_Edit_Flags{}) -> bool {
 	return igColorEdit4(label, col, flags)
 }
-color_picker3 :: proc (label: cstring, col: [3]f32, flags: Color_Edit_Flags) -> bool {
+color_picker3 :: #force_inline proc (label: cstring, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
 	return igColorPicker3(label, col, flags)
 }
-color_picker4 :: proc (label: cstring, col: [4]f32, flags: Color_Edit_Flags, ref_col: ^f32) -> bool {
+color_picker4 :: #force_inline proc (label: cstring, col: [4]f32, flags: Color_Edit_Flags, ref_col: ^f32) -> bool {
 	return igColorPicker4(label, col, flags, ref_col)
 }
-color_button :: proc (desc_id: cstring, col: [4]f32, flags: Color_Edit_Flags, size: [2]f32) -> bool {
+color_button :: #force_inline proc (desc_id: cstring, col := [4]f32{}, flags := Color_Edit_Flags{}, size := [2]f32{}) -> bool {
 	return igColorButton(desc_id, col, flags, size)
 }
-set_color_edit_options :: proc (flags: Color_Edit_Flags) {
+set_color_edit_options :: #force_inline proc (flags := Color_Edit_Flags{}) {
 	igSetColorEditOptions(flags)
 }
-tree_node_str :: proc (label: cstring) -> bool {
+tree_node_str :: #force_inline proc (label: cstring) -> bool {
 	return igTreeNode_Str(label)
 }
-tree_node_str_str :: proc (str_id: cstring, fmt: cstring, _args_: ..any) -> bool {
-	return igTreeNode_StrStr(str_id, fmt, _args_)
-}
-tree_node_ptr :: proc (ptr_id: rawptr, fmt: cstring, _args_: ..any) -> bool {
-	return igTreeNode_Ptr(ptr_id, fmt, _args_)
-}
-tree_node_ex_str :: proc (label: cstring, flags: Tree_Node_Flags) -> bool {
+tree_node_str_str :: igTreeNode_StrStr  // Cannot be wrapped due to variadic args
+tree_node_ptr :: igTreeNode_Ptr  // Cannot be wrapped due to variadic args
+tree_node_ex_str :: #force_inline proc (label: cstring, flags := Tree_Node_Flags{}) -> bool {
 	return igTreeNodeEx_Str(label, flags)
 }
-tree_node_ex_str_str :: proc (str_id: cstring, flags: Tree_Node_Flags, fmt: cstring, _args_: ..any) -> bool {
-	return igTreeNodeEx_StrStr(str_id, flags, fmt, _args_)
-}
-tree_node_ex_ptr :: proc (ptr_id: rawptr, flags: Tree_Node_Flags, fmt: cstring, _args_: ..any) -> bool {
-	return igTreeNodeEx_Ptr(ptr_id, flags, fmt, _args_)
-}
-tree_push_str :: proc (str_id: cstring) {
+tree_node_ex_str_str :: igTreeNodeEx_StrStr  // Cannot be wrapped due to variadic args
+tree_node_ex_ptr :: igTreeNodeEx_Ptr  // Cannot be wrapped due to variadic args
+tree_push_str :: #force_inline proc (str_id: cstring) {
 	igTreePush_Str(str_id)
 }
-tree_push_ptr :: proc (ptr_id: rawptr) {
+tree_push_ptr :: #force_inline proc (ptr_id: rawptr) {
 	igTreePush_Ptr(ptr_id)
 }
-tree_pop :: proc () {
+tree_pop :: #force_inline proc () {
 	igTreePop()
 }
-get_tree_node_to_label_spacing :: proc () -> f32 {
+get_tree_node_to_label_spacing :: #force_inline proc () -> f32 {
 	return igGetTreeNodeToLabelSpacing()
 }
-collapsing_header_tree_node_flags :: proc (label: cstring, flags: Tree_Node_Flags) -> bool {
+collapsing_header_tree_node_flags :: #force_inline proc (label: cstring, flags := Tree_Node_Flags{}) -> bool {
 	return igCollapsingHeader_TreeNodeFlags(label, flags)
 }
-collapsing_header_bool_ptr :: proc (label: cstring, p_visible: ^bool, flags: Tree_Node_Flags) -> bool {
+collapsing_header_bool_ptr :: #force_inline proc (label: cstring, p_visible: ^bool, flags := Tree_Node_Flags{}) -> bool {
 	return igCollapsingHeader_BoolPtr(label, p_visible, flags)
 }
-set_next_item_open :: proc (is_open: bool, cond: Cond) {
+set_next_item_open :: #force_inline proc (is_open: bool, cond := Cond{}) {
 	igSetNextItemOpen(is_open, cond)
 }
-selectable_bool :: proc (label: cstring, selected: bool, flags: Selectable_Flags, size: [2]f32) -> bool {
+selectable_bool :: #force_inline proc (label: cstring, selected: bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
 	return igSelectable_Bool(label, selected, flags, size)
 }
-selectable_bool_ptr :: proc (label: cstring, p_selected: ^bool, flags: Selectable_Flags, size: [2]f32) -> bool {
+selectable_bool_ptr :: #force_inline proc (label: cstring, p_selected: ^bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
 	return igSelectable_BoolPtr(label, p_selected, flags, size)
 }
-begin_list_box :: proc (label: cstring, size: [2]f32) -> bool {
+begin_list_box :: #force_inline proc (label: cstring, size := [2]f32{}) -> bool {
 	return igBeginListBox(label, size)
 }
-end_list_box :: proc () {
+end_list_box :: #force_inline proc () {
 	igEndListBox()
 }
-list_box_str_arr :: proc (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool {
+list_box_str_arr :: #force_inline proc (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool {
 	return igListBox_Str_arr(label, current_item, items, items_count, height_in_items)
 }
-list_box_fn_bool_ptr :: proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
+list_box_fn_bool_ptr :: #force_inline proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
 	return igListBox_FnBoolPtr(label, current_item, items_getter, data, items_count, height_in_items)
 }
-plot_lines_float_ptr :: proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+plot_lines_float_ptr :: #force_inline proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotLines_FloatPtr(label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_lines_fn_float_ptr :: proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
+plot_lines_fn_float_ptr :: #force_inline proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotLines_FnFloatPtr(label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
 }
-plot_histogram_float_ptr :: proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+plot_histogram_float_ptr :: #force_inline proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotHistogram_FloatPtr(label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_histogram_fn_float_ptr :: proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
+plot_histogram_fn_float_ptr :: #force_inline proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotHistogram_FnFloatPtr(label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
 }
-value_bool :: proc (prefix: cstring, b: bool) {
+value_bool :: #force_inline proc (prefix: cstring, b: bool) {
 	igValue_Bool(prefix, b)
 }
-value_int :: proc (prefix: cstring, v: i32) {
+value_int :: #force_inline proc (prefix: cstring, v: i32) {
 	igValue_Int(prefix, v)
 }
-value_uint :: proc (prefix: cstring, v: u32) {
+value_uint :: #force_inline proc (prefix: cstring, v: u32) {
 	igValue_Uint(prefix, v)
 }
-value_float :: proc (prefix: cstring, v: f32, float_format: string) {
+value_float :: #force_inline proc (prefix: cstring, v: f32, float_format: string) {
 	_temp_float_format := semisafe_string_to_cstring(float_format)
 	igValue_Float(prefix, v, _temp_float_format)
 }
-begin_menu_bar :: proc () -> bool {
+begin_menu_bar :: #force_inline proc () -> bool {
 	return igBeginMenuBar()
 }
-end_menu_bar :: proc () {
+end_menu_bar :: #force_inline proc () {
 	igEndMenuBar()
 }
-begin_main_menu_bar :: proc () -> bool {
+begin_main_menu_bar :: #force_inline proc () -> bool {
 	return igBeginMainMenuBar()
 }
-end_main_menu_bar :: proc () {
+end_main_menu_bar :: #force_inline proc () {
 	igEndMainMenuBar()
 }
-begin_menu :: proc (label: cstring, enabled: bool) -> bool {
+begin_menu :: #force_inline proc (label: cstring, enabled: bool) -> bool {
 	return igBeginMenu(label, enabled)
 }
-end_menu :: proc () {
+end_menu :: #force_inline proc () {
 	igEndMenu()
 }
-menu_item_bool :: proc (label: cstring, shortcut: string, selected: bool, enabled: bool) -> bool {
+menu_item_bool :: #force_inline proc (label: cstring, shortcut: string, selected: bool, enabled: bool) -> bool {
 	_temp_shortcut := semisafe_string_to_cstring(shortcut)
 	return igMenuItem_Bool(label, _temp_shortcut, selected, enabled)
 }
-menu_item_bool_ptr :: proc (label: cstring, shortcut: string, p_selected: ^bool, enabled: bool) -> bool {
+menu_item_bool_ptr :: #force_inline proc (label: cstring, shortcut: string, p_selected: ^bool, enabled: bool) -> bool {
 	_temp_shortcut := semisafe_string_to_cstring(shortcut)
 	return igMenuItem_BoolPtr(label, _temp_shortcut, p_selected, enabled)
 }
-begin_tooltip :: proc () -> bool {
+begin_tooltip :: #force_inline proc () -> bool {
 	return igBeginTooltip()
 }
-end_tooltip :: proc () {
+end_tooltip :: #force_inline proc () {
 	igEndTooltip()
 }
-set_tooltip :: proc (fmt: cstring, _args_: ..any) {
-	igSetTooltip(fmt, _args_)
-}
-begin_popup :: proc (str_id: cstring, flags: Window_Flags) -> bool {
+set_tooltip :: igSetTooltip  // Cannot be wrapped due to variadic args
+begin_popup :: #force_inline proc (str_id: cstring, flags := Window_Flags{}) -> bool {
 	return igBeginPopup(str_id, flags)
 }
-begin_popup_modal :: proc (name: cstring, p_open: ^bool, flags: Window_Flags) -> bool {
+begin_popup_modal :: #force_inline proc (name: cstring, p_open: ^bool, flags := Window_Flags{}) -> bool {
 	return igBeginPopupModal(name, p_open, flags)
 }
-end_popup :: proc () {
+end_popup :: #force_inline proc () {
 	igEndPopup()
 }
-open_popup_str :: proc (str_id: cstring, popup_flags: Popup_Flags) {
+open_popup_str :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) {
 	igOpenPopup_Str(str_id, popup_flags)
 }
-open_popup_id :: proc (id: ID, popup_flags: Popup_Flags) {
+open_popup_id :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) {
 	igOpenPopup_ID(id, popup_flags)
 }
-open_popup_on_item_click :: proc (str_id: cstring, popup_flags: Popup_Flags) {
+open_popup_on_item_click :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) {
 	igOpenPopupOnItemClick(str_id, popup_flags)
 }
-close_current_popup :: proc () {
+close_current_popup :: #force_inline proc () {
 	igCloseCurrentPopup()
 }
-begin_popup_context_item :: proc (str_id: cstring, popup_flags: Popup_Flags) -> bool {
+begin_popup_context_item :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) -> bool {
 	return igBeginPopupContextItem(str_id, popup_flags)
 }
-begin_popup_context_window :: proc (str_id: cstring, popup_flags: Popup_Flags) -> bool {
+begin_popup_context_window :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) -> bool {
 	return igBeginPopupContextWindow(str_id, popup_flags)
 }
-begin_popup_context_void :: proc (str_id: cstring, popup_flags: Popup_Flags) -> bool {
+begin_popup_context_void :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) -> bool {
 	return igBeginPopupContextVoid(str_id, popup_flags)
 }
-is_popup_open_str :: proc (str_id: cstring, flags: Popup_Flags) -> bool {
+is_popup_open_str :: #force_inline proc (str_id: cstring, flags := Popup_Flags{}) -> bool {
 	return igIsPopupOpen_Str(str_id, flags)
 }
-begin_table :: proc (str_id: cstring, column: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
+begin_table :: #force_inline proc (str_id: cstring, column: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
 	return igBeginTable(str_id, column, flags, outer_size, inner_width)
 }
-end_table :: proc () {
+end_table :: #force_inline proc () {
 	igEndTable()
 }
-table_next_row :: proc (row_flags: Table_Row_Flags, min_row_height: f32) {
+table_next_row :: #force_inline proc (row_flags: Table_Row_Flags, min_row_height: f32) {
 	igTableNextRow(row_flags, min_row_height)
 }
-table_next_column :: proc () -> bool {
+table_next_column :: #force_inline proc () -> bool {
 	return igTableNextColumn()
 }
-table_set_column_index :: proc (column_n: i32) -> bool {
+table_set_column_index :: #force_inline proc (column_n: i32) -> bool {
 	return igTableSetColumnIndex(column_n)
 }
-table_setup_column :: proc (label: cstring, flags: Table_Column_Flags, init_width_or_weight: f32, user_id: ID) {
+table_setup_column :: #force_inline proc (label: cstring, flags: Table_Column_Flags, init_width_or_weight: f32, user_id: ID) {
 	igTableSetupColumn(label, flags, init_width_or_weight, user_id)
 }
-table_setup_scroll_freeze :: proc (cols: i32, rows: i32) {
+table_setup_scroll_freeze :: #force_inline proc (cols: i32, rows: i32) {
 	igTableSetupScrollFreeze(cols, rows)
 }
-table_headers_row :: proc () {
+table_headers_row :: #force_inline proc () {
 	igTableHeadersRow()
 }
-table_header :: proc (label: cstring) {
+table_header :: #force_inline proc (label: cstring) {
 	igTableHeader(label)
 }
-table_get_sort_specs :: proc () -> ^Table_Sort_Specs {
+table_get_sort_specs :: #force_inline proc () -> ^Table_Sort_Specs {
 	return igTableGetSortSpecs()
 }
-table_get_column_count :: proc () -> i32 {
+table_get_column_count :: #force_inline proc () -> i32 {
 	return igTableGetColumnCount()
 }
-table_get_column_index :: proc () -> i32 {
+table_get_column_index :: #force_inline proc () -> i32 {
 	return igTableGetColumnIndex()
 }
-table_get_row_index :: proc () -> i32 {
+table_get_row_index :: #force_inline proc () -> i32 {
 	return igTableGetRowIndex()
 }
-table_get_column_name_int :: proc (column_n: i32) -> cstring {
+table_get_column_name_int :: #force_inline proc (column_n: i32) -> cstring {
 	return igTableGetColumnName_Int(column_n)
 }
-table_get_column_flags :: proc (column_n: i32) -> Table_Column_Flags {
+table_get_column_flags :: #force_inline proc (column_n: i32) -> Table_Column_Flags {
 	return igTableGetColumnFlags(column_n)
 }
-table_set_column_enabled :: proc (column_n: i32, v: bool) {
+table_set_column_enabled :: #force_inline proc (column_n: i32, v: bool) {
 	igTableSetColumnEnabled(column_n, v)
 }
-table_set_bg_color :: proc (target: Table_Bg_Target, color: u32, column_n: i32) {
+table_set_bg_color :: #force_inline proc (target: Table_Bg_Target, color: u32, column_n: i32) {
 	igTableSetBgColor(target, color, column_n)
 }
-columns :: proc (count: i32, id: string, border: bool) {
+columns :: #force_inline proc (count: i32, id: string, border: bool) {
 	_temp_id := semisafe_string_to_cstring(id)
 	igColumns(count, _temp_id, border)
 }
-next_column :: proc () {
+next_column :: #force_inline proc () {
 	igNextColumn()
 }
-get_column_index :: proc () -> i32 {
+get_column_index :: #force_inline proc () -> i32 {
 	return igGetColumnIndex()
 }
-get_column_width :: proc (column_index: i32) -> f32 {
+get_column_width :: #force_inline proc (column_index: i32) -> f32 {
 	return igGetColumnWidth(column_index)
 }
-set_column_width :: proc (column_index: i32, width: f32) {
+set_column_width :: #force_inline proc (column_index: i32, width: f32) {
 	igSetColumnWidth(column_index, width)
 }
-get_column_offset :: proc (column_index: i32) -> f32 {
+get_column_offset :: #force_inline proc (column_index: i32) -> f32 {
 	return igGetColumnOffset(column_index)
 }
-set_column_offset :: proc (column_index: i32, offset_x: f32) {
+set_column_offset :: #force_inline proc (column_index: i32, offset_x: f32) {
 	igSetColumnOffset(column_index, offset_x)
 }
-get_columns_count :: proc () -> i32 {
+get_columns_count :: #force_inline proc () -> i32 {
 	return igGetColumnsCount()
 }
-begin_tab_bar :: proc (str_id: cstring, flags: Tab_Bar_Flags) -> bool {
+begin_tab_bar :: #force_inline proc (str_id: cstring, flags := Tab_Bar_Flags{}) -> bool {
 	return igBeginTabBar(str_id, flags)
 }
-end_tab_bar :: proc () {
+end_tab_bar :: #force_inline proc () {
 	igEndTabBar()
 }
-begin_tab_item :: proc (label: cstring, p_open: ^bool, flags: Tab_Item_Flags) -> bool {
+begin_tab_item :: #force_inline proc (label: cstring, p_open: ^bool, flags := Tab_Item_Flags{}) -> bool {
 	return igBeginTabItem(label, p_open, flags)
 }
-end_tab_item :: proc () {
+end_tab_item :: #force_inline proc () {
 	igEndTabItem()
 }
-tab_item_button :: proc (label: cstring, flags: Tab_Item_Flags) -> bool {
+tab_item_button :: #force_inline proc (label: cstring, flags := Tab_Item_Flags{}) -> bool {
 	return igTabItemButton(label, flags)
 }
-set_tab_item_closed :: proc (tab_or_docked_window_label: cstring) {
+set_tab_item_closed :: #force_inline proc (tab_or_docked_window_label: cstring) {
 	igSetTabItemClosed(tab_or_docked_window_label)
 }
-log_to_tty :: proc (auto_open_depth: i32) {
+log_to_tty :: #force_inline proc (auto_open_depth: i32) {
 	igLogToTTY(auto_open_depth)
 }
-log_to_file :: proc (auto_open_depth: i32, filename: string) {
+log_to_file :: #force_inline proc (auto_open_depth: i32, filename: string) {
 	_temp_filename := semisafe_string_to_cstring(filename)
 	igLogToFile(auto_open_depth, _temp_filename)
 }
-log_to_clipboard :: proc (auto_open_depth: i32) {
+log_to_clipboard :: #force_inline proc (auto_open_depth: i32) {
 	igLogToClipboard(auto_open_depth)
 }
-log_finish :: proc () {
+log_finish :: #force_inline proc () {
 	igLogFinish()
 }
-log_buttons :: proc () {
+log_buttons :: #force_inline proc () {
 	igLogButtons()
 }
-begin_drag_drop_source :: proc (flags: Drag_Drop_Flags) -> bool {
+begin_drag_drop_source :: #force_inline proc (flags := Drag_Drop_Flags{}) -> bool {
 	return igBeginDragDropSource(flags)
 }
-set_drag_drop_payload :: proc (type: cstring, data: rawptr, sz: int, cond: Cond) -> bool {
+set_drag_drop_payload :: #force_inline proc (type: cstring, data: rawptr, sz: int, cond := Cond{}) -> bool {
 	return igSetDragDropPayload(type, data, sz, cond)
 }
-end_drag_drop_source :: proc () {
+end_drag_drop_source :: #force_inline proc () {
 	igEndDragDropSource()
 }
-begin_drag_drop_target :: proc () -> bool {
+begin_drag_drop_target :: #force_inline proc () -> bool {
 	return igBeginDragDropTarget()
 }
-accept_drag_drop_payload :: proc (type: cstring, flags: Drag_Drop_Flags) -> ^Payload {
+accept_drag_drop_payload :: #force_inline proc (type: cstring, flags := Drag_Drop_Flags{}) -> ^Payload {
 	return igAcceptDragDropPayload(type, flags)
 }
-end_drag_drop_target :: proc () {
+end_drag_drop_target :: #force_inline proc () {
 	igEndDragDropTarget()
 }
-get_drag_drop_payload :: proc () -> ^Payload {
+get_drag_drop_payload :: #force_inline proc () -> ^Payload {
 	return igGetDragDropPayload()
 }
-begin_disabled :: proc (disabled: bool) {
+begin_disabled :: #force_inline proc (disabled: bool) {
 	igBeginDisabled(disabled)
 }
-end_disabled :: proc () {
+end_disabled :: #force_inline proc () {
 	igEndDisabled()
 }
-push_clip_rect :: proc (clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) {
+push_clip_rect :: #force_inline proc (clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) {
 	igPushClipRect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
 }
-pop_clip_rect :: proc () {
+pop_clip_rect :: #force_inline proc () {
 	igPopClipRect()
 }
-set_item_default_focus :: proc () {
+set_item_default_focus :: #force_inline proc () {
 	igSetItemDefaultFocus()
 }
-set_keyboard_focus_here :: proc (offset: i32) {
+set_keyboard_focus_here :: #force_inline proc (offset: i32) {
 	igSetKeyboardFocusHere(offset)
 }
-is_item_hovered :: proc (flags: Hovered_Flags) -> bool {
+is_item_hovered :: #force_inline proc (flags := Hovered_Flags{}) -> bool {
 	return igIsItemHovered(flags)
 }
-is_item_active :: proc () -> bool {
+is_item_active :: #force_inline proc () -> bool {
 	return igIsItemActive()
 }
-is_item_focused :: proc () -> bool {
+is_item_focused :: #force_inline proc () -> bool {
 	return igIsItemFocused()
 }
-is_item_clicked :: proc (mouse_button: Mouse_Button) -> bool {
+is_item_clicked :: #force_inline proc (mouse_button: Mouse_Button) -> bool {
 	return igIsItemClicked(mouse_button)
 }
-is_item_visible :: proc () -> bool {
+is_item_visible :: #force_inline proc () -> bool {
 	return igIsItemVisible()
 }
-is_item_edited :: proc () -> bool {
+is_item_edited :: #force_inline proc () -> bool {
 	return igIsItemEdited()
 }
-is_item_activated :: proc () -> bool {
+is_item_activated :: #force_inline proc () -> bool {
 	return igIsItemActivated()
 }
-is_item_deactivated :: proc () -> bool {
+is_item_deactivated :: #force_inline proc () -> bool {
 	return igIsItemDeactivated()
 }
-is_item_deactivated_after_edit :: proc () -> bool {
+is_item_deactivated_after_edit :: #force_inline proc () -> bool {
 	return igIsItemDeactivatedAfterEdit()
 }
-is_item_toggled_open :: proc () -> bool {
+is_item_toggled_open :: #force_inline proc () -> bool {
 	return igIsItemToggledOpen()
 }
-is_any_item_hovered :: proc () -> bool {
+is_any_item_hovered :: #force_inline proc () -> bool {
 	return igIsAnyItemHovered()
 }
-is_any_item_active :: proc () -> bool {
+is_any_item_active :: #force_inline proc () -> bool {
 	return igIsAnyItemActive()
 }
-is_any_item_focused :: proc () -> bool {
+is_any_item_focused :: #force_inline proc () -> bool {
 	return igIsAnyItemFocused()
 }
-get_item_id :: proc () -> ID {
+get_item_id :: #force_inline proc () -> ID {
 	return igGetItemID()
 }
-get_item_rect_min :: proc () -> (p_out: [2]f32) {
+get_item_rect_min :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetItemRectMin(&p_out)
 	return
 }
-get_item_rect_max :: proc () -> (p_out: [2]f32) {
+get_item_rect_max :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetItemRectMax(&p_out)
 	return
 }
-get_item_rect_size :: proc () -> (p_out: [2]f32) {
+get_item_rect_size :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetItemRectSize(&p_out)
 	return
 }
-set_item_allow_overlap :: proc () {
+set_item_allow_overlap :: #force_inline proc () {
 	igSetItemAllowOverlap()
 }
-get_main_viewport :: proc () -> ^Viewport {
+get_main_viewport :: #force_inline proc () -> ^Viewport {
 	return igGetMainViewport()
 }
-get_background_draw_list_nil :: proc () -> ^Draw_List {
+get_background_draw_list_nil :: #force_inline proc () -> ^Draw_List {
 	return igGetBackgroundDrawList_Nil()
 }
-get_foreground_draw_list_nil :: proc () -> ^Draw_List {
+get_foreground_draw_list_nil :: #force_inline proc () -> ^Draw_List {
 	return igGetForegroundDrawList_Nil()
 }
-is_rect_visible_nil :: proc (size: [2]f32) -> bool {
+is_rect_visible_nil :: #force_inline proc (size := [2]f32{}) -> bool {
 	return igIsRectVisible_Nil(size)
 }
-is_rect_visible_vec2 :: proc (rect_min: [2]f32, rect_max: [2]f32) -> bool {
+is_rect_visible_vec2 :: #force_inline proc (rect_min := [2]f32{}, rect_max := [2]f32{}) -> bool {
 	return igIsRectVisible_Vec2(rect_min, rect_max)
 }
-get_time :: proc () -> f64 {
+get_time :: #force_inline proc () -> f64 {
 	return igGetTime()
 }
-get_frame_count :: proc () -> i32 {
+get_frame_count :: #force_inline proc () -> i32 {
 	return igGetFrameCount()
 }
-get_draw_list_shared_data :: proc () -> ^Draw_List_Shared_Data {
+get_draw_list_shared_data :: #force_inline proc () -> ^Draw_List_Shared_Data {
 	return igGetDrawListSharedData()
 }
-get_style_color_name :: proc (idx: Col) -> cstring {
+get_style_color_name :: #force_inline proc (idx: Col) -> cstring {
 	return igGetStyleColorName(idx)
 }
-set_state_storage :: proc (storage: ^Storage) {
+set_state_storage :: #force_inline proc (storage: ^Storage) {
 	igSetStateStorage(storage)
 }
-get_state_storage :: proc () -> ^Storage {
+get_state_storage :: #force_inline proc () -> ^Storage {
 	return igGetStateStorage()
 }
-begin_child_frame :: proc (id: ID, size: [2]f32, flags: Window_Flags) -> bool {
+begin_child_frame :: #force_inline proc (id: ID, size := [2]f32{}, flags := Window_Flags{}) -> bool {
 	return igBeginChildFrame(id, size, flags)
 }
-end_child_frame :: proc () {
+end_child_frame :: #force_inline proc () {
 	igEndChildFrame()
 }
-calc_text_size :: proc (text: string, hide_text_after_double_hash: bool, wrap_width: f32) -> (p_out: [2]f32) {
+calc_text_size :: #force_inline proc (text: string, hide_text_after_double_hash: bool, wrap_width: f32) -> (p_out: [2]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igCalcTextSize(&p_out, text_begin, text_end, hide_text_after_double_hash, wrap_width)
 	return
 }
-color_convert_u32_to_float4 :: proc (in_: u32) -> (p_out: [4]f32) {
+color_convert_u32_to_float4 :: #force_inline proc (in_: u32) -> (p_out: [4]f32) {
 	igColorConvertU32ToFloat4(&p_out, in_)
 	return
 }
-color_convert_float4_to_u32 :: proc (in_: [4]f32) -> u32 {
+color_convert_float4_to_u32 :: #force_inline proc (in_ := [4]f32{}) -> u32 {
 	return igColorConvertFloat4ToU32(in_)
 }
-color_convert_rgbto_hsv :: proc (r: f32, g: f32, b: f32) -> (out_h: f32, out_s: f32, out_v: f32) {
+color_convert_rgbto_hsv :: #force_inline proc (r: f32, g: f32, b: f32) -> (out_h: f32, out_s: f32, out_v: f32) {
 	igColorConvertRGBtoHSV(r, g, b, &out_h, &out_s, &out_v)
 	return
 }
-color_convert_hsvto_rgb :: proc (h: f32, s: f32, v: f32) -> (out_r: f32, out_g: f32, out_b: f32) {
+color_convert_hsvto_rgb :: #force_inline proc (h: f32, s: f32, v: f32) -> (out_r: f32, out_g: f32, out_b: f32) {
 	igColorConvertHSVtoRGB(h, s, v, &out_r, &out_g, &out_b)
 	return
 }
-is_key_down_nil :: proc (key: Key) -> bool {
+is_key_down_nil :: #force_inline proc (key: Key) -> bool {
 	return igIsKeyDown_Nil(key)
 }
-is_key_pressed_bool :: proc (key: Key, repeat: bool) -> bool {
+is_key_pressed_bool :: #force_inline proc (key: Key, repeat: bool) -> bool {
 	return igIsKeyPressed_Bool(key, repeat)
 }
-is_key_released_nil :: proc (key: Key) -> bool {
+is_key_released_nil :: #force_inline proc (key: Key) -> bool {
 	return igIsKeyReleased_Nil(key)
 }
-get_key_pressed_amount :: proc (key: Key, repeat_delay: f32, rate: f32) -> i32 {
+get_key_pressed_amount :: #force_inline proc (key: Key, repeat_delay: f32, rate: f32) -> i32 {
 	return igGetKeyPressedAmount(key, repeat_delay, rate)
 }
-get_key_name :: proc (key: Key) -> cstring {
+get_key_name :: #force_inline proc (key: Key) -> cstring {
 	return igGetKeyName(key)
 }
-set_next_frame_want_capture_keyboard :: proc (want_capture_keyboard: bool) {
+set_next_frame_want_capture_keyboard :: #force_inline proc (want_capture_keyboard: bool) {
 	igSetNextFrameWantCaptureKeyboard(want_capture_keyboard)
 }
-is_mouse_down_nil :: proc (button: Mouse_Button) -> bool {
+is_mouse_down_nil :: #force_inline proc (button: Mouse_Button) -> bool {
 	return igIsMouseDown_Nil(button)
 }
-is_mouse_clicked_bool :: proc (button: Mouse_Button, repeat: bool) -> bool {
+is_mouse_clicked_bool :: #force_inline proc (button: Mouse_Button, repeat: bool) -> bool {
 	return igIsMouseClicked_Bool(button, repeat)
 }
-is_mouse_released_nil :: proc (button: Mouse_Button) -> bool {
+is_mouse_released_nil :: #force_inline proc (button: Mouse_Button) -> bool {
 	return igIsMouseReleased_Nil(button)
 }
-is_mouse_double_clicked :: proc (button: Mouse_Button) -> bool {
+is_mouse_double_clicked :: #force_inline proc (button: Mouse_Button) -> bool {
 	return igIsMouseDoubleClicked(button)
 }
-get_mouse_clicked_count :: proc (button: Mouse_Button) -> i32 {
+get_mouse_clicked_count :: #force_inline proc (button: Mouse_Button) -> i32 {
 	return igGetMouseClickedCount(button)
 }
-is_mouse_hovering_rect :: proc (r_min: [2]f32, r_max: [2]f32, clip: bool) -> bool {
+is_mouse_hovering_rect :: #force_inline proc (r_min: [2]f32, r_max: [2]f32, clip: bool) -> bool {
 	return igIsMouseHoveringRect(r_min, r_max, clip)
 }
-is_mouse_pos_valid :: proc (mouse_pos: ^[2]f32) -> bool {
+is_mouse_pos_valid :: #force_inline proc (mouse_pos: ^[2]f32) -> bool {
 	return igIsMousePosValid(mouse_pos)
 }
-is_any_mouse_down :: proc () -> bool {
+is_any_mouse_down :: #force_inline proc () -> bool {
 	return igIsAnyMouseDown()
 }
-get_mouse_pos :: proc () -> (p_out: [2]f32) {
+get_mouse_pos :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetMousePos(&p_out)
 	return
 }
-get_mouse_pos_on_opening_current_popup :: proc () -> (p_out: [2]f32) {
+get_mouse_pos_on_opening_current_popup :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetMousePosOnOpeningCurrentPopup(&p_out)
 	return
 }
-is_mouse_dragging :: proc (button: Mouse_Button, lock_threshold: f32) -> bool {
+is_mouse_dragging :: #force_inline proc (button: Mouse_Button, lock_threshold: f32) -> bool {
 	return igIsMouseDragging(button, lock_threshold)
 }
-get_mouse_drag_delta :: proc (button: Mouse_Button, lock_threshold: f32) -> (p_out: [2]f32) {
+get_mouse_drag_delta :: #force_inline proc (button: Mouse_Button, lock_threshold: f32) -> (p_out: [2]f32) {
 	igGetMouseDragDelta(&p_out, button, lock_threshold)
 	return
 }
-reset_mouse_drag_delta :: proc (button: Mouse_Button) {
+reset_mouse_drag_delta :: #force_inline proc (button: Mouse_Button) {
 	igResetMouseDragDelta(button)
 }
-get_mouse_cursor :: proc () -> Mouse_Cursor {
+get_mouse_cursor :: #force_inline proc () -> Mouse_Cursor {
 	return igGetMouseCursor()
 }
-set_mouse_cursor :: proc (cursor_type: Mouse_Cursor) {
+set_mouse_cursor :: #force_inline proc (cursor_type: Mouse_Cursor) {
 	igSetMouseCursor(cursor_type)
 }
-set_next_frame_want_capture_mouse :: proc (want_capture_mouse: bool) {
+set_next_frame_want_capture_mouse :: #force_inline proc (want_capture_mouse: bool) {
 	igSetNextFrameWantCaptureMouse(want_capture_mouse)
 }
-get_clipboard_text :: proc () -> cstring {
+get_clipboard_text :: #force_inline proc () -> cstring {
 	return igGetClipboardText()
 }
-set_clipboard_text :: proc (text: cstring) {
+set_clipboard_text :: #force_inline proc (text: cstring) {
 	igSetClipboardText(text)
 }
-load_ini_settings_from_disk :: proc (ini_filename: cstring) {
+load_ini_settings_from_disk :: #force_inline proc (ini_filename: cstring) {
 	igLoadIniSettingsFromDisk(ini_filename)
 }
-load_ini_settings_from_memory :: proc (ini_data: cstring, ini_size: int) {
+load_ini_settings_from_memory :: #force_inline proc (ini_data: cstring, ini_size: int) {
 	igLoadIniSettingsFromMemory(ini_data, ini_size)
 }
-save_ini_settings_to_disk :: proc (ini_filename: cstring) {
+save_ini_settings_to_disk :: #force_inline proc (ini_filename: cstring) {
 	igSaveIniSettingsToDisk(ini_filename)
 }
-save_ini_settings_to_memory :: proc () -> (out_ini_size: int, _ret: cstring) {
+save_ini_settings_to_memory :: #force_inline proc () -> (out_ini_size: int, _ret: cstring) {
 	_ret = igSaveIniSettingsToMemory(&out_ini_size)
 	return
 }
-debug_text_encoding :: proc (text: cstring) {
+debug_text_encoding :: #force_inline proc (text: cstring) {
 	igDebugTextEncoding(text)
 }
-debug_check_version_and_data_layout :: proc (version_str: cstring, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool {
+debug_check_version_and_data_layout :: #force_inline proc (version_str: cstring, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool {
 	return igDebugCheckVersionAndDataLayout(version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
 }
-set_allocator_functions :: proc (alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) {
+set_allocator_functions :: #force_inline proc (alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) {
 	igSetAllocatorFunctions(alloc_func, free_func, user_data)
 }
-get_allocator_functions :: proc (p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) {
+get_allocator_functions :: #force_inline proc (p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) {
 	igGetAllocatorFunctions(p_alloc_func, p_free_func, p_user_data)
 }
-style_new :: proc () -> ^Style {
+style_new :: #force_inline proc () -> ^Style {
 	return ImGuiStyle_ImGuiStyle()
 }
-style_destroy :: proc (self: ^Style) {
+style_destroy :: #force_inline proc (self: ^Style) {
 	ImGuiStyle_destroy(self)
 }
-style_scale_all_sizes :: proc (self: ^Style, scale_factor: f32) {
+style_scale_all_sizes :: #force_inline proc (self: ^Style, scale_factor: f32) {
 	ImGuiStyle_ScaleAllSizes(self, scale_factor)
 }
-io_add_key_event :: proc (self: ^IO, key: Key, down: bool) {
+io_add_key_event :: #force_inline proc (self: ^IO, key: Key, down: bool) {
 	ImGuiIO_AddKeyEvent(self, key, down)
 }
-io_add_key_analog_event :: proc (self: ^IO, key: Key, down: bool, v: f32) {
+io_add_key_analog_event :: #force_inline proc (self: ^IO, key: Key, down: bool, v: f32) {
 	ImGuiIO_AddKeyAnalogEvent(self, key, down, v)
 }
-io_add_mouse_pos_event :: proc (self: ^IO, x: f32, y: f32) {
+io_add_mouse_pos_event :: #force_inline proc (self: ^IO, x: f32, y: f32) {
 	ImGuiIO_AddMousePosEvent(self, x, y)
 }
-io_add_mouse_button_event :: proc (self: ^IO, button: i32, down: bool) {
+io_add_mouse_button_event :: #force_inline proc (self: ^IO, button: i32, down: bool) {
 	ImGuiIO_AddMouseButtonEvent(self, button, down)
 }
-io_add_mouse_wheel_event :: proc (self: ^IO, wheel_x: f32, wheel_y: f32) {
+io_add_mouse_wheel_event :: #force_inline proc (self: ^IO, wheel_x: f32, wheel_y: f32) {
 	ImGuiIO_AddMouseWheelEvent(self, wheel_x, wheel_y)
 }
-io_add_mouse_source_event :: proc (self: ^IO, source: Mouse_Source) {
+io_add_mouse_source_event :: #force_inline proc (self: ^IO, source: Mouse_Source) {
 	ImGuiIO_AddMouseSourceEvent(self, source)
 }
-io_add_focus_event :: proc (self: ^IO, focused: bool) {
+io_add_focus_event :: #force_inline proc (self: ^IO, focused: bool) {
 	ImGuiIO_AddFocusEvent(self, focused)
 }
-io_add_input_character :: proc (self: ^IO, c: u32) {
+io_add_input_character :: #force_inline proc (self: ^IO, c: u32) {
 	ImGuiIO_AddInputCharacter(self, c)
 }
-io_add_input_character_u_t_f16 :: proc (self: ^IO, c: u16) {
+io_add_input_character_u_t_f16 :: #force_inline proc (self: ^IO, c: u16) {
 	ImGuiIO_AddInputCharacterUTF16(self, c)
 }
-io_add_input_characters_u_t_f8 :: proc (self: ^IO, str: string) {
+io_add_input_characters_u_t_f8 :: #force_inline proc (self: ^IO, str: string) {
 	_temp_str := semisafe_string_to_cstring(str)
 	ImGuiIO_AddInputCharactersUTF8(self, _temp_str)
 }
-io_set_key_event_native_data :: proc (self: ^IO, key: Key, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) {
+io_set_key_event_native_data :: #force_inline proc (self: ^IO, key: Key, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) {
 	ImGuiIO_SetKeyEventNativeData(self, key, native_keycode, native_scancode, native_legacy_index)
 }
-io_set_app_accepting_events :: proc (self: ^IO, accepting_events: bool) {
+io_set_app_accepting_events :: #force_inline proc (self: ^IO, accepting_events: bool) {
 	ImGuiIO_SetAppAcceptingEvents(self, accepting_events)
 }
-io_clear_input_characters :: proc (self: ^IO) {
+io_clear_input_characters :: #force_inline proc (self: ^IO) {
 	ImGuiIO_ClearInputCharacters(self)
 }
-io_clear_input_keys :: proc (self: ^IO) {
+io_clear_input_keys :: #force_inline proc (self: ^IO) {
 	ImGuiIO_ClearInputKeys(self)
 }
-io_new :: proc () -> ^IO {
+io_new :: #force_inline proc () -> ^IO {
 	return ImGuiIO_ImGuiIO()
 }
-io_destroy :: proc (self: ^IO) {
+io_destroy :: #force_inline proc (self: ^IO) {
 	ImGuiIO_destroy(self)
 }
-input_text_callback_data_new :: proc () -> ^Input_Text_Callback_Data {
+input_text_callback_data_new :: #force_inline proc () -> ^Input_Text_Callback_Data {
 	return ImGuiInputTextCallbackData_ImGuiInputTextCallbackData()
 }
-input_text_callback_data_destroy :: proc (self: ^Input_Text_Callback_Data) {
+input_text_callback_data_destroy :: #force_inline proc (self: ^Input_Text_Callback_Data) {
 	ImGuiInputTextCallbackData_destroy(self)
 }
-input_text_callback_data_delete_chars :: proc (self: ^Input_Text_Callback_Data, pos: i32, bytes_count: i32) {
+input_text_callback_data_delete_chars :: #force_inline proc (self: ^Input_Text_Callback_Data, pos: i32, bytes_count: i32) {
 	ImGuiInputTextCallbackData_DeleteChars(self, pos, bytes_count)
 }
-input_text_callback_data_insert_chars :: proc (self: ^Input_Text_Callback_Data, pos: i32, text: string) {
+input_text_callback_data_insert_chars :: #force_inline proc (self: ^Input_Text_Callback_Data, pos: i32, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImGuiInputTextCallbackData_InsertChars(self, pos, text_begin, text_end)
 }
-input_text_callback_data_select_all :: proc (self: ^Input_Text_Callback_Data) {
+input_text_callback_data_select_all :: #force_inline proc (self: ^Input_Text_Callback_Data) {
 	ImGuiInputTextCallbackData_SelectAll(self)
 }
-input_text_callback_data_clear_selection :: proc (self: ^Input_Text_Callback_Data) {
+input_text_callback_data_clear_selection :: #force_inline proc (self: ^Input_Text_Callback_Data) {
 	ImGuiInputTextCallbackData_ClearSelection(self)
 }
-input_text_callback_data_has_selection :: proc (self: ^Input_Text_Callback_Data) -> bool {
+input_text_callback_data_has_selection :: #force_inline proc (self: ^Input_Text_Callback_Data) -> bool {
 	return ImGuiInputTextCallbackData_HasSelection(self)
 }
-payload_new :: proc () -> ^Payload {
+payload_new :: #force_inline proc () -> ^Payload {
 	return ImGuiPayload_ImGuiPayload()
 }
-payload_destroy :: proc (self: ^Payload) {
+payload_destroy :: #force_inline proc (self: ^Payload) {
 	ImGuiPayload_destroy(self)
 }
-payload_clear :: proc (self: ^Payload) {
+payload_clear :: #force_inline proc (self: ^Payload) {
 	ImGuiPayload_Clear(self)
 }
-payload_is_data_type :: proc (self: ^Payload, type: string) -> bool {
+payload_is_data_type :: #force_inline proc (self: ^Payload, type: string) -> bool {
 	_temp_type := semisafe_string_to_cstring(type)
 	return ImGuiPayload_IsDataType(self, _temp_type)
 }
-payload_is_preview :: proc (self: ^Payload) -> bool {
+payload_is_preview :: #force_inline proc (self: ^Payload) -> bool {
 	return ImGuiPayload_IsPreview(self)
 }
-payload_is_delivery :: proc (self: ^Payload) -> bool {
+payload_is_delivery :: #force_inline proc (self: ^Payload) -> bool {
 	return ImGuiPayload_IsDelivery(self)
 }
-table_column_sort_specs_new :: proc () -> ^Table_Column_Sort_Specs {
+table_column_sort_specs_new :: #force_inline proc () -> ^Table_Column_Sort_Specs {
 	return ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs()
 }
-table_column_sort_specs_destroy :: proc (self: ^Table_Column_Sort_Specs) {
+table_column_sort_specs_destroy :: #force_inline proc (self: ^Table_Column_Sort_Specs) {
 	ImGuiTableColumnSortSpecs_destroy(self)
 }
-table_sort_specs_new :: proc () -> ^Table_Sort_Specs {
+table_sort_specs_new :: #force_inline proc () -> ^Table_Sort_Specs {
 	return ImGuiTableSortSpecs_ImGuiTableSortSpecs()
 }
-table_sort_specs_destroy :: proc (self: ^Table_Sort_Specs) {
+table_sort_specs_destroy :: #force_inline proc (self: ^Table_Sort_Specs) {
 	ImGuiTableSortSpecs_destroy(self)
 }
-once_upon_a_frame_new :: proc () -> ^Once_Upon_A_Frame {
+once_upon_a_frame_new :: #force_inline proc () -> ^Once_Upon_A_Frame {
 	return ImGuiOnceUponAFrame_ImGuiOnceUponAFrame()
 }
-once_upon_a_frame_destroy :: proc (self: ^Once_Upon_A_Frame) {
+once_upon_a_frame_destroy :: #force_inline proc (self: ^Once_Upon_A_Frame) {
 	ImGuiOnceUponAFrame_destroy(self)
 }
-text_filter_new :: proc (default_filter: cstring) -> ^Text_Filter {
+text_filter_new :: #force_inline proc (default_filter: cstring) -> ^Text_Filter {
 	return ImGuiTextFilter_ImGuiTextFilter(default_filter)
 }
-text_filter_destroy :: proc (self: ^Text_Filter) {
+text_filter_destroy :: #force_inline proc (self: ^Text_Filter) {
 	ImGuiTextFilter_destroy(self)
 }
-text_filter_draw :: proc (self: ^Text_Filter, label: string, width: f32) -> bool {
+text_filter_draw :: #force_inline proc (self: ^Text_Filter, label: string, width: f32) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return ImGuiTextFilter_Draw(self, _temp_label, width)
 }
-text_filter_pass_filter :: proc (self: ^Text_Filter, text: string) -> bool {
+text_filter_pass_filter :: #force_inline proc (self: ^Text_Filter, text: string) -> bool {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	return ImGuiTextFilter_PassFilter(self, text_begin, text_end)
 }
-text_filter_build :: proc (self: ^Text_Filter) {
+text_filter_build :: #force_inline proc (self: ^Text_Filter) {
 	ImGuiTextFilter_Build(self)
 }
-text_filter_clear :: proc (self: ^Text_Filter) {
+text_filter_clear :: #force_inline proc (self: ^Text_Filter) {
 	ImGuiTextFilter_Clear(self)
 }
-text_filter_is_active :: proc (self: ^Text_Filter) -> bool {
+text_filter_is_active :: #force_inline proc (self: ^Text_Filter) -> bool {
 	return ImGuiTextFilter_IsActive(self)
 }
-text_range_new_nil :: proc () -> ^Text_Range {
+text_range_new_nil :: #force_inline proc () -> ^Text_Range {
 	return ImGuiTextRange_ImGuiTextRange_Nil()
 }
-text_range_destroy :: proc (self: ^Text_Range) {
+text_range_destroy :: #force_inline proc (self: ^Text_Range) {
 	ImGuiTextRange_destroy(self)
 }
-text_range_new_str :: proc (_b: cstring, _e: string) -> ^Text_Range {
+text_range_new_str :: #force_inline proc (_b: cstring, _e: string) -> ^Text_Range {
 	_temp__e := semisafe_string_to_cstring(_e)
 	return ImGuiTextRange_ImGuiTextRange_Str(_b, _temp__e)
 }
-text_range_empty :: proc (self: ^Text_Range) -> bool {
+text_range_empty :: #force_inline proc (self: ^Text_Range) -> bool {
 	return ImGuiTextRange_empty(self)
 }
-text_range_split :: proc (self: ^Text_Range, separator: i8, out: ^Vector(Text_Range)) {
+text_range_split :: #force_inline proc (self: ^Text_Range, separator: i8, out: ^Vector(Text_Range)) {
 	ImGuiTextRange_split(self, separator, out)
 }
-text_buffer_new :: proc () -> ^Text_Buffer {
+text_buffer_new :: #force_inline proc () -> ^Text_Buffer {
 	return ImGuiTextBuffer_ImGuiTextBuffer()
 }
-text_buffer_destroy :: proc (self: ^Text_Buffer) {
+text_buffer_destroy :: #force_inline proc (self: ^Text_Buffer) {
 	ImGuiTextBuffer_destroy(self)
 }
-text_buffer_begin :: proc (self: ^Text_Buffer) -> cstring {
+text_buffer_begin :: #force_inline proc (self: ^Text_Buffer) -> cstring {
 	return ImGuiTextBuffer_begin(self)
 }
-text_buffer_end :: proc (self: ^Text_Buffer) -> cstring {
+text_buffer_end :: #force_inline proc (self: ^Text_Buffer) -> cstring {
 	return ImGuiTextBuffer_end(self)
 }
-text_buffer_size :: proc (self: ^Text_Buffer) -> i32 {
+text_buffer_size :: #force_inline proc (self: ^Text_Buffer) -> i32 {
 	return ImGuiTextBuffer_size(self)
 }
-text_buffer_empty :: proc (self: ^Text_Buffer) -> bool {
+text_buffer_empty :: #force_inline proc (self: ^Text_Buffer) -> bool {
 	return ImGuiTextBuffer_empty(self)
 }
-text_buffer_clear :: proc (self: ^Text_Buffer) {
+text_buffer_clear :: #force_inline proc (self: ^Text_Buffer) {
 	ImGuiTextBuffer_clear(self)
 }
-text_buffer_reserve :: proc (self: ^Text_Buffer, capacity: i32) {
+text_buffer_reserve :: #force_inline proc (self: ^Text_Buffer, capacity: i32) {
 	ImGuiTextBuffer_reserve(self, capacity)
 }
-text_buffer_c_str :: proc (self: ^Text_Buffer) -> cstring {
+text_buffer_c_str :: #force_inline proc (self: ^Text_Buffer) -> cstring {
 	return ImGuiTextBuffer_c_str(self)
 }
-text_buffer_append :: proc (self: ^Text_Buffer, str: string) {
+text_buffer_append :: #force_inline proc (self: ^Text_Buffer, str: string) {
 	str_begin := raw_data(str)
 	str_end := cast([^]u8)(uintptr(str_begin) + uintptr(len(str)))
 	ImGuiTextBuffer_append(self, str_begin, str_end)
 }
-storage_pair_new_int :: proc (_key: ID, _val_i: i32) -> ^Storage_Pair {
+storage_pair_new_int :: #force_inline proc (_key: ID, _val_i: i32) -> ^Storage_Pair {
 	return ImGuiStoragePair_ImGuiStoragePair_Int(_key, _val_i)
 }
-storage_pair_destroy :: proc (self: ^Storage_Pair) {
+storage_pair_destroy :: #force_inline proc (self: ^Storage_Pair) {
 	ImGuiStoragePair_destroy(self)
 }
-storage_pair_new_float :: proc (_key: ID, _val_f: f32) -> ^Storage_Pair {
+storage_pair_new_float :: #force_inline proc (_key: ID, _val_f: f32) -> ^Storage_Pair {
 	return ImGuiStoragePair_ImGuiStoragePair_Float(_key, _val_f)
 }
-storage_pair_new_ptr :: proc (_key: ID, _val_p: rawptr) -> ^Storage_Pair {
+storage_pair_new_ptr :: #force_inline proc (_key: ID, _val_p: rawptr) -> ^Storage_Pair {
 	return ImGuiStoragePair_ImGuiStoragePair_Ptr(_key, _val_p)
 }
-storage_clear :: proc (self: ^Storage) {
+storage_clear :: #force_inline proc (self: ^Storage) {
 	ImGuiStorage_Clear(self)
 }
-storage_get_int :: proc (self: ^Storage, key: ID, default_val: i32) -> i32 {
+storage_get_int :: #force_inline proc (self: ^Storage, key: ID, default_val: i32) -> i32 {
 	return ImGuiStorage_GetInt(self, key, default_val)
 }
-storage_set_int :: proc (self: ^Storage, key: ID, val: i32) {
+storage_set_int :: #force_inline proc (self: ^Storage, key: ID, val: i32) {
 	ImGuiStorage_SetInt(self, key, val)
 }
-storage_get_bool :: proc (self: ^Storage, key: ID, default_val: bool) -> bool {
+storage_get_bool :: #force_inline proc (self: ^Storage, key: ID, default_val: bool) -> bool {
 	return ImGuiStorage_GetBool(self, key, default_val)
 }
-storage_set_bool :: proc (self: ^Storage, key: ID, val: bool) {
+storage_set_bool :: #force_inline proc (self: ^Storage, key: ID, val: bool) {
 	ImGuiStorage_SetBool(self, key, val)
 }
-storage_get_float :: proc (self: ^Storage, key: ID, default_val: f32) -> f32 {
+storage_get_float :: #force_inline proc (self: ^Storage, key: ID, default_val: f32) -> f32 {
 	return ImGuiStorage_GetFloat(self, key, default_val)
 }
-storage_set_float :: proc (self: ^Storage, key: ID, val: f32) {
+storage_set_float :: #force_inline proc (self: ^Storage, key: ID, val: f32) {
 	ImGuiStorage_SetFloat(self, key, val)
 }
-storage_get_void_ptr :: proc (self: ^Storage, key: ID) -> rawptr {
+storage_get_void_ptr :: #force_inline proc (self: ^Storage, key: ID) -> rawptr {
 	return ImGuiStorage_GetVoidPtr(self, key)
 }
-storage_set_void_ptr :: proc (self: ^Storage, key: ID, val: rawptr) {
+storage_set_void_ptr :: #force_inline proc (self: ^Storage, key: ID, val: rawptr) {
 	ImGuiStorage_SetVoidPtr(self, key, val)
 }
-storage_get_int_ref :: proc (self: ^Storage, key: ID, default_val: i32) -> ^i32 {
+storage_get_int_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: i32) -> ^i32 {
 	return ImGuiStorage_GetIntRef(self, key, default_val)
 }
-storage_get_bool_ref :: proc (self: ^Storage, key: ID, default_val: bool) -> ^bool {
+storage_get_bool_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: bool) -> ^bool {
 	return ImGuiStorage_GetBoolRef(self, key, default_val)
 }
-storage_get_float_ref :: proc (self: ^Storage, key: ID, default_val: f32) -> ^f32 {
+storage_get_float_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: f32) -> ^f32 {
 	return ImGuiStorage_GetFloatRef(self, key, default_val)
 }
-storage_get_void_ptr_ref :: proc (self: ^Storage, key: ID, default_val: rawptr) -> ^rawptr {
+storage_get_void_ptr_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: rawptr) -> ^rawptr {
 	return ImGuiStorage_GetVoidPtrRef(self, key, default_val)
 }
-storage_set_all_int :: proc (self: ^Storage, val: i32) {
+storage_set_all_int :: #force_inline proc (self: ^Storage, val: i32) {
 	ImGuiStorage_SetAllInt(self, val)
 }
-storage_build_sort_by_key :: proc (self: ^Storage) {
+storage_build_sort_by_key :: #force_inline proc (self: ^Storage) {
 	ImGuiStorage_BuildSortByKey(self)
 }
-list_clipper_new :: proc () -> ^List_Clipper {
+list_clipper_new :: #force_inline proc () -> ^List_Clipper {
 	return ImGuiListClipper_ImGuiListClipper()
 }
-list_clipper_destroy :: proc (self: ^List_Clipper) {
+list_clipper_destroy :: #force_inline proc (self: ^List_Clipper) {
 	ImGuiListClipper_destroy(self)
 }
-list_clipper_begin :: proc (self: ^List_Clipper, items_count: i32, items_height: f32) {
+list_clipper_begin :: #force_inline proc (self: ^List_Clipper, items_count: i32, items_height: f32) {
 	ImGuiListClipper_Begin(self, items_count, items_height)
 }
-list_clipper_end :: proc (self: ^List_Clipper) {
+list_clipper_end :: #force_inline proc (self: ^List_Clipper) {
 	ImGuiListClipper_End(self)
 }
-list_clipper_step :: proc (self: ^List_Clipper) -> bool {
+list_clipper_step :: #force_inline proc (self: ^List_Clipper) -> bool {
 	return ImGuiListClipper_Step(self)
 }
-list_clipper_force_display_range_by_indices :: proc (self: ^List_Clipper, item_min: i32, item_max: i32) {
+list_clipper_force_display_range_by_indices :: #force_inline proc (self: ^List_Clipper, item_min: i32, item_max: i32) {
 	ImGuiListClipper_ForceDisplayRangeByIndices(self, item_min, item_max)
 }
-color_new_nil :: proc () -> ^Color {
+color_new_nil :: #force_inline proc () -> ^Color {
 	return ImColor_ImColor_Nil()
 }
-color_destroy :: proc (self: ^Color) {
+color_destroy :: #force_inline proc (self: ^Color) {
 	ImColor_destroy(self)
 }
-color_new_float :: proc (r: f32, g: f32, b: f32, a: f32) -> ^Color {
+color_new_float :: #force_inline proc (r: f32, g: f32, b: f32, a: f32) -> ^Color {
 	return ImColor_ImColor_Float(r, g, b, a)
 }
-color_new_vec4 :: proc (col: [4]f32) -> ^Color {
+color_new_vec4 :: #force_inline proc (col := [4]f32{}) -> ^Color {
 	return ImColor_ImColor_Vec4(col)
 }
-color_new_int :: proc (r: i32, g: i32, b: i32, a: i32) -> ^Color {
+color_new_int :: #force_inline proc (r: i32, g: i32, b: i32, a: i32) -> ^Color {
 	return ImColor_ImColor_Int(r, g, b, a)
 }
-color_new_u32 :: proc (rgba: u32) -> ^Color {
+color_new_u32 :: #force_inline proc (rgba: u32) -> ^Color {
 	return ImColor_ImColor_U32(rgba)
 }
-color_set_hsv :: proc (self: ^Color, h: f32, s: f32, v: f32, a: f32) {
+color_set_hsv :: #force_inline proc (self: ^Color, h: f32, s: f32, v: f32, a: f32) {
 	ImColor_SetHSV(self, h, s, v, a)
 }
-color_hsv :: proc (h: f32, s: f32, v: f32, a: f32) -> (p_out: Color) {
+color_hsv :: #force_inline proc (h: f32, s: f32, v: f32, a: f32) -> (p_out: Color) {
 	ImColor_HSV(&p_out, h, s, v, a)
 	return
 }
-draw_cmd_new :: proc () -> ^Draw_Cmd {
+draw_cmd_new :: #force_inline proc () -> ^Draw_Cmd {
 	return ImDrawCmd_ImDrawCmd()
 }
-draw_cmd_destroy :: proc (self: ^Draw_Cmd) {
+draw_cmd_destroy :: #force_inline proc (self: ^Draw_Cmd) {
 	ImDrawCmd_destroy(self)
 }
-draw_cmd_get_tex_id :: proc (self: ^Draw_Cmd) -> Texture_ID {
+draw_cmd_get_tex_id :: #force_inline proc (self: ^Draw_Cmd) -> Texture_ID {
 	return ImDrawCmd_GetTexID(self)
 }
-draw_list_splitter_new :: proc () -> ^Draw_List_Splitter {
+draw_list_splitter_new :: #force_inline proc () -> ^Draw_List_Splitter {
 	return ImDrawListSplitter_ImDrawListSplitter()
 }
-draw_list_splitter_destroy :: proc (self: ^Draw_List_Splitter) {
+draw_list_splitter_destroy :: #force_inline proc (self: ^Draw_List_Splitter) {
 	ImDrawListSplitter_destroy(self)
 }
-draw_list_splitter_clear :: proc (self: ^Draw_List_Splitter) {
+draw_list_splitter_clear :: #force_inline proc (self: ^Draw_List_Splitter) {
 	ImDrawListSplitter_Clear(self)
 }
-draw_list_splitter_clear_free_memory :: proc (self: ^Draw_List_Splitter) {
+draw_list_splitter_clear_free_memory :: #force_inline proc (self: ^Draw_List_Splitter) {
 	ImDrawListSplitter_ClearFreeMemory(self)
 }
-draw_list_splitter_split :: proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List, count: i32) {
+draw_list_splitter_split :: #force_inline proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List, count: i32) {
 	ImDrawListSplitter_Split(self, draw_list, count)
 }
-draw_list_splitter_merge :: proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List) {
+draw_list_splitter_merge :: #force_inline proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List) {
 	ImDrawListSplitter_Merge(self, draw_list)
 }
-draw_list_splitter_set_current_channel :: proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List, channel_idx: i32) {
+draw_list_splitter_set_current_channel :: #force_inline proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List, channel_idx: i32) {
 	ImDrawListSplitter_SetCurrentChannel(self, draw_list, channel_idx)
 }
-draw_list_new :: proc (shared_data: ^Draw_List_Shared_Data) -> ^Draw_List {
+draw_list_new :: #force_inline proc (shared_data: ^Draw_List_Shared_Data) -> ^Draw_List {
 	return ImDrawList_ImDrawList(shared_data)
 }
-draw_list_destroy :: proc (self: ^Draw_List) {
+draw_list_destroy :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_destroy(self)
 }
-draw_list_push_clip_rect :: proc (self: ^Draw_List, clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) {
+draw_list_push_clip_rect :: #force_inline proc (self: ^Draw_List, clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) {
 	ImDrawList_PushClipRect(self, clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
 }
-draw_list_push_clip_rect_full_screen :: proc (self: ^Draw_List) {
+draw_list_push_clip_rect_full_screen :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_PushClipRectFullScreen(self)
 }
-draw_list_pop_clip_rect :: proc (self: ^Draw_List) {
+draw_list_pop_clip_rect :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_PopClipRect(self)
 }
-draw_list_push_texture_id :: proc (self: ^Draw_List, texture_id: Texture_ID) {
+draw_list_push_texture_id :: #force_inline proc (self: ^Draw_List, texture_id: Texture_ID) {
 	ImDrawList_PushTextureID(self, texture_id)
 }
-draw_list_pop_texture_id :: proc (self: ^Draw_List) {
+draw_list_pop_texture_id :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_PopTextureID(self)
 }
-draw_list_get_clip_rect_min :: proc (self: ^Draw_List) -> (p_out: [2]f32) {
+draw_list_get_clip_rect_min :: #force_inline proc (self: ^Draw_List) -> (p_out: [2]f32) {
 	ImDrawList_GetClipRectMin(&p_out, self)
 	return
 }
-draw_list_get_clip_rect_max :: proc (self: ^Draw_List) -> (p_out: [2]f32) {
+draw_list_get_clip_rect_max :: #force_inline proc (self: ^Draw_List) -> (p_out: [2]f32) {
 	ImDrawList_GetClipRectMax(&p_out, self)
 	return
 }
-draw_list_add_line :: proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, col: u32, thickness: f32) {
+draw_list_add_line :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, col: u32, thickness: f32) {
 	ImDrawList_AddLine(self, p1, p2, col, thickness)
 }
-draw_list_add_rect :: proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags, thickness: f32) {
+draw_list_add_rect :: #force_inline proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags, thickness: f32) {
 	ImDrawList_AddRect(self, p_min, p_max, col, rounding, flags, thickness)
 }
-draw_list_add_rect_filled :: proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags) {
+draw_list_add_rect_filled :: #force_inline proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags := Draw_Flags{}) {
 	ImDrawList_AddRectFilled(self, p_min, p_max, col, rounding, flags)
 }
-draw_list_add_rect_filled_multi_color :: proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col_upr_left: u32, col_upr_right: u32, col_bot_right: u32, col_bot_left: u32) {
+draw_list_add_rect_filled_multi_color :: #force_inline proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col_upr_left: u32, col_upr_right: u32, col_bot_right: u32, col_bot_left: u32) {
 	ImDrawList_AddRectFilledMultiColor(self, p_min, p_max, col_upr_left, col_upr_right, col_bot_right, col_bot_left)
 }
-draw_list_add_quad :: proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32) {
+draw_list_add_quad :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32) {
 	ImDrawList_AddQuad(self, p1, p2, p3, p4, col, thickness)
 }
-draw_list_add_quad_filled :: proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32) {
+draw_list_add_quad_filled :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32) {
 	ImDrawList_AddQuadFilled(self, p1, p2, p3, p4, col)
 }
-draw_list_add_triangle :: proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32) {
+draw_list_add_triangle :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32) {
 	ImDrawList_AddTriangle(self, p1, p2, p3, col, thickness)
 }
-draw_list_add_triangle_filled :: proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32) {
+draw_list_add_triangle_filled :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32) {
 	ImDrawList_AddTriangleFilled(self, p1, p2, p3, col)
 }
-draw_list_add_circle :: proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) {
+draw_list_add_circle :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) {
 	ImDrawList_AddCircle(self, center, radius, col, num_segments, thickness)
 }
-draw_list_add_circle_filled :: proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) {
+draw_list_add_circle_filled :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) {
 	ImDrawList_AddCircleFilled(self, center, radius, col, num_segments)
 }
-draw_list_add_ngon :: proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) {
+draw_list_add_ngon :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) {
 	ImDrawList_AddNgon(self, center, radius, col, num_segments, thickness)
 }
-draw_list_add_ngon_filled :: proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) {
+draw_list_add_ngon_filled :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) {
 	ImDrawList_AddNgonFilled(self, center, radius, col, num_segments)
 }
-draw_list_add_text_vec2 :: proc (self: ^Draw_List, pos: [2]f32, col: u32, text: string) {
+draw_list_add_text_vec2 :: #force_inline proc (self: ^Draw_List, pos: [2]f32, col: u32, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImDrawList_AddText_Vec2(self, pos, col, text_begin, text_end)
 }
-draw_list_add_text_font_ptr :: proc (self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text: string, wrap_width: f32, cpu_fine_clip_rect: ^[4]f32) {
+draw_list_add_text_font_ptr :: #force_inline proc (self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text: string, wrap_width: f32, cpu_fine_clip_rect: ^[4]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImDrawList_AddText_FontPtr(self, font, font_size, pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect)
 }
-draw_list_add_polyline :: proc (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32, flags: Draw_Flags, thickness: f32) {
+draw_list_add_polyline :: #force_inline proc (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32, flags: Draw_Flags, thickness: f32) {
 	ImDrawList_AddPolyline(self, points, num_points, col, flags, thickness)
 }
-draw_list_add_convex_poly_filled :: proc (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32) {
+draw_list_add_convex_poly_filled :: #force_inline proc (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32) {
 	ImDrawList_AddConvexPolyFilled(self, points, num_points, col)
 }
-draw_list_add_bezier_cubic :: proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32, num_segments: i32) {
+draw_list_add_bezier_cubic :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32, num_segments: i32) {
 	ImDrawList_AddBezierCubic(self, p1, p2, p3, p4, col, thickness, num_segments)
 }
-draw_list_add_bezier_quadratic :: proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32, num_segments: i32) {
+draw_list_add_bezier_quadratic :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32, num_segments: i32) {
 	ImDrawList_AddBezierQuadratic(self, p1, p2, p3, col, thickness, num_segments)
 }
-draw_list_add_image :: proc (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32) {
+draw_list_add_image :: #force_inline proc (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32) {
 	ImDrawList_AddImage(self, user_texture_id, p_min, p_max, uv_min, uv_max, col)
 }
-draw_list_add_image_quad :: proc (self: ^Draw_List, user_texture_id: Texture_ID, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, uv1: [2]f32, uv2: [2]f32, uv3: [2]f32, uv4: [2]f32, col: u32) {
+draw_list_add_image_quad :: #force_inline proc (self: ^Draw_List, user_texture_id: Texture_ID, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, uv1: [2]f32, uv2: [2]f32, uv3: [2]f32, uv4: [2]f32, col: u32) {
 	ImDrawList_AddImageQuad(self, user_texture_id, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col)
 }
-draw_list_add_image_rounded :: proc (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags) {
+draw_list_add_image_rounded :: #force_inline proc (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32, rounding: f32, flags := Draw_Flags{}) {
 	ImDrawList_AddImageRounded(self, user_texture_id, p_min, p_max, uv_min, uv_max, col, rounding, flags)
 }
-draw_list_path_clear :: proc (self: ^Draw_List) {
+draw_list_path_clear :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_PathClear(self)
 }
-draw_list_path_line_to :: proc (self: ^Draw_List, pos: [2]f32) {
+draw_list_path_line_to :: #force_inline proc (self: ^Draw_List, pos := [2]f32{}) {
 	ImDrawList_PathLineTo(self, pos)
 }
-draw_list_path_line_to_merge_duplicate :: proc (self: ^Draw_List, pos: [2]f32) {
+draw_list_path_line_to_merge_duplicate :: #force_inline proc (self: ^Draw_List, pos := [2]f32{}) {
 	ImDrawList_PathLineToMergeDuplicate(self, pos)
 }
-draw_list_path_fill_convex :: proc (self: ^Draw_List, col: u32) {
+draw_list_path_fill_convex :: #force_inline proc (self: ^Draw_List, col: u32) {
 	ImDrawList_PathFillConvex(self, col)
 }
-draw_list_path_stroke :: proc (self: ^Draw_List, col: u32, flags: Draw_Flags, thickness: f32) {
+draw_list_path_stroke :: #force_inline proc (self: ^Draw_List, col: u32, flags: Draw_Flags, thickness: f32) {
 	ImDrawList_PathStroke(self, col, flags, thickness)
 }
-draw_list_path_arc_to :: proc (self: ^Draw_List, center: [2]f32, radius: f32, a_min: f32, a_max: f32, num_segments: i32) {
+draw_list_path_arc_to :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, a_min: f32, a_max: f32, num_segments: i32) {
 	ImDrawList_PathArcTo(self, center, radius, a_min, a_max, num_segments)
 }
-draw_list_path_arc_to_fast :: proc (self: ^Draw_List, center: [2]f32, radius: f32, a_min_of_12: i32, a_max_of_12: i32) {
+draw_list_path_arc_to_fast :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, a_min_of_12: i32, a_max_of_12: i32) {
 	ImDrawList_PathArcToFast(self, center, radius, a_min_of_12, a_max_of_12)
 }
-draw_list_path_bezier_cubic_curve_to :: proc (self: ^Draw_List, p2: [2]f32, p3: [2]f32, p4: [2]f32, num_segments: i32) {
+draw_list_path_bezier_cubic_curve_to :: #force_inline proc (self: ^Draw_List, p2: [2]f32, p3: [2]f32, p4: [2]f32, num_segments: i32) {
 	ImDrawList_PathBezierCubicCurveTo(self, p2, p3, p4, num_segments)
 }
-draw_list_path_bezier_quadratic_curve_to :: proc (self: ^Draw_List, p2: [2]f32, p3: [2]f32, num_segments: i32) {
+draw_list_path_bezier_quadratic_curve_to :: #force_inline proc (self: ^Draw_List, p2: [2]f32, p3: [2]f32, num_segments: i32) {
 	ImDrawList_PathBezierQuadraticCurveTo(self, p2, p3, num_segments)
 }
-draw_list_path_rect :: proc (self: ^Draw_List, rect_min: [2]f32, rect_max: [2]f32, rounding: f32, flags: Draw_Flags) {
+draw_list_path_rect :: #force_inline proc (self: ^Draw_List, rect_min: [2]f32, rect_max: [2]f32, rounding: f32, flags := Draw_Flags{}) {
 	ImDrawList_PathRect(self, rect_min, rect_max, rounding, flags)
 }
-draw_list_add_callback :: proc (self: ^Draw_List, callback: Draw_Callback, callback_data: rawptr) {
+draw_list_add_callback :: #force_inline proc (self: ^Draw_List, callback: Draw_Callback, callback_data: rawptr) {
 	ImDrawList_AddCallback(self, callback, callback_data)
 }
-draw_list_add_draw_cmd :: proc (self: ^Draw_List) {
+draw_list_add_draw_cmd :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_AddDrawCmd(self)
 }
-draw_list_clone_output :: proc (self: ^Draw_List) -> ^Draw_List {
+draw_list_clone_output :: #force_inline proc (self: ^Draw_List) -> ^Draw_List {
 	return ImDrawList_CloneOutput(self)
 }
-draw_list_channels_split :: proc (self: ^Draw_List, count: i32) {
+draw_list_channels_split :: #force_inline proc (self: ^Draw_List, count: i32) {
 	ImDrawList_ChannelsSplit(self, count)
 }
-draw_list_channels_merge :: proc (self: ^Draw_List) {
+draw_list_channels_merge :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_ChannelsMerge(self)
 }
-draw_list_channels_set_current :: proc (self: ^Draw_List, n: i32) {
+draw_list_channels_set_current :: #force_inline proc (self: ^Draw_List, n: i32) {
 	ImDrawList_ChannelsSetCurrent(self, n)
 }
-draw_list_prim_reserve :: proc (self: ^Draw_List, idx_count: i32, vtx_count: i32) {
+draw_list_prim_reserve :: #force_inline proc (self: ^Draw_List, idx_count: i32, vtx_count: i32) {
 	ImDrawList_PrimReserve(self, idx_count, vtx_count)
 }
-draw_list_prim_unreserve :: proc (self: ^Draw_List, idx_count: i32, vtx_count: i32) {
+draw_list_prim_unreserve :: #force_inline proc (self: ^Draw_List, idx_count: i32, vtx_count: i32) {
 	ImDrawList_PrimUnreserve(self, idx_count, vtx_count)
 }
-draw_list_prim_rect :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, col: u32) {
+draw_list_prim_rect :: #force_inline proc (self: ^Draw_List, a: [2]f32, b: [2]f32, col: u32) {
 	ImDrawList_PrimRect(self, a, b, col)
 }
-draw_list_prim_rect_uv :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, col: u32) {
+draw_list_prim_rect_uv :: #force_inline proc (self: ^Draw_List, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, col: u32) {
 	ImDrawList_PrimRectUV(self, a, b, uv_a, uv_b, col)
 }
-draw_list_prim_quad_uv :: proc (self: ^Draw_List, a: [2]f32, b: [2]f32, c: [2]f32, d: [2]f32, uv_a: [2]f32, uv_b: [2]f32, uv_c: [2]f32, uv_d: [2]f32, col: u32) {
+draw_list_prim_quad_uv :: #force_inline proc (self: ^Draw_List, a: [2]f32, b: [2]f32, c: [2]f32, d: [2]f32, uv_a: [2]f32, uv_b: [2]f32, uv_c: [2]f32, uv_d: [2]f32, col: u32) {
 	ImDrawList_PrimQuadUV(self, a, b, c, d, uv_a, uv_b, uv_c, uv_d, col)
 }
-draw_list_prim_write_vtx :: proc (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) {
+draw_list_prim_write_vtx :: #force_inline proc (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) {
 	ImDrawList_PrimWriteVtx(self, pos, uv, col)
 }
-draw_list_prim_write_idx :: proc (self: ^Draw_List, idx: Draw_Idx) {
+draw_list_prim_write_idx :: #force_inline proc (self: ^Draw_List, idx: Draw_Idx) {
 	ImDrawList_PrimWriteIdx(self, idx)
 }
-draw_list_prim_vtx :: proc (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) {
+draw_list_prim_vtx :: #force_inline proc (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) {
 	ImDrawList_PrimVtx(self, pos, uv, col)
 }
-draw_data_new :: proc () -> ^Draw_Data {
+draw_data_new :: #force_inline proc () -> ^Draw_Data {
 	return ImDrawData_ImDrawData()
 }
-draw_data_destroy :: proc (self: ^Draw_Data) {
+draw_data_destroy :: #force_inline proc (self: ^Draw_Data) {
 	ImDrawData_destroy(self)
 }
-draw_data_clear :: proc (self: ^Draw_Data) {
+draw_data_clear :: #force_inline proc (self: ^Draw_Data) {
 	ImDrawData_Clear(self)
 }
-draw_data_de_index_all_buffers :: proc (self: ^Draw_Data) {
+draw_data_de_index_all_buffers :: #force_inline proc (self: ^Draw_Data) {
 	ImDrawData_DeIndexAllBuffers(self)
 }
-draw_data_scale_clip_rects :: proc (self: ^Draw_Data, fb_scale: [2]f32) {
+draw_data_scale_clip_rects :: #force_inline proc (self: ^Draw_Data, fb_scale := [2]f32{}) {
 	ImDrawData_ScaleClipRects(self, fb_scale)
 }
-font_config_new :: proc () -> ^Font_Config {
+font_config_new :: #force_inline proc () -> ^Font_Config {
 	return ImFontConfig_ImFontConfig()
 }
-font_config_destroy :: proc (self: ^Font_Config) {
+font_config_destroy :: #force_inline proc (self: ^Font_Config) {
 	ImFontConfig_destroy(self)
 }
-font_glyph_ranges_builder_new :: proc () -> ^Font_Glyph_Ranges_Builder {
+font_glyph_ranges_builder_new :: #force_inline proc () -> ^Font_Glyph_Ranges_Builder {
 	return ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder()
 }
-font_glyph_ranges_builder_destroy :: proc (self: ^Font_Glyph_Ranges_Builder) {
+font_glyph_ranges_builder_destroy :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder) {
 	ImFontGlyphRangesBuilder_destroy(self)
 }
-font_glyph_ranges_builder_clear :: proc (self: ^Font_Glyph_Ranges_Builder) {
+font_glyph_ranges_builder_clear :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder) {
 	ImFontGlyphRangesBuilder_Clear(self)
 }
-font_glyph_ranges_builder_get_bit :: proc (self: ^Font_Glyph_Ranges_Builder, n: int) -> bool {
+font_glyph_ranges_builder_get_bit :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, n: int) -> bool {
 	return ImFontGlyphRangesBuilder_GetBit(self, n)
 }
-font_glyph_ranges_builder_set_bit :: proc (self: ^Font_Glyph_Ranges_Builder, n: int) {
+font_glyph_ranges_builder_set_bit :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, n: int) {
 	ImFontGlyphRangesBuilder_SetBit(self, n)
 }
-font_glyph_ranges_builder_add_char :: proc (self: ^Font_Glyph_Ranges_Builder, c: u16) {
+font_glyph_ranges_builder_add_char :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, c: u16) {
 	ImFontGlyphRangesBuilder_AddChar(self, c)
 }
-font_glyph_ranges_builder_add_text :: proc (self: ^Font_Glyph_Ranges_Builder, text: string) {
+font_glyph_ranges_builder_add_text :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImFontGlyphRangesBuilder_AddText(self, text_begin, text_end)
 }
-font_glyph_ranges_builder_add_ranges :: proc (self: ^Font_Glyph_Ranges_Builder, ranges: ^u16) {
+font_glyph_ranges_builder_add_ranges :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, ranges: ^u16) {
 	ImFontGlyphRangesBuilder_AddRanges(self, ranges)
 }
-font_glyph_ranges_builder_build_ranges :: proc (self: ^Font_Glyph_Ranges_Builder) -> (out_ranges: Vector(u16)) {
+font_glyph_ranges_builder_build_ranges :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder) -> (out_ranges: Vector(u16)) {
 	ImFontGlyphRangesBuilder_BuildRanges(self, &out_ranges)
 	return
 }
-font_atlas_custom_rect_new :: proc () -> ^Font_Atlas_Custom_Rect {
+font_atlas_custom_rect_new :: #force_inline proc () -> ^Font_Atlas_Custom_Rect {
 	return ImFontAtlasCustomRect_ImFontAtlasCustomRect()
 }
-font_atlas_custom_rect_destroy :: proc (self: ^Font_Atlas_Custom_Rect) {
+font_atlas_custom_rect_destroy :: #force_inline proc (self: ^Font_Atlas_Custom_Rect) {
 	ImFontAtlasCustomRect_destroy(self)
 }
-font_atlas_custom_rect_is_packed :: proc (self: ^Font_Atlas_Custom_Rect) -> bool {
+font_atlas_custom_rect_is_packed :: #force_inline proc (self: ^Font_Atlas_Custom_Rect) -> bool {
 	return ImFontAtlasCustomRect_IsPacked(self)
 }
-font_atlas_new :: proc () -> ^Font_Atlas {
+font_atlas_new :: #force_inline proc () -> ^Font_Atlas {
 	return ImFontAtlas_ImFontAtlas()
 }
-font_atlas_destroy :: proc (self: ^Font_Atlas) {
+font_atlas_destroy :: #force_inline proc (self: ^Font_Atlas) {
 	ImFontAtlas_destroy(self)
 }
-font_atlas_add_font :: proc (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font {
+font_atlas_add_font :: #force_inline proc (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font {
 	return ImFontAtlas_AddFont(self, font_cfg)
 }
-font_atlas_add_font_default :: proc (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font {
+font_atlas_add_font_default :: #force_inline proc (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font {
 	return ImFontAtlas_AddFontDefault(self, font_cfg)
 }
-font_atlas_add_font_from_file_t_t_f :: proc (self: ^Font_Atlas, filename: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
+font_atlas_add_font_from_file_ttf :: #force_inline proc (self: ^Font_Atlas, filename: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
 	_temp_filename := semisafe_string_to_cstring(filename)
 	return ImFontAtlas_AddFontFromFileTTF(self, _temp_filename, size_pixels, font_cfg, glyph_ranges)
 }
-font_atlas_add_font_from_memory_t_t_f :: proc (self: ^Font_Atlas, font_data: rawptr, font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
+font_atlas_add_font_from_memory_ttf :: #force_inline proc (self: ^Font_Atlas, font_data: rawptr, font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
 	return ImFontAtlas_AddFontFromMemoryTTF(self, font_data, font_size, size_pixels, font_cfg, glyph_ranges)
 }
-font_atlas_add_font_from_memory_compressed_t_t_f :: proc (self: ^Font_Atlas, compressed_font_data: rawptr, compressed_font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
+font_atlas_add_font_from_memory_compressed_ttf :: #force_inline proc (self: ^Font_Atlas, compressed_font_data: rawptr, compressed_font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
 	return ImFontAtlas_AddFontFromMemoryCompressedTTF(self, compressed_font_data, compressed_font_size, size_pixels, font_cfg, glyph_ranges)
 }
-font_atlas_add_font_from_memory_compressed_base85_t_t_f :: proc (self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
+font_atlas_add_font_from_memory_compressed_base85_ttf :: #force_inline proc (self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
 	_temp_compressed_font_data_base85 := semisafe_string_to_cstring(compressed_font_data_base85)
 	return ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self, _temp_compressed_font_data_base85, size_pixels, font_cfg, glyph_ranges)
 }
-font_atlas_clear_input_data :: proc (self: ^Font_Atlas) {
+font_atlas_clear_input_data :: #force_inline proc (self: ^Font_Atlas) {
 	ImFontAtlas_ClearInputData(self)
 }
-font_atlas_clear_tex_data :: proc (self: ^Font_Atlas) {
+font_atlas_clear_tex_data :: #force_inline proc (self: ^Font_Atlas) {
 	ImFontAtlas_ClearTexData(self)
 }
-font_atlas_clear_fonts :: proc (self: ^Font_Atlas) {
+font_atlas_clear_fonts :: #force_inline proc (self: ^Font_Atlas) {
 	ImFontAtlas_ClearFonts(self)
 }
-font_atlas_clear :: proc (self: ^Font_Atlas) {
+font_atlas_clear :: #force_inline proc (self: ^Font_Atlas) {
 	ImFontAtlas_Clear(self)
 }
-font_atlas_build :: proc (self: ^Font_Atlas) -> bool {
+font_atlas_build :: #force_inline proc (self: ^Font_Atlas) -> bool {
 	return ImFontAtlas_Build(self)
 }
-font_atlas_get_tex_data_as_alpha8 :: proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
+font_atlas_get_tex_data_as_alpha8 :: #force_inline proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
 	ImFontAtlas_GetTexDataAsAlpha8(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
 	return
 }
-font_atlas_get_tex_data_as_rgba32 :: proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
+font_atlas_get_tex_data_as_rgba32 :: #force_inline proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
 	ImFontAtlas_GetTexDataAsRGBA32(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
 	return
 }
-font_atlas_is_built :: proc (self: ^Font_Atlas) -> bool {
+font_atlas_is_built :: #force_inline proc (self: ^Font_Atlas) -> bool {
 	return ImFontAtlas_IsBuilt(self)
 }
-font_atlas_set_tex_id :: proc (self: ^Font_Atlas, id: Texture_ID) {
+font_atlas_set_tex_id :: #force_inline proc (self: ^Font_Atlas, id: Texture_ID) {
 	ImFontAtlas_SetTexID(self, id)
 }
-font_atlas_get_glyph_ranges_default :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_default :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesDefault(self)
 }
-font_atlas_get_glyph_ranges_greek :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_greek :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesGreek(self)
 }
-font_atlas_get_glyph_ranges_korean :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_korean :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesKorean(self)
 }
-font_atlas_get_glyph_ranges_japanese :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_japanese :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesJapanese(self)
 }
-font_atlas_get_glyph_ranges_chinese_full :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_chinese_full :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesChineseFull(self)
 }
-font_atlas_get_glyph_ranges_chinese_simplified_common :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_chinese_simplified_common :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon(self)
 }
-font_atlas_get_glyph_ranges_cyrillic :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_cyrillic :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesCyrillic(self)
 }
-font_atlas_get_glyph_ranges_thai :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_thai :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesThai(self)
 }
-font_atlas_get_glyph_ranges_vietnamese :: proc (self: ^Font_Atlas) -> ^u16 {
+font_atlas_get_glyph_ranges_vietnamese :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
 	return ImFontAtlas_GetGlyphRangesVietnamese(self)
 }
-font_atlas_add_custom_rect_regular :: proc (self: ^Font_Atlas, width: i32, height: i32) -> i32 {
+font_atlas_add_custom_rect_regular :: #force_inline proc (self: ^Font_Atlas, width: i32, height: i32) -> i32 {
 	return ImFontAtlas_AddCustomRectRegular(self, width, height)
 }
-font_atlas_add_custom_rect_font_glyph :: proc (self: ^Font_Atlas, font: ^Font, id: u16, width: i32, height: i32, advance_x: f32, offset: [2]f32) -> i32 {
+font_atlas_add_custom_rect_font_glyph :: #force_inline proc (self: ^Font_Atlas, font: ^Font, id: u16, width: i32, height: i32, advance_x: f32, offset := [2]f32{}) -> i32 {
 	return ImFontAtlas_AddCustomRectFontGlyph(self, font, id, width, height, advance_x, offset)
 }
-font_atlas_get_custom_rect_by_index :: proc (self: ^Font_Atlas, index: i32) -> ^Font_Atlas_Custom_Rect {
+font_atlas_get_custom_rect_by_index :: #force_inline proc (self: ^Font_Atlas, index: i32) -> ^Font_Atlas_Custom_Rect {
 	return ImFontAtlas_GetCustomRectByIndex(self, index)
 }
-font_atlas_calc_custom_rect_uv :: proc (self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect) -> (out_uv_min: [2]f32, out_uv_max: [2]f32) {
+font_atlas_calc_custom_rect_uv :: #force_inline proc (self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect) -> (out_uv_min: [2]f32, out_uv_max: [2]f32) {
 	ImFontAtlas_CalcCustomRectUV(self, rect, &out_uv_min, &out_uv_max)
 	return
 }
-font_atlas_get_mouse_cursor_tex_data :: proc (self: ^Font_Atlas, cursor: Mouse_Cursor, out_uv_border: [2][2]f32, out_uv_fill: [2][2]f32) -> (out_offset: [2]f32, out_size: [2]f32, _ret: bool) {
+font_atlas_get_mouse_cursor_tex_data :: #force_inline proc (self: ^Font_Atlas, cursor: Mouse_Cursor, out_uv_border: [2][2]f32, out_uv_fill: [2][2]f32) -> (out_offset: [2]f32, out_size: [2]f32, _ret: bool) {
 	_ret = ImFontAtlas_GetMouseCursorTexData(self, cursor, &out_offset, &out_size, out_uv_border, out_uv_fill)
 	return
 }
-font_new :: proc () -> ^Font {
+font_new :: #force_inline proc () -> ^Font {
 	return ImFont_ImFont()
 }
-font_destroy :: proc (self: ^Font) {
+font_destroy :: #force_inline proc (self: ^Font) {
 	ImFont_destroy(self)
 }
-font_find_glyph :: proc (self: ^Font, c: u16) -> ^Font_Glyph {
+font_find_glyph :: #force_inline proc (self: ^Font, c: u16) -> ^Font_Glyph {
 	return ImFont_FindGlyph(self, c)
 }
-font_find_glyph_no_fallback :: proc (self: ^Font, c: u16) -> ^Font_Glyph {
+font_find_glyph_no_fallback :: #force_inline proc (self: ^Font, c: u16) -> ^Font_Glyph {
 	return ImFont_FindGlyphNoFallback(self, c)
 }
-font_get_char_advance :: proc (self: ^Font, c: u16) -> f32 {
+font_get_char_advance :: #force_inline proc (self: ^Font, c: u16) -> f32 {
 	return ImFont_GetCharAdvance(self, c)
 }
-font_is_loaded :: proc (self: ^Font) -> bool {
+font_is_loaded :: #force_inline proc (self: ^Font) -> bool {
 	return ImFont_IsLoaded(self)
 }
-font_get_debug_name :: proc (self: ^Font) -> cstring {
+font_get_debug_name :: #force_inline proc (self: ^Font) -> cstring {
 	return ImFont_GetDebugName(self)
 }
-font_calc_text_size_a :: proc (self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring) -> (p_out: [2]f32) {
+font_calc_text_size_a :: #force_inline proc (self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring) -> (p_out: [2]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImFont_CalcTextSizeA(&p_out, self, size, max_width, wrap_width, text_begin, text_end, remaining)
 	return
 }
-font_calc_word_wrap_position_a :: proc (self: ^Font, scale: f32, text: string, wrap_width: f32) -> cstring {
+font_calc_word_wrap_position_a :: #force_inline proc (self: ^Font, scale: f32, text: string, wrap_width: f32) -> cstring {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	return ImFont_CalcWordWrapPositionA(self, scale, text_begin, text_end, wrap_width)
 }
-font_render_char :: proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, c: u16) {
+font_render_char :: #force_inline proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, c: u16) {
 	ImFont_RenderChar(self, draw_list, size, pos, col, c)
 }
-font_render_text :: proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text: string, wrap_width: f32, cpu_fine_clip: bool) {
+font_render_text :: #force_inline proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text: string, wrap_width: f32, cpu_fine_clip: bool) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImFont_RenderText(self, draw_list, size, pos, col, clip_rect, text_begin, text_end, wrap_width, cpu_fine_clip)
 }
-font_build_lookup_table :: proc (self: ^Font) {
+font_build_lookup_table :: #force_inline proc (self: ^Font) {
 	ImFont_BuildLookupTable(self)
 }
-font_clear_output_data :: proc (self: ^Font) {
+font_clear_output_data :: #force_inline proc (self: ^Font) {
 	ImFont_ClearOutputData(self)
 }
-font_grow_index :: proc (self: ^Font, new_size: i32) {
+font_grow_index :: #force_inline proc (self: ^Font, new_size: i32) {
 	ImFont_GrowIndex(self, new_size)
 }
-font_add_glyph :: proc (self: ^Font, src_cfg: ^Font_Config, c: u16, x0: f32, y0: f32, x1: f32, y1: f32, u0: f32, v0: f32, u1: f32, v1: f32, advance_x: f32) {
+font_add_glyph :: #force_inline proc (self: ^Font, src_cfg: ^Font_Config, c: u16, x0: f32, y0: f32, x1: f32, y1: f32, u0: f32, v0: f32, u1: f32, v1: f32, advance_x: f32) {
 	ImFont_AddGlyph(self, src_cfg, c, x0, y0, x1, y1, u0, v0, u1, v1, advance_x)
 }
-font_add_remap_char :: proc (self: ^Font, dst: u16, src: u16, overwrite_dst: bool) {
+font_add_remap_char :: #force_inline proc (self: ^Font, dst: u16, src: u16, overwrite_dst: bool) {
 	ImFont_AddRemapChar(self, dst, src, overwrite_dst)
 }
-font_set_glyph_visible :: proc (self: ^Font, c: u16, visible: bool) {
+font_set_glyph_visible :: #force_inline proc (self: ^Font, c: u16, visible: bool) {
 	ImFont_SetGlyphVisible(self, c, visible)
 }
-font_is_glyph_range_unused :: proc (self: ^Font, c_begin: u32, c_last: u32) -> bool {
+font_is_glyph_range_unused :: #force_inline proc (self: ^Font, c_begin: u32, c_last: u32) -> bool {
 	return ImFont_IsGlyphRangeUnused(self, c_begin, c_last)
 }
-viewport_new :: proc () -> ^Viewport {
+viewport_new :: #force_inline proc () -> ^Viewport {
 	return ImGuiViewport_ImGuiViewport()
 }
-viewport_destroy :: proc (self: ^Viewport) {
+viewport_destroy :: #force_inline proc (self: ^Viewport) {
 	ImGuiViewport_destroy(self)
 }
-viewport_get_center :: proc (self: ^Viewport) -> (p_out: [2]f32) {
+viewport_get_center :: #force_inline proc (self: ^Viewport) -> (p_out: [2]f32) {
 	ImGuiViewport_GetCenter(&p_out, self)
 	return
 }
-viewport_get_work_center :: proc (self: ^Viewport) -> (p_out: [2]f32) {
+viewport_get_work_center :: #force_inline proc (self: ^Viewport) -> (p_out: [2]f32) {
 	ImGuiViewport_GetWorkCenter(&p_out, self)
 	return
 }
-platform_ime_data_new :: proc () -> ^Platform_Ime_Data {
+platform_ime_data_new :: #force_inline proc () -> ^Platform_Ime_Data {
 	return ImGuiPlatformImeData_ImGuiPlatformImeData()
 }
-platform_ime_data_destroy :: proc (self: ^Platform_Ime_Data) {
+platform_ime_data_destroy :: #force_inline proc (self: ^Platform_Ime_Data) {
 	ImGuiPlatformImeData_destroy(self)
 }
-get_key_index :: proc (key: Key) -> Key {
+get_key_index :: #force_inline proc (key: Key) -> Key {
 	return igGetKeyIndex(key)
 }
-im_bezier_cubic_calc :: proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, t: f32) -> (p_out: [2]f32) {
+im_bezier_cubic_calc :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, t: f32) -> (p_out: [2]f32) {
 	igImBezierCubicCalc(&p_out, p1, p2, p3, p4, t)
 	return
 }
-im_bezier_cubic_closest_point :: proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, num_segments: i32) -> (p_out: [2]f32) {
+im_bezier_cubic_closest_point :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, num_segments: i32) -> (p_out: [2]f32) {
 	igImBezierCubicClosestPoint(&p_out, p1, p2, p3, p4, p, num_segments)
 	return
 }
-im_bezier_cubic_closest_point_casteljau :: proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, tess_tol: f32) -> (p_out: [2]f32) {
+im_bezier_cubic_closest_point_casteljau :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, tess_tol: f32) -> (p_out: [2]f32) {
 	igImBezierCubicClosestPointCasteljau(&p_out, p1, p2, p3, p4, p, tess_tol)
 	return
 }
-im_bezier_quadratic_calc :: proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, t: f32) -> (p_out: [2]f32) {
+im_bezier_quadratic_calc :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, t: f32) -> (p_out: [2]f32) {
 	igImBezierQuadraticCalc(&p_out, p1, p2, p3, t)
 	return
 }
-rect_new_nil :: proc () -> ^Rect {
+rect_new_nil :: #force_inline proc () -> ^Rect {
 	return ImRect_ImRect_Nil()
 }
-rect_destroy :: proc (self: ^Rect) {
+rect_destroy :: #force_inline proc (self: ^Rect) {
 	ImRect_destroy(self)
 }
-rect_new_vec2 :: proc (min: [2]f32, max: [2]f32) -> ^Rect {
+rect_new_vec2 :: #force_inline proc (min := [2]f32{}, max := [2]f32{}) -> ^Rect {
 	return ImRect_ImRect_Vec2(min, max)
 }
-rect_new_vec4 :: proc (v: [4]f32) -> ^Rect {
+rect_new_vec4 :: #force_inline proc (v := [4]f32{}) -> ^Rect {
 	return ImRect_ImRect_Vec4(v)
 }
-rect_new_float :: proc (x1: f32, y1: f32, x2: f32, y2: f32) -> ^Rect {
+rect_new_float :: #force_inline proc (x1: f32, y1: f32, x2: f32, y2: f32) -> ^Rect {
 	return ImRect_ImRect_Float(x1, y1, x2, y2)
 }
-rect_get_center :: proc (self: ^Rect) -> (p_out: [2]f32) {
+rect_get_center :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
 	ImRect_GetCenter(&p_out, self)
 	return
 }
-rect_get_size :: proc (self: ^Rect) -> (p_out: [2]f32) {
+rect_get_size :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
 	ImRect_GetSize(&p_out, self)
 	return
 }
-rect_get_width :: proc (self: ^Rect) -> f32 {
+rect_get_width :: #force_inline proc (self: ^Rect) -> f32 {
 	return ImRect_GetWidth(self)
 }
-rect_get_height :: proc (self: ^Rect) -> f32 {
+rect_get_height :: #force_inline proc (self: ^Rect) -> f32 {
 	return ImRect_GetHeight(self)
 }
-rect_get_area :: proc (self: ^Rect) -> f32 {
+rect_get_area :: #force_inline proc (self: ^Rect) -> f32 {
 	return ImRect_GetArea(self)
 }
-rect_get_tl :: proc (self: ^Rect) -> (p_out: [2]f32) {
+rect_get_tl :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
 	ImRect_GetTL(&p_out, self)
 	return
 }
-rect_get_tr :: proc (self: ^Rect) -> (p_out: [2]f32) {
+rect_get_tr :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
 	ImRect_GetTR(&p_out, self)
 	return
 }
-rect_get_bl :: proc (self: ^Rect) -> (p_out: [2]f32) {
+rect_get_bl :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
 	ImRect_GetBL(&p_out, self)
 	return
 }
-rect_get_br :: proc (self: ^Rect) -> (p_out: [2]f32) {
+rect_get_br :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
 	ImRect_GetBR(&p_out, self)
 	return
 }
-rect_contains_vec2 :: proc (self: ^Rect, p: [2]f32) -> bool {
+rect_contains_vec2 :: #force_inline proc (self: ^Rect, p := [2]f32{}) -> bool {
 	return ImRect_Contains_Vec2(self, p)
 }
-rect_contains_rect :: proc (self: ^Rect, r: Rect) -> bool {
+rect_contains_rect :: #force_inline proc (self: ^Rect, r: Rect) -> bool {
 	return ImRect_Contains_Rect(self, r)
 }
-rect_overlaps :: proc (self: ^Rect, r: Rect) -> bool {
+rect_overlaps :: #force_inline proc (self: ^Rect, r: Rect) -> bool {
 	return ImRect_Overlaps(self, r)
 }
-rect_add_vec2 :: proc (self: ^Rect, p: [2]f32) {
+rect_add_vec2 :: #force_inline proc (self: ^Rect, p := [2]f32{}) {
 	ImRect_Add_Vec2(self, p)
 }
-rect_add_rect :: proc (self: ^Rect, r: Rect) {
+rect_add_rect :: #force_inline proc (self: ^Rect, r: Rect) {
 	ImRect_Add_Rect(self, r)
 }
-rect_expand_float :: proc (self: ^Rect, amount: f32) {
+rect_expand_float :: #force_inline proc (self: ^Rect, amount: f32) {
 	ImRect_Expand_Float(self, amount)
 }
-rect_expand_vec2 :: proc (self: ^Rect, amount: [2]f32) {
+rect_expand_vec2 :: #force_inline proc (self: ^Rect, amount := [2]f32{}) {
 	ImRect_Expand_Vec2(self, amount)
 }
-rect_translate :: proc (self: ^Rect, d: [2]f32) {
+rect_translate :: #force_inline proc (self: ^Rect, d := [2]f32{}) {
 	ImRect_Translate(self, d)
 }
-rect_translate_x :: proc (self: ^Rect, dx: f32) {
+rect_translate_x :: #force_inline proc (self: ^Rect, dx: f32) {
 	ImRect_TranslateX(self, dx)
 }
-rect_translate_y :: proc (self: ^Rect, dy: f32) {
+rect_translate_y :: #force_inline proc (self: ^Rect, dy: f32) {
 	ImRect_TranslateY(self, dy)
 }
-rect_clip_with :: proc (self: ^Rect, r: Rect) {
+rect_clip_with :: #force_inline proc (self: ^Rect, r: Rect) {
 	ImRect_ClipWith(self, r)
 }
-rect_clip_with_full :: proc (self: ^Rect, r: Rect) {
+rect_clip_with_full :: #force_inline proc (self: ^Rect, r: Rect) {
 	ImRect_ClipWithFull(self, r)
 }
-rect_floor :: proc (self: ^Rect) {
+rect_floor :: #force_inline proc (self: ^Rect) {
 	ImRect_Floor(self)
 }
-rect_is_inverted :: proc (self: ^Rect) -> bool {
+rect_is_inverted :: #force_inline proc (self: ^Rect) -> bool {
 	return ImRect_IsInverted(self)
 }
-rect_to_vec4 :: proc (self: ^Rect) -> (p_out: [4]f32) {
+rect_to_vec4 :: #force_inline proc (self: ^Rect) -> (p_out: [4]f32) {
 	ImRect_ToVec4(&p_out, self)
 	return
 }
-text_index_clear :: proc (self: ^Text_Index) {
+text_index_clear :: #force_inline proc (self: ^Text_Index) {
 	ImGuiTextIndex_clear(self)
 }
-text_index_size :: proc (self: ^Text_Index) -> i32 {
+text_index_size :: #force_inline proc (self: ^Text_Index) -> i32 {
 	return ImGuiTextIndex_size(self)
 }
-text_index_get_line_begin :: proc (self: ^Text_Index, base: string, n: i32) -> cstring {
+text_index_get_line_begin :: #force_inline proc (self: ^Text_Index, base: string, n: i32) -> cstring {
 	_temp_base := semisafe_string_to_cstring(base)
 	return ImGuiTextIndex_get_line_begin(self, _temp_base, n)
 }
-text_index_get_line_end :: proc (self: ^Text_Index, base: string, n: i32) -> cstring {
+text_index_get_line_end :: #force_inline proc (self: ^Text_Index, base: string, n: i32) -> cstring {
 	_temp_base := semisafe_string_to_cstring(base)
 	return ImGuiTextIndex_get_line_end(self, _temp_base, n)
 }
-text_index_append :: proc (self: ^Text_Index, base: string, old_size: i32, new_size: i32) {
+text_index_append :: #force_inline proc (self: ^Text_Index, base: string, old_size: i32, new_size: i32) {
 	_temp_base := semisafe_string_to_cstring(base)
 	ImGuiTextIndex_append(self, _temp_base, old_size, new_size)
 }
-draw_list_shared_data_new :: proc () -> ^Draw_List_Shared_Data {
+draw_list_shared_data_new :: #force_inline proc () -> ^Draw_List_Shared_Data {
 	return ImDrawListSharedData_ImDrawListSharedData()
 }
-draw_list_shared_data_destroy :: proc (self: ^Draw_List_Shared_Data) {
+draw_list_shared_data_destroy :: #force_inline proc (self: ^Draw_List_Shared_Data) {
 	ImDrawListSharedData_destroy(self)
 }
-draw_list_shared_data_set_circle_tessellation_max_error :: proc (self: ^Draw_List_Shared_Data, max_error: f32) {
+draw_list_shared_data_set_circle_tessellation_max_error :: #force_inline proc (self: ^Draw_List_Shared_Data, max_error: f32) {
 	ImDrawListSharedData_SetCircleTessellationMaxError(self, max_error)
 }
-draw_data_builder_clear :: proc (self: ^Draw_Data_Builder) {
+draw_data_builder_clear :: #force_inline proc (self: ^Draw_Data_Builder) {
 	ImDrawDataBuilder_Clear(self)
 }
-draw_data_builder_clear_free_memory :: proc (self: ^Draw_Data_Builder) {
+draw_data_builder_clear_free_memory :: #force_inline proc (self: ^Draw_Data_Builder) {
 	ImDrawDataBuilder_ClearFreeMemory(self)
 }
-draw_data_builder_get_draw_list_count :: proc (self: ^Draw_Data_Builder) -> i32 {
+draw_data_builder_get_draw_list_count :: #force_inline proc (self: ^Draw_Data_Builder) -> i32 {
 	return ImDrawDataBuilder_GetDrawListCount(self)
 }
-draw_data_builder_flatten_into_single_layer :: proc (self: ^Draw_Data_Builder) {
+draw_data_builder_flatten_into_single_layer :: #force_inline proc (self: ^Draw_Data_Builder) {
 	ImDrawDataBuilder_FlattenIntoSingleLayer(self)
 }
-data_var_info_get_var_ptr :: proc (self: ^Data_Var_Info, parent: rawptr) -> rawptr {
+data_var_info_get_var_ptr :: #force_inline proc (self: ^Data_Var_Info, parent: rawptr) -> rawptr {
 	return ImGuiDataVarInfo_GetVarPtr(self, parent)
 }
-style_mod_new_int :: proc (idx: Style_Var, v: i32) -> ^Style_Mod {
+style_mod_new_int :: #force_inline proc (idx: Style_Var, v: i32) -> ^Style_Mod {
 	return ImGuiStyleMod_ImGuiStyleMod_Int(idx, v)
 }
-style_mod_destroy :: proc (self: ^Style_Mod) {
+style_mod_destroy :: #force_inline proc (self: ^Style_Mod) {
 	ImGuiStyleMod_destroy(self)
 }
-style_mod_new_float :: proc (idx: Style_Var, v: f32) -> ^Style_Mod {
+style_mod_new_float :: #force_inline proc (idx: Style_Var, v: f32) -> ^Style_Mod {
 	return ImGuiStyleMod_ImGuiStyleMod_Float(idx, v)
 }
-style_mod_new_vec2 :: proc (idx: Style_Var, v: [2]f32) -> ^Style_Mod {
+style_mod_new_vec2 :: #force_inline proc (idx: Style_Var, v := [2]f32{}) -> ^Style_Mod {
 	return ImGuiStyleMod_ImGuiStyleMod_Vec2(idx, v)
 }
-combo_preview_data_new :: proc () -> ^Combo_Preview_Data {
+combo_preview_data_new :: #force_inline proc () -> ^Combo_Preview_Data {
 	return ImGuiComboPreviewData_ImGuiComboPreviewData()
 }
-combo_preview_data_destroy :: proc (self: ^Combo_Preview_Data) {
+combo_preview_data_destroy :: #force_inline proc (self: ^Combo_Preview_Data) {
 	ImGuiComboPreviewData_destroy(self)
 }
-menu_columns_new :: proc () -> ^Menu_Columns {
+menu_columns_new :: #force_inline proc () -> ^Menu_Columns {
 	return ImGuiMenuColumns_ImGuiMenuColumns()
 }
-menu_columns_destroy :: proc (self: ^Menu_Columns) {
+menu_columns_destroy :: #force_inline proc (self: ^Menu_Columns) {
 	ImGuiMenuColumns_destroy(self)
 }
-menu_columns_update :: proc (self: ^Menu_Columns, spacing: f32, window_reappearing: bool) {
+menu_columns_update :: #force_inline proc (self: ^Menu_Columns, spacing: f32, window_reappearing: bool) {
 	ImGuiMenuColumns_Update(self, spacing, window_reappearing)
 }
-menu_columns_decl_columns :: proc (self: ^Menu_Columns, w_icon: f32, w_label: f32, w_shortcut: f32, w_mark: f32) -> f32 {
+menu_columns_decl_columns :: #force_inline proc (self: ^Menu_Columns, w_icon: f32, w_label: f32, w_shortcut: f32, w_mark: f32) -> f32 {
 	return ImGuiMenuColumns_DeclColumns(self, w_icon, w_label, w_shortcut, w_mark)
 }
-menu_columns_calc_next_total_width :: proc (self: ^Menu_Columns, update_offsets: bool) {
+menu_columns_calc_next_total_width :: #force_inline proc (self: ^Menu_Columns, update_offsets: bool) {
 	ImGuiMenuColumns_CalcNextTotalWidth(self, update_offsets)
 }
-input_text_deactivated_state_new :: proc () -> ^Input_Text_Deactivated_State {
+input_text_deactivated_state_new :: #force_inline proc () -> ^Input_Text_Deactivated_State {
 	return ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState()
 }
-input_text_deactivated_state_destroy :: proc (self: ^Input_Text_Deactivated_State) {
+input_text_deactivated_state_destroy :: #force_inline proc (self: ^Input_Text_Deactivated_State) {
 	ImGuiInputTextDeactivatedState_destroy(self)
 }
-input_text_deactivated_state_clear_free_memory :: proc (self: ^Input_Text_Deactivated_State) {
+input_text_deactivated_state_clear_free_memory :: #force_inline proc (self: ^Input_Text_Deactivated_State) {
 	ImGuiInputTextDeactivatedState_ClearFreeMemory(self)
 }
-input_text_state_new :: proc () -> ^Input_Text_State {
+input_text_state_new :: #force_inline proc () -> ^Input_Text_State {
 	return ImGuiInputTextState_ImGuiInputTextState()
 }
-input_text_state_destroy :: proc (self: ^Input_Text_State) {
+input_text_state_destroy :: #force_inline proc (self: ^Input_Text_State) {
 	ImGuiInputTextState_destroy(self)
 }
-input_text_state_clear_text :: proc (self: ^Input_Text_State) {
+input_text_state_clear_text :: #force_inline proc (self: ^Input_Text_State) {
 	ImGuiInputTextState_ClearText(self)
 }
-input_text_state_clear_free_memory :: proc (self: ^Input_Text_State) {
+input_text_state_clear_free_memory :: #force_inline proc (self: ^Input_Text_State) {
 	ImGuiInputTextState_ClearFreeMemory(self)
 }
-input_text_state_get_undo_avail_count :: proc (self: ^Input_Text_State) -> i32 {
+input_text_state_get_undo_avail_count :: #force_inline proc (self: ^Input_Text_State) -> i32 {
 	return ImGuiInputTextState_GetUndoAvailCount(self)
 }
-input_text_state_get_redo_avail_count :: proc (self: ^Input_Text_State) -> i32 {
+input_text_state_get_redo_avail_count :: #force_inline proc (self: ^Input_Text_State) -> i32 {
 	return ImGuiInputTextState_GetRedoAvailCount(self)
 }
-input_text_state_on_key_pressed :: proc (self: ^Input_Text_State, key: i32) {
+input_text_state_on_key_pressed :: #force_inline proc (self: ^Input_Text_State, key: i32) {
 	ImGuiInputTextState_OnKeyPressed(self, key)
 }
-input_text_state_cursor_anim_reset :: proc (self: ^Input_Text_State) {
+input_text_state_cursor_anim_reset :: #force_inline proc (self: ^Input_Text_State) {
 	ImGuiInputTextState_CursorAnimReset(self)
 }
-input_text_state_cursor_clamp :: proc (self: ^Input_Text_State) {
+input_text_state_cursor_clamp :: #force_inline proc (self: ^Input_Text_State) {
 	ImGuiInputTextState_CursorClamp(self)
 }
-input_text_state_has_selection :: proc (self: ^Input_Text_State) -> bool {
+input_text_state_has_selection :: #force_inline proc (self: ^Input_Text_State) -> bool {
 	return ImGuiInputTextState_HasSelection(self)
 }
-input_text_state_clear_selection :: proc (self: ^Input_Text_State) {
+input_text_state_clear_selection :: #force_inline proc (self: ^Input_Text_State) {
 	ImGuiInputTextState_ClearSelection(self)
 }
-input_text_state_get_cursor_pos :: proc (self: ^Input_Text_State) -> i32 {
+input_text_state_get_cursor_pos :: #force_inline proc (self: ^Input_Text_State) -> i32 {
 	return ImGuiInputTextState_GetCursorPos(self)
 }
-input_text_state_get_selection_start :: proc (self: ^Input_Text_State) -> i32 {
+input_text_state_get_selection_start :: #force_inline proc (self: ^Input_Text_State) -> i32 {
 	return ImGuiInputTextState_GetSelectionStart(self)
 }
-input_text_state_get_selection_end :: proc (self: ^Input_Text_State) -> i32 {
+input_text_state_get_selection_end :: #force_inline proc (self: ^Input_Text_State) -> i32 {
 	return ImGuiInputTextState_GetSelectionEnd(self)
 }
-input_text_state_select_all :: proc (self: ^Input_Text_State) {
+input_text_state_select_all :: #force_inline proc (self: ^Input_Text_State) {
 	ImGuiInputTextState_SelectAll(self)
 }
-popup_data_new :: proc () -> ^Popup_Data {
+popup_data_new :: #force_inline proc () -> ^Popup_Data {
 	return ImGuiPopupData_ImGuiPopupData()
 }
-popup_data_destroy :: proc (self: ^Popup_Data) {
+popup_data_destroy :: #force_inline proc (self: ^Popup_Data) {
 	ImGuiPopupData_destroy(self)
 }
-next_window_data_new :: proc () -> ^Next_Window_Data {
+next_window_data_new :: #force_inline proc () -> ^Next_Window_Data {
 	return ImGuiNextWindowData_ImGuiNextWindowData()
 }
-next_window_data_destroy :: proc (self: ^Next_Window_Data) {
+next_window_data_destroy :: #force_inline proc (self: ^Next_Window_Data) {
 	ImGuiNextWindowData_destroy(self)
 }
-next_window_data_clear_flags :: proc (self: ^Next_Window_Data) {
+next_window_data_clear_flags :: #force_inline proc (self: ^Next_Window_Data) {
 	ImGuiNextWindowData_ClearFlags(self)
 }
-next_item_data_new :: proc () -> ^Next_Item_Data {
+next_item_data_new :: #force_inline proc () -> ^Next_Item_Data {
 	return ImGuiNextItemData_ImGuiNextItemData()
 }
-next_item_data_destroy :: proc (self: ^Next_Item_Data) {
+next_item_data_destroy :: #force_inline proc (self: ^Next_Item_Data) {
 	ImGuiNextItemData_destroy(self)
 }
-next_item_data_clear_flags :: proc (self: ^Next_Item_Data) {
+next_item_data_clear_flags :: #force_inline proc (self: ^Next_Item_Data) {
 	ImGuiNextItemData_ClearFlags(self)
 }
-last_item_data_new :: proc () -> ^Last_Item_Data {
+last_item_data_new :: #force_inline proc () -> ^Last_Item_Data {
 	return ImGuiLastItemData_ImGuiLastItemData()
 }
-last_item_data_destroy :: proc (self: ^Last_Item_Data) {
+last_item_data_destroy :: #force_inline proc (self: ^Last_Item_Data) {
 	ImGuiLastItemData_destroy(self)
 }
-stack_sizes_new :: proc () -> ^Stack_Sizes {
+stack_sizes_new :: #force_inline proc () -> ^Stack_Sizes {
 	return ImGuiStackSizes_ImGuiStackSizes()
 }
-stack_sizes_destroy :: proc (self: ^Stack_Sizes) {
+stack_sizes_destroy :: #force_inline proc (self: ^Stack_Sizes) {
 	ImGuiStackSizes_destroy(self)
 }
-stack_sizes_set_to_context_state :: proc (self: ^Stack_Sizes, ctx: ^Context) {
+stack_sizes_set_to_context_state :: #force_inline proc (self: ^Stack_Sizes, ctx: ^Context) {
 	ImGuiStackSizes_SetToContextState(self, ctx)
 }
-stack_sizes_compare_with_context_state :: proc (self: ^Stack_Sizes, ctx: ^Context) {
+stack_sizes_compare_with_context_state :: #force_inline proc (self: ^Stack_Sizes, ctx: ^Context) {
 	ImGuiStackSizes_CompareWithContextState(self, ctx)
 }
-ptr_or_index_new_ptr :: proc (ptr: rawptr) -> ^Ptr_Or_Index {
+ptr_or_index_new_ptr :: #force_inline proc (ptr: rawptr) -> ^Ptr_Or_Index {
 	return ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr(ptr)
 }
-ptr_or_index_destroy :: proc (self: ^Ptr_Or_Index) {
+ptr_or_index_destroy :: #force_inline proc (self: ^Ptr_Or_Index) {
 	ImGuiPtrOrIndex_destroy(self)
 }
-ptr_or_index_new_int :: proc (index: i32) -> ^Ptr_Or_Index {
+ptr_or_index_new_int :: #force_inline proc (index: i32) -> ^Ptr_Or_Index {
 	return ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int(index)
 }
-input_event_new :: proc () -> ^Input_Event {
+input_event_new :: #force_inline proc () -> ^Input_Event {
 	return ImGuiInputEvent_ImGuiInputEvent()
 }
-input_event_destroy :: proc (self: ^Input_Event) {
+input_event_destroy :: #force_inline proc (self: ^Input_Event) {
 	ImGuiInputEvent_destroy(self)
 }
-key_routing_data_new :: proc () -> ^Key_Routing_Data {
+key_routing_data_new :: #force_inline proc () -> ^Key_Routing_Data {
 	return ImGuiKeyRoutingData_ImGuiKeyRoutingData()
 }
-key_routing_data_destroy :: proc (self: ^Key_Routing_Data) {
+key_routing_data_destroy :: #force_inline proc (self: ^Key_Routing_Data) {
 	ImGuiKeyRoutingData_destroy(self)
 }
-key_routing_table_new :: proc () -> ^Key_Routing_Table {
+key_routing_table_new :: #force_inline proc () -> ^Key_Routing_Table {
 	return ImGuiKeyRoutingTable_ImGuiKeyRoutingTable()
 }
-key_routing_table_destroy :: proc (self: ^Key_Routing_Table) {
+key_routing_table_destroy :: #force_inline proc (self: ^Key_Routing_Table) {
 	ImGuiKeyRoutingTable_destroy(self)
 }
-key_routing_table_clear :: proc (self: ^Key_Routing_Table) {
+key_routing_table_clear :: #force_inline proc (self: ^Key_Routing_Table) {
 	ImGuiKeyRoutingTable_Clear(self)
 }
-key_owner_data_new :: proc () -> ^Key_Owner_Data {
+key_owner_data_new :: #force_inline proc () -> ^Key_Owner_Data {
 	return ImGuiKeyOwnerData_ImGuiKeyOwnerData()
 }
-key_owner_data_destroy :: proc (self: ^Key_Owner_Data) {
+key_owner_data_destroy :: #force_inline proc (self: ^Key_Owner_Data) {
 	ImGuiKeyOwnerData_destroy(self)
 }
-list_clipper_range_from_indices :: proc (min: i32, max: i32) -> List_Clipper_Range {
+list_clipper_range_from_indices :: #force_inline proc (min: i32, max: i32) -> List_Clipper_Range {
 	return ImGuiListClipperRange_FromIndices(min, max)
 }
-list_clipper_range_from_positions :: proc (y1: f32, y2: f32, off_min: i32, off_max: i32) -> List_Clipper_Range {
+list_clipper_range_from_positions :: #force_inline proc (y1: f32, y2: f32, off_min: i32, off_max: i32) -> List_Clipper_Range {
 	return ImGuiListClipperRange_FromPositions(y1, y2, off_min, off_max)
 }
-list_clipper_data_new :: proc () -> ^List_Clipper_Data {
+list_clipper_data_new :: #force_inline proc () -> ^List_Clipper_Data {
 	return ImGuiListClipperData_ImGuiListClipperData()
 }
-list_clipper_data_destroy :: proc (self: ^List_Clipper_Data) {
+list_clipper_data_destroy :: #force_inline proc (self: ^List_Clipper_Data) {
 	ImGuiListClipperData_destroy(self)
 }
-list_clipper_data_reset :: proc (self: ^List_Clipper_Data, clipper: ^List_Clipper) {
+list_clipper_data_reset :: #force_inline proc (self: ^List_Clipper_Data, clipper: ^List_Clipper) {
 	ImGuiListClipperData_Reset(self, clipper)
 }
-nav_item_data_new :: proc () -> ^Nav_Item_Data {
+nav_item_data_new :: #force_inline proc () -> ^Nav_Item_Data {
 	return ImGuiNavItemData_ImGuiNavItemData()
 }
-nav_item_data_destroy :: proc (self: ^Nav_Item_Data) {
+nav_item_data_destroy :: #force_inline proc (self: ^Nav_Item_Data) {
 	ImGuiNavItemData_destroy(self)
 }
-nav_item_data_clear :: proc (self: ^Nav_Item_Data) {
+nav_item_data_clear :: #force_inline proc (self: ^Nav_Item_Data) {
 	ImGuiNavItemData_Clear(self)
 }
-old_column_data_new :: proc () -> ^Old_Column_Data {
+old_column_data_new :: #force_inline proc () -> ^Old_Column_Data {
 	return ImGuiOldColumnData_ImGuiOldColumnData()
 }
-old_column_data_destroy :: proc (self: ^Old_Column_Data) {
+old_column_data_destroy :: #force_inline proc (self: ^Old_Column_Data) {
 	ImGuiOldColumnData_destroy(self)
 }
-old_columns_new :: proc () -> ^Old_Columns {
+old_columns_new :: #force_inline proc () -> ^Old_Columns {
 	return ImGuiOldColumns_ImGuiOldColumns()
 }
-old_columns_destroy :: proc (self: ^Old_Columns) {
+old_columns_destroy :: #force_inline proc (self: ^Old_Columns) {
 	ImGuiOldColumns_destroy(self)
 }
-viewport_p_new :: proc () -> ^Viewport_P {
+viewport_p_new :: #force_inline proc () -> ^Viewport_P {
 	return ImGuiViewportP_ImGuiViewportP()
 }
-viewport_p_destroy :: proc (self: ^Viewport_P) {
+viewport_p_destroy :: #force_inline proc (self: ^Viewport_P) {
 	ImGuiViewportP_destroy(self)
 }
-viewport_p_calc_work_rect_pos :: proc (self: ^Viewport_P, off_min: [2]f32) -> (p_out: [2]f32) {
+viewport_p_calc_work_rect_pos :: #force_inline proc (self: ^Viewport_P, off_min := [2]f32{}) -> (p_out: [2]f32) {
 	ImGuiViewportP_CalcWorkRectPos(&p_out, self, off_min)
 	return
 }
-viewport_p_calc_work_rect_size :: proc (self: ^Viewport_P, off_min: [2]f32, off_max: [2]f32) -> (p_out: [2]f32) {
+viewport_p_calc_work_rect_size :: #force_inline proc (self: ^Viewport_P, off_min := [2]f32{}, off_max := [2]f32{}) -> (p_out: [2]f32) {
 	ImGuiViewportP_CalcWorkRectSize(&p_out, self, off_min, off_max)
 	return
 }
-viewport_p_update_work_rect :: proc (self: ^Viewport_P) {
+viewport_p_update_work_rect :: #force_inline proc (self: ^Viewport_P) {
 	ImGuiViewportP_UpdateWorkRect(self)
 }
-viewport_p_get_main_rect :: proc (self: ^Viewport_P) -> (p_out: Rect) {
+viewport_p_get_main_rect :: #force_inline proc (self: ^Viewport_P) -> (p_out: Rect) {
 	ImGuiViewportP_GetMainRect(&p_out, self)
 	return
 }
-viewport_p_get_work_rect :: proc (self: ^Viewport_P) -> (p_out: Rect) {
+viewport_p_get_work_rect :: #force_inline proc (self: ^Viewport_P) -> (p_out: Rect) {
 	ImGuiViewportP_GetWorkRect(&p_out, self)
 	return
 }
-viewport_p_get_build_work_rect :: proc (self: ^Viewport_P) -> (p_out: Rect) {
+viewport_p_get_build_work_rect :: #force_inline proc (self: ^Viewport_P) -> (p_out: Rect) {
 	ImGuiViewportP_GetBuildWorkRect(&p_out, self)
 	return
 }
-window_settings_new :: proc () -> ^Window_Settings {
+window_settings_new :: #force_inline proc () -> ^Window_Settings {
 	return ImGuiWindowSettings_ImGuiWindowSettings()
 }
-window_settings_destroy :: proc (self: ^Window_Settings) {
+window_settings_destroy :: #force_inline proc (self: ^Window_Settings) {
 	ImGuiWindowSettings_destroy(self)
 }
-window_settings_get_name :: proc (self: ^Window_Settings) -> ^i8 {
+window_settings_get_name :: #force_inline proc (self: ^Window_Settings) -> ^i8 {
 	return ImGuiWindowSettings_GetName(self)
 }
-settings_handler_new :: proc () -> ^Settings_Handler {
+settings_handler_new :: #force_inline proc () -> ^Settings_Handler {
 	return ImGuiSettingsHandler_ImGuiSettingsHandler()
 }
-settings_handler_destroy :: proc (self: ^Settings_Handler) {
+settings_handler_destroy :: #force_inline proc (self: ^Settings_Handler) {
 	ImGuiSettingsHandler_destroy(self)
 }
-stack_level_info_new :: proc () -> ^Stack_Level_Info {
+stack_level_info_new :: #force_inline proc () -> ^Stack_Level_Info {
 	return ImGuiStackLevelInfo_ImGuiStackLevelInfo()
 }
-stack_level_info_destroy :: proc (self: ^Stack_Level_Info) {
+stack_level_info_destroy :: #force_inline proc (self: ^Stack_Level_Info) {
 	ImGuiStackLevelInfo_destroy(self)
 }
-stack_tool_new :: proc () -> ^Stack_Tool {
+stack_tool_new :: #force_inline proc () -> ^Stack_Tool {
 	return ImGuiStackTool_ImGuiStackTool()
 }
-stack_tool_destroy :: proc (self: ^Stack_Tool) {
+stack_tool_destroy :: #force_inline proc (self: ^Stack_Tool) {
 	ImGuiStackTool_destroy(self)
 }
-context_hook_new :: proc () -> ^Context_Hook {
+context_hook_new :: #force_inline proc () -> ^Context_Hook {
 	return ImGuiContextHook_ImGuiContextHook()
 }
-context_hook_destroy :: proc (self: ^Context_Hook) {
+context_hook_destroy :: #force_inline proc (self: ^Context_Hook) {
 	ImGuiContextHook_destroy(self)
 }
-context_new :: proc (shared_font_atlas: ^Font_Atlas) -> ^Context {
+context_new :: #force_inline proc (shared_font_atlas: ^Font_Atlas) -> ^Context {
 	return ImGuiContext_ImGuiContext(shared_font_atlas)
 }
-context_destroy :: proc (self: ^Context) {
+context_destroy :: #force_inline proc (self: ^Context) {
 	ImGuiContext_destroy(self)
 }
-window_new :: proc (context_: ^Context, name: string) -> ^Window {
+window_new :: #force_inline proc (context_: ^Context, name: string) -> ^Window {
 	_temp_name := semisafe_string_to_cstring(name)
 	return ImGuiWindow_ImGuiWindow(context_, _temp_name)
 }
-window_destroy :: proc (self: ^Window) {
+window_destroy :: #force_inline proc (self: ^Window) {
 	ImGuiWindow_destroy(self)
 }
-window_get_id_str :: proc (self: ^Window, str: string) -> ID {
+window_get_id_str :: #force_inline proc (self: ^Window, str: string) -> ID {
 	str_begin := raw_data(str)
 	str_end := cast([^]u8)(uintptr(str_begin) + uintptr(len(str)))
 	return ImGuiWindow_GetID_Str(self, str_begin, str_end)
 }
-window_get_id_ptr :: proc (self: ^Window, ptr: rawptr) -> ID {
+window_get_id_ptr :: #force_inline proc (self: ^Window, ptr: rawptr) -> ID {
 	return ImGuiWindow_GetID_Ptr(self, ptr)
 }
-window_get_id_int :: proc (self: ^Window, n: i32) -> ID {
+window_get_id_int :: #force_inline proc (self: ^Window, n: i32) -> ID {
 	return ImGuiWindow_GetID_Int(self, n)
 }
-window_get_id_from_rectangle :: proc (self: ^Window, r_abs: Rect) -> ID {
+window_get_id_from_rectangle :: #force_inline proc (self: ^Window, r_abs: Rect) -> ID {
 	return ImGuiWindow_GetIDFromRectangle(self, r_abs)
 }
-window_rect :: proc (self: ^Window) -> (p_out: Rect) {
+window_rect :: #force_inline proc (self: ^Window) -> (p_out: Rect) {
 	ImGuiWindow_Rect(&p_out, self)
 	return
 }
-window_calc_font_size :: proc (self: ^Window) -> f32 {
+window_calc_font_size :: #force_inline proc (self: ^Window) -> f32 {
 	return ImGuiWindow_CalcFontSize(self)
 }
-window_title_bar_height :: proc (self: ^Window) -> f32 {
+window_title_bar_height :: #force_inline proc (self: ^Window) -> f32 {
 	return ImGuiWindow_TitleBarHeight(self)
 }
-window_title_bar_rect :: proc (self: ^Window) -> (p_out: Rect) {
+window_title_bar_rect :: #force_inline proc (self: ^Window) -> (p_out: Rect) {
 	ImGuiWindow_TitleBarRect(&p_out, self)
 	return
 }
-window_menu_bar_height :: proc (self: ^Window) -> f32 {
+window_menu_bar_height :: #force_inline proc (self: ^Window) -> f32 {
 	return ImGuiWindow_MenuBarHeight(self)
 }
-window_menu_bar_rect :: proc (self: ^Window) -> (p_out: Rect) {
+window_menu_bar_rect :: #force_inline proc (self: ^Window) -> (p_out: Rect) {
 	ImGuiWindow_MenuBarRect(&p_out, self)
 	return
 }
-tab_item_new :: proc () -> ^Tab_Item {
+tab_item_new :: #force_inline proc () -> ^Tab_Item {
 	return ImGuiTabItem_ImGuiTabItem()
 }
-tab_item_destroy :: proc (self: ^Tab_Item) {
+tab_item_destroy :: #force_inline proc (self: ^Tab_Item) {
 	ImGuiTabItem_destroy(self)
 }
-tab_bar_new :: proc () -> ^Tab_Bar {
+tab_bar_new :: #force_inline proc () -> ^Tab_Bar {
 	return ImGuiTabBar_ImGuiTabBar()
 }
-tab_bar_destroy :: proc (self: ^Tab_Bar) {
+tab_bar_destroy :: #force_inline proc (self: ^Tab_Bar) {
 	ImGuiTabBar_destroy(self)
 }
-table_column_new :: proc () -> ^Table_Column {
+table_column_new :: #force_inline proc () -> ^Table_Column {
 	return ImGuiTableColumn_ImGuiTableColumn()
 }
-table_column_destroy :: proc (self: ^Table_Column) {
+table_column_destroy :: #force_inline proc (self: ^Table_Column) {
 	ImGuiTableColumn_destroy(self)
 }
-table_instance_data_new :: proc () -> ^Table_Instance_Data {
+table_instance_data_new :: #force_inline proc () -> ^Table_Instance_Data {
 	return ImGuiTableInstanceData_ImGuiTableInstanceData()
 }
-table_instance_data_destroy :: proc (self: ^Table_Instance_Data) {
+table_instance_data_destroy :: #force_inline proc (self: ^Table_Instance_Data) {
 	ImGuiTableInstanceData_destroy(self)
 }
-table_new :: proc () -> ^Table {
+table_new :: #force_inline proc () -> ^Table {
 	return ImGuiTable_ImGuiTable()
 }
-table_destroy :: proc (self: ^Table) {
+table_destroy :: #force_inline proc (self: ^Table) {
 	ImGuiTable_destroy(self)
 }
-table_temp_data_new :: proc () -> ^Table_Temp_Data {
+table_temp_data_new :: #force_inline proc () -> ^Table_Temp_Data {
 	return ImGuiTableTempData_ImGuiTableTempData()
 }
-table_temp_data_destroy :: proc (self: ^Table_Temp_Data) {
+table_temp_data_destroy :: #force_inline proc (self: ^Table_Temp_Data) {
 	ImGuiTableTempData_destroy(self)
 }
-table_column_settings_new :: proc () -> ^Table_Column_Settings {
+table_column_settings_new :: #force_inline proc () -> ^Table_Column_Settings {
 	return ImGuiTableColumnSettings_ImGuiTableColumnSettings()
 }
-table_column_settings_destroy :: proc (self: ^Table_Column_Settings) {
+table_column_settings_destroy :: #force_inline proc (self: ^Table_Column_Settings) {
 	ImGuiTableColumnSettings_destroy(self)
 }
-table_settings_new :: proc () -> ^Table_Settings {
+table_settings_new :: #force_inline proc () -> ^Table_Settings {
 	return ImGuiTableSettings_ImGuiTableSettings()
 }
-table_settings_destroy :: proc (self: ^Table_Settings) {
+table_settings_destroy :: #force_inline proc (self: ^Table_Settings) {
 	ImGuiTableSettings_destroy(self)
 }
-table_settings_get_column_settings :: proc (self: ^Table_Settings) -> ^Table_Column_Settings {
+table_settings_get_column_settings :: #force_inline proc (self: ^Table_Settings) -> ^Table_Column_Settings {
 	return ImGuiTableSettings_GetColumnSettings(self)
 }
-get_current_window_read :: proc () -> ^Window {
+get_current_window_read :: #force_inline proc () -> ^Window {
 	return igGetCurrentWindowRead()
 }
-get_current_window :: proc () -> ^Window {
+get_current_window :: #force_inline proc () -> ^Window {
 	return igGetCurrentWindow()
 }
-find_window_by_id :: proc (id: ID) -> ^Window {
+find_window_by_id :: #force_inline proc (id: ID) -> ^Window {
 	return igFindWindowByID(id)
 }
-find_window_by_name :: proc (name: cstring) -> ^Window {
+find_window_by_name :: #force_inline proc (name: cstring) -> ^Window {
 	return igFindWindowByName(name)
 }
-update_window_parent_and_root_links :: proc (window: ^Window, flags: Window_Flags, parent_window: ^Window) {
+update_window_parent_and_root_links :: #force_inline proc (window: ^Window, flags: Window_Flags, parent_window: ^Window) {
 	igUpdateWindowParentAndRootLinks(window, flags, parent_window)
 }
-calc_window_next_auto_fit_size :: proc (window: ^Window) -> (p_out: [2]f32) {
+calc_window_next_auto_fit_size :: #force_inline proc (window: ^Window) -> (p_out: [2]f32) {
 	igCalcWindowNextAutoFitSize(&p_out, window)
 	return
 }
-is_window_child_of :: proc (window: ^Window, potential_parent: ^Window, popup_hierarchy: bool) -> bool {
+is_window_child_of :: #force_inline proc (window: ^Window, potential_parent: ^Window, popup_hierarchy: bool) -> bool {
 	return igIsWindowChildOf(window, potential_parent, popup_hierarchy)
 }
-is_window_within_begin_stack_of :: proc (window: ^Window, potential_parent: ^Window) -> bool {
+is_window_within_begin_stack_of :: #force_inline proc (window: ^Window, potential_parent: ^Window) -> bool {
 	return igIsWindowWithinBeginStackOf(window, potential_parent)
 }
-is_window_above :: proc (potential_above: ^Window, potential_below: ^Window) -> bool {
+is_window_above :: #force_inline proc (potential_above: ^Window, potential_below: ^Window) -> bool {
 	return igIsWindowAbove(potential_above, potential_below)
 }
-is_window_nav_focusable :: proc (window: ^Window) -> bool {
+is_window_nav_focusable :: #force_inline proc (window: ^Window) -> bool {
 	return igIsWindowNavFocusable(window)
 }
-set_window_pos_window_ptr :: proc (window: ^Window, pos: [2]f32, cond: Cond) {
+set_window_pos_window_ptr :: #force_inline proc (window: ^Window, pos := [2]f32{}, cond := Cond{}) {
 	igSetWindowPos_WindowPtr(window, pos, cond)
 }
-set_window_size_window_ptr :: proc (window: ^Window, size: [2]f32, cond: Cond) {
+set_window_size_window_ptr :: #force_inline proc (window: ^Window, size := [2]f32{}, cond := Cond{}) {
 	igSetWindowSize_WindowPtr(window, size, cond)
 }
-set_window_collapsed_window_ptr :: proc (window: ^Window, collapsed: bool, cond: Cond) {
+set_window_collapsed_window_ptr :: #force_inline proc (window: ^Window, collapsed: bool, cond := Cond{}) {
 	igSetWindowCollapsed_WindowPtr(window, collapsed, cond)
 }
-set_window_hit_test_hole :: proc (window: ^Window, pos: [2]f32, size: [2]f32) {
+set_window_hit_test_hole :: #force_inline proc (window: ^Window, pos := [2]f32{}, size := [2]f32{}) {
 	igSetWindowHitTestHole(window, pos, size)
 }
-set_window_hiddend_and_skip_items_for_current_frame :: proc (window: ^Window) {
+set_window_hiddend_and_skip_items_for_current_frame :: #force_inline proc (window: ^Window) {
 	igSetWindowHiddendAndSkipItemsForCurrentFrame(window)
 }
-window_rect_abs_to_rel :: proc (window: ^Window, r: Rect) -> (p_out: Rect) {
+window_rect_abs_to_rel :: #force_inline proc (window: ^Window, r: Rect) -> (p_out: Rect) {
 	igWindowRectAbsToRel(&p_out, window, r)
 	return
 }
-window_rect_rel_to_abs :: proc (window: ^Window, r: Rect) -> (p_out: Rect) {
+window_rect_rel_to_abs :: #force_inline proc (window: ^Window, r: Rect) -> (p_out: Rect) {
 	igWindowRectRelToAbs(&p_out, window, r)
 	return
 }
-focus_window :: proc (window: ^Window) {
+focus_window :: #force_inline proc (window: ^Window) {
 	igFocusWindow(window)
 }
-focus_top_most_window_under_one :: proc (under_this_window: ^Window, ignore_window: ^Window) {
+focus_top_most_window_under_one :: #force_inline proc (under_this_window: ^Window, ignore_window: ^Window) {
 	igFocusTopMostWindowUnderOne(under_this_window, ignore_window)
 }
-bring_window_to_focus_front :: proc (window: ^Window) {
+bring_window_to_focus_front :: #force_inline proc (window: ^Window) {
 	igBringWindowToFocusFront(window)
 }
-bring_window_to_display_front :: proc (window: ^Window) {
+bring_window_to_display_front :: #force_inline proc (window: ^Window) {
 	igBringWindowToDisplayFront(window)
 }
-bring_window_to_display_back :: proc (window: ^Window) {
+bring_window_to_display_back :: #force_inline proc (window: ^Window) {
 	igBringWindowToDisplayBack(window)
 }
-bring_window_to_display_behind :: proc (window: ^Window, above_window: ^Window) {
+bring_window_to_display_behind :: #force_inline proc (window: ^Window, above_window: ^Window) {
 	igBringWindowToDisplayBehind(window, above_window)
 }
-find_window_display_index :: proc (window: ^Window) -> i32 {
+find_window_display_index :: #force_inline proc (window: ^Window) -> i32 {
 	return igFindWindowDisplayIndex(window)
 }
-find_bottom_most_visible_window_within_begin_stack :: proc (window: ^Window) -> ^Window {
+find_bottom_most_visible_window_within_begin_stack :: #force_inline proc (window: ^Window) -> ^Window {
 	return igFindBottomMostVisibleWindowWithinBeginStack(window)
 }
-set_current_font :: proc (font: ^Font) {
+set_current_font :: #force_inline proc (font: ^Font) {
 	igSetCurrentFont(font)
 }
-get_default_font :: proc () -> ^Font {
+get_default_font :: #force_inline proc () -> ^Font {
 	return igGetDefaultFont()
 }
-get_foreground_draw_list_window_ptr :: proc (window: ^Window) -> ^Draw_List {
+get_foreground_draw_list_window_ptr :: #force_inline proc (window: ^Window) -> ^Draw_List {
 	return igGetForegroundDrawList_WindowPtr(window)
 }
-get_background_draw_list_viewport_ptr :: proc (viewport: ^Viewport) -> ^Draw_List {
+get_background_draw_list_viewport_ptr :: #force_inline proc (viewport: ^Viewport) -> ^Draw_List {
 	return igGetBackgroundDrawList_ViewportPtr(viewport)
 }
-get_foreground_draw_list_viewport_ptr :: proc (viewport: ^Viewport) -> ^Draw_List {
+get_foreground_draw_list_viewport_ptr :: #force_inline proc (viewport: ^Viewport) -> ^Draw_List {
 	return igGetForegroundDrawList_ViewportPtr(viewport)
 }
-initialize :: proc () {
+initialize :: #force_inline proc () {
 	igInitialize()
 }
-shutdown :: proc () {
+shutdown :: #force_inline proc () {
 	igShutdown()
 }
-update_input_events :: proc (trickle_fast_inputs: bool) {
+update_input_events :: #force_inline proc (trickle_fast_inputs: bool) {
 	igUpdateInputEvents(trickle_fast_inputs)
 }
-update_hovered_window_and_capture_flags :: proc () {
+update_hovered_window_and_capture_flags :: #force_inline proc () {
 	igUpdateHoveredWindowAndCaptureFlags()
 }
-start_mouse_moving_window :: proc (window: ^Window) {
+start_mouse_moving_window :: #force_inline proc (window: ^Window) {
 	igStartMouseMovingWindow(window)
 }
-update_mouse_moving_window_new_frame :: proc () {
+update_mouse_moving_window_new_frame :: #force_inline proc () {
 	igUpdateMouseMovingWindowNewFrame()
 }
-update_mouse_moving_window_end_frame :: proc () {
+update_mouse_moving_window_end_frame :: #force_inline proc () {
 	igUpdateMouseMovingWindowEndFrame()
 }
-add_context_hook :: proc (context_: ^Context, hook: ^Context_Hook) -> ID {
+add_context_hook :: #force_inline proc (context_: ^Context, hook: ^Context_Hook) -> ID {
 	return igAddContextHook(context_, hook)
 }
-remove_context_hook :: proc (context_: ^Context, hook_to_remove: ID) {
+remove_context_hook :: #force_inline proc (context_: ^Context, hook_to_remove: ID) {
 	igRemoveContextHook(context_, hook_to_remove)
 }
-call_context_hooks :: proc (context_: ^Context, type: Context_Hook_Type) {
+call_context_hooks :: #force_inline proc (context_: ^Context, type: Context_Hook_Type) {
 	igCallContextHooks(context_, type)
 }
-set_window_viewport :: proc (window: ^Window, viewport: ^Viewport_P) {
+set_window_viewport :: #force_inline proc (window: ^Window, viewport: ^Viewport_P) {
 	igSetWindowViewport(window, viewport)
 }
-mark_ini_settings_dirty_nil :: proc () {
+mark_ini_settings_dirty_nil :: #force_inline proc () {
 	igMarkIniSettingsDirty_Nil()
 }
-mark_ini_settings_dirty_window_ptr :: proc (window: ^Window) {
+mark_ini_settings_dirty_window_ptr :: #force_inline proc (window: ^Window) {
 	igMarkIniSettingsDirty_WindowPtr(window)
 }
-clear_ini_settings :: proc () {
+clear_ini_settings :: #force_inline proc () {
 	igClearIniSettings()
 }
-add_settings_handler :: proc (handler: ^Settings_Handler) {
+add_settings_handler :: #force_inline proc (handler: ^Settings_Handler) {
 	igAddSettingsHandler(handler)
 }
-remove_settings_handler :: proc (type_name: cstring) {
+remove_settings_handler :: #force_inline proc (type_name: cstring) {
 	igRemoveSettingsHandler(type_name)
 }
-find_settings_handler :: proc (type_name: cstring) -> ^Settings_Handler {
+find_settings_handler :: #force_inline proc (type_name: cstring) -> ^Settings_Handler {
 	return igFindSettingsHandler(type_name)
 }
-create_new_window_settings :: proc (name: cstring) -> ^Window_Settings {
+create_new_window_settings :: #force_inline proc (name: cstring) -> ^Window_Settings {
 	return igCreateNewWindowSettings(name)
 }
-find_window_settings_by_id :: proc (id: ID) -> ^Window_Settings {
+find_window_settings_by_id :: #force_inline proc (id: ID) -> ^Window_Settings {
 	return igFindWindowSettingsByID(id)
 }
-find_window_settings_by_window :: proc (window: ^Window) -> ^Window_Settings {
+find_window_settings_by_window :: #force_inline proc (window: ^Window) -> ^Window_Settings {
 	return igFindWindowSettingsByWindow(window)
 }
-clear_window_settings :: proc (name: cstring) {
+clear_window_settings :: #force_inline proc (name: cstring) {
 	igClearWindowSettings(name)
 }
-localize_register_entries :: proc (entries: ^Loc_Entry, count: i32) {
+localize_register_entries :: #force_inline proc (entries: ^Loc_Entry, count: i32) {
 	igLocalizeRegisterEntries(entries, count)
 }
-localize_get_msg :: proc (key: Loc_Key) -> cstring {
+localize_get_msg :: #force_inline proc (key: Loc_Key) -> cstring {
 	return igLocalizeGetMsg(key)
 }
-set_scroll_x_window_ptr :: proc (window: ^Window, scroll_x: f32) {
+set_scroll_x_window_ptr :: #force_inline proc (window: ^Window, scroll_x: f32) {
 	igSetScrollX_WindowPtr(window, scroll_x)
 }
-set_scroll_y_window_ptr :: proc (window: ^Window, scroll_y: f32) {
+set_scroll_y_window_ptr :: #force_inline proc (window: ^Window, scroll_y: f32) {
 	igSetScrollY_WindowPtr(window, scroll_y)
 }
-set_scroll_from_pos_x_window_ptr :: proc (window: ^Window, local_x: f32, center_x_ratio: f32) {
+set_scroll_from_pos_x_window_ptr :: #force_inline proc (window: ^Window, local_x: f32, center_x_ratio: f32) {
 	igSetScrollFromPosX_WindowPtr(window, local_x, center_x_ratio)
 }
-set_scroll_from_pos_y_window_ptr :: proc (window: ^Window, local_y: f32, center_y_ratio: f32) {
+set_scroll_from_pos_y_window_ptr :: #force_inline proc (window: ^Window, local_y: f32, center_y_ratio: f32) {
 	igSetScrollFromPosY_WindowPtr(window, local_y, center_y_ratio)
 }
-scroll_to_item :: proc (flags: Scroll_Flags) {
+scroll_to_item :: #force_inline proc (flags := Scroll_Flags{}) {
 	igScrollToItem(flags)
 }
-scroll_to_rect :: proc (window: ^Window, rect: Rect, flags: Scroll_Flags) {
+scroll_to_rect :: #force_inline proc (window: ^Window, rect: Rect, flags := Scroll_Flags{}) {
 	igScrollToRect(window, rect, flags)
 }
-scroll_to_rect_ex :: proc (window: ^Window, rect: Rect, flags: Scroll_Flags) -> (p_out: [2]f32) {
+scroll_to_rect_ex :: #force_inline proc (window: ^Window, rect: Rect, flags := Scroll_Flags{}) -> (p_out: [2]f32) {
 	igScrollToRectEx(&p_out, window, rect, flags)
 	return
 }
-scroll_to_bring_rect_into_view :: proc (window: ^Window, rect: Rect) {
+scroll_to_bring_rect_into_view :: #force_inline proc (window: ^Window, rect: Rect) {
 	igScrollToBringRectIntoView(window, rect)
 }
-get_item_status_flags :: proc () -> Item_Status_Flags {
+get_item_status_flags :: #force_inline proc () -> Item_Status_Flags {
 	return igGetItemStatusFlags()
 }
-get_item_flags :: proc () -> Item_Flags {
+get_item_flags :: #force_inline proc () -> Item_Flags {
 	return igGetItemFlags()
 }
-get_active_id :: proc () -> ID {
+get_active_id :: #force_inline proc () -> ID {
 	return igGetActiveID()
 }
-get_focus_id :: proc () -> ID {
+get_focus_id :: #force_inline proc () -> ID {
 	return igGetFocusID()
 }
-set_active_id :: proc (id: ID, window: ^Window) {
+set_active_id :: #force_inline proc (id: ID, window: ^Window) {
 	igSetActiveID(id, window)
 }
-set_focus_id :: proc (id: ID, window: ^Window) {
+set_focus_id :: #force_inline proc (id: ID, window: ^Window) {
 	igSetFocusID(id, window)
 }
-clear_active_id :: proc () {
+clear_active_id :: #force_inline proc () {
 	igClearActiveID()
 }
-get_hovered_id :: proc () -> ID {
+get_hovered_id :: #force_inline proc () -> ID {
 	return igGetHoveredID()
 }
-set_hovered_id :: proc (id: ID) {
+set_hovered_id :: #force_inline proc (id: ID) {
 	igSetHoveredID(id)
 }
-keep_alive_id :: proc (id: ID) {
+keep_alive_id :: #force_inline proc (id: ID) {
 	igKeepAliveID(id)
 }
-mark_item_edited :: proc (id: ID) {
+mark_item_edited :: #force_inline proc (id: ID) {
 	igMarkItemEdited(id)
 }
-push_override_id :: proc (id: ID) {
+push_override_id :: #force_inline proc (id: ID) {
 	igPushOverrideID(id)
 }
-get_id_with_seed_str :: proc (str_id: string, seed: ID) -> ID {
+get_id_with_seed_str :: #force_inline proc (str_id: string, seed: ID) -> ID {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	return igGetIDWithSeed_Str(str_id_begin, str_id_end, seed)
 }
-get_id_with_seed_int :: proc (n: i32, seed: ID) -> ID {
+get_id_with_seed_int :: #force_inline proc (n: i32, seed: ID) -> ID {
 	return igGetIDWithSeed_Int(n, seed)
 }
-item_size_vec2 :: proc (size: [2]f32, text_baseline_y: f32) {
+item_size_vec2 :: #force_inline proc (size: [2]f32, text_baseline_y: f32) {
 	igItemSize_Vec2(size, text_baseline_y)
 }
-item_size_rect :: proc (bb: Rect, text_baseline_y: f32) {
+item_size_rect :: #force_inline proc (bb: Rect, text_baseline_y: f32) {
 	igItemSize_Rect(bb, text_baseline_y)
 }
-item_add :: proc (bb: Rect, id: ID, nav_bb: ^Rect, extra_flags: Item_Flags) -> bool {
+item_add :: #force_inline proc (bb: Rect, id: ID, nav_bb: ^Rect, extra_flags := Item_Flags{}) -> bool {
 	return igItemAdd(bb, id, nav_bb, extra_flags)
 }
-item_hoverable :: proc (bb: Rect, id: ID) -> bool {
+item_hoverable :: #force_inline proc (bb: Rect, id: ID) -> bool {
 	return igItemHoverable(bb, id)
 }
-is_window_content_hoverable :: proc (window: ^Window, flags: Hovered_Flags) -> bool {
+is_window_content_hoverable :: #force_inline proc (window: ^Window, flags := Hovered_Flags{}) -> bool {
 	return igIsWindowContentHoverable(window, flags)
 }
-is_clipped_ex :: proc (bb: Rect, id: ID) -> bool {
+is_clipped_ex :: #force_inline proc (bb: Rect, id: ID) -> bool {
 	return igIsClippedEx(bb, id)
 }
-set_last_item_data :: proc (item_id: ID, in_flags: Item_Flags, status_flags: Item_Status_Flags, item_rect: Rect) {
+set_last_item_data :: #force_inline proc (item_id: ID, in_flags: Item_Flags, status_flags: Item_Status_Flags, item_rect: Rect) {
 	igSetLastItemData(item_id, in_flags, status_flags, item_rect)
 }
-calc_item_size :: proc (size: [2]f32, default_w: f32, default_h: f32) -> (p_out: [2]f32) {
+calc_item_size :: #force_inline proc (size: [2]f32, default_w: f32, default_h: f32) -> (p_out: [2]f32) {
 	igCalcItemSize(&p_out, size, default_w, default_h)
 	return
 }
-calc_wrap_width_for_pos :: proc (pos: [2]f32, wrap_pos_x: f32) -> f32 {
+calc_wrap_width_for_pos :: #force_inline proc (pos: [2]f32, wrap_pos_x: f32) -> f32 {
 	return igCalcWrapWidthForPos(pos, wrap_pos_x)
 }
-push_multi_items_widths :: proc (components: i32, width_full: f32) {
+push_multi_items_widths :: #force_inline proc (components: i32, width_full: f32) {
 	igPushMultiItemsWidths(components, width_full)
 }
-is_item_toggled_selection :: proc () -> bool {
+is_item_toggled_selection :: #force_inline proc () -> bool {
 	return igIsItemToggledSelection()
 }
-get_content_region_max_abs :: proc () -> (p_out: [2]f32) {
+get_content_region_max_abs :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetContentRegionMaxAbs(&p_out)
 	return
 }
-shrink_widths :: proc (items: ^Shrink_Width_Item, count: i32, width_excess: f32) {
+shrink_widths :: #force_inline proc (items: ^Shrink_Width_Item, count: i32, width_excess: f32) {
 	igShrinkWidths(items, count, width_excess)
 }
-push_item_flag :: proc (option: Item_Flags, enabled: bool) {
+push_item_flag :: #force_inline proc (option: Item_Flags, enabled: bool) {
 	igPushItemFlag(option, enabled)
 }
-pop_item_flag :: proc () {
+pop_item_flag :: #force_inline proc () {
 	igPopItemFlag()
 }
-get_style_var_info :: proc (idx: Style_Var) -> ^Data_Var_Info {
+get_style_var_info :: #force_inline proc (idx: Style_Var) -> ^Data_Var_Info {
 	return igGetStyleVarInfo(idx)
 }
-log_begin :: proc (type: Log_Type, auto_open_depth: i32) {
+log_begin :: #force_inline proc (type: Log_Type, auto_open_depth: i32) {
 	igLogBegin(type, auto_open_depth)
 }
-log_to_buffer :: proc (auto_open_depth: i32) {
+log_to_buffer :: #force_inline proc (auto_open_depth: i32) {
 	igLogToBuffer(auto_open_depth)
 }
-log_rendered_text :: proc (ref_pos: ^[2]f32, text: string) {
+log_rendered_text :: #force_inline proc (ref_pos: ^[2]f32, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igLogRenderedText(ref_pos, text_begin, text_end)
 }
-log_set_next_text_decoration :: proc (prefix: cstring, suffix: string) {
+log_set_next_text_decoration :: #force_inline proc (prefix: cstring, suffix: string) {
 	_temp_suffix := semisafe_string_to_cstring(suffix)
 	igLogSetNextTextDecoration(prefix, _temp_suffix)
 }
-begin_child_ex :: proc (name: cstring, id: ID, size_arg: [2]f32, border: bool, flags: Window_Flags) -> bool {
+begin_child_ex :: #force_inline proc (name: cstring, id: ID, size_arg: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
 	return igBeginChildEx(name, id, size_arg, border, flags)
 }
-open_popup_ex :: proc (id: ID, popup_flags: Popup_Flags) {
+open_popup_ex :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) {
 	igOpenPopupEx(id, popup_flags)
 }
-close_popup_to_level :: proc (remaining: i32, restore_focus_to_window_under_popup: bool) {
+close_popup_to_level :: #force_inline proc (remaining: i32, restore_focus_to_window_under_popup: bool) {
 	igClosePopupToLevel(remaining, restore_focus_to_window_under_popup)
 }
-close_popups_over_window :: proc (ref_window: ^Window, restore_focus_to_window_under_popup: bool) {
+close_popups_over_window :: #force_inline proc (ref_window: ^Window, restore_focus_to_window_under_popup: bool) {
 	igClosePopupsOverWindow(ref_window, restore_focus_to_window_under_popup)
 }
-close_popups_except_modals :: proc () {
+close_popups_except_modals :: #force_inline proc () {
 	igClosePopupsExceptModals()
 }
-is_popup_open_id :: proc (id: ID, popup_flags: Popup_Flags) -> bool {
+is_popup_open_id :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) -> bool {
 	return igIsPopupOpen_ID(id, popup_flags)
 }
-begin_popup_ex :: proc (id: ID, extra_flags: Window_Flags) -> bool {
+begin_popup_ex :: #force_inline proc (id: ID, extra_flags := Window_Flags{}) -> bool {
 	return igBeginPopupEx(id, extra_flags)
 }
-begin_tooltip_ex :: proc (tooltip_flags: Tooltip_Flags, extra_window_flags: Window_Flags) -> bool {
+begin_tooltip_ex :: #force_inline proc (tooltip_flags := Tooltip_Flags{}, extra_window_flags := Window_Flags{}) -> bool {
 	return igBeginTooltipEx(tooltip_flags, extra_window_flags)
 }
-get_popup_allowed_extent_rect :: proc (window: ^Window) -> (p_out: Rect) {
+get_popup_allowed_extent_rect :: #force_inline proc (window: ^Window) -> (p_out: Rect) {
 	igGetPopupAllowedExtentRect(&p_out, window)
 	return
 }
-get_top_most_popup_modal :: proc () -> ^Window {
+get_top_most_popup_modal :: #force_inline proc () -> ^Window {
 	return igGetTopMostPopupModal()
 }
-get_top_most_and_visible_popup_modal :: proc () -> ^Window {
+get_top_most_and_visible_popup_modal :: #force_inline proc () -> ^Window {
 	return igGetTopMostAndVisiblePopupModal()
 }
-find_best_window_pos_for_popup :: proc (window: ^Window) -> (p_out: [2]f32) {
+find_best_window_pos_for_popup :: #force_inline proc (window: ^Window) -> (p_out: [2]f32) {
 	igFindBestWindowPosForPopup(&p_out, window)
 	return
 }
-find_best_window_pos_for_popup_ex :: proc (ref_pos: [2]f32, size: [2]f32, last_dir: ^Dir, r_outer: Rect, r_avoid: Rect, policy: Popup_Position_Policy) -> (p_out: [2]f32) {
+find_best_window_pos_for_popup_ex :: #force_inline proc (ref_pos: [2]f32, size: [2]f32, last_dir: ^Dir, r_outer: Rect, r_avoid: Rect, policy: Popup_Position_Policy) -> (p_out: [2]f32) {
 	igFindBestWindowPosForPopupEx(&p_out, ref_pos, size, last_dir, r_outer, r_avoid, policy)
 	return
 }
-begin_viewport_side_bar :: proc (name: cstring, viewport: ^Viewport, dir: Dir, size: f32, window_flags: Window_Flags) -> bool {
+begin_viewport_side_bar :: #force_inline proc (name: cstring, viewport: ^Viewport, dir: Dir, size: f32, window_flags := Window_Flags{}) -> bool {
 	return igBeginViewportSideBar(name, viewport, dir, size, window_flags)
 }
-begin_menu_ex :: proc (label: cstring, icon: string, enabled: bool) -> bool {
+begin_menu_ex :: #force_inline proc (label: cstring, icon: string, enabled: bool) -> bool {
 	_temp_icon := semisafe_string_to_cstring(icon)
 	return igBeginMenuEx(label, _temp_icon, enabled)
 }
-menu_item_ex :: proc (label: cstring, icon: string, shortcut: string, selected: bool, enabled: bool) -> bool {
+menu_item_ex :: #force_inline proc (label: cstring, icon: string, shortcut: string, selected: bool, enabled: bool) -> bool {
 	_temp_icon := semisafe_string_to_cstring(icon)
 	_temp_shortcut := semisafe_string_to_cstring(shortcut)
 	return igMenuItemEx(label, _temp_icon, _temp_shortcut, selected, enabled)
 }
-begin_combo_popup :: proc (popup_id: ID, bb: Rect, flags: Combo_Flags) -> bool {
+begin_combo_popup :: #force_inline proc (popup_id: ID, bb: Rect, flags := Combo_Flags{}) -> bool {
 	return igBeginComboPopup(popup_id, bb, flags)
 }
-begin_combo_preview :: proc () -> bool {
+begin_combo_preview :: #force_inline proc () -> bool {
 	return igBeginComboPreview()
 }
-end_combo_preview :: proc () {
+end_combo_preview :: #force_inline proc () {
 	igEndComboPreview()
 }
-nav_init_window :: proc (window: ^Window, force_reinit: bool) {
+nav_init_window :: #force_inline proc (window: ^Window, force_reinit: bool) {
 	igNavInitWindow(window, force_reinit)
 }
-nav_init_request_apply_result :: proc () {
+nav_init_request_apply_result :: #force_inline proc () {
 	igNavInitRequestApplyResult()
 }
-nav_move_request_but_no_result_yet :: proc () -> bool {
+nav_move_request_but_no_result_yet :: #force_inline proc () -> bool {
 	return igNavMoveRequestButNoResultYet()
 }
-nav_move_request_submit :: proc (move_dir: Dir, clip_dir: Dir, move_flags: Nav_Move_Flags, scroll_flags: Scroll_Flags) {
+nav_move_request_submit :: #force_inline proc (move_dir: Dir, clip_dir: Dir, move_flags := Nav_Move_Flags{}, scroll_flags := Scroll_Flags{}) {
 	igNavMoveRequestSubmit(move_dir, clip_dir, move_flags, scroll_flags)
 }
-nav_move_request_forward :: proc (move_dir: Dir, clip_dir: Dir, move_flags: Nav_Move_Flags, scroll_flags: Scroll_Flags) {
+nav_move_request_forward :: #force_inline proc (move_dir: Dir, clip_dir: Dir, move_flags := Nav_Move_Flags{}, scroll_flags := Scroll_Flags{}) {
 	igNavMoveRequestForward(move_dir, clip_dir, move_flags, scroll_flags)
 }
-nav_move_request_resolve_with_last_item :: proc (result: ^Nav_Item_Data) {
+nav_move_request_resolve_with_last_item :: #force_inline proc (result: ^Nav_Item_Data) {
 	igNavMoveRequestResolveWithLastItem(result)
 }
-nav_move_request_cancel :: proc () {
+nav_move_request_cancel :: #force_inline proc () {
 	igNavMoveRequestCancel()
 }
-nav_move_request_apply_result :: proc () {
+nav_move_request_apply_result :: #force_inline proc () {
 	igNavMoveRequestApplyResult()
 }
-nav_move_request_try_wrapping :: proc (window: ^Window, move_flags: Nav_Move_Flags) {
+nav_move_request_try_wrapping :: #force_inline proc (window: ^Window, move_flags := Nav_Move_Flags{}) {
 	igNavMoveRequestTryWrapping(window, move_flags)
 }
-activate_item :: proc (id: ID) {
+activate_item :: #force_inline proc (id: ID) {
 	igActivateItem(id)
 }
-set_nav_window :: proc (window: ^Window) {
+set_nav_window :: #force_inline proc (window: ^Window) {
 	igSetNavWindow(window)
 }
-set_nav_id :: proc (id: ID, nav_layer: Nav_Layer, focus_scope_id: ID, rect_rel: Rect) {
+set_nav_id :: #force_inline proc (id: ID, nav_layer: Nav_Layer, focus_scope_id: ID, rect_rel: Rect) {
 	igSetNavID(id, nav_layer, focus_scope_id, rect_rel)
 }
-is_named_key :: proc (key: Key) -> bool {
+is_named_key :: #force_inline proc (key: Key) -> bool {
 	return igIsNamedKey(key)
 }
-is_named_key_or_mod_key :: proc (key: Key) -> bool {
+is_named_key_or_mod_key :: #force_inline proc (key: Key) -> bool {
 	return igIsNamedKeyOrModKey(key)
 }
-is_legacy_key :: proc (key: Key) -> bool {
+is_legacy_key :: #force_inline proc (key: Key) -> bool {
 	return igIsLegacyKey(key)
 }
-is_keyboard_key :: proc (key: Key) -> bool {
+is_keyboard_key :: #force_inline proc (key: Key) -> bool {
 	return igIsKeyboardKey(key)
 }
-is_gamepad_key :: proc (key: Key) -> bool {
+is_gamepad_key :: #force_inline proc (key: Key) -> bool {
 	return igIsGamepadKey(key)
 }
-is_mouse_key :: proc (key: Key) -> bool {
+is_mouse_key :: #force_inline proc (key: Key) -> bool {
 	return igIsMouseKey(key)
 }
-is_alias_key :: proc (key: Key) -> bool {
+is_alias_key :: #force_inline proc (key: Key) -> bool {
 	return igIsAliasKey(key)
 }
-convert_shortcut_mod :: proc (key_chord: Key_Chord) -> Key_Chord {
+convert_shortcut_mod :: #force_inline proc (key_chord: Key_Chord) -> Key_Chord {
 	return igConvertShortcutMod(key_chord)
 }
-convert_single_mod_flag_to_key :: proc (ctx: ^Context, key: Key) -> Key {
+convert_single_mod_flag_to_key :: #force_inline proc (ctx: ^Context, key: Key) -> Key {
 	return igConvertSingleModFlagToKey(ctx, key)
 }
-get_key_data_context_ptr :: proc (ctx: ^Context, key: Key) -> ^Key_Data {
+get_key_data_context_ptr :: #force_inline proc (ctx: ^Context, key: Key) -> ^Key_Data {
 	return igGetKeyData_ContextPtr(ctx, key)
 }
-get_key_data_key :: proc (key: Key) -> ^Key_Data {
+get_key_data_key :: #force_inline proc (key: Key) -> ^Key_Data {
 	return igGetKeyData_Key(key)
 }
-get_key_chord_name :: proc (key_chord: Key_Chord, out_buf_size: i32) -> (out_buf: i8) {
+get_key_chord_name :: #force_inline proc (key_chord: Key_Chord, out_buf_size: i32) -> (out_buf: i8) {
 	igGetKeyChordName(key_chord, &out_buf, out_buf_size)
 	return
 }
-mouse_button_to_key :: proc (button: Mouse_Button) -> Key {
+mouse_button_to_key :: #force_inline proc (button: Mouse_Button) -> Key {
 	return igMouseButtonToKey(button)
 }
-is_mouse_drag_past_threshold :: proc (button: Mouse_Button, lock_threshold: f32) -> bool {
+is_mouse_drag_past_threshold :: #force_inline proc (button: Mouse_Button, lock_threshold: f32) -> bool {
 	return igIsMouseDragPastThreshold(button, lock_threshold)
 }
-get_key_magnitude2d :: proc (key_left: Key, key_right: Key, key_up: Key, key_down: Key) -> (p_out: [2]f32) {
+get_key_magnitude2d :: #force_inline proc (key_left: Key, key_right: Key, key_up: Key, key_down: Key) -> (p_out: [2]f32) {
 	igGetKeyMagnitude2d(&p_out, key_left, key_right, key_up, key_down)
 	return
 }
-get_nav_tweak_pressed_amount :: proc (axis: Axis) -> f32 {
+get_nav_tweak_pressed_amount :: #force_inline proc (axis: Axis) -> f32 {
 	return igGetNavTweakPressedAmount(axis)
 }
-calc_typematic_repeat_amount :: proc (t0: f32, t1: f32, repeat_delay: f32, repeat_rate: f32) -> i32 {
+calc_typematic_repeat_amount :: #force_inline proc (t0: f32, t1: f32, repeat_delay: f32, repeat_rate: f32) -> i32 {
 	return igCalcTypematicRepeatAmount(t0, t1, repeat_delay, repeat_rate)
 }
-get_typematic_repeat_rate :: proc (flags: Input_Flags, repeat_delay: ^f32, repeat_rate: ^f32) {
+get_typematic_repeat_rate :: #force_inline proc (flags: Input_Flags, repeat_delay: ^f32, repeat_rate: ^f32) {
 	igGetTypematicRepeatRate(flags, repeat_delay, repeat_rate)
 }
-set_active_id_using_all_keyboard_keys :: proc () {
+set_active_id_using_all_keyboard_keys :: #force_inline proc () {
 	igSetActiveIdUsingAllKeyboardKeys()
 }
-is_active_id_using_nav_dir :: proc (dir: Dir) -> bool {
+is_active_id_using_nav_dir :: #force_inline proc (dir: Dir) -> bool {
 	return igIsActiveIdUsingNavDir(dir)
 }
-get_key_owner :: proc (key: Key) -> ID {
+get_key_owner :: #force_inline proc (key: Key) -> ID {
 	return igGetKeyOwner(key)
 }
-set_key_owner :: proc (key: Key, owner_id: ID, flags: Input_Flags) {
+set_key_owner :: #force_inline proc (key: Key, owner_id: ID, flags := Input_Flags{}) {
 	igSetKeyOwner(key, owner_id, flags)
 }
-set_key_owners_for_key_chord :: proc (key: Key_Chord, owner_id: ID, flags: Input_Flags) {
+set_key_owners_for_key_chord :: #force_inline proc (key: Key_Chord, owner_id: ID, flags := Input_Flags{}) {
 	igSetKeyOwnersForKeyChord(key, owner_id, flags)
 }
-set_item_key_owner :: proc (key: Key, flags: Input_Flags) {
+set_item_key_owner :: #force_inline proc (key: Key, flags := Input_Flags{}) {
 	igSetItemKeyOwner(key, flags)
 }
-test_key_owner :: proc (key: Key, owner_id: ID) -> bool {
+test_key_owner :: #force_inline proc (key: Key, owner_id: ID) -> bool {
 	return igTestKeyOwner(key, owner_id)
 }
-get_key_owner_data :: proc (ctx: ^Context, key: Key) -> ^Key_Owner_Data {
+get_key_owner_data :: #force_inline proc (ctx: ^Context, key: Key) -> ^Key_Owner_Data {
 	return igGetKeyOwnerData(ctx, key)
 }
-is_key_down_id :: proc (key: Key, owner_id: ID) -> bool {
+is_key_down_id :: #force_inline proc (key: Key, owner_id: ID) -> bool {
 	return igIsKeyDown_ID(key, owner_id)
 }
-is_key_pressed_id :: proc (key: Key, owner_id: ID, flags: Input_Flags) -> bool {
+is_key_pressed_id :: #force_inline proc (key: Key, owner_id: ID, flags := Input_Flags{}) -> bool {
 	return igIsKeyPressed_ID(key, owner_id, flags)
 }
-is_key_released_id :: proc (key: Key, owner_id: ID) -> bool {
+is_key_released_id :: #force_inline proc (key: Key, owner_id: ID) -> bool {
 	return igIsKeyReleased_ID(key, owner_id)
 }
-is_mouse_down_id :: proc (button: Mouse_Button, owner_id: ID) -> bool {
+is_mouse_down_id :: #force_inline proc (button: Mouse_Button, owner_id: ID) -> bool {
 	return igIsMouseDown_ID(button, owner_id)
 }
-is_mouse_clicked_id :: proc (button: Mouse_Button, owner_id: ID, flags: Input_Flags) -> bool {
+is_mouse_clicked_id :: #force_inline proc (button: Mouse_Button, owner_id: ID, flags := Input_Flags{}) -> bool {
 	return igIsMouseClicked_ID(button, owner_id, flags)
 }
-is_mouse_released_id :: proc (button: Mouse_Button, owner_id: ID) -> bool {
+is_mouse_released_id :: #force_inline proc (button: Mouse_Button, owner_id: ID) -> bool {
 	return igIsMouseReleased_ID(button, owner_id)
 }
-shortcut :: proc (key_chord: Key_Chord, owner_id: ID, flags: Input_Flags) -> bool {
+shortcut :: #force_inline proc (key_chord: Key_Chord, owner_id: ID, flags := Input_Flags{}) -> bool {
 	return igShortcut(key_chord, owner_id, flags)
 }
-set_shortcut_routing :: proc (key_chord: Key_Chord, owner_id: ID, flags: Input_Flags) -> bool {
+set_shortcut_routing :: #force_inline proc (key_chord: Key_Chord, owner_id: ID, flags := Input_Flags{}) -> bool {
 	return igSetShortcutRouting(key_chord, owner_id, flags)
 }
-test_shortcut_routing :: proc (key_chord: Key_Chord, owner_id: ID) -> bool {
+test_shortcut_routing :: #force_inline proc (key_chord: Key_Chord, owner_id: ID) -> bool {
 	return igTestShortcutRouting(key_chord, owner_id)
 }
-get_shortcut_routing_data :: proc (key_chord: Key_Chord) -> ^Key_Routing_Data {
+get_shortcut_routing_data :: #force_inline proc (key_chord: Key_Chord) -> ^Key_Routing_Data {
 	return igGetShortcutRoutingData(key_chord)
 }
-push_focus_scope :: proc (id: ID) {
+push_focus_scope :: #force_inline proc (id: ID) {
 	igPushFocusScope(id)
 }
-pop_focus_scope :: proc () {
+pop_focus_scope :: #force_inline proc () {
 	igPopFocusScope()
 }
-get_current_focus_scope :: proc () -> ID {
+get_current_focus_scope :: #force_inline proc () -> ID {
 	return igGetCurrentFocusScope()
 }
-is_drag_drop_active :: proc () -> bool {
+is_drag_drop_active :: #force_inline proc () -> bool {
 	return igIsDragDropActive()
 }
-begin_drag_drop_target_custom :: proc (bb: Rect, id: ID) -> bool {
+begin_drag_drop_target_custom :: #force_inline proc (bb: Rect, id: ID) -> bool {
 	return igBeginDragDropTargetCustom(bb, id)
 }
-clear_drag_drop :: proc () {
+clear_drag_drop :: #force_inline proc () {
 	igClearDragDrop()
 }
-is_drag_drop_payload_being_accepted :: proc () -> bool {
+is_drag_drop_payload_being_accepted :: #force_inline proc () -> bool {
 	return igIsDragDropPayloadBeingAccepted()
 }
-render_drag_drop_target_rect :: proc (bb: Rect) {
+render_drag_drop_target_rect :: #force_inline proc (bb: Rect) {
 	igRenderDragDropTargetRect(bb)
 }
-set_window_clip_rect_before_set_channel :: proc (window: ^Window, clip_rect: Rect) {
+set_window_clip_rect_before_set_channel :: #force_inline proc (window: ^Window, clip_rect: Rect) {
 	igSetWindowClipRectBeforeSetChannel(window, clip_rect)
 }
-begin_columns :: proc (str_id: cstring, count: i32, flags: Old_Column_Flags) {
+begin_columns :: #force_inline proc (str_id: cstring, count: i32, flags := Old_Column_Flags{}) {
 	igBeginColumns(str_id, count, flags)
 }
-end_columns :: proc () {
+end_columns :: #force_inline proc () {
 	igEndColumns()
 }
-push_column_clip_rect :: proc (column_index: i32) {
+push_column_clip_rect :: #force_inline proc (column_index: i32) {
 	igPushColumnClipRect(column_index)
 }
-push_columns_background :: proc () {
+push_columns_background :: #force_inline proc () {
 	igPushColumnsBackground()
 }
-pop_columns_background :: proc () {
+pop_columns_background :: #force_inline proc () {
 	igPopColumnsBackground()
 }
-get_columns_id :: proc (str_id: cstring, count: i32) -> ID {
+get_columns_id :: #force_inline proc (str_id: cstring, count: i32) -> ID {
 	return igGetColumnsID(str_id, count)
 }
-find_or_create_columns :: proc (window: ^Window, id: ID) -> ^Old_Columns {
+find_or_create_columns :: #force_inline proc (window: ^Window, id: ID) -> ^Old_Columns {
 	return igFindOrCreateColumns(window, id)
 }
-get_column_offset_from_norm :: proc (columns: ^Old_Columns, offset_norm: f32) -> f32 {
+get_column_offset_from_norm :: #force_inline proc (columns: ^Old_Columns, offset_norm: f32) -> f32 {
 	return igGetColumnOffsetFromNorm(columns, offset_norm)
 }
-get_column_norm_from_offset :: proc (columns: ^Old_Columns, offset: f32) -> f32 {
+get_column_norm_from_offset :: #force_inline proc (columns: ^Old_Columns, offset: f32) -> f32 {
 	return igGetColumnNormFromOffset(columns, offset)
 }
-table_open_context_menu :: proc (column_n: i32) {
+table_open_context_menu :: #force_inline proc (column_n: i32) {
 	igTableOpenContextMenu(column_n)
 }
-table_set_column_width :: proc (column_n: i32, width: f32) {
+table_set_column_width :: #force_inline proc (column_n: i32, width: f32) {
 	igTableSetColumnWidth(column_n, width)
 }
-table_set_column_sort_direction :: proc (column_n: i32, sort_direction: Sort_Direction, append_to_sort_specs: bool) {
+table_set_column_sort_direction :: #force_inline proc (column_n: i32, sort_direction: Sort_Direction, append_to_sort_specs: bool) {
 	igTableSetColumnSortDirection(column_n, sort_direction, append_to_sort_specs)
 }
-table_get_hovered_column :: proc () -> i32 {
+table_get_hovered_column :: #force_inline proc () -> i32 {
 	return igTableGetHoveredColumn()
 }
-table_get_header_row_height :: proc () -> f32 {
+table_get_header_row_height :: #force_inline proc () -> f32 {
 	return igTableGetHeaderRowHeight()
 }
-table_push_background_channel :: proc () {
+table_push_background_channel :: #force_inline proc () {
 	igTablePushBackgroundChannel()
 }
-table_pop_background_channel :: proc () {
+table_pop_background_channel :: #force_inline proc () {
 	igTablePopBackgroundChannel()
 }
-get_current_table :: proc () -> ^Table {
+get_current_table :: #force_inline proc () -> ^Table {
 	return igGetCurrentTable()
 }
-table_find_by_id :: proc (id: ID) -> ^Table {
+table_find_by_id :: #force_inline proc (id: ID) -> ^Table {
 	return igTableFindByID(id)
 }
-begin_table_ex :: proc (name: cstring, id: ID, columns_count: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
+begin_table_ex :: #force_inline proc (name: cstring, id: ID, columns_count: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
 	return igBeginTableEx(name, id, columns_count, flags, outer_size, inner_width)
 }
-table_begin_init_memory :: proc (table: ^Table, columns_count: i32) {
+table_begin_init_memory :: #force_inline proc (table: ^Table, columns_count: i32) {
 	igTableBeginInitMemory(table, columns_count)
 }
-table_begin_apply_requests :: proc (table: ^Table) {
+table_begin_apply_requests :: #force_inline proc (table: ^Table) {
 	igTableBeginApplyRequests(table)
 }
-table_setup_draw_channels :: proc (table: ^Table) {
+table_setup_draw_channels :: #force_inline proc (table: ^Table) {
 	igTableSetupDrawChannels(table)
 }
-table_update_layout :: proc (table: ^Table) {
+table_update_layout :: #force_inline proc (table: ^Table) {
 	igTableUpdateLayout(table)
 }
-table_update_borders :: proc (table: ^Table) {
+table_update_borders :: #force_inline proc (table: ^Table) {
 	igTableUpdateBorders(table)
 }
-table_update_columns_weight_from_width :: proc (table: ^Table) {
+table_update_columns_weight_from_width :: #force_inline proc (table: ^Table) {
 	igTableUpdateColumnsWeightFromWidth(table)
 }
-table_draw_borders :: proc (table: ^Table) {
+table_draw_borders :: #force_inline proc (table: ^Table) {
 	igTableDrawBorders(table)
 }
-table_draw_context_menu :: proc (table: ^Table) {
+table_draw_context_menu :: #force_inline proc (table: ^Table) {
 	igTableDrawContextMenu(table)
 }
-table_begin_context_menu_popup :: proc (table: ^Table) -> bool {
+table_begin_context_menu_popup :: #force_inline proc (table: ^Table) -> bool {
 	return igTableBeginContextMenuPopup(table)
 }
-table_merge_draw_channels :: proc (table: ^Table) {
+table_merge_draw_channels :: #force_inline proc (table: ^Table) {
 	igTableMergeDrawChannels(table)
 }
-table_get_instance_data :: proc (table: ^Table, instance_no: i32) -> ^Table_Instance_Data {
+table_get_instance_data :: #force_inline proc (table: ^Table, instance_no: i32) -> ^Table_Instance_Data {
 	return igTableGetInstanceData(table, instance_no)
 }
-table_get_instance_id :: proc (table: ^Table, instance_no: i32) -> ID {
+table_get_instance_id :: #force_inline proc (table: ^Table, instance_no: i32) -> ID {
 	return igTableGetInstanceID(table, instance_no)
 }
-table_sort_specs_sanitize :: proc (table: ^Table) {
+table_sort_specs_sanitize :: #force_inline proc (table: ^Table) {
 	igTableSortSpecsSanitize(table)
 }
-table_sort_specs_build :: proc (table: ^Table) {
+table_sort_specs_build :: #force_inline proc (table: ^Table) {
 	igTableSortSpecsBuild(table)
 }
-table_get_column_next_sort_direction :: proc (column: ^Table_Column) -> Sort_Direction {
+table_get_column_next_sort_direction :: #force_inline proc (column: ^Table_Column) -> Sort_Direction {
 	return igTableGetColumnNextSortDirection(column)
 }
-table_fix_column_sort_direction :: proc (table: ^Table, column: ^Table_Column) {
+table_fix_column_sort_direction :: #force_inline proc (table: ^Table, column: ^Table_Column) {
 	igTableFixColumnSortDirection(table, column)
 }
-table_get_column_width_auto :: proc (table: ^Table, column: ^Table_Column) -> f32 {
+table_get_column_width_auto :: #force_inline proc (table: ^Table, column: ^Table_Column) -> f32 {
 	return igTableGetColumnWidthAuto(table, column)
 }
-table_begin_row :: proc (table: ^Table) {
+table_begin_row :: #force_inline proc (table: ^Table) {
 	igTableBeginRow(table)
 }
-table_end_row :: proc (table: ^Table) {
+table_end_row :: #force_inline proc (table: ^Table) {
 	igTableEndRow(table)
 }
-table_begin_cell :: proc (table: ^Table, column_n: i32) {
+table_begin_cell :: #force_inline proc (table: ^Table, column_n: i32) {
 	igTableBeginCell(table, column_n)
 }
-table_end_cell :: proc (table: ^Table) {
+table_end_cell :: #force_inline proc (table: ^Table) {
 	igTableEndCell(table)
 }
-table_get_cell_bg_rect :: proc (table: ^Table, column_n: i32) -> (p_out: Rect) {
+table_get_cell_bg_rect :: #force_inline proc (table: ^Table, column_n: i32) -> (p_out: Rect) {
 	igTableGetCellBgRect(&p_out, table, column_n)
 	return
 }
-table_get_column_name_table_ptr :: proc (table: ^Table, column_n: i32) -> cstring {
+table_get_column_name_table_ptr :: #force_inline proc (table: ^Table, column_n: i32) -> cstring {
 	return igTableGetColumnName_TablePtr(table, column_n)
 }
-table_get_column_resize_id :: proc (table: ^Table, column_n: i32, instance_no: i32) -> ID {
+table_get_column_resize_id :: #force_inline proc (table: ^Table, column_n: i32, instance_no: i32) -> ID {
 	return igTableGetColumnResizeID(table, column_n, instance_no)
 }
-table_get_max_column_width :: proc (table: ^Table, column_n: i32) -> f32 {
+table_get_max_column_width :: #force_inline proc (table: ^Table, column_n: i32) -> f32 {
 	return igTableGetMaxColumnWidth(table, column_n)
 }
-table_set_column_width_auto_single :: proc (table: ^Table, column_n: i32) {
+table_set_column_width_auto_single :: #force_inline proc (table: ^Table, column_n: i32) {
 	igTableSetColumnWidthAutoSingle(table, column_n)
 }
-table_set_column_width_auto_all :: proc (table: ^Table) {
+table_set_column_width_auto_all :: #force_inline proc (table: ^Table) {
 	igTableSetColumnWidthAutoAll(table)
 }
-table_remove :: proc (table: ^Table) {
+table_remove :: #force_inline proc (table: ^Table) {
 	igTableRemove(table)
 }
-table_gc_compact_transient_buffers_table_ptr :: proc (table: ^Table) {
+table_gc_compact_transient_buffers_table_ptr :: #force_inline proc (table: ^Table) {
 	igTableGcCompactTransientBuffers_TablePtr(table)
 }
-table_gc_compact_transient_buffers_table_temp_data_ptr :: proc (table: ^Table_Temp_Data) {
+table_gc_compact_transient_buffers_table_temp_data_ptr :: #force_inline proc (table: ^Table_Temp_Data) {
 	igTableGcCompactTransientBuffers_TableTempDataPtr(table)
 }
-table_gc_compact_settings :: proc () {
+table_gc_compact_settings :: #force_inline proc () {
 	igTableGcCompactSettings()
 }
-table_load_settings :: proc (table: ^Table) {
+table_load_settings :: #force_inline proc (table: ^Table) {
 	igTableLoadSettings(table)
 }
-table_save_settings :: proc (table: ^Table) {
+table_save_settings :: #force_inline proc (table: ^Table) {
 	igTableSaveSettings(table)
 }
-table_reset_settings :: proc (table: ^Table) {
+table_reset_settings :: #force_inline proc (table: ^Table) {
 	igTableResetSettings(table)
 }
-table_get_bound_settings :: proc (table: ^Table) -> ^Table_Settings {
+table_get_bound_settings :: #force_inline proc (table: ^Table) -> ^Table_Settings {
 	return igTableGetBoundSettings(table)
 }
-table_settings_add_settings_handler :: proc () {
+table_settings_add_settings_handler :: #force_inline proc () {
 	igTableSettingsAddSettingsHandler()
 }
-table_settings_create :: proc (id: ID, columns_count: i32) -> ^Table_Settings {
+table_settings_create :: #force_inline proc (id: ID, columns_count: i32) -> ^Table_Settings {
 	return igTableSettingsCreate(id, columns_count)
 }
-table_settings_find_by_id :: proc (id: ID) -> ^Table_Settings {
+table_settings_find_by_id :: #force_inline proc (id: ID) -> ^Table_Settings {
 	return igTableSettingsFindByID(id)
 }
-get_current_tab_bar :: proc () -> ^Tab_Bar {
+get_current_tab_bar :: #force_inline proc () -> ^Tab_Bar {
 	return igGetCurrentTabBar()
 }
-begin_tab_bar_ex :: proc (tab_bar: ^Tab_Bar, bb: Rect, flags: Tab_Bar_Flags) -> bool {
+begin_tab_bar_ex :: #force_inline proc (tab_bar: ^Tab_Bar, bb: Rect, flags := Tab_Bar_Flags{}) -> bool {
 	return igBeginTabBarEx(tab_bar, bb, flags)
 }
-tab_bar_find_tab_by_id :: proc (tab_bar: ^Tab_Bar, tab_id: ID) -> ^Tab_Item {
+tab_bar_find_tab_by_id :: #force_inline proc (tab_bar: ^Tab_Bar, tab_id: ID) -> ^Tab_Item {
 	return igTabBarFindTabByID(tab_bar, tab_id)
 }
-tab_bar_find_tab_by_order :: proc (tab_bar: ^Tab_Bar, order: i32) -> ^Tab_Item {
+tab_bar_find_tab_by_order :: #force_inline proc (tab_bar: ^Tab_Bar, order: i32) -> ^Tab_Item {
 	return igTabBarFindTabByOrder(tab_bar, order)
 }
-tab_bar_get_current_tab :: proc (tab_bar: ^Tab_Bar) -> ^Tab_Item {
+tab_bar_get_current_tab :: #force_inline proc (tab_bar: ^Tab_Bar) -> ^Tab_Item {
 	return igTabBarGetCurrentTab(tab_bar)
 }
-tab_bar_get_tab_order :: proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> i32 {
+tab_bar_get_tab_order :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> i32 {
 	return igTabBarGetTabOrder(tab_bar, tab)
 }
-tab_bar_get_tab_name :: proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> cstring {
+tab_bar_get_tab_name :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> cstring {
 	return igTabBarGetTabName(tab_bar, tab)
 }
-tab_bar_remove_tab :: proc (tab_bar: ^Tab_Bar, tab_id: ID) {
+tab_bar_remove_tab :: #force_inline proc (tab_bar: ^Tab_Bar, tab_id: ID) {
 	igTabBarRemoveTab(tab_bar, tab_id)
 }
-tab_bar_close_tab :: proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) {
+tab_bar_close_tab :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) {
 	igTabBarCloseTab(tab_bar, tab)
 }
-tab_bar_queue_focus :: proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) {
+tab_bar_queue_focus :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) {
 	igTabBarQueueFocus(tab_bar, tab)
 }
-tab_bar_queue_reorder :: proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, offset: i32) {
+tab_bar_queue_reorder :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, offset: i32) {
 	igTabBarQueueReorder(tab_bar, tab, offset)
 }
-tab_bar_queue_reorder_from_mouse_pos :: proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, mouse_pos: [2]f32) {
+tab_bar_queue_reorder_from_mouse_pos :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, mouse_pos := [2]f32{}) {
 	igTabBarQueueReorderFromMousePos(tab_bar, tab, mouse_pos)
 }
-tab_bar_process_reorder :: proc (tab_bar: ^Tab_Bar) -> bool {
+tab_bar_process_reorder :: #force_inline proc (tab_bar: ^Tab_Bar) -> bool {
 	return igTabBarProcessReorder(tab_bar)
 }
-tab_item_ex :: proc (tab_bar: ^Tab_Bar, label: string, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool {
+tab_item_ex :: #force_inline proc (tab_bar: ^Tab_Bar, label: string, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igTabItemEx(tab_bar, _temp_label, p_open, flags, docked_window)
 }
-tab_item_calc_size_str :: proc (label: string, has_close_button_or_unsaved_marker: bool) -> (p_out: [2]f32) {
+tab_item_calc_size_str :: #force_inline proc (label: string, has_close_button_or_unsaved_marker: bool) -> (p_out: [2]f32) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igTabItemCalcSize_Str(&p_out, _temp_label, has_close_button_or_unsaved_marker)
 	return
 }
-tab_item_calc_size_window_ptr :: proc (window: ^Window) -> (p_out: [2]f32) {
+tab_item_calc_size_window_ptr :: #force_inline proc (window: ^Window) -> (p_out: [2]f32) {
 	igTabItemCalcSize_WindowPtr(&p_out, window)
 	return
 }
-tab_item_background :: proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, col: u32) {
+tab_item_background :: #force_inline proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, col: u32) {
 	igTabItemBackground(draw_list, bb, flags, col)
 }
-tab_item_label_and_close_button :: proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: string, tab_id: ID, close_button_id: ID, is_contents_visible: bool) -> (out_just_closed: bool, out_text_clipped: bool) {
+tab_item_label_and_close_button :: #force_inline proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: string, tab_id: ID, close_button_id: ID, is_contents_visible: bool) -> (out_just_closed: bool, out_text_clipped: bool) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igTabItemLabelAndCloseButton(draw_list, bb, flags, frame_padding, _temp_label, tab_id, close_button_id, is_contents_visible, &out_just_closed, &out_text_clipped)
 	return
 }
-render_text :: proc (pos: [2]f32, text: string, hide_text_after_hash: bool) {
+render_text :: #force_inline proc (pos: [2]f32, text: string, hide_text_after_hash: bool) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderText(pos, text_begin, text_end, hide_text_after_hash)
 }
-render_text_wrapped :: proc (pos: [2]f32, text: string, wrap_width: f32) {
+render_text_wrapped :: #force_inline proc (pos: [2]f32, text: string, wrap_width: f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextWrapped(pos, text_begin, text_end, wrap_width)
 }
-render_text_clipped :: proc (pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
+render_text_clipped :: #force_inline proc (pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextClipped(pos_min, pos_max, text_begin, text_end, text_size_if_known, align, clip_rect)
 }
-render_text_clipped_ex :: proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
+render_text_clipped_ex :: #force_inline proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextClippedEx(draw_list, pos_min, pos_max, text_begin, text_end, text_size_if_known, align, clip_rect)
 }
-render_text_ellipsis :: proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: string, text_size_if_known: ^[2]f32) {
+render_text_ellipsis :: #force_inline proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: string, text_size_if_known: ^[2]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextEllipsis(draw_list, pos_min, pos_max, clip_max_x, ellipsis_max_x, text_begin, text_end, text_size_if_known)
 }
-render_frame :: proc (p_min: [2]f32, p_max: [2]f32, fill_col: u32, border: bool, rounding: f32) {
+render_frame :: #force_inline proc (p_min: [2]f32, p_max: [2]f32, fill_col: u32, border: bool, rounding: f32) {
 	igRenderFrame(p_min, p_max, fill_col, border, rounding)
 }
-render_frame_border :: proc (p_min: [2]f32, p_max: [2]f32, rounding: f32) {
+render_frame_border :: #force_inline proc (p_min: [2]f32, p_max: [2]f32, rounding: f32) {
 	igRenderFrameBorder(p_min, p_max, rounding)
 }
-render_color_rect_with_alpha_checkerboard :: proc (draw_list: ^Draw_List, p_min: [2]f32, p_max: [2]f32, fill_col: u32, grid_step: f32, grid_off: [2]f32, rounding: f32, flags: Draw_Flags) {
+render_color_rect_with_alpha_checkerboard :: #force_inline proc (draw_list: ^Draw_List, p_min: [2]f32, p_max: [2]f32, fill_col: u32, grid_step: f32, grid_off: [2]f32, rounding: f32, flags := Draw_Flags{}) {
 	igRenderColorRectWithAlphaCheckerboard(draw_list, p_min, p_max, fill_col, grid_step, grid_off, rounding, flags)
 }
-render_nav_highlight :: proc (bb: Rect, id: ID, flags: Nav_Highlight_Flags) {
+render_nav_highlight :: #force_inline proc (bb: Rect, id: ID, flags := Nav_Highlight_Flags{}) {
 	igRenderNavHighlight(bb, id, flags)
 }
-find_rendered_text_end :: proc (text: string) -> cstring {
+find_rendered_text_end :: #force_inline proc (text: string) -> cstring {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	return igFindRenderedTextEnd(text_begin, text_end)
 }
-render_mouse_cursor :: proc (pos: [2]f32, scale: f32, mouse_cursor: Mouse_Cursor, col_fill: u32, col_border: u32, col_shadow: u32) {
+render_mouse_cursor :: #force_inline proc (pos: [2]f32, scale: f32, mouse_cursor: Mouse_Cursor, col_fill: u32, col_border: u32, col_shadow: u32) {
 	igRenderMouseCursor(pos, scale, mouse_cursor, col_fill, col_border, col_shadow)
 }
-render_arrow :: proc (draw_list: ^Draw_List, pos: [2]f32, col: u32, dir: Dir, scale: f32) {
+render_arrow :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, col: u32, dir: Dir, scale: f32) {
 	igRenderArrow(draw_list, pos, col, dir, scale)
 }
-render_bullet :: proc (draw_list: ^Draw_List, pos: [2]f32, col: u32) {
+render_bullet :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, col: u32) {
 	igRenderBullet(draw_list, pos, col)
 }
-render_check_mark :: proc (draw_list: ^Draw_List, pos: [2]f32, col: u32, sz: f32) {
+render_check_mark :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, col: u32, sz: f32) {
 	igRenderCheckMark(draw_list, pos, col, sz)
 }
-render_arrow_pointing_at :: proc (draw_list: ^Draw_List, pos: [2]f32, half_sz: [2]f32, direction: Dir, col: u32) {
+render_arrow_pointing_at :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, half_sz: [2]f32, direction: Dir, col: u32) {
 	igRenderArrowPointingAt(draw_list, pos, half_sz, direction, col)
 }
-render_rect_filled_range_h :: proc (draw_list: ^Draw_List, rect: Rect, col: u32, x_start_norm: f32, x_end_norm: f32, rounding: f32) {
+render_rect_filled_range_h :: #force_inline proc (draw_list: ^Draw_List, rect: Rect, col: u32, x_start_norm: f32, x_end_norm: f32, rounding: f32) {
 	igRenderRectFilledRangeH(draw_list, rect, col, x_start_norm, x_end_norm, rounding)
 }
-render_rect_filled_with_hole :: proc (draw_list: ^Draw_List, outer: Rect, inner: Rect, col: u32, rounding: f32) {
+render_rect_filled_with_hole :: #force_inline proc (draw_list: ^Draw_List, outer: Rect, inner: Rect, col: u32, rounding: f32) {
 	igRenderRectFilledWithHole(draw_list, outer, inner, col, rounding)
 }
-text_ex :: proc (text: string, flags: Text_Flags) {
+text_ex :: #force_inline proc (text: string, flags := Text_Flags{}) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igTextEx(text_begin, text_end, flags)
 }
-button_ex :: proc (label: cstring, size_arg: [2]f32, flags: Button_Flags) -> bool {
+button_ex :: #force_inline proc (label: cstring, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
 	return igButtonEx(label, size_arg, flags)
 }
-arrow_button_ex :: proc (str_id: cstring, dir: Dir, size_arg: [2]f32, flags: Button_Flags) -> bool {
+arrow_button_ex :: #force_inline proc (str_id: cstring, dir: Dir, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
 	return igArrowButtonEx(str_id, dir, size_arg, flags)
 }
-image_button_ex :: proc (id: ID, texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32, flags: Button_Flags) -> bool {
+image_button_ex :: #force_inline proc (id: ID, texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, bg_col := [4]f32{}, tint_col := [4]f32{}, flags := Button_Flags{}) -> bool {
 	return igImageButtonEx(id, texture_id, size, uv0, uv1, bg_col, tint_col, flags)
 }
-separator_ex :: proc (flags: Separator_Flags) {
+separator_ex :: #force_inline proc (flags := Separator_Flags{}) {
 	igSeparatorEx(flags)
 }
-separator_text_ex :: proc (id: ID, label: string, extra_width: f32) {
+separator_text_ex :: #force_inline proc (id: ID, label: string, extra_width: f32) {
 	label_begin := raw_data(label)
 	label_end := cast([^]u8)(uintptr(label_begin) + uintptr(len(label)))
 	igSeparatorTextEx(id, label_begin, label_end, extra_width)
 }
-checkbox_flags_s64_ptr :: proc (label: cstring, flags: ^i64, flags_value: i64) -> bool {
+checkbox_flags_s64_ptr :: #force_inline proc (label: cstring, flags: ^i64, flags_value: i64) -> bool {
 	return igCheckboxFlags_S64Ptr(label, flags, flags_value)
 }
-checkbox_flags_u64_ptr :: proc (label: cstring, flags: ^u64, flags_value: u64) -> bool {
+checkbox_flags_u64_ptr :: #force_inline proc (label: cstring, flags: ^u64, flags_value: u64) -> bool {
 	return igCheckboxFlags_U64Ptr(label, flags, flags_value)
 }
-close_button :: proc (id: ID, pos: [2]f32) -> bool {
+close_button :: #force_inline proc (id: ID, pos := [2]f32{}) -> bool {
 	return igCloseButton(id, pos)
 }
-collapse_button :: proc (id: ID, pos: [2]f32) -> bool {
+collapse_button :: #force_inline proc (id: ID, pos := [2]f32{}) -> bool {
 	return igCollapseButton(id, pos)
 }
-scrollbar :: proc (axis: Axis) {
+scrollbar :: #force_inline proc (axis: Axis) {
 	igScrollbar(axis)
 }
-scrollbar_ex :: proc (bb: Rect, id: ID, axis: Axis, p_scroll_v: ^i64, avail_v: i64, contents_v: i64, flags: Draw_Flags) -> bool {
+scrollbar_ex :: #force_inline proc (bb: Rect, id: ID, axis: Axis, p_scroll_v: ^i64, avail_v: i64, contents_v: i64, flags := Draw_Flags{}) -> bool {
 	return igScrollbarEx(bb, id, axis, p_scroll_v, avail_v, contents_v, flags)
 }
-get_window_scrollbar_rect :: proc (window: ^Window, axis: Axis) -> (p_out: Rect) {
+get_window_scrollbar_rect :: #force_inline proc (window: ^Window, axis: Axis) -> (p_out: Rect) {
 	igGetWindowScrollbarRect(&p_out, window, axis)
 	return
 }
-get_window_scrollbar_id :: proc (window: ^Window, axis: Axis) -> ID {
+get_window_scrollbar_id :: #force_inline proc (window: ^Window, axis: Axis) -> ID {
 	return igGetWindowScrollbarID(window, axis)
 }
-get_window_resize_corner_id :: proc (window: ^Window, n: i32) -> ID {
+get_window_resize_corner_id :: #force_inline proc (window: ^Window, n: i32) -> ID {
 	return igGetWindowResizeCornerID(window, n)
 }
-get_window_resize_border_id :: proc (window: ^Window, dir: Dir) -> ID {
+get_window_resize_border_id :: #force_inline proc (window: ^Window, dir: Dir) -> ID {
 	return igGetWindowResizeBorderID(window, dir)
 }
-button_behavior :: proc (bb: Rect, id: ID, flags: Button_Flags) -> (out_hovered: bool, out_held: bool, _ret: bool) {
+button_behavior :: #force_inline proc (bb: Rect, id: ID, flags := Button_Flags{}) -> (out_hovered: bool, out_held: bool, _ret: bool) {
 	_ret = igButtonBehavior(bb, id, &out_hovered, &out_held, flags)
 	return
 }
-drag_behavior :: proc (id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
+drag_behavior :: #force_inline proc (id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragBehavior(id, data_type, p_v, v_speed, p_min, p_max, _temp_format, flags)
 }
-slider_behavior :: proc (bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> (out_grab_bb: Rect, _ret: bool) {
+slider_behavior :: #force_inline proc (bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> (out_grab_bb: Rect, _ret: bool) {
 	_temp_format := semisafe_string_to_cstring(format)
 	_ret = igSliderBehavior(bb, id, data_type, p_v, p_min, p_max, _temp_format, flags, &out_grab_bb)
 	return
 }
-splitter_behavior :: proc (bb: Rect, id: ID, axis: Axis, size1: ^f32, size2: ^f32, min_size1: f32, min_size2: f32, hover_extend: f32, hover_visibility_delay: f32, bg_col: u32) -> bool {
+splitter_behavior :: #force_inline proc (bb: Rect, id: ID, axis: Axis, size1: ^f32, size2: ^f32, min_size1: f32, min_size2: f32, hover_extend: f32, hover_visibility_delay: f32, bg_col: u32) -> bool {
 	return igSplitterBehavior(bb, id, axis, size1, size2, min_size1, min_size2, hover_extend, hover_visibility_delay, bg_col)
 }
-tree_node_behavior :: proc (id: ID, flags: Tree_Node_Flags, label: string) -> bool {
+tree_node_behavior :: #force_inline proc (id: ID, flags: Tree_Node_Flags, label: string) -> bool {
 	label_begin := raw_data(label)
 	label_end := cast([^]u8)(uintptr(label_begin) + uintptr(len(label)))
 	return igTreeNodeBehavior(id, flags, label_begin, label_end)
 }
-tree_push_override_id :: proc (id: ID) {
+tree_push_override_id :: #force_inline proc (id: ID) {
 	igTreePushOverrideID(id)
 }
-tree_node_set_open :: proc (id: ID, open: bool) {
+tree_node_set_open :: #force_inline proc (id: ID, open: bool) {
 	igTreeNodeSetOpen(id, open)
 }
-tree_node_update_next_open :: proc (id: ID, flags: Tree_Node_Flags) -> bool {
+tree_node_update_next_open :: #force_inline proc (id: ID, flags := Tree_Node_Flags{}) -> bool {
 	return igTreeNodeUpdateNextOpen(id, flags)
 }
-data_type_get_info :: proc (data_type: Data_Type) -> ^Data_Type_Info {
+data_type_get_info :: #force_inline proc (data_type: Data_Type) -> ^Data_Type_Info {
 	return igDataTypeGetInfo(data_type)
 }
-data_type_format_string :: proc (buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
+data_type_format_string :: #force_inline proc (buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDataTypeFormatString(raw_data(buf), cast(i32)len(buf), data_type, p_data, _temp_format)
 }
-data_type_apply_op :: proc (data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) {
+data_type_apply_op :: #force_inline proc (data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) {
 	igDataTypeApplyOp(data_type, op, output, arg_1, arg_2)
 }
-data_type_apply_from_text :: proc (buf: cstring, data_type: Data_Type, p_data: rawptr, format: string) -> bool {
+data_type_apply_from_text :: #force_inline proc (buf: cstring, data_type: Data_Type, p_data: rawptr, format: string) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDataTypeApplyFromText(buf, data_type, p_data, _temp_format)
 }
-data_type_compare :: proc (data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -> i32 {
+data_type_compare :: #force_inline proc (data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -> i32 {
 	return igDataTypeCompare(data_type, arg_1, arg_2)
 }
-data_type_clamp :: proc (data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr) -> bool {
+data_type_clamp :: #force_inline proc (data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr) -> bool {
 	return igDataTypeClamp(data_type, p_data, p_min, p_max)
 }
-input_text_ex :: proc (label: cstring, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+input_text_ex :: #force_inline proc (label: cstring, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
 	_temp_hint := semisafe_string_to_cstring(hint)
 	return igInputTextEx(label, _temp_hint, raw_data(buf), cast(i32)len(buf), size_arg, flags, callback, user_data)
 }
-input_text_deactivate_hook :: proc (id: ID) {
+input_text_deactivate_hook :: #force_inline proc (id: ID) {
 	igInputTextDeactivateHook(id)
 }
-temp_input_text :: proc (bb: Rect, id: ID, label: string, buf: []i8, flags: Input_Text_Flags) -> bool {
+temp_input_text :: #force_inline proc (bb: Rect, id: ID, label: string, buf: []i8, flags := Input_Text_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igTempInputText(bb, id, _temp_label, raw_data(buf), cast(i32)len(buf), flags)
 }
-temp_input_scalar :: proc (bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool {
+temp_input_scalar :: #force_inline proc (bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
 	return igTempInputScalar(bb, id, _temp_label, data_type, p_data, _temp_format, p_clamp_min, p_clamp_max)
 }
-temp_input_is_active :: proc (id: ID) -> bool {
+temp_input_is_active :: #force_inline proc (id: ID) -> bool {
 	return igTempInputIsActive(id)
 }
-get_input_text_state :: proc (id: ID) -> ^Input_Text_State {
+get_input_text_state :: #force_inline proc (id: ID) -> ^Input_Text_State {
 	return igGetInputTextState(id)
 }
-color_tooltip :: proc (text: cstring, col: ^f32, flags: Color_Edit_Flags) {
+color_tooltip :: #force_inline proc (text: cstring, col: ^f32, flags := Color_Edit_Flags{}) {
 	igColorTooltip(text, col, flags)
 }
-color_edit_options_popup :: proc (col: ^f32, flags: Color_Edit_Flags) {
+color_edit_options_popup :: #force_inline proc (col: ^f32, flags := Color_Edit_Flags{}) {
 	igColorEditOptionsPopup(col, flags)
 }
-color_picker_options_popup :: proc (ref_col: ^f32, flags: Color_Edit_Flags) {
+color_picker_options_popup :: #force_inline proc (ref_col: ^f32, flags := Color_Edit_Flags{}) {
 	igColorPickerOptionsPopup(ref_col, flags)
 }
-plot_ex :: proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 {
+plot_ex :: #force_inline proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg := [2]f32{}) -> i32 {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	return igPlotEx(plot_type, _temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, size_arg)
 }
-shade_verts_linear_color_gradient_keep_alpha :: proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) {
+shade_verts_linear_color_gradient_keep_alpha :: #force_inline proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) {
 	igShadeVertsLinearColorGradientKeepAlpha(draw_list, vert_start_idx, vert_end_idx, gradient_p0, gradient_p1, col0, col1)
 }
-shade_verts_linear_uv :: proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) {
+shade_verts_linear_uv :: #force_inline proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) {
 	igShadeVertsLinearUV(draw_list, vert_start_idx, vert_end_idx, a, b, uv_a, uv_b, clamp)
 }
-gc_compact_transient_misc_buffers :: proc () {
+gc_compact_transient_misc_buffers :: #force_inline proc () {
 	igGcCompactTransientMiscBuffers()
 }
-gc_compact_transient_window_buffers :: proc (window: ^Window) {
+gc_compact_transient_window_buffers :: #force_inline proc (window: ^Window) {
 	igGcCompactTransientWindowBuffers(window)
 }
-gc_awake_transient_window_buffers :: proc (window: ^Window) {
+gc_awake_transient_window_buffers :: #force_inline proc (window: ^Window) {
 	igGcAwakeTransientWindowBuffers(window)
 }
-debug_log :: proc (fmt: cstring, _args_: ..any) {
-	igDebugLog(fmt, _args_)
-}
-error_check_end_frame_recover :: proc (log_callback: Error_Log_Callback, user_data: rawptr) {
+debug_log :: igDebugLog  // Cannot be wrapped due to variadic args
+error_check_end_frame_recover :: #force_inline proc (log_callback: Error_Log_Callback, user_data: rawptr) {
 	igErrorCheckEndFrameRecover(log_callback, user_data)
 }
-error_check_end_window_recover :: proc (log_callback: Error_Log_Callback, user_data: rawptr) {
+error_check_end_window_recover :: #force_inline proc (log_callback: Error_Log_Callback, user_data: rawptr) {
 	igErrorCheckEndWindowRecover(log_callback, user_data)
 }
-error_check_using_set_cursor_pos_to_extend_parent_boundaries :: proc () {
+error_check_using_set_cursor_pos_to_extend_parent_boundaries :: #force_inline proc () {
 	igErrorCheckUsingSetCursorPosToExtendParentBoundaries()
 }
-debug_locate_item :: proc (target_id: ID) {
+debug_locate_item :: #force_inline proc (target_id: ID) {
 	igDebugLocateItem(target_id)
 }
-debug_locate_item_on_hover :: proc (target_id: ID) {
+debug_locate_item_on_hover :: #force_inline proc (target_id: ID) {
 	igDebugLocateItemOnHover(target_id)
 }
-debug_locate_item_resolve_with_last_item :: proc () {
+debug_locate_item_resolve_with_last_item :: #force_inline proc () {
 	igDebugLocateItemResolveWithLastItem()
 }
-debug_draw_item_rect :: proc (col: u32) {
+debug_draw_item_rect :: #force_inline proc (col: u32) {
 	igDebugDrawItemRect(col)
 }
-debug_start_item_picker :: proc () {
+debug_start_item_picker :: #force_inline proc () {
 	igDebugStartItemPicker()
 }
-show_font_atlas :: proc (atlas: ^Font_Atlas) {
+show_font_atlas :: #force_inline proc (atlas: ^Font_Atlas) {
 	igShowFontAtlas(atlas)
 }
-debug_hook_id_info :: proc (id: ID, data_type: Data_Type, data_id: rawptr, data_id_end: rawptr) {
+debug_hook_id_info :: #force_inline proc (id: ID, data_type: Data_Type, data_id: rawptr, data_id_end: rawptr) {
 	igDebugHookIdInfo(id, data_type, data_id, data_id_end)
 }
-debug_node_columns :: proc (columns: ^Old_Columns) {
+debug_node_columns :: #force_inline proc (columns: ^Old_Columns) {
 	igDebugNodeColumns(columns)
 }
-debug_node_draw_list :: proc (window: ^Window, draw_list: ^Draw_List, label: string) {
+debug_node_draw_list :: #force_inline proc (window: ^Window, draw_list: ^Draw_List, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeDrawList(window, draw_list, _temp_label)
 }
-debug_node_draw_cmd_show_mesh_and_bounding_box :: proc (draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) -> (out_draw_list: Draw_List) {
+debug_node_draw_cmd_show_mesh_and_bounding_box :: #force_inline proc (draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) -> (out_draw_list: Draw_List) {
 	igDebugNodeDrawCmdShowMeshAndBoundingBox(&out_draw_list, draw_list, draw_cmd, show_mesh, show_aabb)
 	return
 }
-debug_node_font :: proc (font: ^Font) {
+debug_node_font :: #force_inline proc (font: ^Font) {
 	igDebugNodeFont(font)
 }
-debug_node_font_glyph :: proc (font: ^Font, glyph: ^Font_Glyph) {
+debug_node_font_glyph :: #force_inline proc (font: ^Font, glyph: ^Font_Glyph) {
 	igDebugNodeFontGlyph(font, glyph)
 }
-debug_node_storage :: proc (storage: ^Storage, label: string) {
+debug_node_storage :: #force_inline proc (storage: ^Storage, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeStorage(storage, _temp_label)
 }
-debug_node_tab_bar :: proc (tab_bar: ^Tab_Bar, label: string) {
+debug_node_tab_bar :: #force_inline proc (tab_bar: ^Tab_Bar, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeTabBar(tab_bar, _temp_label)
 }
-debug_node_table :: proc (table: ^Table) {
+debug_node_table :: #force_inline proc (table: ^Table) {
 	igDebugNodeTable(table)
 }
-debug_node_table_settings :: proc (settings: ^Table_Settings) {
+debug_node_table_settings :: #force_inline proc (settings: ^Table_Settings) {
 	igDebugNodeTableSettings(settings)
 }
-debug_node_input_text_state :: proc (state: ^Input_Text_State) {
+debug_node_input_text_state :: #force_inline proc (state: ^Input_Text_State) {
 	igDebugNodeInputTextState(state)
 }
-debug_node_window :: proc (window: ^Window, label: string) {
+debug_node_window :: #force_inline proc (window: ^Window, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeWindow(window, _temp_label)
 }
-debug_node_window_settings :: proc (settings: ^Window_Settings) {
+debug_node_window_settings :: #force_inline proc (settings: ^Window_Settings) {
 	igDebugNodeWindowSettings(settings)
 }
-debug_node_windows_list :: proc (windows: ^Vector(^Window), label: string) {
+debug_node_windows_list :: #force_inline proc (windows: ^Vector(^Window), label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeWindowsList(windows, _temp_label)
 }
-debug_node_windows_list_by_begin_stack_parent :: proc (windows: []^Window, parent_in_begin_stack: ^Window) {
+debug_node_windows_list_by_begin_stack_parent :: #force_inline proc (windows: []^Window, parent_in_begin_stack: ^Window) {
 	igDebugNodeWindowsListByBeginStackParent(raw_data(windows), cast(i32)len(windows), parent_in_begin_stack)
 }
-debug_node_viewport :: proc (viewport: ^Viewport_P) {
+debug_node_viewport :: #force_inline proc (viewport: ^Viewport_P) {
 	igDebugNodeViewport(viewport)
 }
-debug_render_keyboard_preview :: proc (draw_list: ^Draw_List) {
+debug_render_keyboard_preview :: #force_inline proc (draw_list: ^Draw_List) {
 	igDebugRenderKeyboardPreview(draw_list)
 }
-debug_render_viewport_thumbnail :: proc (draw_list: ^Draw_List, viewport: ^Viewport_P, bb: Rect) {
+debug_render_viewport_thumbnail :: #force_inline proc (draw_list: ^Draw_List, viewport: ^Viewport_P, bb: Rect) {
 	igDebugRenderViewportThumbnail(draw_list, viewport, bb)
 }
-is_key_pressed_map :: proc (key: Key, repeat: bool) -> bool {
+is_key_pressed_map :: #force_inline proc (key: Key, repeat: bool) -> bool {
 	return igIsKeyPressedMap(key, repeat)
 }
-im_font_atlas_get_builder_for_stb_truetype :: proc () -> ^Font_Builder_IO {
+im_font_atlas_get_builder_for_stb_truetype :: #force_inline proc () -> ^Font_Builder_IO {
 	return igImFontAtlasGetBuilderForStbTruetype()
 }
-im_font_atlas_build_init :: proc (atlas: ^Font_Atlas) {
+im_font_atlas_build_init :: #force_inline proc (atlas: ^Font_Atlas) {
 	igImFontAtlasBuildInit(atlas)
 }
-im_font_atlas_build_setup_font :: proc (atlas: ^Font_Atlas, font: ^Font, font_config: ^Font_Config, ascent: f32, descent: f32) {
+im_font_atlas_build_setup_font :: #force_inline proc (atlas: ^Font_Atlas, font: ^Font, font_config: ^Font_Config, ascent: f32, descent: f32) {
 	igImFontAtlasBuildSetupFont(atlas, font, font_config, ascent, descent)
 }
-im_font_atlas_build_pack_custom_rects :: proc (atlas: ^Font_Atlas, stbrp_context_opaque: rawptr) {
+im_font_atlas_build_pack_custom_rects :: #force_inline proc (atlas: ^Font_Atlas, stbrp_context_opaque: rawptr) {
 	igImFontAtlasBuildPackCustomRects(atlas, stbrp_context_opaque)
 }
-im_font_atlas_build_finish :: proc (atlas: ^Font_Atlas) {
+im_font_atlas_build_finish :: #force_inline proc (atlas: ^Font_Atlas) {
 	igImFontAtlasBuildFinish(atlas)
 }
-im_font_atlas_build_render8bpp_rect_from_string :: proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u8) {
+im_font_atlas_build_render8bpp_rect_from_string :: #force_inline proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u8) {
 	_temp_in_str := semisafe_string_to_cstring(in_str)
 	igImFontAtlasBuildRender8bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
 }
-im_font_atlas_build_render32bpp_rect_from_string :: proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u32) {
+im_font_atlas_build_render32bpp_rect_from_string :: #force_inline proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u32) {
 	_temp_in_str := semisafe_string_to_cstring(in_str)
 	igImFontAtlasBuildRender32bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
 }
-im_font_atlas_build_multiply_calc_lookup_table :: proc (out_table: [256]u8, in_multiply_factor: f32) {
+im_font_atlas_build_multiply_calc_lookup_table :: #force_inline proc (out_table: [256]u8, in_multiply_factor: f32) {
 	igImFontAtlasBuildMultiplyCalcLookupTable(out_table, in_multiply_factor)
 }
-im_font_atlas_build_multiply_rect_alpha8 :: proc (table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) {
+im_font_atlas_build_multiply_rect_alpha8 :: #force_inline proc (table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) {
 	igImFontAtlasBuildMultiplyRectAlpha8(table, pixels, x, y, w, h, stride)
 }
-log_text :: proc (fmt: cstring, _args_: ..any) {
-	igLogText(fmt, _args_)
-}
-text_buffer_appendf :: proc (buffer: ^Text_Buffer, fmt: cstring, _args_: ..any) {
-	ImGuiTextBuffer_appendf(buffer, fmt, _args_)
-}
+log_text :: igLogText  // Cannot be wrapped due to variadic args
+text_buffer_appendf :: ImGuiTextBuffer_appendf  // Cannot be wrapped due to variadic args
 
 begin_child :: proc {
 	begin_child_str,
