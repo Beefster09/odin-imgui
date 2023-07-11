@@ -1298,7 +1298,7 @@ Data_Type_Temp_Storage :: struct {
 }
 
 Data_Type_Info :: struct {
-	size: size_t,
+	size: int,
 	name: cstring,
 	print_fmt: cstring,
 	scan_fmt: cstring,

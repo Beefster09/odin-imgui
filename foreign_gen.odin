@@ -17,12 +17,6 @@ when ODIN_OS == .Windows {
 
 @(default_calling_convention="c")
 foreign cimgui {
-	ImVec2_ImVec2_Nil :: proc "c" () -> ^[2]f32 ---
-	ImVec2_destroy :: proc "c" (self: ^[2]f32) ---
-	ImVec2_ImVec2_Float :: proc "c" (_x: f32, _y: f32) -> ^[2]f32 ---
-	ImVec4_ImVec4_Nil :: proc "c" () -> ^[4]f32 ---
-	ImVec4_destroy :: proc "c" (self: ^[4]f32) ---
-	ImVec4_ImVec4_Float :: proc "c" (_x: f32, _y: f32, _z: f32, _w: f32) -> ^[4]f32 ---
 	igCreateContext :: proc "c" (shared_font_atlas: ^Font_Atlas) -> ^Context ---
 	igDestroyContext :: proc "c" (ctx: ^Context) ---
 	igGetCurrentContext :: proc "c" () -> ^Context ---
@@ -205,9 +199,9 @@ foreign cimgui {
 	igVSliderFloat :: proc "c" (label: cstring, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
 	igVSliderInt :: proc "c" (label: cstring, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
 	igVSliderScalar :: proc "c" (label: cstring, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
-	igInputText :: proc "c" (label: cstring, buf: ^i8, buf_size: size_t, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
-	igInputTextMultiline :: proc "c" (label: cstring, buf: ^i8, buf_size: size_t, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
-	igInputTextWithHint :: proc "c" (label: cstring, hint: cstring, buf: ^i8, buf_size: size_t, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
+	igInputText :: proc "c" (label: cstring, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
+	igInputTextMultiline :: proc "c" (label: cstring, buf: ^i8, buf_size: int, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
+	igInputTextWithHint :: proc "c" (label: cstring, hint: cstring, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
 	igInputFloat :: proc "c" (label: cstring, v: ^f32, step: f32, step_fast: f32, format: cstring, flags: Input_Text_Flags) -> bool ---
 	igInputFloat2 :: proc "c" (label: cstring, v: [2]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
 	igInputFloat3 :: proc "c" (label: cstring, v: [3]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
@@ -317,7 +311,7 @@ foreign cimgui {
 	igLogButtons :: proc "c" () ---
 	igLogTextV :: proc "c" (fmt: cstring, args: va_list) ---
 	igBeginDragDropSource :: proc "c" (flags: Drag_Drop_Flags) -> bool ---
-	igSetDragDropPayload :: proc "c" (type: cstring, data: rawptr, sz: size_t, cond: Cond) -> bool ---
+	igSetDragDropPayload :: proc "c" (type: cstring, data: rawptr, sz: int, cond: Cond) -> bool ---
 	igEndDragDropSource :: proc "c" () ---
 	igBeginDragDropTarget :: proc "c" () -> bool ---
 	igAcceptDragDropPayload :: proc "c" (type: cstring, flags: Drag_Drop_Flags) -> ^Payload ---
@@ -390,14 +384,14 @@ foreign cimgui {
 	igGetClipboardText :: proc "c" () -> cstring ---
 	igSetClipboardText :: proc "c" (text: cstring) ---
 	igLoadIniSettingsFromDisk :: proc "c" (ini_filename: cstring) ---
-	igLoadIniSettingsFromMemory :: proc "c" (ini_data: cstring, ini_size: size_t) ---
+	igLoadIniSettingsFromMemory :: proc "c" (ini_data: cstring, ini_size: int) ---
 	igSaveIniSettingsToDisk :: proc "c" (ini_filename: cstring) ---
-	igSaveIniSettingsToMemory :: proc "c" (out_ini_size: ^size_t) -> cstring ---
+	igSaveIniSettingsToMemory :: proc "c" (out_ini_size: ^int) -> cstring ---
 	igDebugTextEncoding :: proc "c" (text: cstring) ---
-	igDebugCheckVersionAndDataLayout :: proc "c" (version_str: cstring, sz_io: size_t, sz_style: size_t, sz_vec2: size_t, sz_vec4: size_t, sz_drawvert: size_t, sz_drawidx: size_t) -> bool ---
+	igDebugCheckVersionAndDataLayout :: proc "c" (version_str: cstring, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool ---
 	igSetAllocatorFunctions :: proc "c" (alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) ---
 	igGetAllocatorFunctions :: proc "c" (p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) ---
-	igMemAlloc :: proc "c" (size: size_t) -> rawptr ---
+	igMemAlloc :: proc "c" (size: int) -> rawptr ---
 	igMemFree :: proc "c" (ptr: rawptr) ---
 	ImGuiStyle_ImGuiStyle :: proc "c" () -> ^Style ---
 	ImGuiStyle_destroy :: proc "c" (self: ^Style) ---
@@ -557,16 +551,6 @@ foreign cimgui {
 	ImDrawList_PrimWriteVtx :: proc "c" (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) ---
 	ImDrawList_PrimWriteIdx :: proc "c" (self: ^Draw_List, idx: Draw_Idx) ---
 	ImDrawList_PrimVtx :: proc "c" (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) ---
-	ImDrawList__ResetForNewFrame :: proc "c" (self: ^Draw_List) ---
-	ImDrawList__ClearFreeMemory :: proc "c" (self: ^Draw_List) ---
-	ImDrawList__PopUnusedDrawCmd :: proc "c" (self: ^Draw_List) ---
-	ImDrawList__TryMergeDrawCmds :: proc "c" (self: ^Draw_List) ---
-	ImDrawList__OnChangedClipRect :: proc "c" (self: ^Draw_List) ---
-	ImDrawList__OnChangedTextureID :: proc "c" (self: ^Draw_List) ---
-	ImDrawList__OnChangedVtxOffset :: proc "c" (self: ^Draw_List) ---
-	ImDrawList__CalcCircleAutoSegmentCount :: proc "c" (self: ^Draw_List, radius: f32) -> i32 ---
-	ImDrawList__PathArcToFastEx :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, a_min_sample: i32, a_max_sample: i32, a_step: i32) ---
-	ImDrawList__PathArcToN :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, a_min: f32, a_max: f32, num_segments: i32) ---
 	ImDrawData_ImDrawData :: proc "c" () -> ^Draw_Data ---
 	ImDrawData_destroy :: proc "c" (self: ^Draw_Data) ---
 	ImDrawData_Clear :: proc "c" (self: ^Draw_Data) ---
@@ -577,8 +561,8 @@ foreign cimgui {
 	ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder :: proc "c" () -> ^Font_Glyph_Ranges_Builder ---
 	ImFontGlyphRangesBuilder_destroy :: proc "c" (self: ^Font_Glyph_Ranges_Builder) ---
 	ImFontGlyphRangesBuilder_Clear :: proc "c" (self: ^Font_Glyph_Ranges_Builder) ---
-	ImFontGlyphRangesBuilder_GetBit :: proc "c" (self: ^Font_Glyph_Ranges_Builder, n: size_t) -> bool ---
-	ImFontGlyphRangesBuilder_SetBit :: proc "c" (self: ^Font_Glyph_Ranges_Builder, n: size_t) ---
+	ImFontGlyphRangesBuilder_GetBit :: proc "c" (self: ^Font_Glyph_Ranges_Builder, n: int) -> bool ---
+	ImFontGlyphRangesBuilder_SetBit :: proc "c" (self: ^Font_Glyph_Ranges_Builder, n: int) ---
 	ImFontGlyphRangesBuilder_AddChar :: proc "c" (self: ^Font_Glyph_Ranges_Builder, c: u16) ---
 	ImFontGlyphRangesBuilder_AddText :: proc "c" (self: ^Font_Glyph_Ranges_Builder, text: cstring, text_end: cstring) ---
 	ImFontGlyphRangesBuilder_AddRanges :: proc "c" (self: ^Font_Glyph_Ranges_Builder, ranges: ^u16) ---
@@ -642,99 +626,10 @@ foreign cimgui {
 	ImGuiPlatformImeData_ImGuiPlatformImeData :: proc "c" () -> ^Platform_Ime_Data ---
 	ImGuiPlatformImeData_destroy :: proc "c" (self: ^Platform_Ime_Data) ---
 	igGetKeyIndex :: proc "c" (key: Key) -> Key ---
-	igImHashData :: proc "c" (data: rawptr, data_size: size_t, seed: ID) -> ID ---
-	igImHashStr :: proc "c" (data: cstring, data_size: size_t, seed: ID) -> ID ---
-	igImAlphaBlendColors :: proc "c" (col_a: u32, col_b: u32) -> u32 ---
-	igImIsPowerOfTwo_Int :: proc "c" (v: i32) -> bool ---
-	igImIsPowerOfTwo_U64 :: proc "c" (v: u64) -> bool ---
-	igImUpperPowerOfTwo :: proc "c" (v: i32) -> i32 ---
-	igImStricmp :: proc "c" (str1: cstring, str2: cstring) -> i32 ---
-	igImStrnicmp :: proc "c" (str1: cstring, str2: cstring, count: size_t) -> i32 ---
-	igImStrncpy :: proc "c" (dst: ^i8, src: cstring, count: size_t) ---
-	igImStrdup :: proc "c" (str: cstring) -> ^i8 ---
-	igImStrdupcpy :: proc "c" (dst: ^i8, p_dst_size: ^size_t, str: cstring) -> ^i8 ---
-	igImStrchrRange :: proc "c" (str_begin: cstring, str_end: cstring, c: i8) -> cstring ---
-	igImStrlenW :: proc "c" (str: ^u16) -> i32 ---
-	igImStreolRange :: proc "c" (str: cstring, str_end: cstring) -> cstring ---
-	igImStrbolW :: proc "c" (buf_mid_line: ^u16, buf_begin: ^u16) -> ^u16 ---
-	igImStristr :: proc "c" (haystack: cstring, haystack_end: cstring, needle: cstring, needle_end: cstring) -> cstring ---
-	igImStrTrimBlanks :: proc "c" (str: ^i8) ---
-	igImStrSkipBlank :: proc "c" (str: cstring) -> cstring ---
-	igImToUpper :: proc "c" (c: i8) -> i8 ---
-	igImCharIsBlankA :: proc "c" (c: i8) -> bool ---
-	igImCharIsBlankW :: proc "c" (c: u32) -> bool ---
-	igImFormatString :: proc "c" (buf: ^i8, buf_size: size_t, fmt: cstring, #c_vararg args: ..any) -> i32 ---
-	igImFormatStringV :: proc "c" (buf: ^i8, buf_size: size_t, fmt: cstring, args: va_list) -> i32 ---
-	igImFormatStringToTempBuffer :: proc "c" (out_buf: ^cstring, out_buf_end: ^cstring, fmt: cstring, #c_vararg args: ..any) ---
-	igImFormatStringToTempBufferV :: proc "c" (out_buf: ^cstring, out_buf_end: ^cstring, fmt: cstring, args: va_list) ---
-	igImParseFormatFindStart :: proc "c" (format: cstring) -> cstring ---
-	igImParseFormatFindEnd :: proc "c" (format: cstring) -> cstring ---
-	igImParseFormatTrimDecorations :: proc "c" (format: cstring, buf: ^i8, buf_size: size_t) -> cstring ---
-	igImParseFormatSanitizeForPrinting :: proc "c" (fmt_in: cstring, fmt_out: ^i8, fmt_out_size: size_t) ---
-	igImParseFormatSanitizeForScanning :: proc "c" (fmt_in: cstring, fmt_out: ^i8, fmt_out_size: size_t) -> cstring ---
-	igImParseFormatPrecision :: proc "c" (format: cstring, default_value: i32) -> i32 ---
-	igImTextCharToUtf8 :: proc "c" (out_buf: [5]i8, c: u32) -> cstring ---
-	igImTextStrToUtf8 :: proc "c" (out_buf: ^i8, out_buf_size: i32, in_text: ^u16, in_text_end: ^u16) -> i32 ---
-	igImTextCharFromUtf8 :: proc "c" (out_char: ^u32, in_text: cstring, in_text_end: cstring) -> i32 ---
-	igImTextStrFromUtf8 :: proc "c" (out_buf: ^u16, out_buf_size: i32, in_text: cstring, in_text_end: cstring, in_remaining: ^cstring) -> i32 ---
-	igImTextCountCharsFromUtf8 :: proc "c" (in_text: cstring, in_text_end: cstring) -> i32 ---
-	igImTextCountUtf8BytesFromChar :: proc "c" (in_text: cstring, in_text_end: cstring) -> i32 ---
-	igImTextCountUtf8BytesFromStr :: proc "c" (in_text: ^u16, in_text_end: ^u16) -> i32 ---
-	igImFileOpen :: proc "c" (filename: cstring, mode: cstring) -> File_Handle ---
-	igImFileClose :: proc "c" (file: File_Handle) -> bool ---
-	igImFileGetSize :: proc "c" (file: File_Handle) -> u64 ---
-	igImFileRead :: proc "c" (data: rawptr, size: u64, count: u64, file: File_Handle) -> u64 ---
-	igImFileWrite :: proc "c" (data: rawptr, size: u64, count: u64, file: File_Handle) -> u64 ---
-	igImFileLoadToMemory :: proc "c" (filename: cstring, mode: cstring, out_file_size: ^size_t, padding_bytes: i32) -> rawptr ---
-	igImPow_Float :: proc "c" (x: f32, y: f32) -> f32 ---
-	igImPow_double :: proc "c" (x: f64, y: f64) -> f64 ---
-	igImLog_Float :: proc "c" (x: f32) -> f32 ---
-	igImLog_double :: proc "c" (x: f64) -> f64 ---
-	igImAbs_Int :: proc "c" (x: i32) -> i32 ---
-	igImAbs_Float :: proc "c" (x: f32) -> f32 ---
-	igImAbs_double :: proc "c" (x: f64) -> f64 ---
-	igImSign_Float :: proc "c" (x: f32) -> f32 ---
-	igImSign_double :: proc "c" (x: f64) -> f64 ---
-	igImRsqrt_Float :: proc "c" (x: f32) -> f32 ---
-	igImRsqrt_double :: proc "c" (x: f64) -> f64 ---
-	igImMin :: proc "c" (p_out: ^[2]f32, lhs: [2]f32, rhs: [2]f32) ---
-	igImMax :: proc "c" (p_out: ^[2]f32, lhs: [2]f32, rhs: [2]f32) ---
-	igImClamp :: proc "c" (p_out: ^[2]f32, v: [2]f32, mn: [2]f32, mx: [2]f32) ---
-	igImLerp_Vec2Float :: proc "c" (p_out: ^[2]f32, a: [2]f32, b: [2]f32, t: f32) ---
-	igImLerp_Vec2Vec2 :: proc "c" (p_out: ^[2]f32, a: [2]f32, b: [2]f32, t: [2]f32) ---
-	igImLerp_Vec4 :: proc "c" (p_out: ^[4]f32, a: [4]f32, b: [4]f32, t: f32) ---
-	igImSaturate :: proc "c" (f: f32) -> f32 ---
-	igImLengthSqr_Vec2 :: proc "c" (lhs: [2]f32) -> f32 ---
-	igImLengthSqr_Vec4 :: proc "c" (lhs: [4]f32) -> f32 ---
-	igImInvLength :: proc "c" (lhs: [2]f32, fail_value: f32) -> f32 ---
-	igImFloor_Float :: proc "c" (f: f32) -> f32 ---
-	igImFloorSigned_Float :: proc "c" (f: f32) -> f32 ---
-	igImFloor_Vec2 :: proc "c" (p_out: ^[2]f32, v: [2]f32) ---
-	igImFloorSigned_Vec2 :: proc "c" (p_out: ^[2]f32, v: [2]f32) ---
-	igImModPositive :: proc "c" (a: i32, b: i32) -> i32 ---
-	igImDot :: proc "c" (a: [2]f32, b: [2]f32) -> f32 ---
-	igImRotate :: proc "c" (p_out: ^[2]f32, v: [2]f32, cos_a: f32, sin_a: f32) ---
-	igImLinearSweep :: proc "c" (current: f32, target: f32, speed: f32) -> f32 ---
-	igImMul :: proc "c" (p_out: ^[2]f32, lhs: [2]f32, rhs: [2]f32) ---
-	igImIsFloatAboveGuaranteedIntegerPrecision :: proc "c" (f: f32) -> bool ---
-	igImExponentialMovingAverage :: proc "c" (avg: f32, sample: f32, n: i32) -> f32 ---
 	igImBezierCubicCalc :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, t: f32) ---
 	igImBezierCubicClosestPoint :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, num_segments: i32) ---
 	igImBezierCubicClosestPointCasteljau :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, tess_tol: f32) ---
 	igImBezierQuadraticCalc :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, t: f32) ---
-	igImLineClosestPoint :: proc "c" (p_out: ^[2]f32, a: [2]f32, b: [2]f32, p: [2]f32) ---
-	igImTriangleContainsPoint :: proc "c" (a: [2]f32, b: [2]f32, c: [2]f32, p: [2]f32) -> bool ---
-	igImTriangleClosestPoint :: proc "c" (p_out: ^[2]f32, a: [2]f32, b: [2]f32, c: [2]f32, p: [2]f32) ---
-	igImTriangleBarycentricCoords :: proc "c" (a: [2]f32, b: [2]f32, c: [2]f32, p: [2]f32, out_u: ^f32, out_v: ^f32, out_w: ^f32) ---
-	igImTriangleArea :: proc "c" (a: [2]f32, b: [2]f32, c: [2]f32) -> f32 ---
-	igImGetDirQuadrantFromDelta :: proc "c" (dx: f32, dy: f32) -> Dir ---
-	ImVec1_ImVec1_Nil :: proc "c" () -> ^[1]f32 ---
-	ImVec1_destroy :: proc "c" (self: ^[1]f32) ---
-	ImVec1_ImVec1_Float :: proc "c" (_x: f32) -> ^[1]f32 ---
-	ImVec2ih_ImVec2ih_Nil :: proc "c" () -> ^[2]i16 ---
-	ImVec2ih_destroy :: proc "c" (self: ^[2]i16) ---
-	ImVec2ih_ImVec2ih_short :: proc "c" (_x: i16, _y: i16) -> ^[2]i16 ---
-	ImVec2ih_ImVec2ih_Vec2 :: proc "c" (rhs: [2]f32) -> ^[2]i16 ---
 	ImRect_ImRect_Nil :: proc "c" () -> ^Rect ---
 	ImRect_destroy :: proc "c" (self: ^Rect) ---
 	ImRect_ImRect_Vec2 :: proc "c" (min: [2]f32, max: [2]f32) -> ^Rect ---
@@ -764,12 +659,6 @@ foreign cimgui {
 	ImRect_Floor :: proc "c" (self: ^Rect) ---
 	ImRect_IsInverted :: proc "c" (self: ^Rect) -> bool ---
 	ImRect_ToVec4 :: proc "c" (p_out: ^[4]f32, self: ^Rect) ---
-	igImBitArrayGetStorageSizeInBytes :: proc "c" (bitcount: i32) -> size_t ---
-	igImBitArrayClearAllBits :: proc "c" (arr: ^u32, bitcount: i32) ---
-	igImBitArrayTestBit :: proc "c" (arr: ^u32, n: i32) -> bool ---
-	igImBitArrayClearBit :: proc "c" (arr: ^u32, n: i32) ---
-	igImBitArraySetBit :: proc "c" (arr: ^u32, n: i32) ---
-	igImBitArraySetBitRange :: proc "c" (arr: ^u32, n: i32, n2: i32) ---
 	ImBitVector_Create :: proc "c" (self: ^Bit_Vector, sz: i32) ---
 	ImBitVector_Clear :: proc "c" (self: ^Bit_Vector) ---
 	ImBitVector_TestBit :: proc "c" (self: ^Bit_Vector, n: i32) -> bool ---
@@ -1256,8 +1145,4 @@ foreign cimgui {
 	ImGuiTextBuffer_appendf :: proc "c" (buffer: ^Text_Buffer, fmt: cstring, #c_vararg args: ..any) ---
 	igGET_FLT_MAX :: proc "c" () -> f32 ---
 	igGET_FLT_MIN :: proc "c" () -> f32 ---
-	ImVector_ImWchar_create :: proc "c" () -> ^Vector(u16) ---
-	ImVector_ImWchar_destroy :: proc "c" (self: ^Vector(u16)) ---
-	ImVector_ImWchar_Init :: proc "c" (p: ^Vector(u16)) ---
-	ImVector_ImWchar_UnInit :: proc "c" (p: ^Vector(u16)) ---
 }

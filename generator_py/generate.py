@@ -62,7 +62,7 @@ def generate_foreign(ast):
         """))
 
         for node in ast:
-            if isinstance(node, c_ast.Decl) and isinstance(node.type, c_ast.FuncDecl) and node.name not in FUNC_BLACKLIST:
+            if is_exported_proc(node):
                 fp.write(f"\t{node.name} :: {type_as_odin(node.type)} ---\n")
 
         fp.write("}\n")
@@ -71,18 +71,24 @@ def generate_foreign(ast):
 def generate_wrapper(ast):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
+        fp.write(textwrap.dedent("""
+            import "core:slice"
+            import "core:strings"
+        """))
 
         for node in ast:
-            if isinstance(node, c_ast.Decl) and isinstance(node.type, c_ast.FuncDecl) and node.name not in FUNC_BLACKLIST:
-                print([param.name if hasattr(param, 'name') else ... for param in node.type.args])
+            if is_exported_proc(node):
+                # all_params = list(node.type.args) if not is_empty_param_list(node.type.args) else []
+
                 odin_params = [
                     "#c_vararg _args_: ..any"
                     if isinstance(param, c_ast.EllipsisParam)
-                    else f"{odin_id(param.name)}: {type_as_odin(param.type)}"
+                    else f"{odin_id(param.name)}: {'string' if is_cstring(param.type) else type_as_odin(param.type)}"
 
                     for param in node.type.args
                     if not is_out_param(param)
                 ] if not is_empty_param_list(node.type.args) else []
+
                 orig_ret_type = type_as_odin(node.type.type)
                 multiple_returns = [
                     f"{odin_id(param.name)}: {type_as_odin(deref(param.type))}"
@@ -97,20 +103,27 @@ def generate_wrapper(ast):
                         ret = ''
                 else:
                     if multiple_returns:
-                        ret = f" -> ({', '.join(multiple_returns)}, _orig_ret: {orig_ret_type})"
+                        ret = f" -> ({', '.join(multiple_returns)}, _ret: {orig_ret_type})"
                     else:
                         ret = f" -> {orig_ret_type}"
 
-                fp.write(f"{odin_id(node.name)} :: proc ({', '.join(odin_params)}){ret} {{\n")
+                fp.write(f"{odin_procname(node.name)} :: proc ({', '.join(odin_params)}){ret} {{\n")
 
                 call_args = [
                     ".._args_"
                     if isinstance(param, c_ast.EllipsisParam)
-                    else f"{'&' * is_out_param(param)}{odin_id(param.name)}"
+                    else f"{'&' * is_out_param(param)}{'_temp_' * is_cstring(param.type)}{odin_id(param.name)}"
                     for param in node.type.args
                 ] if not is_empty_param_list(node.type.args) else []
 
-                if not multiple_returns:
+                for param in node.type.args:
+                    if not isinstance(param, c_ast.EllipsisParam) and is_cstring(param.type):
+                        fp.write(f"\t_temp_{odin_id(param.name)} := strings.clone_to_cstring({odin_id(param.name)}, context.temp_allocator)\n")
+
+                if multiple_returns:
+                    fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{node.name}({', '.join(call_args)})\n")
+                    fp.write("\treturn\n")
+                else:
                     fp.write(f"\treturn {node.name}({', '.join(call_args)})\n")
 
                 fp.write("}\n")
@@ -124,11 +137,6 @@ def write_header(fp):
         package imgui
 
     """))
-
-
-FUNC_BLACKLIST = {
-    'igImQsort',
-}
 
 
 class TypeGenVisitor(c_ast.NodeVisitor):
@@ -359,6 +367,7 @@ TYPE_MAP = {
     'ImVec3': '[3]f32',
     'ImVec4': '[4]f32',
     'ImVec2ih': '[2]i16',
+    'size_t': 'int',
 }
 
 for k, v in list(TYPE_MAP.items()):
@@ -384,13 +393,7 @@ def odin_typename(name: str) -> str:
         _, elem = name.split('_', 1)
         return f"Span({odin_typename(elem)})"
 
-    elif name.startswith('ImGui'):
-        name = name[5:]
-
-    elif name.startswith('Im'):
-        name = name[2:]
-
-    return '_'.join(camel_split(name))
+    return '_'.join(camel_split(trim_type_prefix(name)))
 
 
 ODIN_KEYWORDS = ['where', 'map', 'in', 'context']
@@ -418,7 +421,36 @@ def odin_enumname(name: str) -> str:
     return '_'.join(camel_split(valname))
 
 
-ACRONYMS = 'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'NS', 'EW', 'NESW', 'NWSE', 'HSV'
+def odin_procname(name: str) -> str:
+    if name.startswith(('ImGui', 'Im')):  # is a method in the C++ ... probably
+        classname, method = name.split('_', 1)
+
+        if method.startswith(classname):  # is a constructor
+            method = method.replace(classname, 'create', 1)
+
+        all_chunks = camel_split(trim_type_prefix(classname)) + camel_split(trim_type_prefix(method))
+
+        return '_'.join(map(str.lower, all_chunks)).replace('__', '_')
+
+    elif name.startswith('ig'):
+        name = name[2:]
+
+    base_id = '_'.join(map(str.lower, camel_split(name))).replace('__', '_')
+
+    if base_id in ODIN_KEYWORDS:
+        return base_id + '_'
+
+    return base_id
+
+
+def proc_overload_group(name: str) -> str:
+    ...
+
+
+ACRONYMS = (
+    'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'HSV',
+    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR',
+)
 
 
 def camel_split(s: str) -> List[str]:
@@ -436,6 +468,16 @@ def camel_split(s: str) -> List[str]:
     return result
 
 
+def trim_type_prefix(s: str) -> str:
+    if s.startswith('ImGui'):
+        return s[5:]
+
+    elif s.startswith('Im'):
+        return s[2:]
+
+    return s
+
+
 def is_cimgui(ast_node) -> bool:
     if coord := getattr(ast_node, 'coord', None):
         return coord.file.endswith('cimgui.h')
@@ -445,8 +487,10 @@ def is_empty_param_list(params: c_ast.ParamList) -> bool:
     assert isinstance(params, c_ast.ParamList)
     if len(params.params) > 1:
         return False
+
     if len(params.params) == 0:
         return True
+
     for only_param in params.params:
         return (
             only_param.name is None
@@ -455,11 +499,11 @@ def is_empty_param_list(params: c_ast.ParamList) -> bool:
             and only_param.type.type.names == ['void']
         )
 
+    return False
+
 def is_cstring(ast_node) -> bool:
     if not isinstance(ast_node, c_ast.PtrDecl):
         return False
-
-    ast_node.show()
 
     return (
         isinstance(ast_node.type, c_ast.TypeDecl)
@@ -480,10 +524,35 @@ def is_out_param(ast_node) -> bool:
         return False
 
     return (
-        isinstance(ast_node.type, c_ast.TypeDecl)
-        and isinstance(ast_node.type.type, c_ast.PtrDecl)
+        isinstance(ast_node.type, c_ast.PtrDecl)
+        and isinstance(ast_node.type.type, c_ast.TypeDecl)
         and 'const' not in ast_node.type.type.quals
     )
+
+
+def is_exported_proc(ast_node):
+    return (
+        isinstance(ast_node, c_ast.Decl)
+        and isinstance(ast_node.type, c_ast.FuncDecl)
+        and ast_node.name
+        and '__' not in ast_node.name  # probably intended as private
+        and (
+            not ast_node.name.startswith(FUNC_PREFIX_BLACKLIST)
+            or ast_node.name.startswith(FUNC_PREFIX_WHITELIST)
+        )
+    )
+
+
+FUNC_PREFIX_BLACKLIST = (
+    'igIm',
+    'ImVec',
+)
+
+FUNC_PREFIX_WHITELIST = (
+    'igImage',
+    'igImFont',
+    'igImBezier',
+)
 
 
 def deref(ast_node):
