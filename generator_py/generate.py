@@ -47,6 +47,8 @@ def generate_foreign(ast):
     with open(ODIN_DIR / 'foreign_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent("""
+            import "core:c/libc"
+
             when ODIN_OS == .Windows {
             \twhen ODIN_DEBUG {
             \t\tforeign import cimgui "external/cimgui_debug.lib"
@@ -63,7 +65,32 @@ def generate_foreign(ast):
 
         for node in ast:
             if is_exported_proc(node):
-                fp.write(f"\t{node.name} :: {type_as_odin(node.type)} ---\n")
+                all_params = param_list(node.type.args)
+
+                odin_params = []
+
+                for i, param in enumerate(all_params):
+                    prev_param = all_params[i - 1] if i > 0 else None
+
+                    if isinstance(param, c_ast.EllipsisParam):
+                        odin_params.append('#c_vararg _args_: ..any')
+
+                    elif is_string_span_pair(prev_param, param):
+                        odin_params[-1:] = [
+                            f"{odin_id(prev_param.name)}: [^]u8",
+                            f"{odin_id(param.name)}: [^]u8",
+                        ]
+
+                    else:
+                        odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
+
+                ret_type = type_as_odin(node.type.type)
+                if ret_type == 'void':
+                    ret = ''
+                else:
+                    ret = f" -> {ret_type}"
+
+                fp.write(f"\t{node.name} :: proc({', '.join(odin_params)}){ret} ---\n")
 
         fp.write("}\n")
 
@@ -72,29 +99,64 @@ def generate_wrapper(ast):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent("""
-            import "core:slice"
             import "core:strings"
+
+
         """))
 
         for node in ast:
             if is_exported_proc(node):
-                # all_params = list(node.type.args) if not is_empty_param_list(node.type.args) else []
-
-                odin_params = [
-                    "#c_vararg _args_: ..any"
-                    if isinstance(param, c_ast.EllipsisParam)
-                    else f"{odin_id(param.name)}: {'string' if is_cstring(param.type) else type_as_odin(param.type)}"
-
-                    for param in node.type.args
-                    if not is_out_param(param)
-                ] if not is_empty_param_list(node.type.args) else []
-
                 orig_ret_type = type_as_odin(node.type.type)
-                multiple_returns = [
-                    f"{odin_id(param.name)}: {type_as_odin(deref(param.type))}"
-                    for param in node.type.args
-                    if is_out_param(param)
-                ]
+                all_params = list(node.type.args) if not is_empty_param_list(node.type.args) else []
+
+                if all_params and is_va_list(all_params[-1]):
+                    continue  # skip
+
+                odin_params = []
+                call_args = []
+                multiple_returns = []
+
+                clone_strings = []
+                span_strings = []
+
+                for i, param in enumerate(all_params):
+                    prev_param = all_params[i - 1] if i > 0 else None
+                    try:
+                        next_param = all_params[i + 1]
+                    except IndexError:
+                        next_param = None
+
+                    if is_out_param(param):
+                        multiple_returns.append(f"{odin_id(param.name)}: {type_as_odin(deref(param.type))}")
+                        call_args.append('&' + odin_id(param.name))
+
+                    elif isinstance(param, c_ast.EllipsisParam):
+                        odin_params.append("_args_: ..any")
+                        call_args.append('_args_')
+
+                    elif is_cstring(param.type):
+
+                        if is_string_span_pair(prev_param, param):
+                            assert param.name.endswith('_end')
+                            pname = odin_id(param.name[:-4])
+                            odin_params[-1] = f"{pname}: string"
+                            clone_strings.pop()
+                            call_args[-1:] = [f'{pname}_begin', f'{pname}_end']
+                            span_strings.append(pname)
+
+                        elif (i == 0 or param.name == 'fmt') and not is_string_span_pair(param, next_param):
+                            odin_params.append(f"{odin_id(param.name)}: cstring")
+                            call_args.append(odin_id(param.name))
+
+                        else:
+                            odin_params.append(f"{odin_id(param.name)}: string")
+                            clone_strings.append(odin_id(param.name))
+                            call_args.append('_temp_' + odin_id(param.name))
+
+                    else:
+                        odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
+                        call_args.append(odin_id(param.name))
+
 
                 if orig_ret_type == 'void':
                     if multiple_returns:
@@ -109,22 +171,19 @@ def generate_wrapper(ast):
 
                 fp.write(f"{odin_procname(node.name)} :: proc ({', '.join(odin_params)}){ret} {{\n")
 
-                call_args = [
-                    ".._args_"
-                    if isinstance(param, c_ast.EllipsisParam)
-                    else f"{'&' * is_out_param(param)}{'_temp_' * is_cstring(param.type)}{odin_id(param.name)}"
-                    for param in node.type.args
-                ] if not is_empty_param_list(node.type.args) else []
+                for pname in clone_strings:
+                    fp.write(f"\t_temp_{pname} := strings.clone_to_cstring({pname}, context.temp_allocator)\n")
 
-                for param in node.type.args:
-                    if not isinstance(param, c_ast.EllipsisParam) and is_cstring(param.type):
-                        fp.write(f"\t_temp_{odin_id(param.name)} := strings.clone_to_cstring({odin_id(param.name)}, context.temp_allocator)\n")
+                for pname in span_strings:
+                    fp.write(f"\t{pname}_begin := raw_data({pname})\n")
+                    fp.write(f"\t{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))\n")
 
                 if multiple_returns:
                     fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{node.name}({', '.join(call_args)})\n")
                     fp.write("\treturn\n")
+
                 else:
-                    fp.write(f"\treturn {node.name}({', '.join(call_args)})\n")
+                    fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{node.name}({', '.join(call_args)})\n")
 
                 fp.write("}\n")
 
@@ -207,8 +266,6 @@ class TypeGenVisitor(c_ast.NodeVisitor):
                 self.fp.write(f"{odin_typename(ename)}_{odin_id(vname).upper()} :: {bit_set_name}{{ {', '.join(bit_set_values)} }}\n")
 
         else:
-            # TODO: handle ImGuiMod_ constants in ImGuiKey_ enum correctly
-
             special_enum_values = []
             enum_typename = odin_typename(type_name)
 
@@ -318,17 +375,14 @@ def type_as_odin(type_node) -> str:
         ret_type = type_as_odin(type_node.type)
         ret = f" -> {ret_type}" if ret_type != 'void' else ''
 
-        if is_empty_param_list(type_node.args):
-            params = ''
-        else:
-            params = ', '.join(
-                f"#c_vararg args: ..any"
-                if isinstance(param, c_ast.EllipsisParam)
-                else f"{odin_id(param.name)}: {type_as_odin(param.type)}"
+        params = ', '.join(
+            f"#c_vararg args: ..any"
+            if isinstance(param, c_ast.EllipsisParam)
+            else f"{odin_id(param.name)}: {type_as_odin(param.type)}"
 
-                for param in type_node.args
-            )
-        return f'proc "c" ({params}){ret}'
+            for param in param_list(type_node.args)
+        )
+        return f'#type proc "c" ({params}){ret}'
 
     elif isinstance(type_node, c_ast.Union):
         fields = '\n'.join(
@@ -368,6 +422,7 @@ TYPE_MAP = {
     'ImVec4': '[4]f32',
     'ImVec2ih': '[2]i16',
     'size_t': 'int',
+    'va_list': '^libc.va_list',
 }
 
 for k, v in list(TYPE_MAP.items()):
@@ -426,7 +481,7 @@ def odin_procname(name: str) -> str:
         classname, method = name.split('_', 1)
 
         if method.startswith(classname):  # is a constructor
-            method = method.replace(classname, 'create', 1)
+            method = method.replace(classname, 'new', 1)
 
         all_chunks = camel_split(trim_type_prefix(classname)) + camel_split(trim_type_prefix(method))
 
@@ -483,6 +538,11 @@ def is_cimgui(ast_node) -> bool:
         return coord.file.endswith('cimgui.h')
     return False
 
+
+def param_list(ast_node: c_ast.ParamList):
+    return list(ast_node) if not is_empty_param_list(ast_node) else []
+
+
 def is_empty_param_list(params: c_ast.ParamList) -> bool:
     assert isinstance(params, c_ast.ParamList)
     if len(params.params) > 1:
@@ -501,6 +561,16 @@ def is_empty_param_list(params: c_ast.ParamList) -> bool:
 
     return False
 
+
+def is_va_list(ast_node) -> bool:
+    return (
+        isinstance(ast_node, c_ast.Decl)
+        and isinstance(ast_node.type, c_ast.TypeDecl)
+        and isinstance(ast_node.type.type, c_ast.IdentifierType)
+        and ast_node.type.type.names == ['va_list']
+    )
+
+
 def is_cstring(ast_node) -> bool:
     if not isinstance(ast_node, c_ast.PtrDecl):
         return False
@@ -511,6 +581,21 @@ def is_cstring(ast_node) -> bool:
         and 'const' in ast_node.type.quals
         and 'char' in ast_node.type.type.names
     )
+
+
+def is_string_span_pair(begin, end) -> bool:
+    if begin is None or end is None:
+        return False
+
+    try:
+        if not (is_cstring(begin.type) and is_cstring(end.type)):
+            return False
+    except AttributeError:
+        return False
+
+    begin_name = begin.name[:-6] if begin.name.endswith('_begin') else begin.name  # in python 3.9, use removesuffix instead
+
+    return end.name.startswith(begin_name) and end.name.endswith('_end')
 
 
 def is_out_param(ast_node) -> bool:

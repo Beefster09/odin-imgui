@@ -764,10 +764,10 @@ IO :: struct {
 	backend_platform_user_data: rawptr,
 	backend_renderer_user_data: rawptr,
 	backend_language_user_data: rawptr,
-	get_clipboard_text_fn: proc "c" (user_data: rawptr) -> cstring,
-	set_clipboard_text_fn: proc "c" (user_data: rawptr, text: cstring),
+	get_clipboard_text_fn: ^#type proc "c" (user_data: rawptr) -> cstring,
+	set_clipboard_text_fn: ^#type proc "c" (user_data: rawptr, text: cstring),
 	clipboard_user_data: rawptr,
-	set_platform_ime_data_fn: proc "c" (viewport: ^Viewport, data: ^Platform_Ime_Data),
+	set_platform_ime_data_fn: ^#type proc "c" (viewport: ^Viewport, data: ^Platform_Ime_Data),
 	__unused_padding: rawptr,
 	want_capture_mouse: bool,
 	want_capture_keyboard: bool,
@@ -1719,12 +1719,12 @@ Window_Settings :: struct {
 Settings_Handler :: struct {
 	type_name: cstring,
 	type_hash: ID,
-	clear_all_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	read_init_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	read_open_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, name: cstring) -> rawptr,
-	read_line_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: cstring),
-	apply_all_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	write_all_fn: proc "c" (ctx: ^Context, handler: ^Settings_Handler, out_buf: ^Text_Buffer),
+	clear_all_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
+	read_init_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
+	read_open_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler, name: cstring) -> rawptr,
+	read_line_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: cstring),
+	apply_all_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
+	write_all_fn: ^#type proc "c" (ctx: ^Context, handler: ^Settings_Handler, out_buf: ^Text_Buffer),
 	user_data: rawptr,
 }
 
@@ -2457,5 +2457,5 @@ Table_Settings :: struct {
 }
 
 Font_Builder_IO :: struct {
-	font_builder__build: proc "c" (atlas: ^Font_Atlas) -> bool,
+	font_builder__build: ^#type proc "c" (atlas: ^Font_Atlas) -> bool,
 }

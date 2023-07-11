@@ -5,6 +5,8 @@
 package imgui
 
 
+import "core:c/libc"
+
 when ODIN_OS == .Windows {
 	when ODIN_DEBUG {
 		foreign import cimgui "external/cimgui_debug.lib"
@@ -17,1132 +19,1132 @@ when ODIN_OS == .Windows {
 
 @(default_calling_convention="c")
 foreign cimgui {
-	igCreateContext :: proc "c" (shared_font_atlas: ^Font_Atlas) -> ^Context ---
-	igDestroyContext :: proc "c" (ctx: ^Context) ---
-	igGetCurrentContext :: proc "c" () -> ^Context ---
-	igSetCurrentContext :: proc "c" (ctx: ^Context) ---
-	igGetIO :: proc "c" () -> ^IO ---
-	igGetStyle :: proc "c" () -> ^Style ---
-	igNewFrame :: proc "c" () ---
-	igEndFrame :: proc "c" () ---
-	igRender :: proc "c" () ---
-	igGetDrawData :: proc "c" () -> ^Draw_Data ---
-	igShowDemoWindow :: proc "c" (p_open: ^bool) ---
-	igShowMetricsWindow :: proc "c" (p_open: ^bool) ---
-	igShowDebugLogWindow :: proc "c" (p_open: ^bool) ---
-	igShowStackToolWindow :: proc "c" (p_open: ^bool) ---
-	igShowAboutWindow :: proc "c" (p_open: ^bool) ---
-	igShowStyleEditor :: proc "c" (ref: ^Style) ---
-	igShowStyleSelector :: proc "c" (label: cstring) -> bool ---
-	igShowFontSelector :: proc "c" (label: cstring) ---
-	igShowUserGuide :: proc "c" () ---
-	igGetVersion :: proc "c" () -> cstring ---
-	igStyleColorsDark :: proc "c" (dst: ^Style) ---
-	igStyleColorsLight :: proc "c" (dst: ^Style) ---
-	igStyleColorsClassic :: proc "c" (dst: ^Style) ---
-	igBegin :: proc "c" (name: cstring, p_open: ^bool, flags: Window_Flags) -> bool ---
-	igEnd :: proc "c" () ---
-	igBeginChild_Str :: proc "c" (str_id: cstring, size: [2]f32, border: bool, flags: Window_Flags) -> bool ---
-	igBeginChild_ID :: proc "c" (id: ID, size: [2]f32, border: bool, flags: Window_Flags) -> bool ---
-	igEndChild :: proc "c" () ---
-	igIsWindowAppearing :: proc "c" () -> bool ---
-	igIsWindowCollapsed :: proc "c" () -> bool ---
-	igIsWindowFocused :: proc "c" (flags: Focused_Flags) -> bool ---
-	igIsWindowHovered :: proc "c" (flags: Hovered_Flags) -> bool ---
-	igGetWindowDrawList :: proc "c" () -> ^Draw_List ---
-	igGetWindowPos :: proc "c" (p_out: ^[2]f32) ---
-	igGetWindowSize :: proc "c" (p_out: ^[2]f32) ---
-	igGetWindowWidth :: proc "c" () -> f32 ---
-	igGetWindowHeight :: proc "c" () -> f32 ---
-	igSetNextWindowPos :: proc "c" (pos: [2]f32, cond: Cond, pivot: [2]f32) ---
-	igSetNextWindowSize :: proc "c" (size: [2]f32, cond: Cond) ---
-	igSetNextWindowSizeConstraints :: proc "c" (size_min: [2]f32, size_max: [2]f32, custom_callback: Size_Callback, custom_callback_data: rawptr) ---
-	igSetNextWindowContentSize :: proc "c" (size: [2]f32) ---
-	igSetNextWindowCollapsed :: proc "c" (collapsed: bool, cond: Cond) ---
-	igSetNextWindowFocus :: proc "c" () ---
-	igSetNextWindowScroll :: proc "c" (scroll: [2]f32) ---
-	igSetNextWindowBgAlpha :: proc "c" (alpha: f32) ---
-	igSetWindowPos_Vec2 :: proc "c" (pos: [2]f32, cond: Cond) ---
-	igSetWindowSize_Vec2 :: proc "c" (size: [2]f32, cond: Cond) ---
-	igSetWindowCollapsed_Bool :: proc "c" (collapsed: bool, cond: Cond) ---
-	igSetWindowFocus_Nil :: proc "c" () ---
-	igSetWindowFontScale :: proc "c" (scale: f32) ---
-	igSetWindowPos_Str :: proc "c" (name: cstring, pos: [2]f32, cond: Cond) ---
-	igSetWindowSize_Str :: proc "c" (name: cstring, size: [2]f32, cond: Cond) ---
-	igSetWindowCollapsed_Str :: proc "c" (name: cstring, collapsed: bool, cond: Cond) ---
-	igSetWindowFocus_Str :: proc "c" (name: cstring) ---
-	igGetContentRegionAvail :: proc "c" (p_out: ^[2]f32) ---
-	igGetContentRegionMax :: proc "c" (p_out: ^[2]f32) ---
-	igGetWindowContentRegionMin :: proc "c" (p_out: ^[2]f32) ---
-	igGetWindowContentRegionMax :: proc "c" (p_out: ^[2]f32) ---
-	igGetScrollX :: proc "c" () -> f32 ---
-	igGetScrollY :: proc "c" () -> f32 ---
-	igSetScrollX_Float :: proc "c" (scroll_x: f32) ---
-	igSetScrollY_Float :: proc "c" (scroll_y: f32) ---
-	igGetScrollMaxX :: proc "c" () -> f32 ---
-	igGetScrollMaxY :: proc "c" () -> f32 ---
-	igSetScrollHereX :: proc "c" (center_x_ratio: f32) ---
-	igSetScrollHereY :: proc "c" (center_y_ratio: f32) ---
-	igSetScrollFromPosX_Float :: proc "c" (local_x: f32, center_x_ratio: f32) ---
-	igSetScrollFromPosY_Float :: proc "c" (local_y: f32, center_y_ratio: f32) ---
-	igPushFont :: proc "c" (font: ^Font) ---
-	igPopFont :: proc "c" () ---
-	igPushStyleColor_U32 :: proc "c" (idx: Col, col: u32) ---
-	igPushStyleColor_Vec4 :: proc "c" (idx: Col, col: [4]f32) ---
-	igPopStyleColor :: proc "c" (count: i32) ---
-	igPushStyleVar_Float :: proc "c" (idx: Style_Var, val: f32) ---
-	igPushStyleVar_Vec2 :: proc "c" (idx: Style_Var, val: [2]f32) ---
-	igPopStyleVar :: proc "c" (count: i32) ---
-	igPushTabStop :: proc "c" (tab_stop: bool) ---
-	igPopTabStop :: proc "c" () ---
-	igPushButtonRepeat :: proc "c" (repeat: bool) ---
-	igPopButtonRepeat :: proc "c" () ---
-	igPushItemWidth :: proc "c" (item_width: f32) ---
-	igPopItemWidth :: proc "c" () ---
-	igSetNextItemWidth :: proc "c" (item_width: f32) ---
-	igCalcItemWidth :: proc "c" () -> f32 ---
-	igPushTextWrapPos :: proc "c" (wrap_local_pos_x: f32) ---
-	igPopTextWrapPos :: proc "c" () ---
-	igGetFont :: proc "c" () -> ^Font ---
-	igGetFontSize :: proc "c" () -> f32 ---
-	igGetFontTexUvWhitePixel :: proc "c" (p_out: ^[2]f32) ---
-	igGetColorU32_Col :: proc "c" (idx: Col, alpha_mul: f32) -> u32 ---
-	igGetColorU32_Vec4 :: proc "c" (col: [4]f32) -> u32 ---
-	igGetColorU32_U32 :: proc "c" (col: u32) -> u32 ---
-	igGetStyleColorVec4 :: proc "c" (idx: Col) -> ^[4]f32 ---
-	igSeparator :: proc "c" () ---
-	igSameLine :: proc "c" (offset_from_start_x: f32, spacing: f32) ---
-	igNewLine :: proc "c" () ---
-	igSpacing :: proc "c" () ---
-	igDummy :: proc "c" (size: [2]f32) ---
-	igIndent :: proc "c" (indent_w: f32) ---
-	igUnindent :: proc "c" (indent_w: f32) ---
-	igBeginGroup :: proc "c" () ---
-	igEndGroup :: proc "c" () ---
-	igGetCursorPos :: proc "c" (p_out: ^[2]f32) ---
-	igGetCursorPosX :: proc "c" () -> f32 ---
-	igGetCursorPosY :: proc "c" () -> f32 ---
-	igSetCursorPos :: proc "c" (local_pos: [2]f32) ---
-	igSetCursorPosX :: proc "c" (local_x: f32) ---
-	igSetCursorPosY :: proc "c" (local_y: f32) ---
-	igGetCursorStartPos :: proc "c" (p_out: ^[2]f32) ---
-	igGetCursorScreenPos :: proc "c" (p_out: ^[2]f32) ---
-	igSetCursorScreenPos :: proc "c" (pos: [2]f32) ---
-	igAlignTextToFramePadding :: proc "c" () ---
-	igGetTextLineHeight :: proc "c" () -> f32 ---
-	igGetTextLineHeightWithSpacing :: proc "c" () -> f32 ---
-	igGetFrameHeight :: proc "c" () -> f32 ---
-	igGetFrameHeightWithSpacing :: proc "c" () -> f32 ---
-	igPushID_Str :: proc "c" (str_id: cstring) ---
-	igPushID_StrStr :: proc "c" (str_id_begin: cstring, str_id_end: cstring) ---
-	igPushID_Ptr :: proc "c" (ptr_id: rawptr) ---
-	igPushID_Int :: proc "c" (int_id: i32) ---
-	igPopID :: proc "c" () ---
-	igGetID_Str :: proc "c" (str_id: cstring) -> ID ---
-	igGetID_StrStr :: proc "c" (str_id_begin: cstring, str_id_end: cstring) -> ID ---
-	igGetID_Ptr :: proc "c" (ptr_id: rawptr) -> ID ---
-	igTextUnformatted :: proc "c" (text: cstring, text_end: cstring) ---
-	igText :: proc "c" (fmt: cstring, #c_vararg args: ..any) ---
-	igTextV :: proc "c" (fmt: cstring, args: va_list) ---
-	igTextColored :: proc "c" (col: [4]f32, fmt: cstring, #c_vararg args: ..any) ---
-	igTextColoredV :: proc "c" (col: [4]f32, fmt: cstring, args: va_list) ---
-	igTextDisabled :: proc "c" (fmt: cstring, #c_vararg args: ..any) ---
-	igTextDisabledV :: proc "c" (fmt: cstring, args: va_list) ---
-	igTextWrapped :: proc "c" (fmt: cstring, #c_vararg args: ..any) ---
-	igTextWrappedV :: proc "c" (fmt: cstring, args: va_list) ---
-	igLabelText :: proc "c" (label: cstring, fmt: cstring, #c_vararg args: ..any) ---
-	igLabelTextV :: proc "c" (label: cstring, fmt: cstring, args: va_list) ---
-	igBulletText :: proc "c" (fmt: cstring, #c_vararg args: ..any) ---
-	igBulletTextV :: proc "c" (fmt: cstring, args: va_list) ---
-	igSeparatorText :: proc "c" (label: cstring) ---
-	igButton :: proc "c" (label: cstring, size: [2]f32) -> bool ---
-	igSmallButton :: proc "c" (label: cstring) -> bool ---
-	igInvisibleButton :: proc "c" (str_id: cstring, size: [2]f32, flags: Button_Flags) -> bool ---
-	igArrowButton :: proc "c" (str_id: cstring, dir: Dir) -> bool ---
-	igCheckbox :: proc "c" (label: cstring, v: ^bool) -> bool ---
-	igCheckboxFlags_IntPtr :: proc "c" (label: cstring, flags: ^i32, flags_value: i32) -> bool ---
-	igCheckboxFlags_UintPtr :: proc "c" (label: cstring, flags: ^u32, flags_value: u32) -> bool ---
-	igRadioButton_Bool :: proc "c" (label: cstring, active: bool) -> bool ---
-	igRadioButton_IntPtr :: proc "c" (label: cstring, v: ^i32, v_button: i32) -> bool ---
-	igProgressBar :: proc "c" (fraction: f32, size_arg: [2]f32, overlay: cstring) ---
-	igBullet :: proc "c" () ---
-	igImage :: proc "c" (user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, tint_col: [4]f32, border_col: [4]f32) ---
-	igImageButton :: proc "c" (str_id: cstring, user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32) -> bool ---
-	igBeginCombo :: proc "c" (label: cstring, preview_value: cstring, flags: Combo_Flags) -> bool ---
-	igEndCombo :: proc "c" () ---
-	igCombo_Str_arr :: proc "c" (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool ---
-	igCombo_Str :: proc "c" (label: cstring, current_item: ^i32, items_separated_by_zeros: cstring, popup_max_height_in_items: i32) -> bool ---
-	igCombo_FnBoolPtr :: proc "c" (label: cstring, current_item: ^i32, items_getter: proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool ---
-	igDragFloat :: proc "c" (label: cstring, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragFloat2 :: proc "c" (label: cstring, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragFloat3 :: proc "c" (label: cstring, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragFloat4 :: proc "c" (label: cstring, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragFloatRange2 :: proc "c" (label: cstring, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, format_max: cstring, flags: Slider_Flags) -> bool ---
-	igDragInt :: proc "c" (label: cstring, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragInt2 :: proc "c" (label: cstring, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragInt3 :: proc "c" (label: cstring, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragInt4 :: proc "c" (label: cstring, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragIntRange2 :: proc "c" (label: cstring, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, format_max: cstring, flags: Slider_Flags) -> bool ---
-	igDragScalar :: proc "c" (label: cstring, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
-	igDragScalarN :: proc "c" (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderFloat :: proc "c" (label: cstring, v: ^f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderFloat2 :: proc "c" (label: cstring, v: [2]f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderFloat3 :: proc "c" (label: cstring, v: [3]f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderFloat4 :: proc "c" (label: cstring, v: [4]f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderAngle :: proc "c" (label: cstring, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderInt :: proc "c" (label: cstring, v: ^i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderInt2 :: proc "c" (label: cstring, v: [2]i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderInt3 :: proc "c" (label: cstring, v: [3]i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderInt4 :: proc "c" (label: cstring, v: [4]i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderScalar :: proc "c" (label: cstring, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderScalarN :: proc "c" (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
-	igVSliderFloat :: proc "c" (label: cstring, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
-	igVSliderInt :: proc "c" (label: cstring, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
-	igVSliderScalar :: proc "c" (label: cstring, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
-	igInputText :: proc "c" (label: cstring, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
-	igInputTextMultiline :: proc "c" (label: cstring, buf: ^i8, buf_size: int, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
-	igInputTextWithHint :: proc "c" (label: cstring, hint: cstring, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
-	igInputFloat :: proc "c" (label: cstring, v: ^f32, step: f32, step_fast: f32, format: cstring, flags: Input_Text_Flags) -> bool ---
-	igInputFloat2 :: proc "c" (label: cstring, v: [2]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
-	igInputFloat3 :: proc "c" (label: cstring, v: [3]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
-	igInputFloat4 :: proc "c" (label: cstring, v: [4]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
-	igInputInt :: proc "c" (label: cstring, v: ^i32, step: i32, step_fast: i32, flags: Input_Text_Flags) -> bool ---
-	igInputInt2 :: proc "c" (label: cstring, v: [2]i32, flags: Input_Text_Flags) -> bool ---
-	igInputInt3 :: proc "c" (label: cstring, v: [3]i32, flags: Input_Text_Flags) -> bool ---
-	igInputInt4 :: proc "c" (label: cstring, v: [4]i32, flags: Input_Text_Flags) -> bool ---
-	igInputDouble :: proc "c" (label: cstring, v: ^f64, step: f64, step_fast: f64, format: cstring, flags: Input_Text_Flags) -> bool ---
-	igInputScalar :: proc "c" (label: cstring, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: cstring, flags: Input_Text_Flags) -> bool ---
-	igInputScalarN :: proc "c" (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: cstring, flags: Input_Text_Flags) -> bool ---
-	igColorEdit3 :: proc "c" (label: cstring, col: [3]f32, flags: Color_Edit_Flags) -> bool ---
-	igColorEdit4 :: proc "c" (label: cstring, col: [4]f32, flags: Color_Edit_Flags) -> bool ---
-	igColorPicker3 :: proc "c" (label: cstring, col: [3]f32, flags: Color_Edit_Flags) -> bool ---
-	igColorPicker4 :: proc "c" (label: cstring, col: [4]f32, flags: Color_Edit_Flags, ref_col: ^f32) -> bool ---
-	igColorButton :: proc "c" (desc_id: cstring, col: [4]f32, flags: Color_Edit_Flags, size: [2]f32) -> bool ---
-	igSetColorEditOptions :: proc "c" (flags: Color_Edit_Flags) ---
-	igTreeNode_Str :: proc "c" (label: cstring) -> bool ---
-	igTreeNode_StrStr :: proc "c" (str_id: cstring, fmt: cstring, #c_vararg args: ..any) -> bool ---
-	igTreeNode_Ptr :: proc "c" (ptr_id: rawptr, fmt: cstring, #c_vararg args: ..any) -> bool ---
-	igTreeNodeV_Str :: proc "c" (str_id: cstring, fmt: cstring, args: va_list) -> bool ---
-	igTreeNodeV_Ptr :: proc "c" (ptr_id: rawptr, fmt: cstring, args: va_list) -> bool ---
-	igTreeNodeEx_Str :: proc "c" (label: cstring, flags: Tree_Node_Flags) -> bool ---
-	igTreeNodeEx_StrStr :: proc "c" (str_id: cstring, flags: Tree_Node_Flags, fmt: cstring, #c_vararg args: ..any) -> bool ---
-	igTreeNodeEx_Ptr :: proc "c" (ptr_id: rawptr, flags: Tree_Node_Flags, fmt: cstring, #c_vararg args: ..any) -> bool ---
-	igTreeNodeExV_Str :: proc "c" (str_id: cstring, flags: Tree_Node_Flags, fmt: cstring, args: va_list) -> bool ---
-	igTreeNodeExV_Ptr :: proc "c" (ptr_id: rawptr, flags: Tree_Node_Flags, fmt: cstring, args: va_list) -> bool ---
-	igTreePush_Str :: proc "c" (str_id: cstring) ---
-	igTreePush_Ptr :: proc "c" (ptr_id: rawptr) ---
-	igTreePop :: proc "c" () ---
-	igGetTreeNodeToLabelSpacing :: proc "c" () -> f32 ---
-	igCollapsingHeader_TreeNodeFlags :: proc "c" (label: cstring, flags: Tree_Node_Flags) -> bool ---
-	igCollapsingHeader_BoolPtr :: proc "c" (label: cstring, p_visible: ^bool, flags: Tree_Node_Flags) -> bool ---
-	igSetNextItemOpen :: proc "c" (is_open: bool, cond: Cond) ---
-	igSelectable_Bool :: proc "c" (label: cstring, selected: bool, flags: Selectable_Flags, size: [2]f32) -> bool ---
-	igSelectable_BoolPtr :: proc "c" (label: cstring, p_selected: ^bool, flags: Selectable_Flags, size: [2]f32) -> bool ---
-	igBeginListBox :: proc "c" (label: cstring, size: [2]f32) -> bool ---
-	igEndListBox :: proc "c" () ---
-	igListBox_Str_arr :: proc "c" (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool ---
-	igListBox_FnBoolPtr :: proc "c" (label: cstring, current_item: ^i32, items_getter: proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool ---
-	igPlotLines_FloatPtr :: proc "c" (label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) ---
-	igPlotLines_FnFloatPtr :: proc "c" (label: cstring, values_getter: proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
-	igPlotHistogram_FloatPtr :: proc "c" (label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) ---
-	igPlotHistogram_FnFloatPtr :: proc "c" (label: cstring, values_getter: proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
-	igValue_Bool :: proc "c" (prefix: cstring, b: bool) ---
-	igValue_Int :: proc "c" (prefix: cstring, v: i32) ---
-	igValue_Uint :: proc "c" (prefix: cstring, v: u32) ---
-	igValue_Float :: proc "c" (prefix: cstring, v: f32, float_format: cstring) ---
-	igBeginMenuBar :: proc "c" () -> bool ---
-	igEndMenuBar :: proc "c" () ---
-	igBeginMainMenuBar :: proc "c" () -> bool ---
-	igEndMainMenuBar :: proc "c" () ---
-	igBeginMenu :: proc "c" (label: cstring, enabled: bool) -> bool ---
-	igEndMenu :: proc "c" () ---
-	igMenuItem_Bool :: proc "c" (label: cstring, shortcut: cstring, selected: bool, enabled: bool) -> bool ---
-	igMenuItem_BoolPtr :: proc "c" (label: cstring, shortcut: cstring, p_selected: ^bool, enabled: bool) -> bool ---
-	igBeginTooltip :: proc "c" () -> bool ---
-	igEndTooltip :: proc "c" () ---
-	igSetTooltip :: proc "c" (fmt: cstring, #c_vararg args: ..any) ---
-	igSetTooltipV :: proc "c" (fmt: cstring, args: va_list) ---
-	igBeginPopup :: proc "c" (str_id: cstring, flags: Window_Flags) -> bool ---
-	igBeginPopupModal :: proc "c" (name: cstring, p_open: ^bool, flags: Window_Flags) -> bool ---
-	igEndPopup :: proc "c" () ---
-	igOpenPopup_Str :: proc "c" (str_id: cstring, popup_flags: Popup_Flags) ---
-	igOpenPopup_ID :: proc "c" (id: ID, popup_flags: Popup_Flags) ---
-	igOpenPopupOnItemClick :: proc "c" (str_id: cstring, popup_flags: Popup_Flags) ---
-	igCloseCurrentPopup :: proc "c" () ---
-	igBeginPopupContextItem :: proc "c" (str_id: cstring, popup_flags: Popup_Flags) -> bool ---
-	igBeginPopupContextWindow :: proc "c" (str_id: cstring, popup_flags: Popup_Flags) -> bool ---
-	igBeginPopupContextVoid :: proc "c" (str_id: cstring, popup_flags: Popup_Flags) -> bool ---
-	igIsPopupOpen_Str :: proc "c" (str_id: cstring, flags: Popup_Flags) -> bool ---
-	igBeginTable :: proc "c" (str_id: cstring, column: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool ---
-	igEndTable :: proc "c" () ---
-	igTableNextRow :: proc "c" (row_flags: Table_Row_Flags, min_row_height: f32) ---
-	igTableNextColumn :: proc "c" () -> bool ---
-	igTableSetColumnIndex :: proc "c" (column_n: i32) -> bool ---
-	igTableSetupColumn :: proc "c" (label: cstring, flags: Table_Column_Flags, init_width_or_weight: f32, user_id: ID) ---
-	igTableSetupScrollFreeze :: proc "c" (cols: i32, rows: i32) ---
-	igTableHeadersRow :: proc "c" () ---
-	igTableHeader :: proc "c" (label: cstring) ---
-	igTableGetSortSpecs :: proc "c" () -> ^Table_Sort_Specs ---
-	igTableGetColumnCount :: proc "c" () -> i32 ---
-	igTableGetColumnIndex :: proc "c" () -> i32 ---
-	igTableGetRowIndex :: proc "c" () -> i32 ---
-	igTableGetColumnName_Int :: proc "c" (column_n: i32) -> cstring ---
-	igTableGetColumnFlags :: proc "c" (column_n: i32) -> Table_Column_Flags ---
-	igTableSetColumnEnabled :: proc "c" (column_n: i32, v: bool) ---
-	igTableSetBgColor :: proc "c" (target: Table_Bg_Target, color: u32, column_n: i32) ---
-	igColumns :: proc "c" (count: i32, id: cstring, border: bool) ---
-	igNextColumn :: proc "c" () ---
-	igGetColumnIndex :: proc "c" () -> i32 ---
-	igGetColumnWidth :: proc "c" (column_index: i32) -> f32 ---
-	igSetColumnWidth :: proc "c" (column_index: i32, width: f32) ---
-	igGetColumnOffset :: proc "c" (column_index: i32) -> f32 ---
-	igSetColumnOffset :: proc "c" (column_index: i32, offset_x: f32) ---
-	igGetColumnsCount :: proc "c" () -> i32 ---
-	igBeginTabBar :: proc "c" (str_id: cstring, flags: Tab_Bar_Flags) -> bool ---
-	igEndTabBar :: proc "c" () ---
-	igBeginTabItem :: proc "c" (label: cstring, p_open: ^bool, flags: Tab_Item_Flags) -> bool ---
-	igEndTabItem :: proc "c" () ---
-	igTabItemButton :: proc "c" (label: cstring, flags: Tab_Item_Flags) -> bool ---
-	igSetTabItemClosed :: proc "c" (tab_or_docked_window_label: cstring) ---
-	igLogToTTY :: proc "c" (auto_open_depth: i32) ---
-	igLogToFile :: proc "c" (auto_open_depth: i32, filename: cstring) ---
-	igLogToClipboard :: proc "c" (auto_open_depth: i32) ---
-	igLogFinish :: proc "c" () ---
-	igLogButtons :: proc "c" () ---
-	igLogTextV :: proc "c" (fmt: cstring, args: va_list) ---
-	igBeginDragDropSource :: proc "c" (flags: Drag_Drop_Flags) -> bool ---
-	igSetDragDropPayload :: proc "c" (type: cstring, data: rawptr, sz: int, cond: Cond) -> bool ---
-	igEndDragDropSource :: proc "c" () ---
-	igBeginDragDropTarget :: proc "c" () -> bool ---
-	igAcceptDragDropPayload :: proc "c" (type: cstring, flags: Drag_Drop_Flags) -> ^Payload ---
-	igEndDragDropTarget :: proc "c" () ---
-	igGetDragDropPayload :: proc "c" () -> ^Payload ---
-	igBeginDisabled :: proc "c" (disabled: bool) ---
-	igEndDisabled :: proc "c" () ---
-	igPushClipRect :: proc "c" (clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) ---
-	igPopClipRect :: proc "c" () ---
-	igSetItemDefaultFocus :: proc "c" () ---
-	igSetKeyboardFocusHere :: proc "c" (offset: i32) ---
-	igIsItemHovered :: proc "c" (flags: Hovered_Flags) -> bool ---
-	igIsItemActive :: proc "c" () -> bool ---
-	igIsItemFocused :: proc "c" () -> bool ---
-	igIsItemClicked :: proc "c" (mouse_button: Mouse_Button) -> bool ---
-	igIsItemVisible :: proc "c" () -> bool ---
-	igIsItemEdited :: proc "c" () -> bool ---
-	igIsItemActivated :: proc "c" () -> bool ---
-	igIsItemDeactivated :: proc "c" () -> bool ---
-	igIsItemDeactivatedAfterEdit :: proc "c" () -> bool ---
-	igIsItemToggledOpen :: proc "c" () -> bool ---
-	igIsAnyItemHovered :: proc "c" () -> bool ---
-	igIsAnyItemActive :: proc "c" () -> bool ---
-	igIsAnyItemFocused :: proc "c" () -> bool ---
-	igGetItemID :: proc "c" () -> ID ---
-	igGetItemRectMin :: proc "c" (p_out: ^[2]f32) ---
-	igGetItemRectMax :: proc "c" (p_out: ^[2]f32) ---
-	igGetItemRectSize :: proc "c" (p_out: ^[2]f32) ---
-	igSetItemAllowOverlap :: proc "c" () ---
-	igGetMainViewport :: proc "c" () -> ^Viewport ---
-	igGetBackgroundDrawList_Nil :: proc "c" () -> ^Draw_List ---
-	igGetForegroundDrawList_Nil :: proc "c" () -> ^Draw_List ---
-	igIsRectVisible_Nil :: proc "c" (size: [2]f32) -> bool ---
-	igIsRectVisible_Vec2 :: proc "c" (rect_min: [2]f32, rect_max: [2]f32) -> bool ---
-	igGetTime :: proc "c" () -> f64 ---
-	igGetFrameCount :: proc "c" () -> i32 ---
-	igGetDrawListSharedData :: proc "c" () -> ^Draw_List_Shared_Data ---
-	igGetStyleColorName :: proc "c" (idx: Col) -> cstring ---
-	igSetStateStorage :: proc "c" (storage: ^Storage) ---
-	igGetStateStorage :: proc "c" () -> ^Storage ---
-	igBeginChildFrame :: proc "c" (id: ID, size: [2]f32, flags: Window_Flags) -> bool ---
-	igEndChildFrame :: proc "c" () ---
-	igCalcTextSize :: proc "c" (p_out: ^[2]f32, text: cstring, text_end: cstring, hide_text_after_double_hash: bool, wrap_width: f32) ---
-	igColorConvertU32ToFloat4 :: proc "c" (p_out: ^[4]f32, in_: u32) ---
-	igColorConvertFloat4ToU32 :: proc "c" (in_: [4]f32) -> u32 ---
-	igColorConvertRGBtoHSV :: proc "c" (r: f32, g: f32, b: f32, out_h: ^f32, out_s: ^f32, out_v: ^f32) ---
-	igColorConvertHSVtoRGB :: proc "c" (h: f32, s: f32, v: f32, out_r: ^f32, out_g: ^f32, out_b: ^f32) ---
-	igIsKeyDown_Nil :: proc "c" (key: Key) -> bool ---
-	igIsKeyPressed_Bool :: proc "c" (key: Key, repeat: bool) -> bool ---
-	igIsKeyReleased_Nil :: proc "c" (key: Key) -> bool ---
-	igGetKeyPressedAmount :: proc "c" (key: Key, repeat_delay: f32, rate: f32) -> i32 ---
-	igGetKeyName :: proc "c" (key: Key) -> cstring ---
-	igSetNextFrameWantCaptureKeyboard :: proc "c" (want_capture_keyboard: bool) ---
-	igIsMouseDown_Nil :: proc "c" (button: Mouse_Button) -> bool ---
-	igIsMouseClicked_Bool :: proc "c" (button: Mouse_Button, repeat: bool) -> bool ---
-	igIsMouseReleased_Nil :: proc "c" (button: Mouse_Button) -> bool ---
-	igIsMouseDoubleClicked :: proc "c" (button: Mouse_Button) -> bool ---
-	igGetMouseClickedCount :: proc "c" (button: Mouse_Button) -> i32 ---
-	igIsMouseHoveringRect :: proc "c" (r_min: [2]f32, r_max: [2]f32, clip: bool) -> bool ---
-	igIsMousePosValid :: proc "c" (mouse_pos: ^[2]f32) -> bool ---
-	igIsAnyMouseDown :: proc "c" () -> bool ---
-	igGetMousePos :: proc "c" (p_out: ^[2]f32) ---
-	igGetMousePosOnOpeningCurrentPopup :: proc "c" (p_out: ^[2]f32) ---
-	igIsMouseDragging :: proc "c" (button: Mouse_Button, lock_threshold: f32) -> bool ---
-	igGetMouseDragDelta :: proc "c" (p_out: ^[2]f32, button: Mouse_Button, lock_threshold: f32) ---
-	igResetMouseDragDelta :: proc "c" (button: Mouse_Button) ---
-	igGetMouseCursor :: proc "c" () -> Mouse_Cursor ---
-	igSetMouseCursor :: proc "c" (cursor_type: Mouse_Cursor) ---
-	igSetNextFrameWantCaptureMouse :: proc "c" (want_capture_mouse: bool) ---
-	igGetClipboardText :: proc "c" () -> cstring ---
-	igSetClipboardText :: proc "c" (text: cstring) ---
-	igLoadIniSettingsFromDisk :: proc "c" (ini_filename: cstring) ---
-	igLoadIniSettingsFromMemory :: proc "c" (ini_data: cstring, ini_size: int) ---
-	igSaveIniSettingsToDisk :: proc "c" (ini_filename: cstring) ---
-	igSaveIniSettingsToMemory :: proc "c" (out_ini_size: ^int) -> cstring ---
-	igDebugTextEncoding :: proc "c" (text: cstring) ---
-	igDebugCheckVersionAndDataLayout :: proc "c" (version_str: cstring, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool ---
-	igSetAllocatorFunctions :: proc "c" (alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) ---
-	igGetAllocatorFunctions :: proc "c" (p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) ---
-	igMemAlloc :: proc "c" (size: int) -> rawptr ---
-	igMemFree :: proc "c" (ptr: rawptr) ---
-	ImGuiStyle_ImGuiStyle :: proc "c" () -> ^Style ---
-	ImGuiStyle_destroy :: proc "c" (self: ^Style) ---
-	ImGuiStyle_ScaleAllSizes :: proc "c" (self: ^Style, scale_factor: f32) ---
-	ImGuiIO_AddKeyEvent :: proc "c" (self: ^IO, key: Key, down: bool) ---
-	ImGuiIO_AddKeyAnalogEvent :: proc "c" (self: ^IO, key: Key, down: bool, v: f32) ---
-	ImGuiIO_AddMousePosEvent :: proc "c" (self: ^IO, x: f32, y: f32) ---
-	ImGuiIO_AddMouseButtonEvent :: proc "c" (self: ^IO, button: i32, down: bool) ---
-	ImGuiIO_AddMouseWheelEvent :: proc "c" (self: ^IO, wheel_x: f32, wheel_y: f32) ---
-	ImGuiIO_AddMouseSourceEvent :: proc "c" (self: ^IO, source: Mouse_Source) ---
-	ImGuiIO_AddFocusEvent :: proc "c" (self: ^IO, focused: bool) ---
-	ImGuiIO_AddInputCharacter :: proc "c" (self: ^IO, c: u32) ---
-	ImGuiIO_AddInputCharacterUTF16 :: proc "c" (self: ^IO, c: u16) ---
-	ImGuiIO_AddInputCharactersUTF8 :: proc "c" (self: ^IO, str: cstring) ---
-	ImGuiIO_SetKeyEventNativeData :: proc "c" (self: ^IO, key: Key, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) ---
-	ImGuiIO_SetAppAcceptingEvents :: proc "c" (self: ^IO, accepting_events: bool) ---
-	ImGuiIO_ClearInputCharacters :: proc "c" (self: ^IO) ---
-	ImGuiIO_ClearInputKeys :: proc "c" (self: ^IO) ---
-	ImGuiIO_ImGuiIO :: proc "c" () -> ^IO ---
-	ImGuiIO_destroy :: proc "c" (self: ^IO) ---
-	ImGuiInputTextCallbackData_ImGuiInputTextCallbackData :: proc "c" () -> ^Input_Text_Callback_Data ---
-	ImGuiInputTextCallbackData_destroy :: proc "c" (self: ^Input_Text_Callback_Data) ---
-	ImGuiInputTextCallbackData_DeleteChars :: proc "c" (self: ^Input_Text_Callback_Data, pos: i32, bytes_count: i32) ---
-	ImGuiInputTextCallbackData_InsertChars :: proc "c" (self: ^Input_Text_Callback_Data, pos: i32, text: cstring, text_end: cstring) ---
-	ImGuiInputTextCallbackData_SelectAll :: proc "c" (self: ^Input_Text_Callback_Data) ---
-	ImGuiInputTextCallbackData_ClearSelection :: proc "c" (self: ^Input_Text_Callback_Data) ---
-	ImGuiInputTextCallbackData_HasSelection :: proc "c" (self: ^Input_Text_Callback_Data) -> bool ---
-	ImGuiPayload_ImGuiPayload :: proc "c" () -> ^Payload ---
-	ImGuiPayload_destroy :: proc "c" (self: ^Payload) ---
-	ImGuiPayload_Clear :: proc "c" (self: ^Payload) ---
-	ImGuiPayload_IsDataType :: proc "c" (self: ^Payload, type: cstring) -> bool ---
-	ImGuiPayload_IsPreview :: proc "c" (self: ^Payload) -> bool ---
-	ImGuiPayload_IsDelivery :: proc "c" (self: ^Payload) -> bool ---
-	ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs :: proc "c" () -> ^Table_Column_Sort_Specs ---
-	ImGuiTableColumnSortSpecs_destroy :: proc "c" (self: ^Table_Column_Sort_Specs) ---
-	ImGuiTableSortSpecs_ImGuiTableSortSpecs :: proc "c" () -> ^Table_Sort_Specs ---
-	ImGuiTableSortSpecs_destroy :: proc "c" (self: ^Table_Sort_Specs) ---
-	ImGuiOnceUponAFrame_ImGuiOnceUponAFrame :: proc "c" () -> ^Once_Upon_A_Frame ---
-	ImGuiOnceUponAFrame_destroy :: proc "c" (self: ^Once_Upon_A_Frame) ---
-	ImGuiTextFilter_ImGuiTextFilter :: proc "c" (default_filter: cstring) -> ^Text_Filter ---
-	ImGuiTextFilter_destroy :: proc "c" (self: ^Text_Filter) ---
-	ImGuiTextFilter_Draw :: proc "c" (self: ^Text_Filter, label: cstring, width: f32) -> bool ---
-	ImGuiTextFilter_PassFilter :: proc "c" (self: ^Text_Filter, text: cstring, text_end: cstring) -> bool ---
-	ImGuiTextFilter_Build :: proc "c" (self: ^Text_Filter) ---
-	ImGuiTextFilter_Clear :: proc "c" (self: ^Text_Filter) ---
-	ImGuiTextFilter_IsActive :: proc "c" (self: ^Text_Filter) -> bool ---
-	ImGuiTextRange_ImGuiTextRange_Nil :: proc "c" () -> ^Text_Range ---
-	ImGuiTextRange_destroy :: proc "c" (self: ^Text_Range) ---
-	ImGuiTextRange_ImGuiTextRange_Str :: proc "c" (_b: cstring, _e: cstring) -> ^Text_Range ---
-	ImGuiTextRange_empty :: proc "c" (self: ^Text_Range) -> bool ---
-	ImGuiTextRange_split :: proc "c" (self: ^Text_Range, separator: i8, out: ^Vector(Text_Range)) ---
-	ImGuiTextBuffer_ImGuiTextBuffer :: proc "c" () -> ^Text_Buffer ---
-	ImGuiTextBuffer_destroy :: proc "c" (self: ^Text_Buffer) ---
-	ImGuiTextBuffer_begin :: proc "c" (self: ^Text_Buffer) -> cstring ---
-	ImGuiTextBuffer_end :: proc "c" (self: ^Text_Buffer) -> cstring ---
-	ImGuiTextBuffer_size :: proc "c" (self: ^Text_Buffer) -> i32 ---
-	ImGuiTextBuffer_empty :: proc "c" (self: ^Text_Buffer) -> bool ---
-	ImGuiTextBuffer_clear :: proc "c" (self: ^Text_Buffer) ---
-	ImGuiTextBuffer_reserve :: proc "c" (self: ^Text_Buffer, capacity: i32) ---
-	ImGuiTextBuffer_c_str :: proc "c" (self: ^Text_Buffer) -> cstring ---
-	ImGuiTextBuffer_append :: proc "c" (self: ^Text_Buffer, str: cstring, str_end: cstring) ---
-	ImGuiTextBuffer_appendfv :: proc "c" (self: ^Text_Buffer, fmt: cstring, args: va_list) ---
-	ImGuiStoragePair_ImGuiStoragePair_Int :: proc "c" (_key: ID, _val_i: i32) -> ^Storage_Pair ---
-	ImGuiStoragePair_destroy :: proc "c" (self: ^Storage_Pair) ---
-	ImGuiStoragePair_ImGuiStoragePair_Float :: proc "c" (_key: ID, _val_f: f32) -> ^Storage_Pair ---
-	ImGuiStoragePair_ImGuiStoragePair_Ptr :: proc "c" (_key: ID, _val_p: rawptr) -> ^Storage_Pair ---
-	ImGuiStorage_Clear :: proc "c" (self: ^Storage) ---
-	ImGuiStorage_GetInt :: proc "c" (self: ^Storage, key: ID, default_val: i32) -> i32 ---
-	ImGuiStorage_SetInt :: proc "c" (self: ^Storage, key: ID, val: i32) ---
-	ImGuiStorage_GetBool :: proc "c" (self: ^Storage, key: ID, default_val: bool) -> bool ---
-	ImGuiStorage_SetBool :: proc "c" (self: ^Storage, key: ID, val: bool) ---
-	ImGuiStorage_GetFloat :: proc "c" (self: ^Storage, key: ID, default_val: f32) -> f32 ---
-	ImGuiStorage_SetFloat :: proc "c" (self: ^Storage, key: ID, val: f32) ---
-	ImGuiStorage_GetVoidPtr :: proc "c" (self: ^Storage, key: ID) -> rawptr ---
-	ImGuiStorage_SetVoidPtr :: proc "c" (self: ^Storage, key: ID, val: rawptr) ---
-	ImGuiStorage_GetIntRef :: proc "c" (self: ^Storage, key: ID, default_val: i32) -> ^i32 ---
-	ImGuiStorage_GetBoolRef :: proc "c" (self: ^Storage, key: ID, default_val: bool) -> ^bool ---
-	ImGuiStorage_GetFloatRef :: proc "c" (self: ^Storage, key: ID, default_val: f32) -> ^f32 ---
-	ImGuiStorage_GetVoidPtrRef :: proc "c" (self: ^Storage, key: ID, default_val: rawptr) -> ^rawptr ---
-	ImGuiStorage_SetAllInt :: proc "c" (self: ^Storage, val: i32) ---
-	ImGuiStorage_BuildSortByKey :: proc "c" (self: ^Storage) ---
-	ImGuiListClipper_ImGuiListClipper :: proc "c" () -> ^List_Clipper ---
-	ImGuiListClipper_destroy :: proc "c" (self: ^List_Clipper) ---
-	ImGuiListClipper_Begin :: proc "c" (self: ^List_Clipper, items_count: i32, items_height: f32) ---
-	ImGuiListClipper_End :: proc "c" (self: ^List_Clipper) ---
-	ImGuiListClipper_Step :: proc "c" (self: ^List_Clipper) -> bool ---
-	ImGuiListClipper_ForceDisplayRangeByIndices :: proc "c" (self: ^List_Clipper, item_min: i32, item_max: i32) ---
-	ImColor_ImColor_Nil :: proc "c" () -> ^Color ---
-	ImColor_destroy :: proc "c" (self: ^Color) ---
-	ImColor_ImColor_Float :: proc "c" (r: f32, g: f32, b: f32, a: f32) -> ^Color ---
-	ImColor_ImColor_Vec4 :: proc "c" (col: [4]f32) -> ^Color ---
-	ImColor_ImColor_Int :: proc "c" (r: i32, g: i32, b: i32, a: i32) -> ^Color ---
-	ImColor_ImColor_U32 :: proc "c" (rgba: u32) -> ^Color ---
-	ImColor_SetHSV :: proc "c" (self: ^Color, h: f32, s: f32, v: f32, a: f32) ---
-	ImColor_HSV :: proc "c" (p_out: ^Color, h: f32, s: f32, v: f32, a: f32) ---
-	ImDrawCmd_ImDrawCmd :: proc "c" () -> ^Draw_Cmd ---
-	ImDrawCmd_destroy :: proc "c" (self: ^Draw_Cmd) ---
-	ImDrawCmd_GetTexID :: proc "c" (self: ^Draw_Cmd) -> Texture_ID ---
-	ImDrawListSplitter_ImDrawListSplitter :: proc "c" () -> ^Draw_List_Splitter ---
-	ImDrawListSplitter_destroy :: proc "c" (self: ^Draw_List_Splitter) ---
-	ImDrawListSplitter_Clear :: proc "c" (self: ^Draw_List_Splitter) ---
-	ImDrawListSplitter_ClearFreeMemory :: proc "c" (self: ^Draw_List_Splitter) ---
-	ImDrawListSplitter_Split :: proc "c" (self: ^Draw_List_Splitter, draw_list: ^Draw_List, count: i32) ---
-	ImDrawListSplitter_Merge :: proc "c" (self: ^Draw_List_Splitter, draw_list: ^Draw_List) ---
-	ImDrawListSplitter_SetCurrentChannel :: proc "c" (self: ^Draw_List_Splitter, draw_list: ^Draw_List, channel_idx: i32) ---
-	ImDrawList_ImDrawList :: proc "c" (shared_data: ^Draw_List_Shared_Data) -> ^Draw_List ---
-	ImDrawList_destroy :: proc "c" (self: ^Draw_List) ---
-	ImDrawList_PushClipRect :: proc "c" (self: ^Draw_List, clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) ---
-	ImDrawList_PushClipRectFullScreen :: proc "c" (self: ^Draw_List) ---
-	ImDrawList_PopClipRect :: proc "c" (self: ^Draw_List) ---
-	ImDrawList_PushTextureID :: proc "c" (self: ^Draw_List, texture_id: Texture_ID) ---
-	ImDrawList_PopTextureID :: proc "c" (self: ^Draw_List) ---
-	ImDrawList_GetClipRectMin :: proc "c" (p_out: ^[2]f32, self: ^Draw_List) ---
-	ImDrawList_GetClipRectMax :: proc "c" (p_out: ^[2]f32, self: ^Draw_List) ---
-	ImDrawList_AddLine :: proc "c" (self: ^Draw_List, p1: [2]f32, p2: [2]f32, col: u32, thickness: f32) ---
-	ImDrawList_AddRect :: proc "c" (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags, thickness: f32) ---
-	ImDrawList_AddRectFilled :: proc "c" (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags) ---
-	ImDrawList_AddRectFilledMultiColor :: proc "c" (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col_upr_left: u32, col_upr_right: u32, col_bot_right: u32, col_bot_left: u32) ---
-	ImDrawList_AddQuad :: proc "c" (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32) ---
-	ImDrawList_AddQuadFilled :: proc "c" (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32) ---
-	ImDrawList_AddTriangle :: proc "c" (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32) ---
-	ImDrawList_AddTriangleFilled :: proc "c" (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32) ---
-	ImDrawList_AddCircle :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) ---
-	ImDrawList_AddCircleFilled :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) ---
-	ImDrawList_AddNgon :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) ---
-	ImDrawList_AddNgonFilled :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) ---
-	ImDrawList_AddText_Vec2 :: proc "c" (self: ^Draw_List, pos: [2]f32, col: u32, text_begin: cstring, text_end: cstring) ---
-	ImDrawList_AddText_FontPtr :: proc "c" (self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text_begin: cstring, text_end: cstring, wrap_width: f32, cpu_fine_clip_rect: ^[4]f32) ---
-	ImDrawList_AddPolyline :: proc "c" (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32, flags: Draw_Flags, thickness: f32) ---
-	ImDrawList_AddConvexPolyFilled :: proc "c" (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32) ---
-	ImDrawList_AddBezierCubic :: proc "c" (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32, num_segments: i32) ---
-	ImDrawList_AddBezierQuadratic :: proc "c" (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32, num_segments: i32) ---
-	ImDrawList_AddImage :: proc "c" (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32) ---
-	ImDrawList_AddImageQuad :: proc "c" (self: ^Draw_List, user_texture_id: Texture_ID, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, uv1: [2]f32, uv2: [2]f32, uv3: [2]f32, uv4: [2]f32, col: u32) ---
-	ImDrawList_AddImageRounded :: proc "c" (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags) ---
-	ImDrawList_PathClear :: proc "c" (self: ^Draw_List) ---
-	ImDrawList_PathLineTo :: proc "c" (self: ^Draw_List, pos: [2]f32) ---
-	ImDrawList_PathLineToMergeDuplicate :: proc "c" (self: ^Draw_List, pos: [2]f32) ---
-	ImDrawList_PathFillConvex :: proc "c" (self: ^Draw_List, col: u32) ---
-	ImDrawList_PathStroke :: proc "c" (self: ^Draw_List, col: u32, flags: Draw_Flags, thickness: f32) ---
-	ImDrawList_PathArcTo :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, a_min: f32, a_max: f32, num_segments: i32) ---
-	ImDrawList_PathArcToFast :: proc "c" (self: ^Draw_List, center: [2]f32, radius: f32, a_min_of_12: i32, a_max_of_12: i32) ---
-	ImDrawList_PathBezierCubicCurveTo :: proc "c" (self: ^Draw_List, p2: [2]f32, p3: [2]f32, p4: [2]f32, num_segments: i32) ---
-	ImDrawList_PathBezierQuadraticCurveTo :: proc "c" (self: ^Draw_List, p2: [2]f32, p3: [2]f32, num_segments: i32) ---
-	ImDrawList_PathRect :: proc "c" (self: ^Draw_List, rect_min: [2]f32, rect_max: [2]f32, rounding: f32, flags: Draw_Flags) ---
-	ImDrawList_AddCallback :: proc "c" (self: ^Draw_List, callback: Draw_Callback, callback_data: rawptr) ---
-	ImDrawList_AddDrawCmd :: proc "c" (self: ^Draw_List) ---
-	ImDrawList_CloneOutput :: proc "c" (self: ^Draw_List) -> ^Draw_List ---
-	ImDrawList_ChannelsSplit :: proc "c" (self: ^Draw_List, count: i32) ---
-	ImDrawList_ChannelsMerge :: proc "c" (self: ^Draw_List) ---
-	ImDrawList_ChannelsSetCurrent :: proc "c" (self: ^Draw_List, n: i32) ---
-	ImDrawList_PrimReserve :: proc "c" (self: ^Draw_List, idx_count: i32, vtx_count: i32) ---
-	ImDrawList_PrimUnreserve :: proc "c" (self: ^Draw_List, idx_count: i32, vtx_count: i32) ---
-	ImDrawList_PrimRect :: proc "c" (self: ^Draw_List, a: [2]f32, b: [2]f32, col: u32) ---
-	ImDrawList_PrimRectUV :: proc "c" (self: ^Draw_List, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, col: u32) ---
-	ImDrawList_PrimQuadUV :: proc "c" (self: ^Draw_List, a: [2]f32, b: [2]f32, c: [2]f32, d: [2]f32, uv_a: [2]f32, uv_b: [2]f32, uv_c: [2]f32, uv_d: [2]f32, col: u32) ---
-	ImDrawList_PrimWriteVtx :: proc "c" (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) ---
-	ImDrawList_PrimWriteIdx :: proc "c" (self: ^Draw_List, idx: Draw_Idx) ---
-	ImDrawList_PrimVtx :: proc "c" (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) ---
-	ImDrawData_ImDrawData :: proc "c" () -> ^Draw_Data ---
-	ImDrawData_destroy :: proc "c" (self: ^Draw_Data) ---
-	ImDrawData_Clear :: proc "c" (self: ^Draw_Data) ---
-	ImDrawData_DeIndexAllBuffers :: proc "c" (self: ^Draw_Data) ---
-	ImDrawData_ScaleClipRects :: proc "c" (self: ^Draw_Data, fb_scale: [2]f32) ---
-	ImFontConfig_ImFontConfig :: proc "c" () -> ^Font_Config ---
-	ImFontConfig_destroy :: proc "c" (self: ^Font_Config) ---
-	ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder :: proc "c" () -> ^Font_Glyph_Ranges_Builder ---
-	ImFontGlyphRangesBuilder_destroy :: proc "c" (self: ^Font_Glyph_Ranges_Builder) ---
-	ImFontGlyphRangesBuilder_Clear :: proc "c" (self: ^Font_Glyph_Ranges_Builder) ---
-	ImFontGlyphRangesBuilder_GetBit :: proc "c" (self: ^Font_Glyph_Ranges_Builder, n: int) -> bool ---
-	ImFontGlyphRangesBuilder_SetBit :: proc "c" (self: ^Font_Glyph_Ranges_Builder, n: int) ---
-	ImFontGlyphRangesBuilder_AddChar :: proc "c" (self: ^Font_Glyph_Ranges_Builder, c: u16) ---
-	ImFontGlyphRangesBuilder_AddText :: proc "c" (self: ^Font_Glyph_Ranges_Builder, text: cstring, text_end: cstring) ---
-	ImFontGlyphRangesBuilder_AddRanges :: proc "c" (self: ^Font_Glyph_Ranges_Builder, ranges: ^u16) ---
-	ImFontGlyphRangesBuilder_BuildRanges :: proc "c" (self: ^Font_Glyph_Ranges_Builder, out_ranges: ^Vector(u16)) ---
-	ImFontAtlasCustomRect_ImFontAtlasCustomRect :: proc "c" () -> ^Font_Atlas_Custom_Rect ---
-	ImFontAtlasCustomRect_destroy :: proc "c" (self: ^Font_Atlas_Custom_Rect) ---
-	ImFontAtlasCustomRect_IsPacked :: proc "c" (self: ^Font_Atlas_Custom_Rect) -> bool ---
-	ImFontAtlas_ImFontAtlas :: proc "c" () -> ^Font_Atlas ---
-	ImFontAtlas_destroy :: proc "c" (self: ^Font_Atlas) ---
-	ImFontAtlas_AddFont :: proc "c" (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font ---
-	ImFontAtlas_AddFontDefault :: proc "c" (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font ---
-	ImFontAtlas_AddFontFromFileTTF :: proc "c" (self: ^Font_Atlas, filename: cstring, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
-	ImFontAtlas_AddFontFromMemoryTTF :: proc "c" (self: ^Font_Atlas, font_data: rawptr, font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
-	ImFontAtlas_AddFontFromMemoryCompressedTTF :: proc "c" (self: ^Font_Atlas, compressed_font_data: rawptr, compressed_font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
-	ImFontAtlas_AddFontFromMemoryCompressedBase85TTF :: proc "c" (self: ^Font_Atlas, compressed_font_data_base85: cstring, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
-	ImFontAtlas_ClearInputData :: proc "c" (self: ^Font_Atlas) ---
-	ImFontAtlas_ClearTexData :: proc "c" (self: ^Font_Atlas) ---
-	ImFontAtlas_ClearFonts :: proc "c" (self: ^Font_Atlas) ---
-	ImFontAtlas_Clear :: proc "c" (self: ^Font_Atlas) ---
-	ImFontAtlas_Build :: proc "c" (self: ^Font_Atlas) -> bool ---
-	ImFontAtlas_GetTexDataAsAlpha8 :: proc "c" (self: ^Font_Atlas, out_pixels: ^^u8, out_width: ^i32, out_height: ^i32, out_bytes_per_pixel: ^i32) ---
-	ImFontAtlas_GetTexDataAsRGBA32 :: proc "c" (self: ^Font_Atlas, out_pixels: ^^u8, out_width: ^i32, out_height: ^i32, out_bytes_per_pixel: ^i32) ---
-	ImFontAtlas_IsBuilt :: proc "c" (self: ^Font_Atlas) -> bool ---
-	ImFontAtlas_SetTexID :: proc "c" (self: ^Font_Atlas, id: Texture_ID) ---
-	ImFontAtlas_GetGlyphRangesDefault :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesGreek :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesKorean :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesJapanese :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesChineseFull :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesCyrillic :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesThai :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_GetGlyphRangesVietnamese :: proc "c" (self: ^Font_Atlas) -> ^u16 ---
-	ImFontAtlas_AddCustomRectRegular :: proc "c" (self: ^Font_Atlas, width: i32, height: i32) -> i32 ---
-	ImFontAtlas_AddCustomRectFontGlyph :: proc "c" (self: ^Font_Atlas, font: ^Font, id: u16, width: i32, height: i32, advance_x: f32, offset: [2]f32) -> i32 ---
-	ImFontAtlas_GetCustomRectByIndex :: proc "c" (self: ^Font_Atlas, index: i32) -> ^Font_Atlas_Custom_Rect ---
-	ImFontAtlas_CalcCustomRectUV :: proc "c" (self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect, out_uv_min: ^[2]f32, out_uv_max: ^[2]f32) ---
-	ImFontAtlas_GetMouseCursorTexData :: proc "c" (self: ^Font_Atlas, cursor: Mouse_Cursor, out_offset: ^[2]f32, out_size: ^[2]f32, out_uv_border: [2][2]f32, out_uv_fill: [2][2]f32) -> bool ---
-	ImFont_ImFont :: proc "c" () -> ^Font ---
-	ImFont_destroy :: proc "c" (self: ^Font) ---
-	ImFont_FindGlyph :: proc "c" (self: ^Font, c: u16) -> ^Font_Glyph ---
-	ImFont_FindGlyphNoFallback :: proc "c" (self: ^Font, c: u16) -> ^Font_Glyph ---
-	ImFont_GetCharAdvance :: proc "c" (self: ^Font, c: u16) -> f32 ---
-	ImFont_IsLoaded :: proc "c" (self: ^Font) -> bool ---
-	ImFont_GetDebugName :: proc "c" (self: ^Font) -> cstring ---
-	ImFont_CalcTextSizeA :: proc "c" (p_out: ^[2]f32, self: ^Font, size: f32, max_width: f32, wrap_width: f32, text_begin: cstring, text_end: cstring, remaining: ^cstring) ---
-	ImFont_CalcWordWrapPositionA :: proc "c" (self: ^Font, scale: f32, text: cstring, text_end: cstring, wrap_width: f32) -> cstring ---
-	ImFont_RenderChar :: proc "c" (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, c: u16) ---
-	ImFont_RenderText :: proc "c" (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text_begin: cstring, text_end: cstring, wrap_width: f32, cpu_fine_clip: bool) ---
-	ImFont_BuildLookupTable :: proc "c" (self: ^Font) ---
-	ImFont_ClearOutputData :: proc "c" (self: ^Font) ---
-	ImFont_GrowIndex :: proc "c" (self: ^Font, new_size: i32) ---
-	ImFont_AddGlyph :: proc "c" (self: ^Font, src_cfg: ^Font_Config, c: u16, x0: f32, y0: f32, x1: f32, y1: f32, u0: f32, v0: f32, u1: f32, v1: f32, advance_x: f32) ---
-	ImFont_AddRemapChar :: proc "c" (self: ^Font, dst: u16, src: u16, overwrite_dst: bool) ---
-	ImFont_SetGlyphVisible :: proc "c" (self: ^Font, c: u16, visible: bool) ---
-	ImFont_IsGlyphRangeUnused :: proc "c" (self: ^Font, c_begin: u32, c_last: u32) -> bool ---
-	ImGuiViewport_ImGuiViewport :: proc "c" () -> ^Viewport ---
-	ImGuiViewport_destroy :: proc "c" (self: ^Viewport) ---
-	ImGuiViewport_GetCenter :: proc "c" (p_out: ^[2]f32, self: ^Viewport) ---
-	ImGuiViewport_GetWorkCenter :: proc "c" (p_out: ^[2]f32, self: ^Viewport) ---
-	ImGuiPlatformImeData_ImGuiPlatformImeData :: proc "c" () -> ^Platform_Ime_Data ---
-	ImGuiPlatformImeData_destroy :: proc "c" (self: ^Platform_Ime_Data) ---
-	igGetKeyIndex :: proc "c" (key: Key) -> Key ---
-	igImBezierCubicCalc :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, t: f32) ---
-	igImBezierCubicClosestPoint :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, num_segments: i32) ---
-	igImBezierCubicClosestPointCasteljau :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, tess_tol: f32) ---
-	igImBezierQuadraticCalc :: proc "c" (p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, t: f32) ---
-	ImRect_ImRect_Nil :: proc "c" () -> ^Rect ---
-	ImRect_destroy :: proc "c" (self: ^Rect) ---
-	ImRect_ImRect_Vec2 :: proc "c" (min: [2]f32, max: [2]f32) -> ^Rect ---
-	ImRect_ImRect_Vec4 :: proc "c" (v: [4]f32) -> ^Rect ---
-	ImRect_ImRect_Float :: proc "c" (x1: f32, y1: f32, x2: f32, y2: f32) -> ^Rect ---
-	ImRect_GetCenter :: proc "c" (p_out: ^[2]f32, self: ^Rect) ---
-	ImRect_GetSize :: proc "c" (p_out: ^[2]f32, self: ^Rect) ---
-	ImRect_GetWidth :: proc "c" (self: ^Rect) -> f32 ---
-	ImRect_GetHeight :: proc "c" (self: ^Rect) -> f32 ---
-	ImRect_GetArea :: proc "c" (self: ^Rect) -> f32 ---
-	ImRect_GetTL :: proc "c" (p_out: ^[2]f32, self: ^Rect) ---
-	ImRect_GetTR :: proc "c" (p_out: ^[2]f32, self: ^Rect) ---
-	ImRect_GetBL :: proc "c" (p_out: ^[2]f32, self: ^Rect) ---
-	ImRect_GetBR :: proc "c" (p_out: ^[2]f32, self: ^Rect) ---
-	ImRect_Contains_Vec2 :: proc "c" (self: ^Rect, p: [2]f32) -> bool ---
-	ImRect_Contains_Rect :: proc "c" (self: ^Rect, r: Rect) -> bool ---
-	ImRect_Overlaps :: proc "c" (self: ^Rect, r: Rect) -> bool ---
-	ImRect_Add_Vec2 :: proc "c" (self: ^Rect, p: [2]f32) ---
-	ImRect_Add_Rect :: proc "c" (self: ^Rect, r: Rect) ---
-	ImRect_Expand_Float :: proc "c" (self: ^Rect, amount: f32) ---
-	ImRect_Expand_Vec2 :: proc "c" (self: ^Rect, amount: [2]f32) ---
-	ImRect_Translate :: proc "c" (self: ^Rect, d: [2]f32) ---
-	ImRect_TranslateX :: proc "c" (self: ^Rect, dx: f32) ---
-	ImRect_TranslateY :: proc "c" (self: ^Rect, dy: f32) ---
-	ImRect_ClipWith :: proc "c" (self: ^Rect, r: Rect) ---
-	ImRect_ClipWithFull :: proc "c" (self: ^Rect, r: Rect) ---
-	ImRect_Floor :: proc "c" (self: ^Rect) ---
-	ImRect_IsInverted :: proc "c" (self: ^Rect) -> bool ---
-	ImRect_ToVec4 :: proc "c" (p_out: ^[4]f32, self: ^Rect) ---
-	ImBitVector_Create :: proc "c" (self: ^Bit_Vector, sz: i32) ---
-	ImBitVector_Clear :: proc "c" (self: ^Bit_Vector) ---
-	ImBitVector_TestBit :: proc "c" (self: ^Bit_Vector, n: i32) -> bool ---
-	ImBitVector_SetBit :: proc "c" (self: ^Bit_Vector, n: i32) ---
-	ImBitVector_ClearBit :: proc "c" (self: ^Bit_Vector, n: i32) ---
-	ImGuiTextIndex_clear :: proc "c" (self: ^Text_Index) ---
-	ImGuiTextIndex_size :: proc "c" (self: ^Text_Index) -> i32 ---
-	ImGuiTextIndex_get_line_begin :: proc "c" (self: ^Text_Index, base: cstring, n: i32) -> cstring ---
-	ImGuiTextIndex_get_line_end :: proc "c" (self: ^Text_Index, base: cstring, n: i32) -> cstring ---
-	ImGuiTextIndex_append :: proc "c" (self: ^Text_Index, base: cstring, old_size: i32, new_size: i32) ---
-	ImDrawListSharedData_ImDrawListSharedData :: proc "c" () -> ^Draw_List_Shared_Data ---
-	ImDrawListSharedData_destroy :: proc "c" (self: ^Draw_List_Shared_Data) ---
-	ImDrawListSharedData_SetCircleTessellationMaxError :: proc "c" (self: ^Draw_List_Shared_Data, max_error: f32) ---
-	ImDrawDataBuilder_Clear :: proc "c" (self: ^Draw_Data_Builder) ---
-	ImDrawDataBuilder_ClearFreeMemory :: proc "c" (self: ^Draw_Data_Builder) ---
-	ImDrawDataBuilder_GetDrawListCount :: proc "c" (self: ^Draw_Data_Builder) -> i32 ---
-	ImDrawDataBuilder_FlattenIntoSingleLayer :: proc "c" (self: ^Draw_Data_Builder) ---
-	ImGuiDataVarInfo_GetVarPtr :: proc "c" (self: ^Data_Var_Info, parent: rawptr) -> rawptr ---
-	ImGuiStyleMod_ImGuiStyleMod_Int :: proc "c" (idx: Style_Var, v: i32) -> ^Style_Mod ---
-	ImGuiStyleMod_destroy :: proc "c" (self: ^Style_Mod) ---
-	ImGuiStyleMod_ImGuiStyleMod_Float :: proc "c" (idx: Style_Var, v: f32) -> ^Style_Mod ---
-	ImGuiStyleMod_ImGuiStyleMod_Vec2 :: proc "c" (idx: Style_Var, v: [2]f32) -> ^Style_Mod ---
-	ImGuiComboPreviewData_ImGuiComboPreviewData :: proc "c" () -> ^Combo_Preview_Data ---
-	ImGuiComboPreviewData_destroy :: proc "c" (self: ^Combo_Preview_Data) ---
-	ImGuiMenuColumns_ImGuiMenuColumns :: proc "c" () -> ^Menu_Columns ---
-	ImGuiMenuColumns_destroy :: proc "c" (self: ^Menu_Columns) ---
-	ImGuiMenuColumns_Update :: proc "c" (self: ^Menu_Columns, spacing: f32, window_reappearing: bool) ---
-	ImGuiMenuColumns_DeclColumns :: proc "c" (self: ^Menu_Columns, w_icon: f32, w_label: f32, w_shortcut: f32, w_mark: f32) -> f32 ---
-	ImGuiMenuColumns_CalcNextTotalWidth :: proc "c" (self: ^Menu_Columns, update_offsets: bool) ---
-	ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState :: proc "c" () -> ^Input_Text_Deactivated_State ---
-	ImGuiInputTextDeactivatedState_destroy :: proc "c" (self: ^Input_Text_Deactivated_State) ---
-	ImGuiInputTextDeactivatedState_ClearFreeMemory :: proc "c" (self: ^Input_Text_Deactivated_State) ---
-	ImGuiInputTextState_ImGuiInputTextState :: proc "c" () -> ^Input_Text_State ---
-	ImGuiInputTextState_destroy :: proc "c" (self: ^Input_Text_State) ---
-	ImGuiInputTextState_ClearText :: proc "c" (self: ^Input_Text_State) ---
-	ImGuiInputTextState_ClearFreeMemory :: proc "c" (self: ^Input_Text_State) ---
-	ImGuiInputTextState_GetUndoAvailCount :: proc "c" (self: ^Input_Text_State) -> i32 ---
-	ImGuiInputTextState_GetRedoAvailCount :: proc "c" (self: ^Input_Text_State) -> i32 ---
-	ImGuiInputTextState_OnKeyPressed :: proc "c" (self: ^Input_Text_State, key: i32) ---
-	ImGuiInputTextState_CursorAnimReset :: proc "c" (self: ^Input_Text_State) ---
-	ImGuiInputTextState_CursorClamp :: proc "c" (self: ^Input_Text_State) ---
-	ImGuiInputTextState_HasSelection :: proc "c" (self: ^Input_Text_State) -> bool ---
-	ImGuiInputTextState_ClearSelection :: proc "c" (self: ^Input_Text_State) ---
-	ImGuiInputTextState_GetCursorPos :: proc "c" (self: ^Input_Text_State) -> i32 ---
-	ImGuiInputTextState_GetSelectionStart :: proc "c" (self: ^Input_Text_State) -> i32 ---
-	ImGuiInputTextState_GetSelectionEnd :: proc "c" (self: ^Input_Text_State) -> i32 ---
-	ImGuiInputTextState_SelectAll :: proc "c" (self: ^Input_Text_State) ---
-	ImGuiPopupData_ImGuiPopupData :: proc "c" () -> ^Popup_Data ---
-	ImGuiPopupData_destroy :: proc "c" (self: ^Popup_Data) ---
-	ImGuiNextWindowData_ImGuiNextWindowData :: proc "c" () -> ^Next_Window_Data ---
-	ImGuiNextWindowData_destroy :: proc "c" (self: ^Next_Window_Data) ---
-	ImGuiNextWindowData_ClearFlags :: proc "c" (self: ^Next_Window_Data) ---
-	ImGuiNextItemData_ImGuiNextItemData :: proc "c" () -> ^Next_Item_Data ---
-	ImGuiNextItemData_destroy :: proc "c" (self: ^Next_Item_Data) ---
-	ImGuiNextItemData_ClearFlags :: proc "c" (self: ^Next_Item_Data) ---
-	ImGuiLastItemData_ImGuiLastItemData :: proc "c" () -> ^Last_Item_Data ---
-	ImGuiLastItemData_destroy :: proc "c" (self: ^Last_Item_Data) ---
-	ImGuiStackSizes_ImGuiStackSizes :: proc "c" () -> ^Stack_Sizes ---
-	ImGuiStackSizes_destroy :: proc "c" (self: ^Stack_Sizes) ---
-	ImGuiStackSizes_SetToContextState :: proc "c" (self: ^Stack_Sizes, ctx: ^Context) ---
-	ImGuiStackSizes_CompareWithContextState :: proc "c" (self: ^Stack_Sizes, ctx: ^Context) ---
-	ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr :: proc "c" (ptr: rawptr) -> ^Ptr_Or_Index ---
-	ImGuiPtrOrIndex_destroy :: proc "c" (self: ^Ptr_Or_Index) ---
-	ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int :: proc "c" (index: i32) -> ^Ptr_Or_Index ---
-	ImGuiInputEvent_ImGuiInputEvent :: proc "c" () -> ^Input_Event ---
-	ImGuiInputEvent_destroy :: proc "c" (self: ^Input_Event) ---
-	ImGuiKeyRoutingData_ImGuiKeyRoutingData :: proc "c" () -> ^Key_Routing_Data ---
-	ImGuiKeyRoutingData_destroy :: proc "c" (self: ^Key_Routing_Data) ---
-	ImGuiKeyRoutingTable_ImGuiKeyRoutingTable :: proc "c" () -> ^Key_Routing_Table ---
-	ImGuiKeyRoutingTable_destroy :: proc "c" (self: ^Key_Routing_Table) ---
-	ImGuiKeyRoutingTable_Clear :: proc "c" (self: ^Key_Routing_Table) ---
-	ImGuiKeyOwnerData_ImGuiKeyOwnerData :: proc "c" () -> ^Key_Owner_Data ---
-	ImGuiKeyOwnerData_destroy :: proc "c" (self: ^Key_Owner_Data) ---
-	ImGuiListClipperRange_FromIndices :: proc "c" (min: i32, max: i32) -> List_Clipper_Range ---
-	ImGuiListClipperRange_FromPositions :: proc "c" (y1: f32, y2: f32, off_min: i32, off_max: i32) -> List_Clipper_Range ---
-	ImGuiListClipperData_ImGuiListClipperData :: proc "c" () -> ^List_Clipper_Data ---
-	ImGuiListClipperData_destroy :: proc "c" (self: ^List_Clipper_Data) ---
-	ImGuiListClipperData_Reset :: proc "c" (self: ^List_Clipper_Data, clipper: ^List_Clipper) ---
-	ImGuiNavItemData_ImGuiNavItemData :: proc "c" () -> ^Nav_Item_Data ---
-	ImGuiNavItemData_destroy :: proc "c" (self: ^Nav_Item_Data) ---
-	ImGuiNavItemData_Clear :: proc "c" (self: ^Nav_Item_Data) ---
-	ImGuiOldColumnData_ImGuiOldColumnData :: proc "c" () -> ^Old_Column_Data ---
-	ImGuiOldColumnData_destroy :: proc "c" (self: ^Old_Column_Data) ---
-	ImGuiOldColumns_ImGuiOldColumns :: proc "c" () -> ^Old_Columns ---
-	ImGuiOldColumns_destroy :: proc "c" (self: ^Old_Columns) ---
-	ImGuiViewportP_ImGuiViewportP :: proc "c" () -> ^Viewport_P ---
-	ImGuiViewportP_destroy :: proc "c" (self: ^Viewport_P) ---
-	ImGuiViewportP_CalcWorkRectPos :: proc "c" (p_out: ^[2]f32, self: ^Viewport_P, off_min: [2]f32) ---
-	ImGuiViewportP_CalcWorkRectSize :: proc "c" (p_out: ^[2]f32, self: ^Viewport_P, off_min: [2]f32, off_max: [2]f32) ---
-	ImGuiViewportP_UpdateWorkRect :: proc "c" (self: ^Viewport_P) ---
-	ImGuiViewportP_GetMainRect :: proc "c" (p_out: ^Rect, self: ^Viewport_P) ---
-	ImGuiViewportP_GetWorkRect :: proc "c" (p_out: ^Rect, self: ^Viewport_P) ---
-	ImGuiViewportP_GetBuildWorkRect :: proc "c" (p_out: ^Rect, self: ^Viewport_P) ---
-	ImGuiWindowSettings_ImGuiWindowSettings :: proc "c" () -> ^Window_Settings ---
-	ImGuiWindowSettings_destroy :: proc "c" (self: ^Window_Settings) ---
-	ImGuiWindowSettings_GetName :: proc "c" (self: ^Window_Settings) -> ^i8 ---
-	ImGuiSettingsHandler_ImGuiSettingsHandler :: proc "c" () -> ^Settings_Handler ---
-	ImGuiSettingsHandler_destroy :: proc "c" (self: ^Settings_Handler) ---
-	ImGuiStackLevelInfo_ImGuiStackLevelInfo :: proc "c" () -> ^Stack_Level_Info ---
-	ImGuiStackLevelInfo_destroy :: proc "c" (self: ^Stack_Level_Info) ---
-	ImGuiStackTool_ImGuiStackTool :: proc "c" () -> ^Stack_Tool ---
-	ImGuiStackTool_destroy :: proc "c" (self: ^Stack_Tool) ---
-	ImGuiContextHook_ImGuiContextHook :: proc "c" () -> ^Context_Hook ---
-	ImGuiContextHook_destroy :: proc "c" (self: ^Context_Hook) ---
-	ImGuiContext_ImGuiContext :: proc "c" (shared_font_atlas: ^Font_Atlas) -> ^Context ---
-	ImGuiContext_destroy :: proc "c" (self: ^Context) ---
-	ImGuiWindow_ImGuiWindow :: proc "c" (context_: ^Context, name: cstring) -> ^Window ---
-	ImGuiWindow_destroy :: proc "c" (self: ^Window) ---
-	ImGuiWindow_GetID_Str :: proc "c" (self: ^Window, str: cstring, str_end: cstring) -> ID ---
-	ImGuiWindow_GetID_Ptr :: proc "c" (self: ^Window, ptr: rawptr) -> ID ---
-	ImGuiWindow_GetID_Int :: proc "c" (self: ^Window, n: i32) -> ID ---
-	ImGuiWindow_GetIDFromRectangle :: proc "c" (self: ^Window, r_abs: Rect) -> ID ---
-	ImGuiWindow_Rect :: proc "c" (p_out: ^Rect, self: ^Window) ---
-	ImGuiWindow_CalcFontSize :: proc "c" (self: ^Window) -> f32 ---
-	ImGuiWindow_TitleBarHeight :: proc "c" (self: ^Window) -> f32 ---
-	ImGuiWindow_TitleBarRect :: proc "c" (p_out: ^Rect, self: ^Window) ---
-	ImGuiWindow_MenuBarHeight :: proc "c" (self: ^Window) -> f32 ---
-	ImGuiWindow_MenuBarRect :: proc "c" (p_out: ^Rect, self: ^Window) ---
-	ImGuiTabItem_ImGuiTabItem :: proc "c" () -> ^Tab_Item ---
-	ImGuiTabItem_destroy :: proc "c" (self: ^Tab_Item) ---
-	ImGuiTabBar_ImGuiTabBar :: proc "c" () -> ^Tab_Bar ---
-	ImGuiTabBar_destroy :: proc "c" (self: ^Tab_Bar) ---
-	ImGuiTableColumn_ImGuiTableColumn :: proc "c" () -> ^Table_Column ---
-	ImGuiTableColumn_destroy :: proc "c" (self: ^Table_Column) ---
-	ImGuiTableInstanceData_ImGuiTableInstanceData :: proc "c" () -> ^Table_Instance_Data ---
-	ImGuiTableInstanceData_destroy :: proc "c" (self: ^Table_Instance_Data) ---
-	ImGuiTable_ImGuiTable :: proc "c" () -> ^Table ---
-	ImGuiTable_destroy :: proc "c" (self: ^Table) ---
-	ImGuiTableTempData_ImGuiTableTempData :: proc "c" () -> ^Table_Temp_Data ---
-	ImGuiTableTempData_destroy :: proc "c" (self: ^Table_Temp_Data) ---
-	ImGuiTableColumnSettings_ImGuiTableColumnSettings :: proc "c" () -> ^Table_Column_Settings ---
-	ImGuiTableColumnSettings_destroy :: proc "c" (self: ^Table_Column_Settings) ---
-	ImGuiTableSettings_ImGuiTableSettings :: proc "c" () -> ^Table_Settings ---
-	ImGuiTableSettings_destroy :: proc "c" (self: ^Table_Settings) ---
-	ImGuiTableSettings_GetColumnSettings :: proc "c" (self: ^Table_Settings) -> ^Table_Column_Settings ---
-	igGetCurrentWindowRead :: proc "c" () -> ^Window ---
-	igGetCurrentWindow :: proc "c" () -> ^Window ---
-	igFindWindowByID :: proc "c" (id: ID) -> ^Window ---
-	igFindWindowByName :: proc "c" (name: cstring) -> ^Window ---
-	igUpdateWindowParentAndRootLinks :: proc "c" (window: ^Window, flags: Window_Flags, parent_window: ^Window) ---
-	igCalcWindowNextAutoFitSize :: proc "c" (p_out: ^[2]f32, window: ^Window) ---
-	igIsWindowChildOf :: proc "c" (window: ^Window, potential_parent: ^Window, popup_hierarchy: bool) -> bool ---
-	igIsWindowWithinBeginStackOf :: proc "c" (window: ^Window, potential_parent: ^Window) -> bool ---
-	igIsWindowAbove :: proc "c" (potential_above: ^Window, potential_below: ^Window) -> bool ---
-	igIsWindowNavFocusable :: proc "c" (window: ^Window) -> bool ---
-	igSetWindowPos_WindowPtr :: proc "c" (window: ^Window, pos: [2]f32, cond: Cond) ---
-	igSetWindowSize_WindowPtr :: proc "c" (window: ^Window, size: [2]f32, cond: Cond) ---
-	igSetWindowCollapsed_WindowPtr :: proc "c" (window: ^Window, collapsed: bool, cond: Cond) ---
-	igSetWindowHitTestHole :: proc "c" (window: ^Window, pos: [2]f32, size: [2]f32) ---
-	igSetWindowHiddendAndSkipItemsForCurrentFrame :: proc "c" (window: ^Window) ---
-	igWindowRectAbsToRel :: proc "c" (p_out: ^Rect, window: ^Window, r: Rect) ---
-	igWindowRectRelToAbs :: proc "c" (p_out: ^Rect, window: ^Window, r: Rect) ---
-	igFocusWindow :: proc "c" (window: ^Window) ---
-	igFocusTopMostWindowUnderOne :: proc "c" (under_this_window: ^Window, ignore_window: ^Window) ---
-	igBringWindowToFocusFront :: proc "c" (window: ^Window) ---
-	igBringWindowToDisplayFront :: proc "c" (window: ^Window) ---
-	igBringWindowToDisplayBack :: proc "c" (window: ^Window) ---
-	igBringWindowToDisplayBehind :: proc "c" (window: ^Window, above_window: ^Window) ---
-	igFindWindowDisplayIndex :: proc "c" (window: ^Window) -> i32 ---
-	igFindBottomMostVisibleWindowWithinBeginStack :: proc "c" (window: ^Window) -> ^Window ---
-	igSetCurrentFont :: proc "c" (font: ^Font) ---
-	igGetDefaultFont :: proc "c" () -> ^Font ---
-	igGetForegroundDrawList_WindowPtr :: proc "c" (window: ^Window) -> ^Draw_List ---
-	igGetBackgroundDrawList_ViewportPtr :: proc "c" (viewport: ^Viewport) -> ^Draw_List ---
-	igGetForegroundDrawList_ViewportPtr :: proc "c" (viewport: ^Viewport) -> ^Draw_List ---
-	igInitialize :: proc "c" () ---
-	igShutdown :: proc "c" () ---
-	igUpdateInputEvents :: proc "c" (trickle_fast_inputs: bool) ---
-	igUpdateHoveredWindowAndCaptureFlags :: proc "c" () ---
-	igStartMouseMovingWindow :: proc "c" (window: ^Window) ---
-	igUpdateMouseMovingWindowNewFrame :: proc "c" () ---
-	igUpdateMouseMovingWindowEndFrame :: proc "c" () ---
-	igAddContextHook :: proc "c" (context_: ^Context, hook: ^Context_Hook) -> ID ---
-	igRemoveContextHook :: proc "c" (context_: ^Context, hook_to_remove: ID) ---
-	igCallContextHooks :: proc "c" (context_: ^Context, type: Context_Hook_Type) ---
-	igSetWindowViewport :: proc "c" (window: ^Window, viewport: ^Viewport_P) ---
-	igMarkIniSettingsDirty_Nil :: proc "c" () ---
-	igMarkIniSettingsDirty_WindowPtr :: proc "c" (window: ^Window) ---
-	igClearIniSettings :: proc "c" () ---
-	igAddSettingsHandler :: proc "c" (handler: ^Settings_Handler) ---
-	igRemoveSettingsHandler :: proc "c" (type_name: cstring) ---
-	igFindSettingsHandler :: proc "c" (type_name: cstring) -> ^Settings_Handler ---
-	igCreateNewWindowSettings :: proc "c" (name: cstring) -> ^Window_Settings ---
-	igFindWindowSettingsByID :: proc "c" (id: ID) -> ^Window_Settings ---
-	igFindWindowSettingsByWindow :: proc "c" (window: ^Window) -> ^Window_Settings ---
-	igClearWindowSettings :: proc "c" (name: cstring) ---
-	igLocalizeRegisterEntries :: proc "c" (entries: ^Loc_Entry, count: i32) ---
-	igLocalizeGetMsg :: proc "c" (key: Loc_Key) -> cstring ---
-	igSetScrollX_WindowPtr :: proc "c" (window: ^Window, scroll_x: f32) ---
-	igSetScrollY_WindowPtr :: proc "c" (window: ^Window, scroll_y: f32) ---
-	igSetScrollFromPosX_WindowPtr :: proc "c" (window: ^Window, local_x: f32, center_x_ratio: f32) ---
-	igSetScrollFromPosY_WindowPtr :: proc "c" (window: ^Window, local_y: f32, center_y_ratio: f32) ---
-	igScrollToItem :: proc "c" (flags: Scroll_Flags) ---
-	igScrollToRect :: proc "c" (window: ^Window, rect: Rect, flags: Scroll_Flags) ---
-	igScrollToRectEx :: proc "c" (p_out: ^[2]f32, window: ^Window, rect: Rect, flags: Scroll_Flags) ---
-	igScrollToBringRectIntoView :: proc "c" (window: ^Window, rect: Rect) ---
-	igGetItemStatusFlags :: proc "c" () -> Item_Status_Flags ---
-	igGetItemFlags :: proc "c" () -> Item_Flags ---
-	igGetActiveID :: proc "c" () -> ID ---
-	igGetFocusID :: proc "c" () -> ID ---
-	igSetActiveID :: proc "c" (id: ID, window: ^Window) ---
-	igSetFocusID :: proc "c" (id: ID, window: ^Window) ---
-	igClearActiveID :: proc "c" () ---
-	igGetHoveredID :: proc "c" () -> ID ---
-	igSetHoveredID :: proc "c" (id: ID) ---
-	igKeepAliveID :: proc "c" (id: ID) ---
-	igMarkItemEdited :: proc "c" (id: ID) ---
-	igPushOverrideID :: proc "c" (id: ID) ---
-	igGetIDWithSeed_Str :: proc "c" (str_id_begin: cstring, str_id_end: cstring, seed: ID) -> ID ---
-	igGetIDWithSeed_Int :: proc "c" (n: i32, seed: ID) -> ID ---
-	igItemSize_Vec2 :: proc "c" (size: [2]f32, text_baseline_y: f32) ---
-	igItemSize_Rect :: proc "c" (bb: Rect, text_baseline_y: f32) ---
-	igItemAdd :: proc "c" (bb: Rect, id: ID, nav_bb: ^Rect, extra_flags: Item_Flags) -> bool ---
-	igItemHoverable :: proc "c" (bb: Rect, id: ID) -> bool ---
-	igIsWindowContentHoverable :: proc "c" (window: ^Window, flags: Hovered_Flags) -> bool ---
-	igIsClippedEx :: proc "c" (bb: Rect, id: ID) -> bool ---
-	igSetLastItemData :: proc "c" (item_id: ID, in_flags: Item_Flags, status_flags: Item_Status_Flags, item_rect: Rect) ---
-	igCalcItemSize :: proc "c" (p_out: ^[2]f32, size: [2]f32, default_w: f32, default_h: f32) ---
-	igCalcWrapWidthForPos :: proc "c" (pos: [2]f32, wrap_pos_x: f32) -> f32 ---
-	igPushMultiItemsWidths :: proc "c" (components: i32, width_full: f32) ---
-	igIsItemToggledSelection :: proc "c" () -> bool ---
-	igGetContentRegionMaxAbs :: proc "c" (p_out: ^[2]f32) ---
-	igShrinkWidths :: proc "c" (items: ^Shrink_Width_Item, count: i32, width_excess: f32) ---
-	igPushItemFlag :: proc "c" (option: Item_Flags, enabled: bool) ---
-	igPopItemFlag :: proc "c" () ---
-	igGetStyleVarInfo :: proc "c" (idx: Style_Var) -> ^Data_Var_Info ---
-	igLogBegin :: proc "c" (type: Log_Type, auto_open_depth: i32) ---
-	igLogToBuffer :: proc "c" (auto_open_depth: i32) ---
-	igLogRenderedText :: proc "c" (ref_pos: ^[2]f32, text: cstring, text_end: cstring) ---
-	igLogSetNextTextDecoration :: proc "c" (prefix: cstring, suffix: cstring) ---
-	igBeginChildEx :: proc "c" (name: cstring, id: ID, size_arg: [2]f32, border: bool, flags: Window_Flags) -> bool ---
-	igOpenPopupEx :: proc "c" (id: ID, popup_flags: Popup_Flags) ---
-	igClosePopupToLevel :: proc "c" (remaining: i32, restore_focus_to_window_under_popup: bool) ---
-	igClosePopupsOverWindow :: proc "c" (ref_window: ^Window, restore_focus_to_window_under_popup: bool) ---
-	igClosePopupsExceptModals :: proc "c" () ---
-	igIsPopupOpen_ID :: proc "c" (id: ID, popup_flags: Popup_Flags) -> bool ---
-	igBeginPopupEx :: proc "c" (id: ID, extra_flags: Window_Flags) -> bool ---
-	igBeginTooltipEx :: proc "c" (tooltip_flags: Tooltip_Flags, extra_window_flags: Window_Flags) -> bool ---
-	igGetPopupAllowedExtentRect :: proc "c" (p_out: ^Rect, window: ^Window) ---
-	igGetTopMostPopupModal :: proc "c" () -> ^Window ---
-	igGetTopMostAndVisiblePopupModal :: proc "c" () -> ^Window ---
-	igFindBestWindowPosForPopup :: proc "c" (p_out: ^[2]f32, window: ^Window) ---
-	igFindBestWindowPosForPopupEx :: proc "c" (p_out: ^[2]f32, ref_pos: [2]f32, size: [2]f32, last_dir: ^Dir, r_outer: Rect, r_avoid: Rect, policy: Popup_Position_Policy) ---
-	igBeginViewportSideBar :: proc "c" (name: cstring, viewport: ^Viewport, dir: Dir, size: f32, window_flags: Window_Flags) -> bool ---
-	igBeginMenuEx :: proc "c" (label: cstring, icon: cstring, enabled: bool) -> bool ---
-	igMenuItemEx :: proc "c" (label: cstring, icon: cstring, shortcut: cstring, selected: bool, enabled: bool) -> bool ---
-	igBeginComboPopup :: proc "c" (popup_id: ID, bb: Rect, flags: Combo_Flags) -> bool ---
-	igBeginComboPreview :: proc "c" () -> bool ---
-	igEndComboPreview :: proc "c" () ---
-	igNavInitWindow :: proc "c" (window: ^Window, force_reinit: bool) ---
-	igNavInitRequestApplyResult :: proc "c" () ---
-	igNavMoveRequestButNoResultYet :: proc "c" () -> bool ---
-	igNavMoveRequestSubmit :: proc "c" (move_dir: Dir, clip_dir: Dir, move_flags: Nav_Move_Flags, scroll_flags: Scroll_Flags) ---
-	igNavMoveRequestForward :: proc "c" (move_dir: Dir, clip_dir: Dir, move_flags: Nav_Move_Flags, scroll_flags: Scroll_Flags) ---
-	igNavMoveRequestResolveWithLastItem :: proc "c" (result: ^Nav_Item_Data) ---
-	igNavMoveRequestCancel :: proc "c" () ---
-	igNavMoveRequestApplyResult :: proc "c" () ---
-	igNavMoveRequestTryWrapping :: proc "c" (window: ^Window, move_flags: Nav_Move_Flags) ---
-	igActivateItem :: proc "c" (id: ID) ---
-	igSetNavWindow :: proc "c" (window: ^Window) ---
-	igSetNavID :: proc "c" (id: ID, nav_layer: Nav_Layer, focus_scope_id: ID, rect_rel: Rect) ---
-	igIsNamedKey :: proc "c" (key: Key) -> bool ---
-	igIsNamedKeyOrModKey :: proc "c" (key: Key) -> bool ---
-	igIsLegacyKey :: proc "c" (key: Key) -> bool ---
-	igIsKeyboardKey :: proc "c" (key: Key) -> bool ---
-	igIsGamepadKey :: proc "c" (key: Key) -> bool ---
-	igIsMouseKey :: proc "c" (key: Key) -> bool ---
-	igIsAliasKey :: proc "c" (key: Key) -> bool ---
-	igConvertShortcutMod :: proc "c" (key_chord: Key_Chord) -> Key_Chord ---
-	igConvertSingleModFlagToKey :: proc "c" (ctx: ^Context, key: Key) -> Key ---
-	igGetKeyData_ContextPtr :: proc "c" (ctx: ^Context, key: Key) -> ^Key_Data ---
-	igGetKeyData_Key :: proc "c" (key: Key) -> ^Key_Data ---
-	igGetKeyChordName :: proc "c" (key_chord: Key_Chord, out_buf: ^i8, out_buf_size: i32) ---
-	igMouseButtonToKey :: proc "c" (button: Mouse_Button) -> Key ---
-	igIsMouseDragPastThreshold :: proc "c" (button: Mouse_Button, lock_threshold: f32) -> bool ---
-	igGetKeyMagnitude2d :: proc "c" (p_out: ^[2]f32, key_left: Key, key_right: Key, key_up: Key, key_down: Key) ---
-	igGetNavTweakPressedAmount :: proc "c" (axis: Axis) -> f32 ---
-	igCalcTypematicRepeatAmount :: proc "c" (t0: f32, t1: f32, repeat_delay: f32, repeat_rate: f32) -> i32 ---
-	igGetTypematicRepeatRate :: proc "c" (flags: Input_Flags, repeat_delay: ^f32, repeat_rate: ^f32) ---
-	igSetActiveIdUsingAllKeyboardKeys :: proc "c" () ---
-	igIsActiveIdUsingNavDir :: proc "c" (dir: Dir) -> bool ---
-	igGetKeyOwner :: proc "c" (key: Key) -> ID ---
-	igSetKeyOwner :: proc "c" (key: Key, owner_id: ID, flags: Input_Flags) ---
-	igSetKeyOwnersForKeyChord :: proc "c" (key: Key_Chord, owner_id: ID, flags: Input_Flags) ---
-	igSetItemKeyOwner :: proc "c" (key: Key, flags: Input_Flags) ---
-	igTestKeyOwner :: proc "c" (key: Key, owner_id: ID) -> bool ---
-	igGetKeyOwnerData :: proc "c" (ctx: ^Context, key: Key) -> ^Key_Owner_Data ---
-	igIsKeyDown_ID :: proc "c" (key: Key, owner_id: ID) -> bool ---
-	igIsKeyPressed_ID :: proc "c" (key: Key, owner_id: ID, flags: Input_Flags) -> bool ---
-	igIsKeyReleased_ID :: proc "c" (key: Key, owner_id: ID) -> bool ---
-	igIsMouseDown_ID :: proc "c" (button: Mouse_Button, owner_id: ID) -> bool ---
-	igIsMouseClicked_ID :: proc "c" (button: Mouse_Button, owner_id: ID, flags: Input_Flags) -> bool ---
-	igIsMouseReleased_ID :: proc "c" (button: Mouse_Button, owner_id: ID) -> bool ---
-	igShortcut :: proc "c" (key_chord: Key_Chord, owner_id: ID, flags: Input_Flags) -> bool ---
-	igSetShortcutRouting :: proc "c" (key_chord: Key_Chord, owner_id: ID, flags: Input_Flags) -> bool ---
-	igTestShortcutRouting :: proc "c" (key_chord: Key_Chord, owner_id: ID) -> bool ---
-	igGetShortcutRoutingData :: proc "c" (key_chord: Key_Chord) -> ^Key_Routing_Data ---
-	igPushFocusScope :: proc "c" (id: ID) ---
-	igPopFocusScope :: proc "c" () ---
-	igGetCurrentFocusScope :: proc "c" () -> ID ---
-	igIsDragDropActive :: proc "c" () -> bool ---
-	igBeginDragDropTargetCustom :: proc "c" (bb: Rect, id: ID) -> bool ---
-	igClearDragDrop :: proc "c" () ---
-	igIsDragDropPayloadBeingAccepted :: proc "c" () -> bool ---
-	igRenderDragDropTargetRect :: proc "c" (bb: Rect) ---
-	igSetWindowClipRectBeforeSetChannel :: proc "c" (window: ^Window, clip_rect: Rect) ---
-	igBeginColumns :: proc "c" (str_id: cstring, count: i32, flags: Old_Column_Flags) ---
-	igEndColumns :: proc "c" () ---
-	igPushColumnClipRect :: proc "c" (column_index: i32) ---
-	igPushColumnsBackground :: proc "c" () ---
-	igPopColumnsBackground :: proc "c" () ---
-	igGetColumnsID :: proc "c" (str_id: cstring, count: i32) -> ID ---
-	igFindOrCreateColumns :: proc "c" (window: ^Window, id: ID) -> ^Old_Columns ---
-	igGetColumnOffsetFromNorm :: proc "c" (columns: ^Old_Columns, offset_norm: f32) -> f32 ---
-	igGetColumnNormFromOffset :: proc "c" (columns: ^Old_Columns, offset: f32) -> f32 ---
-	igTableOpenContextMenu :: proc "c" (column_n: i32) ---
-	igTableSetColumnWidth :: proc "c" (column_n: i32, width: f32) ---
-	igTableSetColumnSortDirection :: proc "c" (column_n: i32, sort_direction: Sort_Direction, append_to_sort_specs: bool) ---
-	igTableGetHoveredColumn :: proc "c" () -> i32 ---
-	igTableGetHeaderRowHeight :: proc "c" () -> f32 ---
-	igTablePushBackgroundChannel :: proc "c" () ---
-	igTablePopBackgroundChannel :: proc "c" () ---
-	igGetCurrentTable :: proc "c" () -> ^Table ---
-	igTableFindByID :: proc "c" (id: ID) -> ^Table ---
-	igBeginTableEx :: proc "c" (name: cstring, id: ID, columns_count: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool ---
-	igTableBeginInitMemory :: proc "c" (table: ^Table, columns_count: i32) ---
-	igTableBeginApplyRequests :: proc "c" (table: ^Table) ---
-	igTableSetupDrawChannels :: proc "c" (table: ^Table) ---
-	igTableUpdateLayout :: proc "c" (table: ^Table) ---
-	igTableUpdateBorders :: proc "c" (table: ^Table) ---
-	igTableUpdateColumnsWeightFromWidth :: proc "c" (table: ^Table) ---
-	igTableDrawBorders :: proc "c" (table: ^Table) ---
-	igTableDrawContextMenu :: proc "c" (table: ^Table) ---
-	igTableBeginContextMenuPopup :: proc "c" (table: ^Table) -> bool ---
-	igTableMergeDrawChannels :: proc "c" (table: ^Table) ---
-	igTableGetInstanceData :: proc "c" (table: ^Table, instance_no: i32) -> ^Table_Instance_Data ---
-	igTableGetInstanceID :: proc "c" (table: ^Table, instance_no: i32) -> ID ---
-	igTableSortSpecsSanitize :: proc "c" (table: ^Table) ---
-	igTableSortSpecsBuild :: proc "c" (table: ^Table) ---
-	igTableGetColumnNextSortDirection :: proc "c" (column: ^Table_Column) -> Sort_Direction ---
-	igTableFixColumnSortDirection :: proc "c" (table: ^Table, column: ^Table_Column) ---
-	igTableGetColumnWidthAuto :: proc "c" (table: ^Table, column: ^Table_Column) -> f32 ---
-	igTableBeginRow :: proc "c" (table: ^Table) ---
-	igTableEndRow :: proc "c" (table: ^Table) ---
-	igTableBeginCell :: proc "c" (table: ^Table, column_n: i32) ---
-	igTableEndCell :: proc "c" (table: ^Table) ---
-	igTableGetCellBgRect :: proc "c" (p_out: ^Rect, table: ^Table, column_n: i32) ---
-	igTableGetColumnName_TablePtr :: proc "c" (table: ^Table, column_n: i32) -> cstring ---
-	igTableGetColumnResizeID :: proc "c" (table: ^Table, column_n: i32, instance_no: i32) -> ID ---
-	igTableGetMaxColumnWidth :: proc "c" (table: ^Table, column_n: i32) -> f32 ---
-	igTableSetColumnWidthAutoSingle :: proc "c" (table: ^Table, column_n: i32) ---
-	igTableSetColumnWidthAutoAll :: proc "c" (table: ^Table) ---
-	igTableRemove :: proc "c" (table: ^Table) ---
-	igTableGcCompactTransientBuffers_TablePtr :: proc "c" (table: ^Table) ---
-	igTableGcCompactTransientBuffers_TableTempDataPtr :: proc "c" (table: ^Table_Temp_Data) ---
-	igTableGcCompactSettings :: proc "c" () ---
-	igTableLoadSettings :: proc "c" (table: ^Table) ---
-	igTableSaveSettings :: proc "c" (table: ^Table) ---
-	igTableResetSettings :: proc "c" (table: ^Table) ---
-	igTableGetBoundSettings :: proc "c" (table: ^Table) -> ^Table_Settings ---
-	igTableSettingsAddSettingsHandler :: proc "c" () ---
-	igTableSettingsCreate :: proc "c" (id: ID, columns_count: i32) -> ^Table_Settings ---
-	igTableSettingsFindByID :: proc "c" (id: ID) -> ^Table_Settings ---
-	igGetCurrentTabBar :: proc "c" () -> ^Tab_Bar ---
-	igBeginTabBarEx :: proc "c" (tab_bar: ^Tab_Bar, bb: Rect, flags: Tab_Bar_Flags) -> bool ---
-	igTabBarFindTabByID :: proc "c" (tab_bar: ^Tab_Bar, tab_id: ID) -> ^Tab_Item ---
-	igTabBarFindTabByOrder :: proc "c" (tab_bar: ^Tab_Bar, order: i32) -> ^Tab_Item ---
-	igTabBarGetCurrentTab :: proc "c" (tab_bar: ^Tab_Bar) -> ^Tab_Item ---
-	igTabBarGetTabOrder :: proc "c" (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> i32 ---
-	igTabBarGetTabName :: proc "c" (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> cstring ---
-	igTabBarRemoveTab :: proc "c" (tab_bar: ^Tab_Bar, tab_id: ID) ---
-	igTabBarCloseTab :: proc "c" (tab_bar: ^Tab_Bar, tab: ^Tab_Item) ---
-	igTabBarQueueFocus :: proc "c" (tab_bar: ^Tab_Bar, tab: ^Tab_Item) ---
-	igTabBarQueueReorder :: proc "c" (tab_bar: ^Tab_Bar, tab: ^Tab_Item, offset: i32) ---
-	igTabBarQueueReorderFromMousePos :: proc "c" (tab_bar: ^Tab_Bar, tab: ^Tab_Item, mouse_pos: [2]f32) ---
-	igTabBarProcessReorder :: proc "c" (tab_bar: ^Tab_Bar) -> bool ---
-	igTabItemEx :: proc "c" (tab_bar: ^Tab_Bar, label: cstring, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool ---
-	igTabItemCalcSize_Str :: proc "c" (p_out: ^[2]f32, label: cstring, has_close_button_or_unsaved_marker: bool) ---
-	igTabItemCalcSize_WindowPtr :: proc "c" (p_out: ^[2]f32, window: ^Window) ---
-	igTabItemBackground :: proc "c" (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, col: u32) ---
-	igTabItemLabelAndCloseButton :: proc "c" (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: cstring, tab_id: ID, close_button_id: ID, is_contents_visible: bool, out_just_closed: ^bool, out_text_clipped: ^bool) ---
-	igRenderText :: proc "c" (pos: [2]f32, text: cstring, text_end: cstring, hide_text_after_hash: bool) ---
-	igRenderTextWrapped :: proc "c" (pos: [2]f32, text: cstring, text_end: cstring, wrap_width: f32) ---
-	igRenderTextClipped :: proc "c" (pos_min: [2]f32, pos_max: [2]f32, text: cstring, text_end: cstring, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) ---
-	igRenderTextClippedEx :: proc "c" (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: cstring, text_end: cstring, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) ---
-	igRenderTextEllipsis :: proc "c" (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: cstring, text_end: cstring, text_size_if_known: ^[2]f32) ---
-	igRenderFrame :: proc "c" (p_min: [2]f32, p_max: [2]f32, fill_col: u32, border: bool, rounding: f32) ---
-	igRenderFrameBorder :: proc "c" (p_min: [2]f32, p_max: [2]f32, rounding: f32) ---
-	igRenderColorRectWithAlphaCheckerboard :: proc "c" (draw_list: ^Draw_List, p_min: [2]f32, p_max: [2]f32, fill_col: u32, grid_step: f32, grid_off: [2]f32, rounding: f32, flags: Draw_Flags) ---
-	igRenderNavHighlight :: proc "c" (bb: Rect, id: ID, flags: Nav_Highlight_Flags) ---
-	igFindRenderedTextEnd :: proc "c" (text: cstring, text_end: cstring) -> cstring ---
-	igRenderMouseCursor :: proc "c" (pos: [2]f32, scale: f32, mouse_cursor: Mouse_Cursor, col_fill: u32, col_border: u32, col_shadow: u32) ---
-	igRenderArrow :: proc "c" (draw_list: ^Draw_List, pos: [2]f32, col: u32, dir: Dir, scale: f32) ---
-	igRenderBullet :: proc "c" (draw_list: ^Draw_List, pos: [2]f32, col: u32) ---
-	igRenderCheckMark :: proc "c" (draw_list: ^Draw_List, pos: [2]f32, col: u32, sz: f32) ---
-	igRenderArrowPointingAt :: proc "c" (draw_list: ^Draw_List, pos: [2]f32, half_sz: [2]f32, direction: Dir, col: u32) ---
-	igRenderRectFilledRangeH :: proc "c" (draw_list: ^Draw_List, rect: Rect, col: u32, x_start_norm: f32, x_end_norm: f32, rounding: f32) ---
-	igRenderRectFilledWithHole :: proc "c" (draw_list: ^Draw_List, outer: Rect, inner: Rect, col: u32, rounding: f32) ---
-	igTextEx :: proc "c" (text: cstring, text_end: cstring, flags: Text_Flags) ---
-	igButtonEx :: proc "c" (label: cstring, size_arg: [2]f32, flags: Button_Flags) -> bool ---
-	igArrowButtonEx :: proc "c" (str_id: cstring, dir: Dir, size_arg: [2]f32, flags: Button_Flags) -> bool ---
-	igImageButtonEx :: proc "c" (id: ID, texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32, flags: Button_Flags) -> bool ---
-	igSeparatorEx :: proc "c" (flags: Separator_Flags) ---
-	igSeparatorTextEx :: proc "c" (id: ID, label: cstring, label_end: cstring, extra_width: f32) ---
-	igCheckboxFlags_S64Ptr :: proc "c" (label: cstring, flags: ^i64, flags_value: i64) -> bool ---
-	igCheckboxFlags_U64Ptr :: proc "c" (label: cstring, flags: ^u64, flags_value: u64) -> bool ---
-	igCloseButton :: proc "c" (id: ID, pos: [2]f32) -> bool ---
-	igCollapseButton :: proc "c" (id: ID, pos: [2]f32) -> bool ---
-	igScrollbar :: proc "c" (axis: Axis) ---
-	igScrollbarEx :: proc "c" (bb: Rect, id: ID, axis: Axis, p_scroll_v: ^i64, avail_v: i64, contents_v: i64, flags: Draw_Flags) -> bool ---
-	igGetWindowScrollbarRect :: proc "c" (p_out: ^Rect, window: ^Window, axis: Axis) ---
-	igGetWindowScrollbarID :: proc "c" (window: ^Window, axis: Axis) -> ID ---
-	igGetWindowResizeCornerID :: proc "c" (window: ^Window, n: i32) -> ID ---
-	igGetWindowResizeBorderID :: proc "c" (window: ^Window, dir: Dir) -> ID ---
-	igButtonBehavior :: proc "c" (bb: Rect, id: ID, out_hovered: ^bool, out_held: ^bool, flags: Button_Flags) -> bool ---
-	igDragBehavior :: proc "c" (id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
-	igSliderBehavior :: proc "c" (bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags, out_grab_bb: ^Rect) -> bool ---
-	igSplitterBehavior :: proc "c" (bb: Rect, id: ID, axis: Axis, size1: ^f32, size2: ^f32, min_size1: f32, min_size2: f32, hover_extend: f32, hover_visibility_delay: f32, bg_col: u32) -> bool ---
-	igTreeNodeBehavior :: proc "c" (id: ID, flags: Tree_Node_Flags, label: cstring, label_end: cstring) -> bool ---
-	igTreePushOverrideID :: proc "c" (id: ID) ---
-	igTreeNodeSetOpen :: proc "c" (id: ID, open: bool) ---
-	igTreeNodeUpdateNextOpen :: proc "c" (id: ID, flags: Tree_Node_Flags) -> bool ---
-	igDataTypeGetInfo :: proc "c" (data_type: Data_Type) -> ^Data_Type_Info ---
-	igDataTypeFormatString :: proc "c" (buf: ^i8, buf_size: i32, data_type: Data_Type, p_data: rawptr, format: cstring) -> i32 ---
-	igDataTypeApplyOp :: proc "c" (data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) ---
-	igDataTypeApplyFromText :: proc "c" (buf: cstring, data_type: Data_Type, p_data: rawptr, format: cstring) -> bool ---
-	igDataTypeCompare :: proc "c" (data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -> i32 ---
-	igDataTypeClamp :: proc "c" (data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr) -> bool ---
-	igInputTextEx :: proc "c" (label: cstring, hint: cstring, buf: ^i8, buf_size: i32, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
-	igInputTextDeactivateHook :: proc "c" (id: ID) ---
-	igTempInputText :: proc "c" (bb: Rect, id: ID, label: cstring, buf: ^i8, buf_size: i32, flags: Input_Text_Flags) -> bool ---
-	igTempInputScalar :: proc "c" (bb: Rect, id: ID, label: cstring, data_type: Data_Type, p_data: rawptr, format: cstring, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool ---
-	igTempInputIsActive :: proc "c" (id: ID) -> bool ---
-	igGetInputTextState :: proc "c" (id: ID) -> ^Input_Text_State ---
-	igColorTooltip :: proc "c" (text: cstring, col: ^f32, flags: Color_Edit_Flags) ---
-	igColorEditOptionsPopup :: proc "c" (col: ^f32, flags: Color_Edit_Flags) ---
-	igColorPickerOptionsPopup :: proc "c" (ref_col: ^f32, flags: Color_Edit_Flags) ---
-	igPlotEx :: proc "c" (plot_type: Plot_Type, label: cstring, values_getter: proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 ---
-	igShadeVertsLinearColorGradientKeepAlpha :: proc "c" (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) ---
-	igShadeVertsLinearUV :: proc "c" (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) ---
-	igGcCompactTransientMiscBuffers :: proc "c" () ---
-	igGcCompactTransientWindowBuffers :: proc "c" (window: ^Window) ---
-	igGcAwakeTransientWindowBuffers :: proc "c" (window: ^Window) ---
-	igDebugLog :: proc "c" (fmt: cstring, #c_vararg args: ..any) ---
-	igDebugLogV :: proc "c" (fmt: cstring, args: va_list) ---
-	igErrorCheckEndFrameRecover :: proc "c" (log_callback: Error_Log_Callback, user_data: rawptr) ---
-	igErrorCheckEndWindowRecover :: proc "c" (log_callback: Error_Log_Callback, user_data: rawptr) ---
-	igErrorCheckUsingSetCursorPosToExtendParentBoundaries :: proc "c" () ---
-	igDebugLocateItem :: proc "c" (target_id: ID) ---
-	igDebugLocateItemOnHover :: proc "c" (target_id: ID) ---
-	igDebugLocateItemResolveWithLastItem :: proc "c" () ---
-	igDebugDrawItemRect :: proc "c" (col: u32) ---
-	igDebugStartItemPicker :: proc "c" () ---
-	igShowFontAtlas :: proc "c" (atlas: ^Font_Atlas) ---
-	igDebugHookIdInfo :: proc "c" (id: ID, data_type: Data_Type, data_id: rawptr, data_id_end: rawptr) ---
-	igDebugNodeColumns :: proc "c" (columns: ^Old_Columns) ---
-	igDebugNodeDrawList :: proc "c" (window: ^Window, draw_list: ^Draw_List, label: cstring) ---
-	igDebugNodeDrawCmdShowMeshAndBoundingBox :: proc "c" (out_draw_list: ^Draw_List, draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) ---
-	igDebugNodeFont :: proc "c" (font: ^Font) ---
-	igDebugNodeFontGlyph :: proc "c" (font: ^Font, glyph: ^Font_Glyph) ---
-	igDebugNodeStorage :: proc "c" (storage: ^Storage, label: cstring) ---
-	igDebugNodeTabBar :: proc "c" (tab_bar: ^Tab_Bar, label: cstring) ---
-	igDebugNodeTable :: proc "c" (table: ^Table) ---
-	igDebugNodeTableSettings :: proc "c" (settings: ^Table_Settings) ---
-	igDebugNodeInputTextState :: proc "c" (state: ^Input_Text_State) ---
-	igDebugNodeWindow :: proc "c" (window: ^Window, label: cstring) ---
-	igDebugNodeWindowSettings :: proc "c" (settings: ^Window_Settings) ---
-	igDebugNodeWindowsList :: proc "c" (windows: ^Vector(^Window), label: cstring) ---
-	igDebugNodeWindowsListByBeginStackParent :: proc "c" (windows: ^^Window, windows_size: i32, parent_in_begin_stack: ^Window) ---
-	igDebugNodeViewport :: proc "c" (viewport: ^Viewport_P) ---
-	igDebugRenderKeyboardPreview :: proc "c" (draw_list: ^Draw_List) ---
-	igDebugRenderViewportThumbnail :: proc "c" (draw_list: ^Draw_List, viewport: ^Viewport_P, bb: Rect) ---
-	igIsKeyPressedMap :: proc "c" (key: Key, repeat: bool) -> bool ---
-	igImFontAtlasGetBuilderForStbTruetype :: proc "c" () -> ^Font_Builder_IO ---
-	igImFontAtlasBuildInit :: proc "c" (atlas: ^Font_Atlas) ---
-	igImFontAtlasBuildSetupFont :: proc "c" (atlas: ^Font_Atlas, font: ^Font, font_config: ^Font_Config, ascent: f32, descent: f32) ---
-	igImFontAtlasBuildPackCustomRects :: proc "c" (atlas: ^Font_Atlas, stbrp_context_opaque: rawptr) ---
-	igImFontAtlasBuildFinish :: proc "c" (atlas: ^Font_Atlas) ---
-	igImFontAtlasBuildRender8bppRectFromString :: proc "c" (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: cstring, in_marker_char: i8, in_marker_pixel_value: u8) ---
-	igImFontAtlasBuildRender32bppRectFromString :: proc "c" (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: cstring, in_marker_char: i8, in_marker_pixel_value: u32) ---
-	igImFontAtlasBuildMultiplyCalcLookupTable :: proc "c" (out_table: [256]u8, in_multiply_factor: f32) ---
-	igImFontAtlasBuildMultiplyRectAlpha8 :: proc "c" (table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) ---
-	igLogText :: proc "c" (fmt: cstring, #c_vararg args: ..any) ---
-	ImGuiTextBuffer_appendf :: proc "c" (buffer: ^Text_Buffer, fmt: cstring, #c_vararg args: ..any) ---
-	igGET_FLT_MAX :: proc "c" () -> f32 ---
-	igGET_FLT_MIN :: proc "c" () -> f32 ---
+	igCreateContext :: proc(shared_font_atlas: ^Font_Atlas) -> ^Context ---
+	igDestroyContext :: proc(ctx: ^Context) ---
+	igGetCurrentContext :: proc() -> ^Context ---
+	igSetCurrentContext :: proc(ctx: ^Context) ---
+	igGetIO :: proc() -> ^IO ---
+	igGetStyle :: proc() -> ^Style ---
+	igNewFrame :: proc() ---
+	igEndFrame :: proc() ---
+	igRender :: proc() ---
+	igGetDrawData :: proc() -> ^Draw_Data ---
+	igShowDemoWindow :: proc(p_open: ^bool) ---
+	igShowMetricsWindow :: proc(p_open: ^bool) ---
+	igShowDebugLogWindow :: proc(p_open: ^bool) ---
+	igShowStackToolWindow :: proc(p_open: ^bool) ---
+	igShowAboutWindow :: proc(p_open: ^bool) ---
+	igShowStyleEditor :: proc(ref: ^Style) ---
+	igShowStyleSelector :: proc(label: cstring) -> bool ---
+	igShowFontSelector :: proc(label: cstring) ---
+	igShowUserGuide :: proc() ---
+	igGetVersion :: proc() -> cstring ---
+	igStyleColorsDark :: proc(dst: ^Style) ---
+	igStyleColorsLight :: proc(dst: ^Style) ---
+	igStyleColorsClassic :: proc(dst: ^Style) ---
+	igBegin :: proc(name: cstring, p_open: ^bool, flags: Window_Flags) -> bool ---
+	igEnd :: proc() ---
+	igBeginChild_Str :: proc(str_id: cstring, size: [2]f32, border: bool, flags: Window_Flags) -> bool ---
+	igBeginChild_ID :: proc(id: ID, size: [2]f32, border: bool, flags: Window_Flags) -> bool ---
+	igEndChild :: proc() ---
+	igIsWindowAppearing :: proc() -> bool ---
+	igIsWindowCollapsed :: proc() -> bool ---
+	igIsWindowFocused :: proc(flags: Focused_Flags) -> bool ---
+	igIsWindowHovered :: proc(flags: Hovered_Flags) -> bool ---
+	igGetWindowDrawList :: proc() -> ^Draw_List ---
+	igGetWindowPos :: proc(p_out: ^[2]f32) ---
+	igGetWindowSize :: proc(p_out: ^[2]f32) ---
+	igGetWindowWidth :: proc() -> f32 ---
+	igGetWindowHeight :: proc() -> f32 ---
+	igSetNextWindowPos :: proc(pos: [2]f32, cond: Cond, pivot: [2]f32) ---
+	igSetNextWindowSize :: proc(size: [2]f32, cond: Cond) ---
+	igSetNextWindowSizeConstraints :: proc(size_min: [2]f32, size_max: [2]f32, custom_callback: Size_Callback, custom_callback_data: rawptr) ---
+	igSetNextWindowContentSize :: proc(size: [2]f32) ---
+	igSetNextWindowCollapsed :: proc(collapsed: bool, cond: Cond) ---
+	igSetNextWindowFocus :: proc() ---
+	igSetNextWindowScroll :: proc(scroll: [2]f32) ---
+	igSetNextWindowBgAlpha :: proc(alpha: f32) ---
+	igSetWindowPos_Vec2 :: proc(pos: [2]f32, cond: Cond) ---
+	igSetWindowSize_Vec2 :: proc(size: [2]f32, cond: Cond) ---
+	igSetWindowCollapsed_Bool :: proc(collapsed: bool, cond: Cond) ---
+	igSetWindowFocus_Nil :: proc() ---
+	igSetWindowFontScale :: proc(scale: f32) ---
+	igSetWindowPos_Str :: proc(name: cstring, pos: [2]f32, cond: Cond) ---
+	igSetWindowSize_Str :: proc(name: cstring, size: [2]f32, cond: Cond) ---
+	igSetWindowCollapsed_Str :: proc(name: cstring, collapsed: bool, cond: Cond) ---
+	igSetWindowFocus_Str :: proc(name: cstring) ---
+	igGetContentRegionAvail :: proc(p_out: ^[2]f32) ---
+	igGetContentRegionMax :: proc(p_out: ^[2]f32) ---
+	igGetWindowContentRegionMin :: proc(p_out: ^[2]f32) ---
+	igGetWindowContentRegionMax :: proc(p_out: ^[2]f32) ---
+	igGetScrollX :: proc() -> f32 ---
+	igGetScrollY :: proc() -> f32 ---
+	igSetScrollX_Float :: proc(scroll_x: f32) ---
+	igSetScrollY_Float :: proc(scroll_y: f32) ---
+	igGetScrollMaxX :: proc() -> f32 ---
+	igGetScrollMaxY :: proc() -> f32 ---
+	igSetScrollHereX :: proc(center_x_ratio: f32) ---
+	igSetScrollHereY :: proc(center_y_ratio: f32) ---
+	igSetScrollFromPosX_Float :: proc(local_x: f32, center_x_ratio: f32) ---
+	igSetScrollFromPosY_Float :: proc(local_y: f32, center_y_ratio: f32) ---
+	igPushFont :: proc(font: ^Font) ---
+	igPopFont :: proc() ---
+	igPushStyleColor_U32 :: proc(idx: Col, col: u32) ---
+	igPushStyleColor_Vec4 :: proc(idx: Col, col: [4]f32) ---
+	igPopStyleColor :: proc(count: i32) ---
+	igPushStyleVar_Float :: proc(idx: Style_Var, val: f32) ---
+	igPushStyleVar_Vec2 :: proc(idx: Style_Var, val: [2]f32) ---
+	igPopStyleVar :: proc(count: i32) ---
+	igPushTabStop :: proc(tab_stop: bool) ---
+	igPopTabStop :: proc() ---
+	igPushButtonRepeat :: proc(repeat: bool) ---
+	igPopButtonRepeat :: proc() ---
+	igPushItemWidth :: proc(item_width: f32) ---
+	igPopItemWidth :: proc() ---
+	igSetNextItemWidth :: proc(item_width: f32) ---
+	igCalcItemWidth :: proc() -> f32 ---
+	igPushTextWrapPos :: proc(wrap_local_pos_x: f32) ---
+	igPopTextWrapPos :: proc() ---
+	igGetFont :: proc() -> ^Font ---
+	igGetFontSize :: proc() -> f32 ---
+	igGetFontTexUvWhitePixel :: proc(p_out: ^[2]f32) ---
+	igGetColorU32_Col :: proc(idx: Col, alpha_mul: f32) -> u32 ---
+	igGetColorU32_Vec4 :: proc(col: [4]f32) -> u32 ---
+	igGetColorU32_U32 :: proc(col: u32) -> u32 ---
+	igGetStyleColorVec4 :: proc(idx: Col) -> ^[4]f32 ---
+	igSeparator :: proc() ---
+	igSameLine :: proc(offset_from_start_x: f32, spacing: f32) ---
+	igNewLine :: proc() ---
+	igSpacing :: proc() ---
+	igDummy :: proc(size: [2]f32) ---
+	igIndent :: proc(indent_w: f32) ---
+	igUnindent :: proc(indent_w: f32) ---
+	igBeginGroup :: proc() ---
+	igEndGroup :: proc() ---
+	igGetCursorPos :: proc(p_out: ^[2]f32) ---
+	igGetCursorPosX :: proc() -> f32 ---
+	igGetCursorPosY :: proc() -> f32 ---
+	igSetCursorPos :: proc(local_pos: [2]f32) ---
+	igSetCursorPosX :: proc(local_x: f32) ---
+	igSetCursorPosY :: proc(local_y: f32) ---
+	igGetCursorStartPos :: proc(p_out: ^[2]f32) ---
+	igGetCursorScreenPos :: proc(p_out: ^[2]f32) ---
+	igSetCursorScreenPos :: proc(pos: [2]f32) ---
+	igAlignTextToFramePadding :: proc() ---
+	igGetTextLineHeight :: proc() -> f32 ---
+	igGetTextLineHeightWithSpacing :: proc() -> f32 ---
+	igGetFrameHeight :: proc() -> f32 ---
+	igGetFrameHeightWithSpacing :: proc() -> f32 ---
+	igPushID_Str :: proc(str_id: cstring) ---
+	igPushID_StrStr :: proc(str_id_begin: [^]u8, str_id_end: [^]u8) ---
+	igPushID_Ptr :: proc(ptr_id: rawptr) ---
+	igPushID_Int :: proc(int_id: i32) ---
+	igPopID :: proc() ---
+	igGetID_Str :: proc(str_id: cstring) -> ID ---
+	igGetID_StrStr :: proc(str_id_begin: [^]u8, str_id_end: [^]u8) -> ID ---
+	igGetID_Ptr :: proc(ptr_id: rawptr) -> ID ---
+	igTextUnformatted :: proc(text: [^]u8, text_end: [^]u8) ---
+	igText :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
+	igTextV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igTextColored :: proc(col: [4]f32, fmt: cstring, #c_vararg _args_: ..any) ---
+	igTextColoredV :: proc(col: [4]f32, fmt: cstring, args: ^libc.va_list) ---
+	igTextDisabled :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
+	igTextDisabledV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igTextWrapped :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
+	igTextWrappedV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igLabelText :: proc(label: cstring, fmt: cstring, #c_vararg _args_: ..any) ---
+	igLabelTextV :: proc(label: cstring, fmt: cstring, args: ^libc.va_list) ---
+	igBulletText :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
+	igBulletTextV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igSeparatorText :: proc(label: cstring) ---
+	igButton :: proc(label: cstring, size: [2]f32) -> bool ---
+	igSmallButton :: proc(label: cstring) -> bool ---
+	igInvisibleButton :: proc(str_id: cstring, size: [2]f32, flags: Button_Flags) -> bool ---
+	igArrowButton :: proc(str_id: cstring, dir: Dir) -> bool ---
+	igCheckbox :: proc(label: cstring, v: ^bool) -> bool ---
+	igCheckboxFlags_IntPtr :: proc(label: cstring, flags: ^i32, flags_value: i32) -> bool ---
+	igCheckboxFlags_UintPtr :: proc(label: cstring, flags: ^u32, flags_value: u32) -> bool ---
+	igRadioButton_Bool :: proc(label: cstring, active: bool) -> bool ---
+	igRadioButton_IntPtr :: proc(label: cstring, v: ^i32, v_button: i32) -> bool ---
+	igProgressBar :: proc(fraction: f32, size_arg: [2]f32, overlay: cstring) ---
+	igBullet :: proc() ---
+	igImage :: proc(user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, tint_col: [4]f32, border_col: [4]f32) ---
+	igImageButton :: proc(str_id: cstring, user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32) -> bool ---
+	igBeginCombo :: proc(label: cstring, preview_value: cstring, flags: Combo_Flags) -> bool ---
+	igEndCombo :: proc() ---
+	igCombo_Str_arr :: proc(label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool ---
+	igCombo_Str :: proc(label: cstring, current_item: ^i32, items_separated_by_zeros: cstring, popup_max_height_in_items: i32) -> bool ---
+	igCombo_FnBoolPtr :: proc(label: cstring, current_item: ^i32, items_getter: ^#type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool ---
+	igDragFloat :: proc(label: cstring, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragFloat2 :: proc(label: cstring, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragFloat3 :: proc(label: cstring, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragFloat4 :: proc(label: cstring, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragFloatRange2 :: proc(label: cstring, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: cstring, format_max: cstring, flags: Slider_Flags) -> bool ---
+	igDragInt :: proc(label: cstring, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragInt2 :: proc(label: cstring, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragInt3 :: proc(label: cstring, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragInt4 :: proc(label: cstring, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragIntRange2 :: proc(label: cstring, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: cstring, format_max: cstring, flags: Slider_Flags) -> bool ---
+	igDragScalar :: proc(label: cstring, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
+	igDragScalarN :: proc(label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderFloat :: proc(label: cstring, v: ^f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderFloat2 :: proc(label: cstring, v: [2]f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderFloat3 :: proc(label: cstring, v: [3]f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderFloat4 :: proc(label: cstring, v: [4]f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderAngle :: proc(label: cstring, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderInt :: proc(label: cstring, v: ^i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderInt2 :: proc(label: cstring, v: [2]i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderInt3 :: proc(label: cstring, v: [3]i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderInt4 :: proc(label: cstring, v: [4]i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderScalar :: proc(label: cstring, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderScalarN :: proc(label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
+	igVSliderFloat :: proc(label: cstring, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: cstring, flags: Slider_Flags) -> bool ---
+	igVSliderInt :: proc(label: cstring, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: cstring, flags: Slider_Flags) -> bool ---
+	igVSliderScalar :: proc(label: cstring, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
+	igInputText :: proc(label: cstring, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
+	igInputTextMultiline :: proc(label: cstring, buf: ^i8, buf_size: int, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
+	igInputTextWithHint :: proc(label: cstring, hint: cstring, buf: ^i8, buf_size: int, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
+	igInputFloat :: proc(label: cstring, v: ^f32, step: f32, step_fast: f32, format: cstring, flags: Input_Text_Flags) -> bool ---
+	igInputFloat2 :: proc(label: cstring, v: [2]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
+	igInputFloat3 :: proc(label: cstring, v: [3]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
+	igInputFloat4 :: proc(label: cstring, v: [4]f32, format: cstring, flags: Input_Text_Flags) -> bool ---
+	igInputInt :: proc(label: cstring, v: ^i32, step: i32, step_fast: i32, flags: Input_Text_Flags) -> bool ---
+	igInputInt2 :: proc(label: cstring, v: [2]i32, flags: Input_Text_Flags) -> bool ---
+	igInputInt3 :: proc(label: cstring, v: [3]i32, flags: Input_Text_Flags) -> bool ---
+	igInputInt4 :: proc(label: cstring, v: [4]i32, flags: Input_Text_Flags) -> bool ---
+	igInputDouble :: proc(label: cstring, v: ^f64, step: f64, step_fast: f64, format: cstring, flags: Input_Text_Flags) -> bool ---
+	igInputScalar :: proc(label: cstring, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: cstring, flags: Input_Text_Flags) -> bool ---
+	igInputScalarN :: proc(label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: cstring, flags: Input_Text_Flags) -> bool ---
+	igColorEdit3 :: proc(label: cstring, col: [3]f32, flags: Color_Edit_Flags) -> bool ---
+	igColorEdit4 :: proc(label: cstring, col: [4]f32, flags: Color_Edit_Flags) -> bool ---
+	igColorPicker3 :: proc(label: cstring, col: [3]f32, flags: Color_Edit_Flags) -> bool ---
+	igColorPicker4 :: proc(label: cstring, col: [4]f32, flags: Color_Edit_Flags, ref_col: ^f32) -> bool ---
+	igColorButton :: proc(desc_id: cstring, col: [4]f32, flags: Color_Edit_Flags, size: [2]f32) -> bool ---
+	igSetColorEditOptions :: proc(flags: Color_Edit_Flags) ---
+	igTreeNode_Str :: proc(label: cstring) -> bool ---
+	igTreeNode_StrStr :: proc(str_id: cstring, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNode_Ptr :: proc(ptr_id: rawptr, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNodeV_Str :: proc(str_id: cstring, fmt: cstring, args: ^libc.va_list) -> bool ---
+	igTreeNodeV_Ptr :: proc(ptr_id: rawptr, fmt: cstring, args: ^libc.va_list) -> bool ---
+	igTreeNodeEx_Str :: proc(label: cstring, flags: Tree_Node_Flags) -> bool ---
+	igTreeNodeEx_StrStr :: proc(str_id: cstring, flags: Tree_Node_Flags, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNodeEx_Ptr :: proc(ptr_id: rawptr, flags: Tree_Node_Flags, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNodeExV_Str :: proc(str_id: cstring, flags: Tree_Node_Flags, fmt: cstring, args: ^libc.va_list) -> bool ---
+	igTreeNodeExV_Ptr :: proc(ptr_id: rawptr, flags: Tree_Node_Flags, fmt: cstring, args: ^libc.va_list) -> bool ---
+	igTreePush_Str :: proc(str_id: cstring) ---
+	igTreePush_Ptr :: proc(ptr_id: rawptr) ---
+	igTreePop :: proc() ---
+	igGetTreeNodeToLabelSpacing :: proc() -> f32 ---
+	igCollapsingHeader_TreeNodeFlags :: proc(label: cstring, flags: Tree_Node_Flags) -> bool ---
+	igCollapsingHeader_BoolPtr :: proc(label: cstring, p_visible: ^bool, flags: Tree_Node_Flags) -> bool ---
+	igSetNextItemOpen :: proc(is_open: bool, cond: Cond) ---
+	igSelectable_Bool :: proc(label: cstring, selected: bool, flags: Selectable_Flags, size: [2]f32) -> bool ---
+	igSelectable_BoolPtr :: proc(label: cstring, p_selected: ^bool, flags: Selectable_Flags, size: [2]f32) -> bool ---
+	igBeginListBox :: proc(label: cstring, size: [2]f32) -> bool ---
+	igEndListBox :: proc() ---
+	igListBox_Str_arr :: proc(label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool ---
+	igListBox_FnBoolPtr :: proc(label: cstring, current_item: ^i32, items_getter: ^#type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool ---
+	igPlotLines_FloatPtr :: proc(label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) ---
+	igPlotLines_FnFloatPtr :: proc(label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
+	igPlotHistogram_FloatPtr :: proc(label: cstring, values: ^f32, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) ---
+	igPlotHistogram_FnFloatPtr :: proc(label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, graph_size: [2]f32) ---
+	igValue_Bool :: proc(prefix: cstring, b: bool) ---
+	igValue_Int :: proc(prefix: cstring, v: i32) ---
+	igValue_Uint :: proc(prefix: cstring, v: u32) ---
+	igValue_Float :: proc(prefix: cstring, v: f32, float_format: cstring) ---
+	igBeginMenuBar :: proc() -> bool ---
+	igEndMenuBar :: proc() ---
+	igBeginMainMenuBar :: proc() -> bool ---
+	igEndMainMenuBar :: proc() ---
+	igBeginMenu :: proc(label: cstring, enabled: bool) -> bool ---
+	igEndMenu :: proc() ---
+	igMenuItem_Bool :: proc(label: cstring, shortcut: cstring, selected: bool, enabled: bool) -> bool ---
+	igMenuItem_BoolPtr :: proc(label: cstring, shortcut: cstring, p_selected: ^bool, enabled: bool) -> bool ---
+	igBeginTooltip :: proc() -> bool ---
+	igEndTooltip :: proc() ---
+	igSetTooltip :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
+	igSetTooltipV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igBeginPopup :: proc(str_id: cstring, flags: Window_Flags) -> bool ---
+	igBeginPopupModal :: proc(name: cstring, p_open: ^bool, flags: Window_Flags) -> bool ---
+	igEndPopup :: proc() ---
+	igOpenPopup_Str :: proc(str_id: cstring, popup_flags: Popup_Flags) ---
+	igOpenPopup_ID :: proc(id: ID, popup_flags: Popup_Flags) ---
+	igOpenPopupOnItemClick :: proc(str_id: cstring, popup_flags: Popup_Flags) ---
+	igCloseCurrentPopup :: proc() ---
+	igBeginPopupContextItem :: proc(str_id: cstring, popup_flags: Popup_Flags) -> bool ---
+	igBeginPopupContextWindow :: proc(str_id: cstring, popup_flags: Popup_Flags) -> bool ---
+	igBeginPopupContextVoid :: proc(str_id: cstring, popup_flags: Popup_Flags) -> bool ---
+	igIsPopupOpen_Str :: proc(str_id: cstring, flags: Popup_Flags) -> bool ---
+	igBeginTable :: proc(str_id: cstring, column: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool ---
+	igEndTable :: proc() ---
+	igTableNextRow :: proc(row_flags: Table_Row_Flags, min_row_height: f32) ---
+	igTableNextColumn :: proc() -> bool ---
+	igTableSetColumnIndex :: proc(column_n: i32) -> bool ---
+	igTableSetupColumn :: proc(label: cstring, flags: Table_Column_Flags, init_width_or_weight: f32, user_id: ID) ---
+	igTableSetupScrollFreeze :: proc(cols: i32, rows: i32) ---
+	igTableHeadersRow :: proc() ---
+	igTableHeader :: proc(label: cstring) ---
+	igTableGetSortSpecs :: proc() -> ^Table_Sort_Specs ---
+	igTableGetColumnCount :: proc() -> i32 ---
+	igTableGetColumnIndex :: proc() -> i32 ---
+	igTableGetRowIndex :: proc() -> i32 ---
+	igTableGetColumnName_Int :: proc(column_n: i32) -> cstring ---
+	igTableGetColumnFlags :: proc(column_n: i32) -> Table_Column_Flags ---
+	igTableSetColumnEnabled :: proc(column_n: i32, v: bool) ---
+	igTableSetBgColor :: proc(target: Table_Bg_Target, color: u32, column_n: i32) ---
+	igColumns :: proc(count: i32, id: cstring, border: bool) ---
+	igNextColumn :: proc() ---
+	igGetColumnIndex :: proc() -> i32 ---
+	igGetColumnWidth :: proc(column_index: i32) -> f32 ---
+	igSetColumnWidth :: proc(column_index: i32, width: f32) ---
+	igGetColumnOffset :: proc(column_index: i32) -> f32 ---
+	igSetColumnOffset :: proc(column_index: i32, offset_x: f32) ---
+	igGetColumnsCount :: proc() -> i32 ---
+	igBeginTabBar :: proc(str_id: cstring, flags: Tab_Bar_Flags) -> bool ---
+	igEndTabBar :: proc() ---
+	igBeginTabItem :: proc(label: cstring, p_open: ^bool, flags: Tab_Item_Flags) -> bool ---
+	igEndTabItem :: proc() ---
+	igTabItemButton :: proc(label: cstring, flags: Tab_Item_Flags) -> bool ---
+	igSetTabItemClosed :: proc(tab_or_docked_window_label: cstring) ---
+	igLogToTTY :: proc(auto_open_depth: i32) ---
+	igLogToFile :: proc(auto_open_depth: i32, filename: cstring) ---
+	igLogToClipboard :: proc(auto_open_depth: i32) ---
+	igLogFinish :: proc() ---
+	igLogButtons :: proc() ---
+	igLogTextV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igBeginDragDropSource :: proc(flags: Drag_Drop_Flags) -> bool ---
+	igSetDragDropPayload :: proc(type: cstring, data: rawptr, sz: int, cond: Cond) -> bool ---
+	igEndDragDropSource :: proc() ---
+	igBeginDragDropTarget :: proc() -> bool ---
+	igAcceptDragDropPayload :: proc(type: cstring, flags: Drag_Drop_Flags) -> ^Payload ---
+	igEndDragDropTarget :: proc() ---
+	igGetDragDropPayload :: proc() -> ^Payload ---
+	igBeginDisabled :: proc(disabled: bool) ---
+	igEndDisabled :: proc() ---
+	igPushClipRect :: proc(clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) ---
+	igPopClipRect :: proc() ---
+	igSetItemDefaultFocus :: proc() ---
+	igSetKeyboardFocusHere :: proc(offset: i32) ---
+	igIsItemHovered :: proc(flags: Hovered_Flags) -> bool ---
+	igIsItemActive :: proc() -> bool ---
+	igIsItemFocused :: proc() -> bool ---
+	igIsItemClicked :: proc(mouse_button: Mouse_Button) -> bool ---
+	igIsItemVisible :: proc() -> bool ---
+	igIsItemEdited :: proc() -> bool ---
+	igIsItemActivated :: proc() -> bool ---
+	igIsItemDeactivated :: proc() -> bool ---
+	igIsItemDeactivatedAfterEdit :: proc() -> bool ---
+	igIsItemToggledOpen :: proc() -> bool ---
+	igIsAnyItemHovered :: proc() -> bool ---
+	igIsAnyItemActive :: proc() -> bool ---
+	igIsAnyItemFocused :: proc() -> bool ---
+	igGetItemID :: proc() -> ID ---
+	igGetItemRectMin :: proc(p_out: ^[2]f32) ---
+	igGetItemRectMax :: proc(p_out: ^[2]f32) ---
+	igGetItemRectSize :: proc(p_out: ^[2]f32) ---
+	igSetItemAllowOverlap :: proc() ---
+	igGetMainViewport :: proc() -> ^Viewport ---
+	igGetBackgroundDrawList_Nil :: proc() -> ^Draw_List ---
+	igGetForegroundDrawList_Nil :: proc() -> ^Draw_List ---
+	igIsRectVisible_Nil :: proc(size: [2]f32) -> bool ---
+	igIsRectVisible_Vec2 :: proc(rect_min: [2]f32, rect_max: [2]f32) -> bool ---
+	igGetTime :: proc() -> f64 ---
+	igGetFrameCount :: proc() -> i32 ---
+	igGetDrawListSharedData :: proc() -> ^Draw_List_Shared_Data ---
+	igGetStyleColorName :: proc(idx: Col) -> cstring ---
+	igSetStateStorage :: proc(storage: ^Storage) ---
+	igGetStateStorage :: proc() -> ^Storage ---
+	igBeginChildFrame :: proc(id: ID, size: [2]f32, flags: Window_Flags) -> bool ---
+	igEndChildFrame :: proc() ---
+	igCalcTextSize :: proc(p_out: ^[2]f32, text: [^]u8, text_end: [^]u8, hide_text_after_double_hash: bool, wrap_width: f32) ---
+	igColorConvertU32ToFloat4 :: proc(p_out: ^[4]f32, in_: u32) ---
+	igColorConvertFloat4ToU32 :: proc(in_: [4]f32) -> u32 ---
+	igColorConvertRGBtoHSV :: proc(r: f32, g: f32, b: f32, out_h: ^f32, out_s: ^f32, out_v: ^f32) ---
+	igColorConvertHSVtoRGB :: proc(h: f32, s: f32, v: f32, out_r: ^f32, out_g: ^f32, out_b: ^f32) ---
+	igIsKeyDown_Nil :: proc(key: Key) -> bool ---
+	igIsKeyPressed_Bool :: proc(key: Key, repeat: bool) -> bool ---
+	igIsKeyReleased_Nil :: proc(key: Key) -> bool ---
+	igGetKeyPressedAmount :: proc(key: Key, repeat_delay: f32, rate: f32) -> i32 ---
+	igGetKeyName :: proc(key: Key) -> cstring ---
+	igSetNextFrameWantCaptureKeyboard :: proc(want_capture_keyboard: bool) ---
+	igIsMouseDown_Nil :: proc(button: Mouse_Button) -> bool ---
+	igIsMouseClicked_Bool :: proc(button: Mouse_Button, repeat: bool) -> bool ---
+	igIsMouseReleased_Nil :: proc(button: Mouse_Button) -> bool ---
+	igIsMouseDoubleClicked :: proc(button: Mouse_Button) -> bool ---
+	igGetMouseClickedCount :: proc(button: Mouse_Button) -> i32 ---
+	igIsMouseHoveringRect :: proc(r_min: [2]f32, r_max: [2]f32, clip: bool) -> bool ---
+	igIsMousePosValid :: proc(mouse_pos: ^[2]f32) -> bool ---
+	igIsAnyMouseDown :: proc() -> bool ---
+	igGetMousePos :: proc(p_out: ^[2]f32) ---
+	igGetMousePosOnOpeningCurrentPopup :: proc(p_out: ^[2]f32) ---
+	igIsMouseDragging :: proc(button: Mouse_Button, lock_threshold: f32) -> bool ---
+	igGetMouseDragDelta :: proc(p_out: ^[2]f32, button: Mouse_Button, lock_threshold: f32) ---
+	igResetMouseDragDelta :: proc(button: Mouse_Button) ---
+	igGetMouseCursor :: proc() -> Mouse_Cursor ---
+	igSetMouseCursor :: proc(cursor_type: Mouse_Cursor) ---
+	igSetNextFrameWantCaptureMouse :: proc(want_capture_mouse: bool) ---
+	igGetClipboardText :: proc() -> cstring ---
+	igSetClipboardText :: proc(text: cstring) ---
+	igLoadIniSettingsFromDisk :: proc(ini_filename: cstring) ---
+	igLoadIniSettingsFromMemory :: proc(ini_data: cstring, ini_size: int) ---
+	igSaveIniSettingsToDisk :: proc(ini_filename: cstring) ---
+	igSaveIniSettingsToMemory :: proc(out_ini_size: ^int) -> cstring ---
+	igDebugTextEncoding :: proc(text: cstring) ---
+	igDebugCheckVersionAndDataLayout :: proc(version_str: cstring, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool ---
+	igSetAllocatorFunctions :: proc(alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) ---
+	igGetAllocatorFunctions :: proc(p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) ---
+	igMemAlloc :: proc(size: int) -> rawptr ---
+	igMemFree :: proc(ptr: rawptr) ---
+	ImGuiStyle_ImGuiStyle :: proc() -> ^Style ---
+	ImGuiStyle_destroy :: proc(self: ^Style) ---
+	ImGuiStyle_ScaleAllSizes :: proc(self: ^Style, scale_factor: f32) ---
+	ImGuiIO_AddKeyEvent :: proc(self: ^IO, key: Key, down: bool) ---
+	ImGuiIO_AddKeyAnalogEvent :: proc(self: ^IO, key: Key, down: bool, v: f32) ---
+	ImGuiIO_AddMousePosEvent :: proc(self: ^IO, x: f32, y: f32) ---
+	ImGuiIO_AddMouseButtonEvent :: proc(self: ^IO, button: i32, down: bool) ---
+	ImGuiIO_AddMouseWheelEvent :: proc(self: ^IO, wheel_x: f32, wheel_y: f32) ---
+	ImGuiIO_AddMouseSourceEvent :: proc(self: ^IO, source: Mouse_Source) ---
+	ImGuiIO_AddFocusEvent :: proc(self: ^IO, focused: bool) ---
+	ImGuiIO_AddInputCharacter :: proc(self: ^IO, c: u32) ---
+	ImGuiIO_AddInputCharacterUTF16 :: proc(self: ^IO, c: u16) ---
+	ImGuiIO_AddInputCharactersUTF8 :: proc(self: ^IO, str: cstring) ---
+	ImGuiIO_SetKeyEventNativeData :: proc(self: ^IO, key: Key, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) ---
+	ImGuiIO_SetAppAcceptingEvents :: proc(self: ^IO, accepting_events: bool) ---
+	ImGuiIO_ClearInputCharacters :: proc(self: ^IO) ---
+	ImGuiIO_ClearInputKeys :: proc(self: ^IO) ---
+	ImGuiIO_ImGuiIO :: proc() -> ^IO ---
+	ImGuiIO_destroy :: proc(self: ^IO) ---
+	ImGuiInputTextCallbackData_ImGuiInputTextCallbackData :: proc() -> ^Input_Text_Callback_Data ---
+	ImGuiInputTextCallbackData_destroy :: proc(self: ^Input_Text_Callback_Data) ---
+	ImGuiInputTextCallbackData_DeleteChars :: proc(self: ^Input_Text_Callback_Data, pos: i32, bytes_count: i32) ---
+	ImGuiInputTextCallbackData_InsertChars :: proc(self: ^Input_Text_Callback_Data, pos: i32, text: [^]u8, text_end: [^]u8) ---
+	ImGuiInputTextCallbackData_SelectAll :: proc(self: ^Input_Text_Callback_Data) ---
+	ImGuiInputTextCallbackData_ClearSelection :: proc(self: ^Input_Text_Callback_Data) ---
+	ImGuiInputTextCallbackData_HasSelection :: proc(self: ^Input_Text_Callback_Data) -> bool ---
+	ImGuiPayload_ImGuiPayload :: proc() -> ^Payload ---
+	ImGuiPayload_destroy :: proc(self: ^Payload) ---
+	ImGuiPayload_Clear :: proc(self: ^Payload) ---
+	ImGuiPayload_IsDataType :: proc(self: ^Payload, type: cstring) -> bool ---
+	ImGuiPayload_IsPreview :: proc(self: ^Payload) -> bool ---
+	ImGuiPayload_IsDelivery :: proc(self: ^Payload) -> bool ---
+	ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs :: proc() -> ^Table_Column_Sort_Specs ---
+	ImGuiTableColumnSortSpecs_destroy :: proc(self: ^Table_Column_Sort_Specs) ---
+	ImGuiTableSortSpecs_ImGuiTableSortSpecs :: proc() -> ^Table_Sort_Specs ---
+	ImGuiTableSortSpecs_destroy :: proc(self: ^Table_Sort_Specs) ---
+	ImGuiOnceUponAFrame_ImGuiOnceUponAFrame :: proc() -> ^Once_Upon_A_Frame ---
+	ImGuiOnceUponAFrame_destroy :: proc(self: ^Once_Upon_A_Frame) ---
+	ImGuiTextFilter_ImGuiTextFilter :: proc(default_filter: cstring) -> ^Text_Filter ---
+	ImGuiTextFilter_destroy :: proc(self: ^Text_Filter) ---
+	ImGuiTextFilter_Draw :: proc(self: ^Text_Filter, label: cstring, width: f32) -> bool ---
+	ImGuiTextFilter_PassFilter :: proc(self: ^Text_Filter, text: [^]u8, text_end: [^]u8) -> bool ---
+	ImGuiTextFilter_Build :: proc(self: ^Text_Filter) ---
+	ImGuiTextFilter_Clear :: proc(self: ^Text_Filter) ---
+	ImGuiTextFilter_IsActive :: proc(self: ^Text_Filter) -> bool ---
+	ImGuiTextRange_ImGuiTextRange_Nil :: proc() -> ^Text_Range ---
+	ImGuiTextRange_destroy :: proc(self: ^Text_Range) ---
+	ImGuiTextRange_ImGuiTextRange_Str :: proc(_b: cstring, _e: cstring) -> ^Text_Range ---
+	ImGuiTextRange_empty :: proc(self: ^Text_Range) -> bool ---
+	ImGuiTextRange_split :: proc(self: ^Text_Range, separator: i8, out: ^Vector(Text_Range)) ---
+	ImGuiTextBuffer_ImGuiTextBuffer :: proc() -> ^Text_Buffer ---
+	ImGuiTextBuffer_destroy :: proc(self: ^Text_Buffer) ---
+	ImGuiTextBuffer_begin :: proc(self: ^Text_Buffer) -> cstring ---
+	ImGuiTextBuffer_end :: proc(self: ^Text_Buffer) -> cstring ---
+	ImGuiTextBuffer_size :: proc(self: ^Text_Buffer) -> i32 ---
+	ImGuiTextBuffer_empty :: proc(self: ^Text_Buffer) -> bool ---
+	ImGuiTextBuffer_clear :: proc(self: ^Text_Buffer) ---
+	ImGuiTextBuffer_reserve :: proc(self: ^Text_Buffer, capacity: i32) ---
+	ImGuiTextBuffer_c_str :: proc(self: ^Text_Buffer) -> cstring ---
+	ImGuiTextBuffer_append :: proc(self: ^Text_Buffer, str: [^]u8, str_end: [^]u8) ---
+	ImGuiTextBuffer_appendfv :: proc(self: ^Text_Buffer, fmt: cstring, args: ^libc.va_list) ---
+	ImGuiStoragePair_ImGuiStoragePair_Int :: proc(_key: ID, _val_i: i32) -> ^Storage_Pair ---
+	ImGuiStoragePair_destroy :: proc(self: ^Storage_Pair) ---
+	ImGuiStoragePair_ImGuiStoragePair_Float :: proc(_key: ID, _val_f: f32) -> ^Storage_Pair ---
+	ImGuiStoragePair_ImGuiStoragePair_Ptr :: proc(_key: ID, _val_p: rawptr) -> ^Storage_Pair ---
+	ImGuiStorage_Clear :: proc(self: ^Storage) ---
+	ImGuiStorage_GetInt :: proc(self: ^Storage, key: ID, default_val: i32) -> i32 ---
+	ImGuiStorage_SetInt :: proc(self: ^Storage, key: ID, val: i32) ---
+	ImGuiStorage_GetBool :: proc(self: ^Storage, key: ID, default_val: bool) -> bool ---
+	ImGuiStorage_SetBool :: proc(self: ^Storage, key: ID, val: bool) ---
+	ImGuiStorage_GetFloat :: proc(self: ^Storage, key: ID, default_val: f32) -> f32 ---
+	ImGuiStorage_SetFloat :: proc(self: ^Storage, key: ID, val: f32) ---
+	ImGuiStorage_GetVoidPtr :: proc(self: ^Storage, key: ID) -> rawptr ---
+	ImGuiStorage_SetVoidPtr :: proc(self: ^Storage, key: ID, val: rawptr) ---
+	ImGuiStorage_GetIntRef :: proc(self: ^Storage, key: ID, default_val: i32) -> ^i32 ---
+	ImGuiStorage_GetBoolRef :: proc(self: ^Storage, key: ID, default_val: bool) -> ^bool ---
+	ImGuiStorage_GetFloatRef :: proc(self: ^Storage, key: ID, default_val: f32) -> ^f32 ---
+	ImGuiStorage_GetVoidPtrRef :: proc(self: ^Storage, key: ID, default_val: rawptr) -> ^rawptr ---
+	ImGuiStorage_SetAllInt :: proc(self: ^Storage, val: i32) ---
+	ImGuiStorage_BuildSortByKey :: proc(self: ^Storage) ---
+	ImGuiListClipper_ImGuiListClipper :: proc() -> ^List_Clipper ---
+	ImGuiListClipper_destroy :: proc(self: ^List_Clipper) ---
+	ImGuiListClipper_Begin :: proc(self: ^List_Clipper, items_count: i32, items_height: f32) ---
+	ImGuiListClipper_End :: proc(self: ^List_Clipper) ---
+	ImGuiListClipper_Step :: proc(self: ^List_Clipper) -> bool ---
+	ImGuiListClipper_ForceDisplayRangeByIndices :: proc(self: ^List_Clipper, item_min: i32, item_max: i32) ---
+	ImColor_ImColor_Nil :: proc() -> ^Color ---
+	ImColor_destroy :: proc(self: ^Color) ---
+	ImColor_ImColor_Float :: proc(r: f32, g: f32, b: f32, a: f32) -> ^Color ---
+	ImColor_ImColor_Vec4 :: proc(col: [4]f32) -> ^Color ---
+	ImColor_ImColor_Int :: proc(r: i32, g: i32, b: i32, a: i32) -> ^Color ---
+	ImColor_ImColor_U32 :: proc(rgba: u32) -> ^Color ---
+	ImColor_SetHSV :: proc(self: ^Color, h: f32, s: f32, v: f32, a: f32) ---
+	ImColor_HSV :: proc(p_out: ^Color, h: f32, s: f32, v: f32, a: f32) ---
+	ImDrawCmd_ImDrawCmd :: proc() -> ^Draw_Cmd ---
+	ImDrawCmd_destroy :: proc(self: ^Draw_Cmd) ---
+	ImDrawCmd_GetTexID :: proc(self: ^Draw_Cmd) -> Texture_ID ---
+	ImDrawListSplitter_ImDrawListSplitter :: proc() -> ^Draw_List_Splitter ---
+	ImDrawListSplitter_destroy :: proc(self: ^Draw_List_Splitter) ---
+	ImDrawListSplitter_Clear :: proc(self: ^Draw_List_Splitter) ---
+	ImDrawListSplitter_ClearFreeMemory :: proc(self: ^Draw_List_Splitter) ---
+	ImDrawListSplitter_Split :: proc(self: ^Draw_List_Splitter, draw_list: ^Draw_List, count: i32) ---
+	ImDrawListSplitter_Merge :: proc(self: ^Draw_List_Splitter, draw_list: ^Draw_List) ---
+	ImDrawListSplitter_SetCurrentChannel :: proc(self: ^Draw_List_Splitter, draw_list: ^Draw_List, channel_idx: i32) ---
+	ImDrawList_ImDrawList :: proc(shared_data: ^Draw_List_Shared_Data) -> ^Draw_List ---
+	ImDrawList_destroy :: proc(self: ^Draw_List) ---
+	ImDrawList_PushClipRect :: proc(self: ^Draw_List, clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) ---
+	ImDrawList_PushClipRectFullScreen :: proc(self: ^Draw_List) ---
+	ImDrawList_PopClipRect :: proc(self: ^Draw_List) ---
+	ImDrawList_PushTextureID :: proc(self: ^Draw_List, texture_id: Texture_ID) ---
+	ImDrawList_PopTextureID :: proc(self: ^Draw_List) ---
+	ImDrawList_GetClipRectMin :: proc(p_out: ^[2]f32, self: ^Draw_List) ---
+	ImDrawList_GetClipRectMax :: proc(p_out: ^[2]f32, self: ^Draw_List) ---
+	ImDrawList_AddLine :: proc(self: ^Draw_List, p1: [2]f32, p2: [2]f32, col: u32, thickness: f32) ---
+	ImDrawList_AddRect :: proc(self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags, thickness: f32) ---
+	ImDrawList_AddRectFilled :: proc(self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags) ---
+	ImDrawList_AddRectFilledMultiColor :: proc(self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col_upr_left: u32, col_upr_right: u32, col_bot_right: u32, col_bot_left: u32) ---
+	ImDrawList_AddQuad :: proc(self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32) ---
+	ImDrawList_AddQuadFilled :: proc(self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32) ---
+	ImDrawList_AddTriangle :: proc(self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32) ---
+	ImDrawList_AddTriangleFilled :: proc(self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32) ---
+	ImDrawList_AddCircle :: proc(self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) ---
+	ImDrawList_AddCircleFilled :: proc(self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) ---
+	ImDrawList_AddNgon :: proc(self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) ---
+	ImDrawList_AddNgonFilled :: proc(self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) ---
+	ImDrawList_AddText_Vec2 :: proc(self: ^Draw_List, pos: [2]f32, col: u32, text_begin: [^]u8, text_end: [^]u8) ---
+	ImDrawList_AddText_FontPtr :: proc(self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text_begin: [^]u8, text_end: [^]u8, wrap_width: f32, cpu_fine_clip_rect: ^[4]f32) ---
+	ImDrawList_AddPolyline :: proc(self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32, flags: Draw_Flags, thickness: f32) ---
+	ImDrawList_AddConvexPolyFilled :: proc(self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32) ---
+	ImDrawList_AddBezierCubic :: proc(self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32, num_segments: i32) ---
+	ImDrawList_AddBezierQuadratic :: proc(self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32, num_segments: i32) ---
+	ImDrawList_AddImage :: proc(self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32) ---
+	ImDrawList_AddImageQuad :: proc(self: ^Draw_List, user_texture_id: Texture_ID, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, uv1: [2]f32, uv2: [2]f32, uv3: [2]f32, uv4: [2]f32, col: u32) ---
+	ImDrawList_AddImageRounded :: proc(self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags) ---
+	ImDrawList_PathClear :: proc(self: ^Draw_List) ---
+	ImDrawList_PathLineTo :: proc(self: ^Draw_List, pos: [2]f32) ---
+	ImDrawList_PathLineToMergeDuplicate :: proc(self: ^Draw_List, pos: [2]f32) ---
+	ImDrawList_PathFillConvex :: proc(self: ^Draw_List, col: u32) ---
+	ImDrawList_PathStroke :: proc(self: ^Draw_List, col: u32, flags: Draw_Flags, thickness: f32) ---
+	ImDrawList_PathArcTo :: proc(self: ^Draw_List, center: [2]f32, radius: f32, a_min: f32, a_max: f32, num_segments: i32) ---
+	ImDrawList_PathArcToFast :: proc(self: ^Draw_List, center: [2]f32, radius: f32, a_min_of_12: i32, a_max_of_12: i32) ---
+	ImDrawList_PathBezierCubicCurveTo :: proc(self: ^Draw_List, p2: [2]f32, p3: [2]f32, p4: [2]f32, num_segments: i32) ---
+	ImDrawList_PathBezierQuadraticCurveTo :: proc(self: ^Draw_List, p2: [2]f32, p3: [2]f32, num_segments: i32) ---
+	ImDrawList_PathRect :: proc(self: ^Draw_List, rect_min: [2]f32, rect_max: [2]f32, rounding: f32, flags: Draw_Flags) ---
+	ImDrawList_AddCallback :: proc(self: ^Draw_List, callback: Draw_Callback, callback_data: rawptr) ---
+	ImDrawList_AddDrawCmd :: proc(self: ^Draw_List) ---
+	ImDrawList_CloneOutput :: proc(self: ^Draw_List) -> ^Draw_List ---
+	ImDrawList_ChannelsSplit :: proc(self: ^Draw_List, count: i32) ---
+	ImDrawList_ChannelsMerge :: proc(self: ^Draw_List) ---
+	ImDrawList_ChannelsSetCurrent :: proc(self: ^Draw_List, n: i32) ---
+	ImDrawList_PrimReserve :: proc(self: ^Draw_List, idx_count: i32, vtx_count: i32) ---
+	ImDrawList_PrimUnreserve :: proc(self: ^Draw_List, idx_count: i32, vtx_count: i32) ---
+	ImDrawList_PrimRect :: proc(self: ^Draw_List, a: [2]f32, b: [2]f32, col: u32) ---
+	ImDrawList_PrimRectUV :: proc(self: ^Draw_List, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, col: u32) ---
+	ImDrawList_PrimQuadUV :: proc(self: ^Draw_List, a: [2]f32, b: [2]f32, c: [2]f32, d: [2]f32, uv_a: [2]f32, uv_b: [2]f32, uv_c: [2]f32, uv_d: [2]f32, col: u32) ---
+	ImDrawList_PrimWriteVtx :: proc(self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) ---
+	ImDrawList_PrimWriteIdx :: proc(self: ^Draw_List, idx: Draw_Idx) ---
+	ImDrawList_PrimVtx :: proc(self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) ---
+	ImDrawData_ImDrawData :: proc() -> ^Draw_Data ---
+	ImDrawData_destroy :: proc(self: ^Draw_Data) ---
+	ImDrawData_Clear :: proc(self: ^Draw_Data) ---
+	ImDrawData_DeIndexAllBuffers :: proc(self: ^Draw_Data) ---
+	ImDrawData_ScaleClipRects :: proc(self: ^Draw_Data, fb_scale: [2]f32) ---
+	ImFontConfig_ImFontConfig :: proc() -> ^Font_Config ---
+	ImFontConfig_destroy :: proc(self: ^Font_Config) ---
+	ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder :: proc() -> ^Font_Glyph_Ranges_Builder ---
+	ImFontGlyphRangesBuilder_destroy :: proc(self: ^Font_Glyph_Ranges_Builder) ---
+	ImFontGlyphRangesBuilder_Clear :: proc(self: ^Font_Glyph_Ranges_Builder) ---
+	ImFontGlyphRangesBuilder_GetBit :: proc(self: ^Font_Glyph_Ranges_Builder, n: int) -> bool ---
+	ImFontGlyphRangesBuilder_SetBit :: proc(self: ^Font_Glyph_Ranges_Builder, n: int) ---
+	ImFontGlyphRangesBuilder_AddChar :: proc(self: ^Font_Glyph_Ranges_Builder, c: u16) ---
+	ImFontGlyphRangesBuilder_AddText :: proc(self: ^Font_Glyph_Ranges_Builder, text: [^]u8, text_end: [^]u8) ---
+	ImFontGlyphRangesBuilder_AddRanges :: proc(self: ^Font_Glyph_Ranges_Builder, ranges: ^u16) ---
+	ImFontGlyphRangesBuilder_BuildRanges :: proc(self: ^Font_Glyph_Ranges_Builder, out_ranges: ^Vector(u16)) ---
+	ImFontAtlasCustomRect_ImFontAtlasCustomRect :: proc() -> ^Font_Atlas_Custom_Rect ---
+	ImFontAtlasCustomRect_destroy :: proc(self: ^Font_Atlas_Custom_Rect) ---
+	ImFontAtlasCustomRect_IsPacked :: proc(self: ^Font_Atlas_Custom_Rect) -> bool ---
+	ImFontAtlas_ImFontAtlas :: proc() -> ^Font_Atlas ---
+	ImFontAtlas_destroy :: proc(self: ^Font_Atlas) ---
+	ImFontAtlas_AddFont :: proc(self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font ---
+	ImFontAtlas_AddFontDefault :: proc(self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font ---
+	ImFontAtlas_AddFontFromFileTTF :: proc(self: ^Font_Atlas, filename: cstring, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
+	ImFontAtlas_AddFontFromMemoryTTF :: proc(self: ^Font_Atlas, font_data: rawptr, font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
+	ImFontAtlas_AddFontFromMemoryCompressedTTF :: proc(self: ^Font_Atlas, compressed_font_data: rawptr, compressed_font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
+	ImFontAtlas_AddFontFromMemoryCompressedBase85TTF :: proc(self: ^Font_Atlas, compressed_font_data_base85: cstring, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font ---
+	ImFontAtlas_ClearInputData :: proc(self: ^Font_Atlas) ---
+	ImFontAtlas_ClearTexData :: proc(self: ^Font_Atlas) ---
+	ImFontAtlas_ClearFonts :: proc(self: ^Font_Atlas) ---
+	ImFontAtlas_Clear :: proc(self: ^Font_Atlas) ---
+	ImFontAtlas_Build :: proc(self: ^Font_Atlas) -> bool ---
+	ImFontAtlas_GetTexDataAsAlpha8 :: proc(self: ^Font_Atlas, out_pixels: ^^u8, out_width: ^i32, out_height: ^i32, out_bytes_per_pixel: ^i32) ---
+	ImFontAtlas_GetTexDataAsRGBA32 :: proc(self: ^Font_Atlas, out_pixels: ^^u8, out_width: ^i32, out_height: ^i32, out_bytes_per_pixel: ^i32) ---
+	ImFontAtlas_IsBuilt :: proc(self: ^Font_Atlas) -> bool ---
+	ImFontAtlas_SetTexID :: proc(self: ^Font_Atlas, id: Texture_ID) ---
+	ImFontAtlas_GetGlyphRangesDefault :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesGreek :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesKorean :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesJapanese :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesChineseFull :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesCyrillic :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesThai :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_GetGlyphRangesVietnamese :: proc(self: ^Font_Atlas) -> ^u16 ---
+	ImFontAtlas_AddCustomRectRegular :: proc(self: ^Font_Atlas, width: i32, height: i32) -> i32 ---
+	ImFontAtlas_AddCustomRectFontGlyph :: proc(self: ^Font_Atlas, font: ^Font, id: u16, width: i32, height: i32, advance_x: f32, offset: [2]f32) -> i32 ---
+	ImFontAtlas_GetCustomRectByIndex :: proc(self: ^Font_Atlas, index: i32) -> ^Font_Atlas_Custom_Rect ---
+	ImFontAtlas_CalcCustomRectUV :: proc(self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect, out_uv_min: ^[2]f32, out_uv_max: ^[2]f32) ---
+	ImFontAtlas_GetMouseCursorTexData :: proc(self: ^Font_Atlas, cursor: Mouse_Cursor, out_offset: ^[2]f32, out_size: ^[2]f32, out_uv_border: [2][2]f32, out_uv_fill: [2][2]f32) -> bool ---
+	ImFont_ImFont :: proc() -> ^Font ---
+	ImFont_destroy :: proc(self: ^Font) ---
+	ImFont_FindGlyph :: proc(self: ^Font, c: u16) -> ^Font_Glyph ---
+	ImFont_FindGlyphNoFallback :: proc(self: ^Font, c: u16) -> ^Font_Glyph ---
+	ImFont_GetCharAdvance :: proc(self: ^Font, c: u16) -> f32 ---
+	ImFont_IsLoaded :: proc(self: ^Font) -> bool ---
+	ImFont_GetDebugName :: proc(self: ^Font) -> cstring ---
+	ImFont_CalcTextSizeA :: proc(p_out: ^[2]f32, self: ^Font, size: f32, max_width: f32, wrap_width: f32, text_begin: [^]u8, text_end: [^]u8, remaining: ^cstring) ---
+	ImFont_CalcWordWrapPositionA :: proc(self: ^Font, scale: f32, text: [^]u8, text_end: [^]u8, wrap_width: f32) -> cstring ---
+	ImFont_RenderChar :: proc(self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, c: u16) ---
+	ImFont_RenderText :: proc(self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text_begin: [^]u8, text_end: [^]u8, wrap_width: f32, cpu_fine_clip: bool) ---
+	ImFont_BuildLookupTable :: proc(self: ^Font) ---
+	ImFont_ClearOutputData :: proc(self: ^Font) ---
+	ImFont_GrowIndex :: proc(self: ^Font, new_size: i32) ---
+	ImFont_AddGlyph :: proc(self: ^Font, src_cfg: ^Font_Config, c: u16, x0: f32, y0: f32, x1: f32, y1: f32, u0: f32, v0: f32, u1: f32, v1: f32, advance_x: f32) ---
+	ImFont_AddRemapChar :: proc(self: ^Font, dst: u16, src: u16, overwrite_dst: bool) ---
+	ImFont_SetGlyphVisible :: proc(self: ^Font, c: u16, visible: bool) ---
+	ImFont_IsGlyphRangeUnused :: proc(self: ^Font, c_begin: u32, c_last: u32) -> bool ---
+	ImGuiViewport_ImGuiViewport :: proc() -> ^Viewport ---
+	ImGuiViewport_destroy :: proc(self: ^Viewport) ---
+	ImGuiViewport_GetCenter :: proc(p_out: ^[2]f32, self: ^Viewport) ---
+	ImGuiViewport_GetWorkCenter :: proc(p_out: ^[2]f32, self: ^Viewport) ---
+	ImGuiPlatformImeData_ImGuiPlatformImeData :: proc() -> ^Platform_Ime_Data ---
+	ImGuiPlatformImeData_destroy :: proc(self: ^Platform_Ime_Data) ---
+	igGetKeyIndex :: proc(key: Key) -> Key ---
+	igImBezierCubicCalc :: proc(p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, t: f32) ---
+	igImBezierCubicClosestPoint :: proc(p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, num_segments: i32) ---
+	igImBezierCubicClosestPointCasteljau :: proc(p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, tess_tol: f32) ---
+	igImBezierQuadraticCalc :: proc(p_out: ^[2]f32, p1: [2]f32, p2: [2]f32, p3: [2]f32, t: f32) ---
+	ImRect_ImRect_Nil :: proc() -> ^Rect ---
+	ImRect_destroy :: proc(self: ^Rect) ---
+	ImRect_ImRect_Vec2 :: proc(min: [2]f32, max: [2]f32) -> ^Rect ---
+	ImRect_ImRect_Vec4 :: proc(v: [4]f32) -> ^Rect ---
+	ImRect_ImRect_Float :: proc(x1: f32, y1: f32, x2: f32, y2: f32) -> ^Rect ---
+	ImRect_GetCenter :: proc(p_out: ^[2]f32, self: ^Rect) ---
+	ImRect_GetSize :: proc(p_out: ^[2]f32, self: ^Rect) ---
+	ImRect_GetWidth :: proc(self: ^Rect) -> f32 ---
+	ImRect_GetHeight :: proc(self: ^Rect) -> f32 ---
+	ImRect_GetArea :: proc(self: ^Rect) -> f32 ---
+	ImRect_GetTL :: proc(p_out: ^[2]f32, self: ^Rect) ---
+	ImRect_GetTR :: proc(p_out: ^[2]f32, self: ^Rect) ---
+	ImRect_GetBL :: proc(p_out: ^[2]f32, self: ^Rect) ---
+	ImRect_GetBR :: proc(p_out: ^[2]f32, self: ^Rect) ---
+	ImRect_Contains_Vec2 :: proc(self: ^Rect, p: [2]f32) -> bool ---
+	ImRect_Contains_Rect :: proc(self: ^Rect, r: Rect) -> bool ---
+	ImRect_Overlaps :: proc(self: ^Rect, r: Rect) -> bool ---
+	ImRect_Add_Vec2 :: proc(self: ^Rect, p: [2]f32) ---
+	ImRect_Add_Rect :: proc(self: ^Rect, r: Rect) ---
+	ImRect_Expand_Float :: proc(self: ^Rect, amount: f32) ---
+	ImRect_Expand_Vec2 :: proc(self: ^Rect, amount: [2]f32) ---
+	ImRect_Translate :: proc(self: ^Rect, d: [2]f32) ---
+	ImRect_TranslateX :: proc(self: ^Rect, dx: f32) ---
+	ImRect_TranslateY :: proc(self: ^Rect, dy: f32) ---
+	ImRect_ClipWith :: proc(self: ^Rect, r: Rect) ---
+	ImRect_ClipWithFull :: proc(self: ^Rect, r: Rect) ---
+	ImRect_Floor :: proc(self: ^Rect) ---
+	ImRect_IsInverted :: proc(self: ^Rect) -> bool ---
+	ImRect_ToVec4 :: proc(p_out: ^[4]f32, self: ^Rect) ---
+	ImBitVector_Create :: proc(self: ^Bit_Vector, sz: i32) ---
+	ImBitVector_Clear :: proc(self: ^Bit_Vector) ---
+	ImBitVector_TestBit :: proc(self: ^Bit_Vector, n: i32) -> bool ---
+	ImBitVector_SetBit :: proc(self: ^Bit_Vector, n: i32) ---
+	ImBitVector_ClearBit :: proc(self: ^Bit_Vector, n: i32) ---
+	ImGuiTextIndex_clear :: proc(self: ^Text_Index) ---
+	ImGuiTextIndex_size :: proc(self: ^Text_Index) -> i32 ---
+	ImGuiTextIndex_get_line_begin :: proc(self: ^Text_Index, base: cstring, n: i32) -> cstring ---
+	ImGuiTextIndex_get_line_end :: proc(self: ^Text_Index, base: cstring, n: i32) -> cstring ---
+	ImGuiTextIndex_append :: proc(self: ^Text_Index, base: cstring, old_size: i32, new_size: i32) ---
+	ImDrawListSharedData_ImDrawListSharedData :: proc() -> ^Draw_List_Shared_Data ---
+	ImDrawListSharedData_destroy :: proc(self: ^Draw_List_Shared_Data) ---
+	ImDrawListSharedData_SetCircleTessellationMaxError :: proc(self: ^Draw_List_Shared_Data, max_error: f32) ---
+	ImDrawDataBuilder_Clear :: proc(self: ^Draw_Data_Builder) ---
+	ImDrawDataBuilder_ClearFreeMemory :: proc(self: ^Draw_Data_Builder) ---
+	ImDrawDataBuilder_GetDrawListCount :: proc(self: ^Draw_Data_Builder) -> i32 ---
+	ImDrawDataBuilder_FlattenIntoSingleLayer :: proc(self: ^Draw_Data_Builder) ---
+	ImGuiDataVarInfo_GetVarPtr :: proc(self: ^Data_Var_Info, parent: rawptr) -> rawptr ---
+	ImGuiStyleMod_ImGuiStyleMod_Int :: proc(idx: Style_Var, v: i32) -> ^Style_Mod ---
+	ImGuiStyleMod_destroy :: proc(self: ^Style_Mod) ---
+	ImGuiStyleMod_ImGuiStyleMod_Float :: proc(idx: Style_Var, v: f32) -> ^Style_Mod ---
+	ImGuiStyleMod_ImGuiStyleMod_Vec2 :: proc(idx: Style_Var, v: [2]f32) -> ^Style_Mod ---
+	ImGuiComboPreviewData_ImGuiComboPreviewData :: proc() -> ^Combo_Preview_Data ---
+	ImGuiComboPreviewData_destroy :: proc(self: ^Combo_Preview_Data) ---
+	ImGuiMenuColumns_ImGuiMenuColumns :: proc() -> ^Menu_Columns ---
+	ImGuiMenuColumns_destroy :: proc(self: ^Menu_Columns) ---
+	ImGuiMenuColumns_Update :: proc(self: ^Menu_Columns, spacing: f32, window_reappearing: bool) ---
+	ImGuiMenuColumns_DeclColumns :: proc(self: ^Menu_Columns, w_icon: f32, w_label: f32, w_shortcut: f32, w_mark: f32) -> f32 ---
+	ImGuiMenuColumns_CalcNextTotalWidth :: proc(self: ^Menu_Columns, update_offsets: bool) ---
+	ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState :: proc() -> ^Input_Text_Deactivated_State ---
+	ImGuiInputTextDeactivatedState_destroy :: proc(self: ^Input_Text_Deactivated_State) ---
+	ImGuiInputTextDeactivatedState_ClearFreeMemory :: proc(self: ^Input_Text_Deactivated_State) ---
+	ImGuiInputTextState_ImGuiInputTextState :: proc() -> ^Input_Text_State ---
+	ImGuiInputTextState_destroy :: proc(self: ^Input_Text_State) ---
+	ImGuiInputTextState_ClearText :: proc(self: ^Input_Text_State) ---
+	ImGuiInputTextState_ClearFreeMemory :: proc(self: ^Input_Text_State) ---
+	ImGuiInputTextState_GetUndoAvailCount :: proc(self: ^Input_Text_State) -> i32 ---
+	ImGuiInputTextState_GetRedoAvailCount :: proc(self: ^Input_Text_State) -> i32 ---
+	ImGuiInputTextState_OnKeyPressed :: proc(self: ^Input_Text_State, key: i32) ---
+	ImGuiInputTextState_CursorAnimReset :: proc(self: ^Input_Text_State) ---
+	ImGuiInputTextState_CursorClamp :: proc(self: ^Input_Text_State) ---
+	ImGuiInputTextState_HasSelection :: proc(self: ^Input_Text_State) -> bool ---
+	ImGuiInputTextState_ClearSelection :: proc(self: ^Input_Text_State) ---
+	ImGuiInputTextState_GetCursorPos :: proc(self: ^Input_Text_State) -> i32 ---
+	ImGuiInputTextState_GetSelectionStart :: proc(self: ^Input_Text_State) -> i32 ---
+	ImGuiInputTextState_GetSelectionEnd :: proc(self: ^Input_Text_State) -> i32 ---
+	ImGuiInputTextState_SelectAll :: proc(self: ^Input_Text_State) ---
+	ImGuiPopupData_ImGuiPopupData :: proc() -> ^Popup_Data ---
+	ImGuiPopupData_destroy :: proc(self: ^Popup_Data) ---
+	ImGuiNextWindowData_ImGuiNextWindowData :: proc() -> ^Next_Window_Data ---
+	ImGuiNextWindowData_destroy :: proc(self: ^Next_Window_Data) ---
+	ImGuiNextWindowData_ClearFlags :: proc(self: ^Next_Window_Data) ---
+	ImGuiNextItemData_ImGuiNextItemData :: proc() -> ^Next_Item_Data ---
+	ImGuiNextItemData_destroy :: proc(self: ^Next_Item_Data) ---
+	ImGuiNextItemData_ClearFlags :: proc(self: ^Next_Item_Data) ---
+	ImGuiLastItemData_ImGuiLastItemData :: proc() -> ^Last_Item_Data ---
+	ImGuiLastItemData_destroy :: proc(self: ^Last_Item_Data) ---
+	ImGuiStackSizes_ImGuiStackSizes :: proc() -> ^Stack_Sizes ---
+	ImGuiStackSizes_destroy :: proc(self: ^Stack_Sizes) ---
+	ImGuiStackSizes_SetToContextState :: proc(self: ^Stack_Sizes, ctx: ^Context) ---
+	ImGuiStackSizes_CompareWithContextState :: proc(self: ^Stack_Sizes, ctx: ^Context) ---
+	ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr :: proc(ptr: rawptr) -> ^Ptr_Or_Index ---
+	ImGuiPtrOrIndex_destroy :: proc(self: ^Ptr_Or_Index) ---
+	ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int :: proc(index: i32) -> ^Ptr_Or_Index ---
+	ImGuiInputEvent_ImGuiInputEvent :: proc() -> ^Input_Event ---
+	ImGuiInputEvent_destroy :: proc(self: ^Input_Event) ---
+	ImGuiKeyRoutingData_ImGuiKeyRoutingData :: proc() -> ^Key_Routing_Data ---
+	ImGuiKeyRoutingData_destroy :: proc(self: ^Key_Routing_Data) ---
+	ImGuiKeyRoutingTable_ImGuiKeyRoutingTable :: proc() -> ^Key_Routing_Table ---
+	ImGuiKeyRoutingTable_destroy :: proc(self: ^Key_Routing_Table) ---
+	ImGuiKeyRoutingTable_Clear :: proc(self: ^Key_Routing_Table) ---
+	ImGuiKeyOwnerData_ImGuiKeyOwnerData :: proc() -> ^Key_Owner_Data ---
+	ImGuiKeyOwnerData_destroy :: proc(self: ^Key_Owner_Data) ---
+	ImGuiListClipperRange_FromIndices :: proc(min: i32, max: i32) -> List_Clipper_Range ---
+	ImGuiListClipperRange_FromPositions :: proc(y1: f32, y2: f32, off_min: i32, off_max: i32) -> List_Clipper_Range ---
+	ImGuiListClipperData_ImGuiListClipperData :: proc() -> ^List_Clipper_Data ---
+	ImGuiListClipperData_destroy :: proc(self: ^List_Clipper_Data) ---
+	ImGuiListClipperData_Reset :: proc(self: ^List_Clipper_Data, clipper: ^List_Clipper) ---
+	ImGuiNavItemData_ImGuiNavItemData :: proc() -> ^Nav_Item_Data ---
+	ImGuiNavItemData_destroy :: proc(self: ^Nav_Item_Data) ---
+	ImGuiNavItemData_Clear :: proc(self: ^Nav_Item_Data) ---
+	ImGuiOldColumnData_ImGuiOldColumnData :: proc() -> ^Old_Column_Data ---
+	ImGuiOldColumnData_destroy :: proc(self: ^Old_Column_Data) ---
+	ImGuiOldColumns_ImGuiOldColumns :: proc() -> ^Old_Columns ---
+	ImGuiOldColumns_destroy :: proc(self: ^Old_Columns) ---
+	ImGuiViewportP_ImGuiViewportP :: proc() -> ^Viewport_P ---
+	ImGuiViewportP_destroy :: proc(self: ^Viewport_P) ---
+	ImGuiViewportP_CalcWorkRectPos :: proc(p_out: ^[2]f32, self: ^Viewport_P, off_min: [2]f32) ---
+	ImGuiViewportP_CalcWorkRectSize :: proc(p_out: ^[2]f32, self: ^Viewport_P, off_min: [2]f32, off_max: [2]f32) ---
+	ImGuiViewportP_UpdateWorkRect :: proc(self: ^Viewport_P) ---
+	ImGuiViewportP_GetMainRect :: proc(p_out: ^Rect, self: ^Viewport_P) ---
+	ImGuiViewportP_GetWorkRect :: proc(p_out: ^Rect, self: ^Viewport_P) ---
+	ImGuiViewportP_GetBuildWorkRect :: proc(p_out: ^Rect, self: ^Viewport_P) ---
+	ImGuiWindowSettings_ImGuiWindowSettings :: proc() -> ^Window_Settings ---
+	ImGuiWindowSettings_destroy :: proc(self: ^Window_Settings) ---
+	ImGuiWindowSettings_GetName :: proc(self: ^Window_Settings) -> ^i8 ---
+	ImGuiSettingsHandler_ImGuiSettingsHandler :: proc() -> ^Settings_Handler ---
+	ImGuiSettingsHandler_destroy :: proc(self: ^Settings_Handler) ---
+	ImGuiStackLevelInfo_ImGuiStackLevelInfo :: proc() -> ^Stack_Level_Info ---
+	ImGuiStackLevelInfo_destroy :: proc(self: ^Stack_Level_Info) ---
+	ImGuiStackTool_ImGuiStackTool :: proc() -> ^Stack_Tool ---
+	ImGuiStackTool_destroy :: proc(self: ^Stack_Tool) ---
+	ImGuiContextHook_ImGuiContextHook :: proc() -> ^Context_Hook ---
+	ImGuiContextHook_destroy :: proc(self: ^Context_Hook) ---
+	ImGuiContext_ImGuiContext :: proc(shared_font_atlas: ^Font_Atlas) -> ^Context ---
+	ImGuiContext_destroy :: proc(self: ^Context) ---
+	ImGuiWindow_ImGuiWindow :: proc(context_: ^Context, name: cstring) -> ^Window ---
+	ImGuiWindow_destroy :: proc(self: ^Window) ---
+	ImGuiWindow_GetID_Str :: proc(self: ^Window, str: [^]u8, str_end: [^]u8) -> ID ---
+	ImGuiWindow_GetID_Ptr :: proc(self: ^Window, ptr: rawptr) -> ID ---
+	ImGuiWindow_GetID_Int :: proc(self: ^Window, n: i32) -> ID ---
+	ImGuiWindow_GetIDFromRectangle :: proc(self: ^Window, r_abs: Rect) -> ID ---
+	ImGuiWindow_Rect :: proc(p_out: ^Rect, self: ^Window) ---
+	ImGuiWindow_CalcFontSize :: proc(self: ^Window) -> f32 ---
+	ImGuiWindow_TitleBarHeight :: proc(self: ^Window) -> f32 ---
+	ImGuiWindow_TitleBarRect :: proc(p_out: ^Rect, self: ^Window) ---
+	ImGuiWindow_MenuBarHeight :: proc(self: ^Window) -> f32 ---
+	ImGuiWindow_MenuBarRect :: proc(p_out: ^Rect, self: ^Window) ---
+	ImGuiTabItem_ImGuiTabItem :: proc() -> ^Tab_Item ---
+	ImGuiTabItem_destroy :: proc(self: ^Tab_Item) ---
+	ImGuiTabBar_ImGuiTabBar :: proc() -> ^Tab_Bar ---
+	ImGuiTabBar_destroy :: proc(self: ^Tab_Bar) ---
+	ImGuiTableColumn_ImGuiTableColumn :: proc() -> ^Table_Column ---
+	ImGuiTableColumn_destroy :: proc(self: ^Table_Column) ---
+	ImGuiTableInstanceData_ImGuiTableInstanceData :: proc() -> ^Table_Instance_Data ---
+	ImGuiTableInstanceData_destroy :: proc(self: ^Table_Instance_Data) ---
+	ImGuiTable_ImGuiTable :: proc() -> ^Table ---
+	ImGuiTable_destroy :: proc(self: ^Table) ---
+	ImGuiTableTempData_ImGuiTableTempData :: proc() -> ^Table_Temp_Data ---
+	ImGuiTableTempData_destroy :: proc(self: ^Table_Temp_Data) ---
+	ImGuiTableColumnSettings_ImGuiTableColumnSettings :: proc() -> ^Table_Column_Settings ---
+	ImGuiTableColumnSettings_destroy :: proc(self: ^Table_Column_Settings) ---
+	ImGuiTableSettings_ImGuiTableSettings :: proc() -> ^Table_Settings ---
+	ImGuiTableSettings_destroy :: proc(self: ^Table_Settings) ---
+	ImGuiTableSettings_GetColumnSettings :: proc(self: ^Table_Settings) -> ^Table_Column_Settings ---
+	igGetCurrentWindowRead :: proc() -> ^Window ---
+	igGetCurrentWindow :: proc() -> ^Window ---
+	igFindWindowByID :: proc(id: ID) -> ^Window ---
+	igFindWindowByName :: proc(name: cstring) -> ^Window ---
+	igUpdateWindowParentAndRootLinks :: proc(window: ^Window, flags: Window_Flags, parent_window: ^Window) ---
+	igCalcWindowNextAutoFitSize :: proc(p_out: ^[2]f32, window: ^Window) ---
+	igIsWindowChildOf :: proc(window: ^Window, potential_parent: ^Window, popup_hierarchy: bool) -> bool ---
+	igIsWindowWithinBeginStackOf :: proc(window: ^Window, potential_parent: ^Window) -> bool ---
+	igIsWindowAbove :: proc(potential_above: ^Window, potential_below: ^Window) -> bool ---
+	igIsWindowNavFocusable :: proc(window: ^Window) -> bool ---
+	igSetWindowPos_WindowPtr :: proc(window: ^Window, pos: [2]f32, cond: Cond) ---
+	igSetWindowSize_WindowPtr :: proc(window: ^Window, size: [2]f32, cond: Cond) ---
+	igSetWindowCollapsed_WindowPtr :: proc(window: ^Window, collapsed: bool, cond: Cond) ---
+	igSetWindowHitTestHole :: proc(window: ^Window, pos: [2]f32, size: [2]f32) ---
+	igSetWindowHiddendAndSkipItemsForCurrentFrame :: proc(window: ^Window) ---
+	igWindowRectAbsToRel :: proc(p_out: ^Rect, window: ^Window, r: Rect) ---
+	igWindowRectRelToAbs :: proc(p_out: ^Rect, window: ^Window, r: Rect) ---
+	igFocusWindow :: proc(window: ^Window) ---
+	igFocusTopMostWindowUnderOne :: proc(under_this_window: ^Window, ignore_window: ^Window) ---
+	igBringWindowToFocusFront :: proc(window: ^Window) ---
+	igBringWindowToDisplayFront :: proc(window: ^Window) ---
+	igBringWindowToDisplayBack :: proc(window: ^Window) ---
+	igBringWindowToDisplayBehind :: proc(window: ^Window, above_window: ^Window) ---
+	igFindWindowDisplayIndex :: proc(window: ^Window) -> i32 ---
+	igFindBottomMostVisibleWindowWithinBeginStack :: proc(window: ^Window) -> ^Window ---
+	igSetCurrentFont :: proc(font: ^Font) ---
+	igGetDefaultFont :: proc() -> ^Font ---
+	igGetForegroundDrawList_WindowPtr :: proc(window: ^Window) -> ^Draw_List ---
+	igGetBackgroundDrawList_ViewportPtr :: proc(viewport: ^Viewport) -> ^Draw_List ---
+	igGetForegroundDrawList_ViewportPtr :: proc(viewport: ^Viewport) -> ^Draw_List ---
+	igInitialize :: proc() ---
+	igShutdown :: proc() ---
+	igUpdateInputEvents :: proc(trickle_fast_inputs: bool) ---
+	igUpdateHoveredWindowAndCaptureFlags :: proc() ---
+	igStartMouseMovingWindow :: proc(window: ^Window) ---
+	igUpdateMouseMovingWindowNewFrame :: proc() ---
+	igUpdateMouseMovingWindowEndFrame :: proc() ---
+	igAddContextHook :: proc(context_: ^Context, hook: ^Context_Hook) -> ID ---
+	igRemoveContextHook :: proc(context_: ^Context, hook_to_remove: ID) ---
+	igCallContextHooks :: proc(context_: ^Context, type: Context_Hook_Type) ---
+	igSetWindowViewport :: proc(window: ^Window, viewport: ^Viewport_P) ---
+	igMarkIniSettingsDirty_Nil :: proc() ---
+	igMarkIniSettingsDirty_WindowPtr :: proc(window: ^Window) ---
+	igClearIniSettings :: proc() ---
+	igAddSettingsHandler :: proc(handler: ^Settings_Handler) ---
+	igRemoveSettingsHandler :: proc(type_name: cstring) ---
+	igFindSettingsHandler :: proc(type_name: cstring) -> ^Settings_Handler ---
+	igCreateNewWindowSettings :: proc(name: cstring) -> ^Window_Settings ---
+	igFindWindowSettingsByID :: proc(id: ID) -> ^Window_Settings ---
+	igFindWindowSettingsByWindow :: proc(window: ^Window) -> ^Window_Settings ---
+	igClearWindowSettings :: proc(name: cstring) ---
+	igLocalizeRegisterEntries :: proc(entries: ^Loc_Entry, count: i32) ---
+	igLocalizeGetMsg :: proc(key: Loc_Key) -> cstring ---
+	igSetScrollX_WindowPtr :: proc(window: ^Window, scroll_x: f32) ---
+	igSetScrollY_WindowPtr :: proc(window: ^Window, scroll_y: f32) ---
+	igSetScrollFromPosX_WindowPtr :: proc(window: ^Window, local_x: f32, center_x_ratio: f32) ---
+	igSetScrollFromPosY_WindowPtr :: proc(window: ^Window, local_y: f32, center_y_ratio: f32) ---
+	igScrollToItem :: proc(flags: Scroll_Flags) ---
+	igScrollToRect :: proc(window: ^Window, rect: Rect, flags: Scroll_Flags) ---
+	igScrollToRectEx :: proc(p_out: ^[2]f32, window: ^Window, rect: Rect, flags: Scroll_Flags) ---
+	igScrollToBringRectIntoView :: proc(window: ^Window, rect: Rect) ---
+	igGetItemStatusFlags :: proc() -> Item_Status_Flags ---
+	igGetItemFlags :: proc() -> Item_Flags ---
+	igGetActiveID :: proc() -> ID ---
+	igGetFocusID :: proc() -> ID ---
+	igSetActiveID :: proc(id: ID, window: ^Window) ---
+	igSetFocusID :: proc(id: ID, window: ^Window) ---
+	igClearActiveID :: proc() ---
+	igGetHoveredID :: proc() -> ID ---
+	igSetHoveredID :: proc(id: ID) ---
+	igKeepAliveID :: proc(id: ID) ---
+	igMarkItemEdited :: proc(id: ID) ---
+	igPushOverrideID :: proc(id: ID) ---
+	igGetIDWithSeed_Str :: proc(str_id_begin: [^]u8, str_id_end: [^]u8, seed: ID) -> ID ---
+	igGetIDWithSeed_Int :: proc(n: i32, seed: ID) -> ID ---
+	igItemSize_Vec2 :: proc(size: [2]f32, text_baseline_y: f32) ---
+	igItemSize_Rect :: proc(bb: Rect, text_baseline_y: f32) ---
+	igItemAdd :: proc(bb: Rect, id: ID, nav_bb: ^Rect, extra_flags: Item_Flags) -> bool ---
+	igItemHoverable :: proc(bb: Rect, id: ID) -> bool ---
+	igIsWindowContentHoverable :: proc(window: ^Window, flags: Hovered_Flags) -> bool ---
+	igIsClippedEx :: proc(bb: Rect, id: ID) -> bool ---
+	igSetLastItemData :: proc(item_id: ID, in_flags: Item_Flags, status_flags: Item_Status_Flags, item_rect: Rect) ---
+	igCalcItemSize :: proc(p_out: ^[2]f32, size: [2]f32, default_w: f32, default_h: f32) ---
+	igCalcWrapWidthForPos :: proc(pos: [2]f32, wrap_pos_x: f32) -> f32 ---
+	igPushMultiItemsWidths :: proc(components: i32, width_full: f32) ---
+	igIsItemToggledSelection :: proc() -> bool ---
+	igGetContentRegionMaxAbs :: proc(p_out: ^[2]f32) ---
+	igShrinkWidths :: proc(items: ^Shrink_Width_Item, count: i32, width_excess: f32) ---
+	igPushItemFlag :: proc(option: Item_Flags, enabled: bool) ---
+	igPopItemFlag :: proc() ---
+	igGetStyleVarInfo :: proc(idx: Style_Var) -> ^Data_Var_Info ---
+	igLogBegin :: proc(type: Log_Type, auto_open_depth: i32) ---
+	igLogToBuffer :: proc(auto_open_depth: i32) ---
+	igLogRenderedText :: proc(ref_pos: ^[2]f32, text: [^]u8, text_end: [^]u8) ---
+	igLogSetNextTextDecoration :: proc(prefix: cstring, suffix: cstring) ---
+	igBeginChildEx :: proc(name: cstring, id: ID, size_arg: [2]f32, border: bool, flags: Window_Flags) -> bool ---
+	igOpenPopupEx :: proc(id: ID, popup_flags: Popup_Flags) ---
+	igClosePopupToLevel :: proc(remaining: i32, restore_focus_to_window_under_popup: bool) ---
+	igClosePopupsOverWindow :: proc(ref_window: ^Window, restore_focus_to_window_under_popup: bool) ---
+	igClosePopupsExceptModals :: proc() ---
+	igIsPopupOpen_ID :: proc(id: ID, popup_flags: Popup_Flags) -> bool ---
+	igBeginPopupEx :: proc(id: ID, extra_flags: Window_Flags) -> bool ---
+	igBeginTooltipEx :: proc(tooltip_flags: Tooltip_Flags, extra_window_flags: Window_Flags) -> bool ---
+	igGetPopupAllowedExtentRect :: proc(p_out: ^Rect, window: ^Window) ---
+	igGetTopMostPopupModal :: proc() -> ^Window ---
+	igGetTopMostAndVisiblePopupModal :: proc() -> ^Window ---
+	igFindBestWindowPosForPopup :: proc(p_out: ^[2]f32, window: ^Window) ---
+	igFindBestWindowPosForPopupEx :: proc(p_out: ^[2]f32, ref_pos: [2]f32, size: [2]f32, last_dir: ^Dir, r_outer: Rect, r_avoid: Rect, policy: Popup_Position_Policy) ---
+	igBeginViewportSideBar :: proc(name: cstring, viewport: ^Viewport, dir: Dir, size: f32, window_flags: Window_Flags) -> bool ---
+	igBeginMenuEx :: proc(label: cstring, icon: cstring, enabled: bool) -> bool ---
+	igMenuItemEx :: proc(label: cstring, icon: cstring, shortcut: cstring, selected: bool, enabled: bool) -> bool ---
+	igBeginComboPopup :: proc(popup_id: ID, bb: Rect, flags: Combo_Flags) -> bool ---
+	igBeginComboPreview :: proc() -> bool ---
+	igEndComboPreview :: proc() ---
+	igNavInitWindow :: proc(window: ^Window, force_reinit: bool) ---
+	igNavInitRequestApplyResult :: proc() ---
+	igNavMoveRequestButNoResultYet :: proc() -> bool ---
+	igNavMoveRequestSubmit :: proc(move_dir: Dir, clip_dir: Dir, move_flags: Nav_Move_Flags, scroll_flags: Scroll_Flags) ---
+	igNavMoveRequestForward :: proc(move_dir: Dir, clip_dir: Dir, move_flags: Nav_Move_Flags, scroll_flags: Scroll_Flags) ---
+	igNavMoveRequestResolveWithLastItem :: proc(result: ^Nav_Item_Data) ---
+	igNavMoveRequestCancel :: proc() ---
+	igNavMoveRequestApplyResult :: proc() ---
+	igNavMoveRequestTryWrapping :: proc(window: ^Window, move_flags: Nav_Move_Flags) ---
+	igActivateItem :: proc(id: ID) ---
+	igSetNavWindow :: proc(window: ^Window) ---
+	igSetNavID :: proc(id: ID, nav_layer: Nav_Layer, focus_scope_id: ID, rect_rel: Rect) ---
+	igIsNamedKey :: proc(key: Key) -> bool ---
+	igIsNamedKeyOrModKey :: proc(key: Key) -> bool ---
+	igIsLegacyKey :: proc(key: Key) -> bool ---
+	igIsKeyboardKey :: proc(key: Key) -> bool ---
+	igIsGamepadKey :: proc(key: Key) -> bool ---
+	igIsMouseKey :: proc(key: Key) -> bool ---
+	igIsAliasKey :: proc(key: Key) -> bool ---
+	igConvertShortcutMod :: proc(key_chord: Key_Chord) -> Key_Chord ---
+	igConvertSingleModFlagToKey :: proc(ctx: ^Context, key: Key) -> Key ---
+	igGetKeyData_ContextPtr :: proc(ctx: ^Context, key: Key) -> ^Key_Data ---
+	igGetKeyData_Key :: proc(key: Key) -> ^Key_Data ---
+	igGetKeyChordName :: proc(key_chord: Key_Chord, out_buf: ^i8, out_buf_size: i32) ---
+	igMouseButtonToKey :: proc(button: Mouse_Button) -> Key ---
+	igIsMouseDragPastThreshold :: proc(button: Mouse_Button, lock_threshold: f32) -> bool ---
+	igGetKeyMagnitude2d :: proc(p_out: ^[2]f32, key_left: Key, key_right: Key, key_up: Key, key_down: Key) ---
+	igGetNavTweakPressedAmount :: proc(axis: Axis) -> f32 ---
+	igCalcTypematicRepeatAmount :: proc(t0: f32, t1: f32, repeat_delay: f32, repeat_rate: f32) -> i32 ---
+	igGetTypematicRepeatRate :: proc(flags: Input_Flags, repeat_delay: ^f32, repeat_rate: ^f32) ---
+	igSetActiveIdUsingAllKeyboardKeys :: proc() ---
+	igIsActiveIdUsingNavDir :: proc(dir: Dir) -> bool ---
+	igGetKeyOwner :: proc(key: Key) -> ID ---
+	igSetKeyOwner :: proc(key: Key, owner_id: ID, flags: Input_Flags) ---
+	igSetKeyOwnersForKeyChord :: proc(key: Key_Chord, owner_id: ID, flags: Input_Flags) ---
+	igSetItemKeyOwner :: proc(key: Key, flags: Input_Flags) ---
+	igTestKeyOwner :: proc(key: Key, owner_id: ID) -> bool ---
+	igGetKeyOwnerData :: proc(ctx: ^Context, key: Key) -> ^Key_Owner_Data ---
+	igIsKeyDown_ID :: proc(key: Key, owner_id: ID) -> bool ---
+	igIsKeyPressed_ID :: proc(key: Key, owner_id: ID, flags: Input_Flags) -> bool ---
+	igIsKeyReleased_ID :: proc(key: Key, owner_id: ID) -> bool ---
+	igIsMouseDown_ID :: proc(button: Mouse_Button, owner_id: ID) -> bool ---
+	igIsMouseClicked_ID :: proc(button: Mouse_Button, owner_id: ID, flags: Input_Flags) -> bool ---
+	igIsMouseReleased_ID :: proc(button: Mouse_Button, owner_id: ID) -> bool ---
+	igShortcut :: proc(key_chord: Key_Chord, owner_id: ID, flags: Input_Flags) -> bool ---
+	igSetShortcutRouting :: proc(key_chord: Key_Chord, owner_id: ID, flags: Input_Flags) -> bool ---
+	igTestShortcutRouting :: proc(key_chord: Key_Chord, owner_id: ID) -> bool ---
+	igGetShortcutRoutingData :: proc(key_chord: Key_Chord) -> ^Key_Routing_Data ---
+	igPushFocusScope :: proc(id: ID) ---
+	igPopFocusScope :: proc() ---
+	igGetCurrentFocusScope :: proc() -> ID ---
+	igIsDragDropActive :: proc() -> bool ---
+	igBeginDragDropTargetCustom :: proc(bb: Rect, id: ID) -> bool ---
+	igClearDragDrop :: proc() ---
+	igIsDragDropPayloadBeingAccepted :: proc() -> bool ---
+	igRenderDragDropTargetRect :: proc(bb: Rect) ---
+	igSetWindowClipRectBeforeSetChannel :: proc(window: ^Window, clip_rect: Rect) ---
+	igBeginColumns :: proc(str_id: cstring, count: i32, flags: Old_Column_Flags) ---
+	igEndColumns :: proc() ---
+	igPushColumnClipRect :: proc(column_index: i32) ---
+	igPushColumnsBackground :: proc() ---
+	igPopColumnsBackground :: proc() ---
+	igGetColumnsID :: proc(str_id: cstring, count: i32) -> ID ---
+	igFindOrCreateColumns :: proc(window: ^Window, id: ID) -> ^Old_Columns ---
+	igGetColumnOffsetFromNorm :: proc(columns: ^Old_Columns, offset_norm: f32) -> f32 ---
+	igGetColumnNormFromOffset :: proc(columns: ^Old_Columns, offset: f32) -> f32 ---
+	igTableOpenContextMenu :: proc(column_n: i32) ---
+	igTableSetColumnWidth :: proc(column_n: i32, width: f32) ---
+	igTableSetColumnSortDirection :: proc(column_n: i32, sort_direction: Sort_Direction, append_to_sort_specs: bool) ---
+	igTableGetHoveredColumn :: proc() -> i32 ---
+	igTableGetHeaderRowHeight :: proc() -> f32 ---
+	igTablePushBackgroundChannel :: proc() ---
+	igTablePopBackgroundChannel :: proc() ---
+	igGetCurrentTable :: proc() -> ^Table ---
+	igTableFindByID :: proc(id: ID) -> ^Table ---
+	igBeginTableEx :: proc(name: cstring, id: ID, columns_count: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool ---
+	igTableBeginInitMemory :: proc(table: ^Table, columns_count: i32) ---
+	igTableBeginApplyRequests :: proc(table: ^Table) ---
+	igTableSetupDrawChannels :: proc(table: ^Table) ---
+	igTableUpdateLayout :: proc(table: ^Table) ---
+	igTableUpdateBorders :: proc(table: ^Table) ---
+	igTableUpdateColumnsWeightFromWidth :: proc(table: ^Table) ---
+	igTableDrawBorders :: proc(table: ^Table) ---
+	igTableDrawContextMenu :: proc(table: ^Table) ---
+	igTableBeginContextMenuPopup :: proc(table: ^Table) -> bool ---
+	igTableMergeDrawChannels :: proc(table: ^Table) ---
+	igTableGetInstanceData :: proc(table: ^Table, instance_no: i32) -> ^Table_Instance_Data ---
+	igTableGetInstanceID :: proc(table: ^Table, instance_no: i32) -> ID ---
+	igTableSortSpecsSanitize :: proc(table: ^Table) ---
+	igTableSortSpecsBuild :: proc(table: ^Table) ---
+	igTableGetColumnNextSortDirection :: proc(column: ^Table_Column) -> Sort_Direction ---
+	igTableFixColumnSortDirection :: proc(table: ^Table, column: ^Table_Column) ---
+	igTableGetColumnWidthAuto :: proc(table: ^Table, column: ^Table_Column) -> f32 ---
+	igTableBeginRow :: proc(table: ^Table) ---
+	igTableEndRow :: proc(table: ^Table) ---
+	igTableBeginCell :: proc(table: ^Table, column_n: i32) ---
+	igTableEndCell :: proc(table: ^Table) ---
+	igTableGetCellBgRect :: proc(p_out: ^Rect, table: ^Table, column_n: i32) ---
+	igTableGetColumnName_TablePtr :: proc(table: ^Table, column_n: i32) -> cstring ---
+	igTableGetColumnResizeID :: proc(table: ^Table, column_n: i32, instance_no: i32) -> ID ---
+	igTableGetMaxColumnWidth :: proc(table: ^Table, column_n: i32) -> f32 ---
+	igTableSetColumnWidthAutoSingle :: proc(table: ^Table, column_n: i32) ---
+	igTableSetColumnWidthAutoAll :: proc(table: ^Table) ---
+	igTableRemove :: proc(table: ^Table) ---
+	igTableGcCompactTransientBuffers_TablePtr :: proc(table: ^Table) ---
+	igTableGcCompactTransientBuffers_TableTempDataPtr :: proc(table: ^Table_Temp_Data) ---
+	igTableGcCompactSettings :: proc() ---
+	igTableLoadSettings :: proc(table: ^Table) ---
+	igTableSaveSettings :: proc(table: ^Table) ---
+	igTableResetSettings :: proc(table: ^Table) ---
+	igTableGetBoundSettings :: proc(table: ^Table) -> ^Table_Settings ---
+	igTableSettingsAddSettingsHandler :: proc() ---
+	igTableSettingsCreate :: proc(id: ID, columns_count: i32) -> ^Table_Settings ---
+	igTableSettingsFindByID :: proc(id: ID) -> ^Table_Settings ---
+	igGetCurrentTabBar :: proc() -> ^Tab_Bar ---
+	igBeginTabBarEx :: proc(tab_bar: ^Tab_Bar, bb: Rect, flags: Tab_Bar_Flags) -> bool ---
+	igTabBarFindTabByID :: proc(tab_bar: ^Tab_Bar, tab_id: ID) -> ^Tab_Item ---
+	igTabBarFindTabByOrder :: proc(tab_bar: ^Tab_Bar, order: i32) -> ^Tab_Item ---
+	igTabBarGetCurrentTab :: proc(tab_bar: ^Tab_Bar) -> ^Tab_Item ---
+	igTabBarGetTabOrder :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> i32 ---
+	igTabBarGetTabName :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> cstring ---
+	igTabBarRemoveTab :: proc(tab_bar: ^Tab_Bar, tab_id: ID) ---
+	igTabBarCloseTab :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item) ---
+	igTabBarQueueFocus :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item) ---
+	igTabBarQueueReorder :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item, offset: i32) ---
+	igTabBarQueueReorderFromMousePos :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item, mouse_pos: [2]f32) ---
+	igTabBarProcessReorder :: proc(tab_bar: ^Tab_Bar) -> bool ---
+	igTabItemEx :: proc(tab_bar: ^Tab_Bar, label: cstring, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool ---
+	igTabItemCalcSize_Str :: proc(p_out: ^[2]f32, label: cstring, has_close_button_or_unsaved_marker: bool) ---
+	igTabItemCalcSize_WindowPtr :: proc(p_out: ^[2]f32, window: ^Window) ---
+	igTabItemBackground :: proc(draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, col: u32) ---
+	igTabItemLabelAndCloseButton :: proc(draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: cstring, tab_id: ID, close_button_id: ID, is_contents_visible: bool, out_just_closed: ^bool, out_text_clipped: ^bool) ---
+	igRenderText :: proc(pos: [2]f32, text: [^]u8, text_end: [^]u8, hide_text_after_hash: bool) ---
+	igRenderTextWrapped :: proc(pos: [2]f32, text: [^]u8, text_end: [^]u8, wrap_width: f32) ---
+	igRenderTextClipped :: proc(pos_min: [2]f32, pos_max: [2]f32, text: [^]u8, text_end: [^]u8, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) ---
+	igRenderTextClippedEx :: proc(draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: [^]u8, text_end: [^]u8, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) ---
+	igRenderTextEllipsis :: proc(draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: [^]u8, text_end: [^]u8, text_size_if_known: ^[2]f32) ---
+	igRenderFrame :: proc(p_min: [2]f32, p_max: [2]f32, fill_col: u32, border: bool, rounding: f32) ---
+	igRenderFrameBorder :: proc(p_min: [2]f32, p_max: [2]f32, rounding: f32) ---
+	igRenderColorRectWithAlphaCheckerboard :: proc(draw_list: ^Draw_List, p_min: [2]f32, p_max: [2]f32, fill_col: u32, grid_step: f32, grid_off: [2]f32, rounding: f32, flags: Draw_Flags) ---
+	igRenderNavHighlight :: proc(bb: Rect, id: ID, flags: Nav_Highlight_Flags) ---
+	igFindRenderedTextEnd :: proc(text: [^]u8, text_end: [^]u8) -> cstring ---
+	igRenderMouseCursor :: proc(pos: [2]f32, scale: f32, mouse_cursor: Mouse_Cursor, col_fill: u32, col_border: u32, col_shadow: u32) ---
+	igRenderArrow :: proc(draw_list: ^Draw_List, pos: [2]f32, col: u32, dir: Dir, scale: f32) ---
+	igRenderBullet :: proc(draw_list: ^Draw_List, pos: [2]f32, col: u32) ---
+	igRenderCheckMark :: proc(draw_list: ^Draw_List, pos: [2]f32, col: u32, sz: f32) ---
+	igRenderArrowPointingAt :: proc(draw_list: ^Draw_List, pos: [2]f32, half_sz: [2]f32, direction: Dir, col: u32) ---
+	igRenderRectFilledRangeH :: proc(draw_list: ^Draw_List, rect: Rect, col: u32, x_start_norm: f32, x_end_norm: f32, rounding: f32) ---
+	igRenderRectFilledWithHole :: proc(draw_list: ^Draw_List, outer: Rect, inner: Rect, col: u32, rounding: f32) ---
+	igTextEx :: proc(text: [^]u8, text_end: [^]u8, flags: Text_Flags) ---
+	igButtonEx :: proc(label: cstring, size_arg: [2]f32, flags: Button_Flags) -> bool ---
+	igArrowButtonEx :: proc(str_id: cstring, dir: Dir, size_arg: [2]f32, flags: Button_Flags) -> bool ---
+	igImageButtonEx :: proc(id: ID, texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32, flags: Button_Flags) -> bool ---
+	igSeparatorEx :: proc(flags: Separator_Flags) ---
+	igSeparatorTextEx :: proc(id: ID, label: [^]u8, label_end: [^]u8, extra_width: f32) ---
+	igCheckboxFlags_S64Ptr :: proc(label: cstring, flags: ^i64, flags_value: i64) -> bool ---
+	igCheckboxFlags_U64Ptr :: proc(label: cstring, flags: ^u64, flags_value: u64) -> bool ---
+	igCloseButton :: proc(id: ID, pos: [2]f32) -> bool ---
+	igCollapseButton :: proc(id: ID, pos: [2]f32) -> bool ---
+	igScrollbar :: proc(axis: Axis) ---
+	igScrollbarEx :: proc(bb: Rect, id: ID, axis: Axis, p_scroll_v: ^i64, avail_v: i64, contents_v: i64, flags: Draw_Flags) -> bool ---
+	igGetWindowScrollbarRect :: proc(p_out: ^Rect, window: ^Window, axis: Axis) ---
+	igGetWindowScrollbarID :: proc(window: ^Window, axis: Axis) -> ID ---
+	igGetWindowResizeCornerID :: proc(window: ^Window, n: i32) -> ID ---
+	igGetWindowResizeBorderID :: proc(window: ^Window, dir: Dir) -> ID ---
+	igButtonBehavior :: proc(bb: Rect, id: ID, out_hovered: ^bool, out_held: ^bool, flags: Button_Flags) -> bool ---
+	igDragBehavior :: proc(id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags) -> bool ---
+	igSliderBehavior :: proc(bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: cstring, flags: Slider_Flags, out_grab_bb: ^Rect) -> bool ---
+	igSplitterBehavior :: proc(bb: Rect, id: ID, axis: Axis, size1: ^f32, size2: ^f32, min_size1: f32, min_size2: f32, hover_extend: f32, hover_visibility_delay: f32, bg_col: u32) -> bool ---
+	igTreeNodeBehavior :: proc(id: ID, flags: Tree_Node_Flags, label: [^]u8, label_end: [^]u8) -> bool ---
+	igTreePushOverrideID :: proc(id: ID) ---
+	igTreeNodeSetOpen :: proc(id: ID, open: bool) ---
+	igTreeNodeUpdateNextOpen :: proc(id: ID, flags: Tree_Node_Flags) -> bool ---
+	igDataTypeGetInfo :: proc(data_type: Data_Type) -> ^Data_Type_Info ---
+	igDataTypeFormatString :: proc(buf: ^i8, buf_size: i32, data_type: Data_Type, p_data: rawptr, format: cstring) -> i32 ---
+	igDataTypeApplyOp :: proc(data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) ---
+	igDataTypeApplyFromText :: proc(buf: cstring, data_type: Data_Type, p_data: rawptr, format: cstring) -> bool ---
+	igDataTypeCompare :: proc(data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -> i32 ---
+	igDataTypeClamp :: proc(data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr) -> bool ---
+	igInputTextEx :: proc(label: cstring, hint: cstring, buf: ^i8, buf_size: i32, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool ---
+	igInputTextDeactivateHook :: proc(id: ID) ---
+	igTempInputText :: proc(bb: Rect, id: ID, label: cstring, buf: ^i8, buf_size: i32, flags: Input_Text_Flags) -> bool ---
+	igTempInputScalar :: proc(bb: Rect, id: ID, label: cstring, data_type: Data_Type, p_data: rawptr, format: cstring, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool ---
+	igTempInputIsActive :: proc(id: ID) -> bool ---
+	igGetInputTextState :: proc(id: ID) -> ^Input_Text_State ---
+	igColorTooltip :: proc(text: cstring, col: ^f32, flags: Color_Edit_Flags) ---
+	igColorEditOptionsPopup :: proc(col: ^f32, flags: Color_Edit_Flags) ---
+	igColorPickerOptionsPopup :: proc(ref_col: ^f32, flags: Color_Edit_Flags) ---
+	igPlotEx :: proc(plot_type: Plot_Type, label: cstring, values_getter: ^#type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: cstring, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 ---
+	igShadeVertsLinearColorGradientKeepAlpha :: proc(draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) ---
+	igShadeVertsLinearUV :: proc(draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) ---
+	igGcCompactTransientMiscBuffers :: proc() ---
+	igGcCompactTransientWindowBuffers :: proc(window: ^Window) ---
+	igGcAwakeTransientWindowBuffers :: proc(window: ^Window) ---
+	igDebugLog :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
+	igDebugLogV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igErrorCheckEndFrameRecover :: proc(log_callback: Error_Log_Callback, user_data: rawptr) ---
+	igErrorCheckEndWindowRecover :: proc(log_callback: Error_Log_Callback, user_data: rawptr) ---
+	igErrorCheckUsingSetCursorPosToExtendParentBoundaries :: proc() ---
+	igDebugLocateItem :: proc(target_id: ID) ---
+	igDebugLocateItemOnHover :: proc(target_id: ID) ---
+	igDebugLocateItemResolveWithLastItem :: proc() ---
+	igDebugDrawItemRect :: proc(col: u32) ---
+	igDebugStartItemPicker :: proc() ---
+	igShowFontAtlas :: proc(atlas: ^Font_Atlas) ---
+	igDebugHookIdInfo :: proc(id: ID, data_type: Data_Type, data_id: rawptr, data_id_end: rawptr) ---
+	igDebugNodeColumns :: proc(columns: ^Old_Columns) ---
+	igDebugNodeDrawList :: proc(window: ^Window, draw_list: ^Draw_List, label: cstring) ---
+	igDebugNodeDrawCmdShowMeshAndBoundingBox :: proc(out_draw_list: ^Draw_List, draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) ---
+	igDebugNodeFont :: proc(font: ^Font) ---
+	igDebugNodeFontGlyph :: proc(font: ^Font, glyph: ^Font_Glyph) ---
+	igDebugNodeStorage :: proc(storage: ^Storage, label: cstring) ---
+	igDebugNodeTabBar :: proc(tab_bar: ^Tab_Bar, label: cstring) ---
+	igDebugNodeTable :: proc(table: ^Table) ---
+	igDebugNodeTableSettings :: proc(settings: ^Table_Settings) ---
+	igDebugNodeInputTextState :: proc(state: ^Input_Text_State) ---
+	igDebugNodeWindow :: proc(window: ^Window, label: cstring) ---
+	igDebugNodeWindowSettings :: proc(settings: ^Window_Settings) ---
+	igDebugNodeWindowsList :: proc(windows: ^Vector(^Window), label: cstring) ---
+	igDebugNodeWindowsListByBeginStackParent :: proc(windows: ^^Window, windows_size: i32, parent_in_begin_stack: ^Window) ---
+	igDebugNodeViewport :: proc(viewport: ^Viewport_P) ---
+	igDebugRenderKeyboardPreview :: proc(draw_list: ^Draw_List) ---
+	igDebugRenderViewportThumbnail :: proc(draw_list: ^Draw_List, viewport: ^Viewport_P, bb: Rect) ---
+	igIsKeyPressedMap :: proc(key: Key, repeat: bool) -> bool ---
+	igImFontAtlasGetBuilderForStbTruetype :: proc() -> ^Font_Builder_IO ---
+	igImFontAtlasBuildInit :: proc(atlas: ^Font_Atlas) ---
+	igImFontAtlasBuildSetupFont :: proc(atlas: ^Font_Atlas, font: ^Font, font_config: ^Font_Config, ascent: f32, descent: f32) ---
+	igImFontAtlasBuildPackCustomRects :: proc(atlas: ^Font_Atlas, stbrp_context_opaque: rawptr) ---
+	igImFontAtlasBuildFinish :: proc(atlas: ^Font_Atlas) ---
+	igImFontAtlasBuildRender8bppRectFromString :: proc(atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: cstring, in_marker_char: i8, in_marker_pixel_value: u8) ---
+	igImFontAtlasBuildRender32bppRectFromString :: proc(atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: cstring, in_marker_char: i8, in_marker_pixel_value: u32) ---
+	igImFontAtlasBuildMultiplyCalcLookupTable :: proc(out_table: [256]u8, in_multiply_factor: f32) ---
+	igImFontAtlasBuildMultiplyRectAlpha8 :: proc(table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) ---
+	igLogText :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
+	ImGuiTextBuffer_appendf :: proc(buffer: ^Text_Buffer, fmt: cstring, #c_vararg _args_: ..any) ---
+	igGET_FLT_MAX :: proc() -> f32 ---
+	igGET_FLT_MIN :: proc() -> f32 ---
 }
