@@ -99,7 +99,10 @@ def generate_foreign(ast):
 def generate_wrapper(ast):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
-        # fp.write('import "core:c/libc"\n\n')
+        fp.write(textwrap.dedent('''
+            import "core:fmt"
+            import "core:strings"
+        '''))
 
         overloads = defaultdict(list)
 
@@ -119,10 +122,10 @@ def generate_wrapper(ast):
                 call_args = []
                 multiple_returns = []
 
-                clone_strings = []
-                span_strings = []
+                setup_lines = []
 
-                wrap_func = True
+                is_vararg = False
+                fmt_index = None
 
                 for i, param in enumerate(all_params):
                     prev_param = all_params[i - 1] if i > 0 else None
@@ -136,8 +139,17 @@ def generate_wrapper(ast):
                         call_args.append('&' + odin_id(param.name))
 
                     elif isinstance(param, c_ast.EllipsisParam):
-                        wrap_func = False
-                        # TODO: figure out how to pass a va_list to the V variant of the function
+                        assert fmt_index is not None, f"did not see format arg in {node.name}"
+                        is_vararg = True
+                        odin_params.append(f"args: ..any")
+                        setup_lines += [
+                            "_sb := strings.builder_make(context.temp_allocator)",
+                            f"fmt.sbprintf(&_sb, {call_args[fmt_index]}, ..args)",
+                            "append(&_sb.buf, 0)",
+                            "_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))"
+                        ]
+                        call_args[fmt_index] = '"%s"'
+                        call_args.append('_formatted_str')
 
                     elif is_cstring(param.type):
 
@@ -146,20 +158,31 @@ def generate_wrapper(ast):
                             pname = odin_id(param.name[:-4])
                             odin_params[-1] = f"{pname}: string"
                             call_args[-1:] = [f'{pname}_begin', f'{pname}_end']
-                            clone_strings.pop()
-                            span_strings.append(pname)
+                            setup_lines[-1:] = [
+                                f"{pname}_begin := raw_data({pname})",
+                                f"{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))",
+                            ]
 
-                        elif (i == 0 or param.name == 'fmt') and not is_string_span_pair(param, next_param):
-                            odin_params.append(f"{odin_id(param.name)}: cstring")
-                            call_args.append(odin_id(param.name))
+                        elif node.name in ['igPushID_Str', 'igGetID_Str']:  # HACK b/c of overload
+                            pname = odin_id(param.name)
+                            odin_params.append(f"{pname}: cstring")
+                            call_args.append(pname)
+
+                        elif param.name in ('fmt', 'format') and fmt_index is None and isinstance(all_params[-1], c_ast.EllipsisParam):
+                            pname = odin_id(param.name)
+                            odin_params.append(f"{pname}: string")
+                            fmt_index = len(call_args)  # will be hijacked later by varargs
+                            call_args.append(pname)
 
                         else:
-                            odin_params.append(f"{odin_id(param.name)}: string")
-                            clone_strings.append(odin_id(param.name))
+                            pname = odin_id(param.name)
+                            odin_params.append(f"{pname}: string")
+                            setup_lines.append(f"_temp_{pname} := semisafe_string_to_cstring({pname})")
                             call_args.append('_temp_' + odin_id(param.name))
 
+
                     elif is_slice_pair(prev_param, param) and not is_out_param(prev_param):
-                        pname = odin_id(re.sub("_(?:len(?:gth)?|size|count)$", '', param.name))
+                        pname = odin_id(re.sub(r"_(?:len(?:gth)?|size|count)$", '', param.name))
                         len_type = type_as_odin(param.type)
                         odin_params[-1] = f"{pname}: []{type_as_odin(deref(prev_param.type))}"
                         call_args[-1:] = [f"raw_data({pname})", f"{f'cast({len_type})' * (len_type != 'int')}len({pname})"]
@@ -193,27 +216,22 @@ def generate_wrapper(ast):
                     else:
                         ret = f" -> {orig_ret_type}"
 
-                if wrap_func:
-                    fp.write(f"{proc_name} :: #force_inline proc ({', '.join(odin_params)}){ret} {{\n")
+                if is_vararg:
+                    fp.write(f"{proc_name}_direct :: {func_to_call}  // Direct variadic version\n")
 
-                    for pname in clone_strings:
-                        fp.write(f"\t_temp_{pname} := semisafe_string_to_cstring({pname})\n")
+                fp.write(f"{proc_name} :: {'#force_inline' * (not setup_lines)} proc ({', '.join(odin_params)}){ret} {{\n")
 
-                    for pname in span_strings:
-                        fp.write(f"\t{pname}_begin := raw_data({pname})\n")
-                        fp.write(f"\t{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))\n")
+                for line in setup_lines:
+                    fp.write(f"\t{line}\n")
 
-                    if multiple_returns:
-                        fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
-                        fp.write("\treturn\n")
-
-                    else:
-                        fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
-
-                    fp.write("}\n")
+                if multiple_returns:
+                    fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
+                    fp.write("\treturn\n")
 
                 else:
-                    fp.write(f"{proc_name} :: {func_to_call}  // Cannot be wrapped due to variadic args\n")
+                    fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
+
+                fp.write("}\n")
 
         for group, impls in overloads.items():
             if len(impls) > 1:
@@ -532,12 +550,12 @@ def odin_typename(name: str) -> str:
     return '_'.join(camel_split(trim_type_prefix(name)))
 
 
-ODIN_KEYWORDS = ['where', 'map', 'in', 'context']
+RESERVED_IDS = ['where', 'map', 'in', 'context', 'fmt']
 
 def odin_id(name: str) -> str:
     base_id = '_'.join(map(str.lower, camel_split(name)))
 
-    if base_id in ODIN_KEYWORDS:
+    if base_id in RESERVED_IDS:
         return base_id + '_'
 
     return base_id
@@ -573,7 +591,7 @@ def odin_procname(name: str) -> str:
 
     base_id = '_'.join(map(str.lower, camel_split(name))).replace('__', '_')
 
-    if base_id in ODIN_KEYWORDS:
+    if base_id in RESERVED_IDS:
         return base_id + '_'
 
     return base_id

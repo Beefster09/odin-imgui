@@ -4,6 +4,9 @@
 
 package imgui
 
+
+import "core:fmt"
+import "core:strings"
 create_context :: #force_inline proc (shared_font_atlas: ^Font_Atlas = nil) -> ^Context {
 	return igCreateContext(shared_font_atlas)
 }
@@ -52,11 +55,13 @@ show_about_window :: #force_inline proc (p_open: ^bool) {
 show_style_editor :: #force_inline proc (ref: ^Style) {
 	igShowStyleEditor(ref)
 }
-show_style_selector :: #force_inline proc (label: cstring) -> bool {
-	return igShowStyleSelector(label)
+show_style_selector ::  proc (label: string) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igShowStyleSelector(_temp_label)
 }
-show_font_selector :: #force_inline proc (label: cstring) {
-	igShowFontSelector(label)
+show_font_selector ::  proc (label: string) {
+	_temp_label := semisafe_string_to_cstring(label)
+	igShowFontSelector(_temp_label)
 }
 show_user_guide :: #force_inline proc () {
 	igShowUserGuide()
@@ -73,14 +78,16 @@ style_colors_light :: #force_inline proc (dst: ^Style = nil) {
 style_colors_classic :: #force_inline proc (dst: ^Style = nil) {
 	igStyleColorsClassic(dst)
 }
-begin :: #force_inline proc (name: cstring, p_open: ^bool, flags := Window_Flags{}) -> bool {
-	return igBegin(name, p_open, flags)
+begin ::  proc (name: string, p_open: ^bool, flags := Window_Flags{}) -> bool {
+	_temp_name := semisafe_string_to_cstring(name)
+	return igBegin(_temp_name, p_open, flags)
 }
 end :: #force_inline proc () {
 	igEnd()
 }
-begin_child_str :: #force_inline proc (str_id: cstring, size: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
-	return igBeginChild_Str(str_id, size, border, flags)
+begin_child_str ::  proc (str_id: string, size: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igBeginChild_Str(_temp_str_id, size, border, flags)
 }
 begin_child_id :: #force_inline proc (id: ID, size: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
 	return igBeginChild_ID(id, size, border, flags)
@@ -156,17 +163,21 @@ set_window_focus_nil :: #force_inline proc () {
 set_window_font_scale :: #force_inline proc (scale: f32) {
 	igSetWindowFontScale(scale)
 }
-set_window_pos_str :: #force_inline proc (name: cstring, pos := [2]f32{}, cond := Cond{}) {
-	igSetWindowPos_Str(name, pos, cond)
+set_window_pos_str ::  proc (name: string, pos := [2]f32{}, cond := Cond{}) {
+	_temp_name := semisafe_string_to_cstring(name)
+	igSetWindowPos_Str(_temp_name, pos, cond)
 }
-set_window_size_str :: #force_inline proc (name: cstring, size := [2]f32{}, cond := Cond{}) {
-	igSetWindowSize_Str(name, size, cond)
+set_window_size_str ::  proc (name: string, size := [2]f32{}, cond := Cond{}) {
+	_temp_name := semisafe_string_to_cstring(name)
+	igSetWindowSize_Str(_temp_name, size, cond)
 }
-set_window_collapsed_str :: #force_inline proc (name: cstring, collapsed: bool, cond := Cond{}) {
-	igSetWindowCollapsed_Str(name, collapsed, cond)
+set_window_collapsed_str ::  proc (name: string, collapsed: bool, cond := Cond{}) {
+	_temp_name := semisafe_string_to_cstring(name)
+	igSetWindowCollapsed_Str(_temp_name, collapsed, cond)
 }
-set_window_focus_str :: #force_inline proc (name: cstring) {
-	igSetWindowFocus_Str(name)
+set_window_focus_str ::  proc (name: string) {
+	_temp_name := semisafe_string_to_cstring(name)
+	igSetWindowFocus_Str(_temp_name)
 }
 get_content_region_avail :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetContentRegionAvail(&p_out)
@@ -365,7 +376,7 @@ get_frame_height_with_spacing :: #force_inline proc () -> f32 {
 push_id_str :: #force_inline proc (str_id: cstring) {
 	igPushID_Str(str_id)
 }
-push_id_str_str :: #force_inline proc (str_id: string) {
+push_id_str_str ::  proc (str_id: string) {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	igPushID_StrStr(str_id_begin, str_id_end)
@@ -382,7 +393,7 @@ pop_id :: #force_inline proc () {
 get_id_str :: #force_inline proc (str_id: cstring) -> ID {
 	return igGetID_Str(str_id)
 }
-get_id_str_str :: #force_inline proc (str_id: string) -> ID {
+get_id_str_str ::  proc (str_id: string) -> ID {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	return igGetID_StrStr(str_id_begin, str_id_end)
@@ -390,48 +401,101 @@ get_id_str_str :: #force_inline proc (str_id: string) -> ID {
 get_id_ptr :: #force_inline proc (ptr_id: rawptr) -> ID {
 	return igGetID_Ptr(ptr_id)
 }
-text_unformatted :: #force_inline proc (text: string) {
+text_unformatted ::  proc (text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igTextUnformatted(text_begin, text_end)
 }
-text :: igText  // Cannot be wrapped due to variadic args
-text_colored :: igTextColored  // Cannot be wrapped due to variadic args
-text_disabled :: igTextDisabled  // Cannot be wrapped due to variadic args
-text_wrapped :: igTextWrapped  // Cannot be wrapped due to variadic args
-label_text :: igLabelText  // Cannot be wrapped due to variadic args
-bullet_text :: igBulletText  // Cannot be wrapped due to variadic args
-separator_text :: #force_inline proc (label: cstring) {
-	igSeparatorText(label)
+text_direct :: igText  // Direct variadic version
+text ::  proc (fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igText("%s", _formatted_str)
 }
-button :: #force_inline proc (label: cstring, size := [2]f32{}) -> bool {
-	return igButton(label, size)
+text_colored_direct :: igTextColored  // Direct variadic version
+text_colored ::  proc (col: [4]f32, fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igTextColored(col, "%s", _formatted_str)
 }
-small_button :: #force_inline proc (label: cstring) -> bool {
-	return igSmallButton(label)
+text_disabled_direct :: igTextDisabled  // Direct variadic version
+text_disabled ::  proc (fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igTextDisabled("%s", _formatted_str)
 }
-invisible_button :: #force_inline proc (str_id: cstring, size := [2]f32{}, flags := Button_Flags{}) -> bool {
-	return igInvisibleButton(str_id, size, flags)
+text_wrapped_direct :: igTextWrapped  // Direct variadic version
+text_wrapped ::  proc (fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igTextWrapped("%s", _formatted_str)
 }
-arrow_button :: #force_inline proc (str_id: cstring, dir: Dir) -> bool {
-	return igArrowButton(str_id, dir)
+label_text_direct :: igLabelText  // Direct variadic version
+label_text ::  proc (label: string, fmt_: string, args: ..any) {
+	_temp_label := semisafe_string_to_cstring(label)
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igLabelText(_temp_label, "%s", _formatted_str)
 }
-checkbox :: #force_inline proc (label: cstring, v: ^bool) -> bool {
-	return igCheckbox(label, v)
+bullet_text_direct :: igBulletText  // Direct variadic version
+bullet_text ::  proc (fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igBulletText("%s", _formatted_str)
 }
-checkbox_flags_int_ptr :: #force_inline proc (label: cstring, flags: ^i32, flags_value: i32) -> bool {
-	return igCheckboxFlags_IntPtr(label, flags, flags_value)
+separator_text ::  proc (label: string) {
+	_temp_label := semisafe_string_to_cstring(label)
+	igSeparatorText(_temp_label)
 }
-checkbox_flags_uint_ptr :: #force_inline proc (label: cstring, flags: ^u32, flags_value: u32) -> bool {
-	return igCheckboxFlags_UintPtr(label, flags, flags_value)
+button ::  proc (label: string, size := [2]f32{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igButton(_temp_label, size)
 }
-radio_button_bool :: #force_inline proc (label: cstring, active: bool) -> bool {
-	return igRadioButton_Bool(label, active)
+small_button ::  proc (label: string) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igSmallButton(_temp_label)
 }
-radio_button_int_ptr :: #force_inline proc (label: cstring, v: ^i32, v_button: i32) -> bool {
-	return igRadioButton_IntPtr(label, v, v_button)
+invisible_button ::  proc (str_id: string, size := [2]f32{}, flags := Button_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igInvisibleButton(_temp_str_id, size, flags)
 }
-progress_bar :: #force_inline proc (fraction: f32, size_arg: [2]f32, overlay: string) {
+arrow_button ::  proc (str_id: string, dir: Dir) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igArrowButton(_temp_str_id, dir)
+}
+checkbox ::  proc (label: string, v: ^bool) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCheckbox(_temp_label, v)
+}
+checkbox_flags_int_ptr ::  proc (label: string, flags: ^i32, flags_value: i32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCheckboxFlags_IntPtr(_temp_label, flags, flags_value)
+}
+checkbox_flags_uint_ptr ::  proc (label: string, flags: ^u32, flags_value: u32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCheckboxFlags_UintPtr(_temp_label, flags, flags_value)
+}
+radio_button_bool ::  proc (label: string, active: bool) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igRadioButton_Bool(_temp_label, active)
+}
+radio_button_int_ptr ::  proc (label: string, v: ^i32, v_button: i32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igRadioButton_IntPtr(_temp_label, v, v_button)
+}
+progress_bar ::  proc (fraction: f32, size_arg: [2]f32, overlay: string) {
 	_temp_overlay := semisafe_string_to_cstring(overlay)
 	igProgressBar(fraction, size_arg, _temp_overlay)
 }
@@ -441,212 +505,295 @@ bullet :: #force_inline proc () {
 image :: #force_inline proc (user_texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, tint_col := [4]f32{}, border_col := [4]f32{}) {
 	igImage(user_texture_id, size, uv0, uv1, tint_col, border_col)
 }
-image_button :: #force_inline proc (str_id: cstring, user_texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, bg_col := [4]f32{}, tint_col := [4]f32{}) -> bool {
-	return igImageButton(str_id, user_texture_id, size, uv0, uv1, bg_col, tint_col)
+image_button ::  proc (str_id: string, user_texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, bg_col := [4]f32{}, tint_col := [4]f32{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igImageButton(_temp_str_id, user_texture_id, size, uv0, uv1, bg_col, tint_col)
 }
-begin_combo :: #force_inline proc (label: cstring, preview_value: string, flags := Combo_Flags{}) -> bool {
+begin_combo ::  proc (label: string, preview_value: string, flags := Combo_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_preview_value := semisafe_string_to_cstring(preview_value)
-	return igBeginCombo(label, _temp_preview_value, flags)
+	return igBeginCombo(_temp_label, _temp_preview_value, flags)
 }
 end_combo :: #force_inline proc () {
 	igEndCombo()
 }
-combo_str_arr :: #force_inline proc (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool {
-	return igCombo_Str_arr(label, current_item, items, items_count, popup_max_height_in_items)
+combo_str_arr ::  proc (label: string, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCombo_Str_arr(_temp_label, current_item, items, items_count, popup_max_height_in_items)
 }
-combo_str :: #force_inline proc (label: cstring, current_item: ^i32, items_separated_by_zeros: string, popup_max_height_in_items: i32) -> bool {
+combo_str ::  proc (label: string, current_item: ^i32, items_separated_by_zeros: string, popup_max_height_in_items: i32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_items_separated_by_zeros := semisafe_string_to_cstring(items_separated_by_zeros)
-	return igCombo_Str(label, current_item, _temp_items_separated_by_zeros, popup_max_height_in_items)
+	return igCombo_Str(_temp_label, current_item, _temp_items_separated_by_zeros, popup_max_height_in_items)
 }
-combo_fn_bool_ptr :: #force_inline proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool {
-	return igCombo_FnBoolPtr(label, current_item, items_getter, data, items_count, popup_max_height_in_items)
+combo_fn_bool_ptr ::  proc (label: string, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCombo_FnBoolPtr(_temp_label, current_item, items_getter, data, items_count, popup_max_height_in_items)
 }
-drag_float :: #force_inline proc (label: cstring, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_float ::  proc (label: string, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat(label, v, v_speed, v_min, v_max, _temp_format, flags)
+	return igDragFloat(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float2 :: #force_inline proc (label: cstring, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_float2 ::  proc (label: string, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat2(label, v, v_speed, v_min, v_max, _temp_format, flags)
+	return igDragFloat2(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float3 :: #force_inline proc (label: cstring, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_float3 ::  proc (label: string, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat3(label, v, v_speed, v_min, v_max, _temp_format, flags)
+	return igDragFloat3(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float4 :: #force_inline proc (label: cstring, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_float4 ::  proc (label: string, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat4(label, v, v_speed, v_min, v_max, _temp_format, flags)
+	return igDragFloat4(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_float_range2 :: #force_inline proc (label: cstring, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
-	_temp_format := semisafe_string_to_cstring(format)
-	_temp_format_max := semisafe_string_to_cstring(format_max)
-	return igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
-}
-drag_int :: #force_inline proc (label: cstring, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt(label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int2 :: #force_inline proc (label: cstring, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt2(label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int3 :: #force_inline proc (label: cstring, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt3(label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int4 :: #force_inline proc (label: cstring, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt4(label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int_range2 :: #force_inline proc (label: cstring, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
+drag_float_range2 ::  proc (label: string, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
 	_temp_format_max := semisafe_string_to_cstring(format_max)
-	return igDragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
+	return igDragFloatRange2(_temp_label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
 }
-drag_scalar :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+drag_int ::  proc (label: string, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igDragScalar(label, data_type, p_data, v_speed, p_min, p_max, _temp_format, flags)
+	return igDragInt(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-drag_scalar_n :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+drag_int2 ::  proc (label: string, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igDragScalarN(label, data_type, p_data, components, v_speed, p_min, p_max, _temp_format, flags)
+	return igDragInt2(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-slider_float :: #force_inline proc (label: cstring, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_int3 ::  proc (label: string, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat(label, v, v_min, v_max, _temp_format, flags)
+	return igDragInt3(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-slider_float2 :: #force_inline proc (label: cstring, v: [2]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_int4 ::  proc (label: string, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat2(label, v, v_min, v_max, _temp_format, flags)
+	return igDragInt4(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
 }
-slider_float3 :: #force_inline proc (label: cstring, v: [3]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_int_range2 ::  proc (label: string, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat3(label, v, v_min, v_max, _temp_format, flags)
+	_temp_format_max := semisafe_string_to_cstring(format_max)
+	return igDragIntRange2(_temp_label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
 }
-slider_float4 :: #force_inline proc (label: cstring, v: [4]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_scalar ::  proc (label: string, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat4(label, v, v_min, v_max, _temp_format, flags)
+	return igDragScalar(_temp_label, data_type, p_data, v_speed, p_min, p_max, _temp_format, flags)
 }
-slider_angle :: #force_inline proc (label: cstring, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+drag_scalar_n ::  proc (label: string, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderAngle(label, v_rad, v_degrees_min, v_degrees_max, _temp_format, flags)
+	return igDragScalarN(_temp_label, data_type, p_data, components, v_speed, p_min, p_max, _temp_format, flags)
 }
-slider_int :: #force_inline proc (label: cstring, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+slider_float ::  proc (label: string, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt(label, v, v_min, v_max, _temp_format, flags)
+	return igSliderFloat(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-slider_int2 :: #force_inline proc (label: cstring, v: [2]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+slider_float2 ::  proc (label: string, v: [2]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt2(label, v, v_min, v_max, _temp_format, flags)
+	return igSliderFloat2(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-slider_int3 :: #force_inline proc (label: cstring, v: [3]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+slider_float3 ::  proc (label: string, v: [3]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt3(label, v, v_min, v_max, _temp_format, flags)
+	return igSliderFloat3(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-slider_int4 :: #force_inline proc (label: cstring, v: [4]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+slider_float4 ::  proc (label: string, v: [4]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt4(label, v, v_min, v_max, _temp_format, flags)
+	return igSliderFloat4(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-slider_scalar :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+slider_angle ::  proc (label: string, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderScalar(label, data_type, p_data, p_min, p_max, _temp_format, flags)
+	return igSliderAngle(_temp_label, v_rad, v_degrees_min, v_degrees_max, _temp_format, flags)
 }
-slider_scalar_n :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+slider_int ::  proc (label: string, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderScalarN(label, data_type, p_data, components, p_min, p_max, _temp_format, flags)
+	return igSliderInt(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-v_slider_float :: #force_inline proc (label: cstring, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+slider_int2 ::  proc (label: string, v: [2]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igVSliderFloat(label, size, v, v_min, v_max, _temp_format, flags)
+	return igSliderInt2(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-v_slider_int :: #force_inline proc (label: cstring, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+slider_int3 ::  proc (label: string, v: [3]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igVSliderInt(label, size, v, v_min, v_max, _temp_format, flags)
+	return igSliderInt3(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-v_slider_scalar :: #force_inline proc (label: cstring, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+slider_int4 ::  proc (label: string, v: [4]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igVSliderScalar(label, size, data_type, p_data, p_min, p_max, _temp_format, flags)
+	return igSliderInt4(_temp_label, v, v_min, v_max, _temp_format, flags)
 }
-input_text :: #force_inline proc (label: cstring, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	return igInputText(label, raw_data(buf), len(buf), flags, callback, user_data)
+slider_scalar ::  proc (label: string, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	_temp_format := semisafe_string_to_cstring(format)
+	return igSliderScalar(_temp_label, data_type, p_data, p_min, p_max, _temp_format, flags)
 }
-input_text_multiline :: #force_inline proc (label: cstring, buf: []i8, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	return igInputTextMultiline(label, raw_data(buf), len(buf), size, flags, callback, user_data)
+slider_scalar_n ::  proc (label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	_temp_format := semisafe_string_to_cstring(format)
+	return igSliderScalarN(_temp_label, data_type, p_data, components, p_min, p_max, _temp_format, flags)
 }
-input_text_with_hint :: #force_inline proc (label: cstring, hint: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+v_slider_float ::  proc (label: string, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	_temp_format := semisafe_string_to_cstring(format)
+	return igVSliderFloat(_temp_label, size, v, v_min, v_max, _temp_format, flags)
+}
+v_slider_int ::  proc (label: string, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	_temp_format := semisafe_string_to_cstring(format)
+	return igVSliderInt(_temp_label, size, v, v_min, v_max, _temp_format, flags)
+}
+v_slider_scalar ::  proc (label: string, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	_temp_format := semisafe_string_to_cstring(format)
+	return igVSliderScalar(_temp_label, size, data_type, p_data, p_min, p_max, _temp_format, flags)
+}
+input_text ::  proc (label: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igInputText(_temp_label, raw_data(buf), len(buf), flags, callback, user_data)
+}
+input_text_multiline ::  proc (label: string, buf: []i8, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igInputTextMultiline(_temp_label, raw_data(buf), len(buf), size, flags, callback, user_data)
+}
+input_text_with_hint ::  proc (label: string, hint: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_hint := semisafe_string_to_cstring(hint)
-	return igInputTextWithHint(label, _temp_hint, raw_data(buf), len(buf), flags, callback, user_data)
+	return igInputTextWithHint(_temp_label, _temp_hint, raw_data(buf), len(buf), flags, callback, user_data)
 }
-input_float :: #force_inline proc (label: cstring, v: ^f32, step: f32, step_fast: f32, format: string, flags := Input_Text_Flags{}) -> bool {
+input_float ::  proc (label: string, v: ^f32, step: f32, step_fast: f32, format: string, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat(label, v, step, step_fast, _temp_format, flags)
+	return igInputFloat(_temp_label, v, step, step_fast, _temp_format, flags)
 }
-input_float2 :: #force_inline proc (label: cstring, v: [2]f32, format: string, flags := Input_Text_Flags{}) -> bool {
+input_float2 ::  proc (label: string, v: [2]f32, format: string, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat2(label, v, _temp_format, flags)
+	return igInputFloat2(_temp_label, v, _temp_format, flags)
 }
-input_float3 :: #force_inline proc (label: cstring, v: [3]f32, format: string, flags := Input_Text_Flags{}) -> bool {
+input_float3 ::  proc (label: string, v: [3]f32, format: string, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat3(label, v, _temp_format, flags)
+	return igInputFloat3(_temp_label, v, _temp_format, flags)
 }
-input_float4 :: #force_inline proc (label: cstring, v: [4]f32, format: string, flags := Input_Text_Flags{}) -> bool {
+input_float4 ::  proc (label: string, v: [4]f32, format: string, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat4(label, v, _temp_format, flags)
+	return igInputFloat4(_temp_label, v, _temp_format, flags)
 }
-input_int :: #force_inline proc (label: cstring, v: ^i32, step: i32, step_fast: i32, flags := Input_Text_Flags{}) -> bool {
-	return igInputInt(label, v, step, step_fast, flags)
+input_int ::  proc (label: string, v: ^i32, step: i32, step_fast: i32, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igInputInt(_temp_label, v, step, step_fast, flags)
 }
-input_int2 :: #force_inline proc (label: cstring, v := [2]i32{}, flags := Input_Text_Flags{}) -> bool {
-	return igInputInt2(label, v, flags)
+input_int2 ::  proc (label: string, v := [2]i32{}, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igInputInt2(_temp_label, v, flags)
 }
-input_int3 :: #force_inline proc (label: cstring, v := [3]i32{}, flags := Input_Text_Flags{}) -> bool {
-	return igInputInt3(label, v, flags)
+input_int3 ::  proc (label: string, v := [3]i32{}, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igInputInt3(_temp_label, v, flags)
 }
-input_int4 :: #force_inline proc (label: cstring, v := [4]i32{}, flags := Input_Text_Flags{}) -> bool {
-	return igInputInt4(label, v, flags)
+input_int4 ::  proc (label: string, v := [4]i32{}, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igInputInt4(_temp_label, v, flags)
 }
-input_double :: #force_inline proc (label: cstring, v: ^f64, step: f64, step_fast: f64, format: string, flags := Input_Text_Flags{}) -> bool {
+input_double ::  proc (label: string, v: ^f64, step: f64, step_fast: f64, format: string, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igInputDouble(label, v, step, step_fast, _temp_format, flags)
+	return igInputDouble(_temp_label, v, step, step_fast, _temp_format, flags)
 }
-input_scalar :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
+input_scalar ::  proc (label: string, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igInputScalar(label, data_type, p_data, p_step, p_step_fast, _temp_format, flags)
+	return igInputScalar(_temp_label, data_type, p_data, p_step, p_step_fast, _temp_format, flags)
 }
-input_scalar_n :: #force_inline proc (label: cstring, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
+input_scalar_n ::  proc (label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igInputScalarN(label, data_type, p_data, components, p_step, p_step_fast, _temp_format, flags)
+	return igInputScalarN(_temp_label, data_type, p_data, components, p_step, p_step_fast, _temp_format, flags)
 }
-color_edit3 :: #force_inline proc (label: cstring, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
-	return igColorEdit3(label, col, flags)
+color_edit3 ::  proc (label: string, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igColorEdit3(_temp_label, col, flags)
 }
-color_edit4 :: #force_inline proc (label: cstring, col := [4]f32{}, flags := Color_Edit_Flags{}) -> bool {
-	return igColorEdit4(label, col, flags)
+color_edit4 ::  proc (label: string, col := [4]f32{}, flags := Color_Edit_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igColorEdit4(_temp_label, col, flags)
 }
-color_picker3 :: #force_inline proc (label: cstring, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
-	return igColorPicker3(label, col, flags)
+color_picker3 ::  proc (label: string, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igColorPicker3(_temp_label, col, flags)
 }
-color_picker4 :: #force_inline proc (label: cstring, col: [4]f32, flags: Color_Edit_Flags, ref_col: ^f32) -> bool {
-	return igColorPicker4(label, col, flags, ref_col)
+color_picker4 ::  proc (label: string, col: [4]f32, flags: Color_Edit_Flags, ref_col: ^f32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igColorPicker4(_temp_label, col, flags, ref_col)
 }
-color_button :: #force_inline proc (desc_id: cstring, col := [4]f32{}, flags := Color_Edit_Flags{}, size := [2]f32{}) -> bool {
-	return igColorButton(desc_id, col, flags, size)
+color_button ::  proc (desc_id: string, col := [4]f32{}, flags := Color_Edit_Flags{}, size := [2]f32{}) -> bool {
+	_temp_desc_id := semisafe_string_to_cstring(desc_id)
+	return igColorButton(_temp_desc_id, col, flags, size)
 }
 set_color_edit_options :: #force_inline proc (flags := Color_Edit_Flags{}) {
 	igSetColorEditOptions(flags)
 }
-tree_node_str :: #force_inline proc (label: cstring) -> bool {
-	return igTreeNode_Str(label)
+tree_node_str ::  proc (label: string) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igTreeNode_Str(_temp_label)
 }
-tree_node_str_str :: igTreeNode_StrStr  // Cannot be wrapped due to variadic args
-tree_node_ptr :: igTreeNode_Ptr  // Cannot be wrapped due to variadic args
-tree_node_ex_str :: #force_inline proc (label: cstring, flags := Tree_Node_Flags{}) -> bool {
-	return igTreeNodeEx_Str(label, flags)
+tree_node_str_str_direct :: igTreeNode_StrStr  // Direct variadic version
+tree_node_str_str ::  proc (str_id: string, fmt_: string, args: ..any) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	return igTreeNode_StrStr(_temp_str_id, "%s", _formatted_str)
 }
-tree_node_ex_str_str :: igTreeNodeEx_StrStr  // Cannot be wrapped due to variadic args
-tree_node_ex_ptr :: igTreeNodeEx_Ptr  // Cannot be wrapped due to variadic args
-tree_push_str :: #force_inline proc (str_id: cstring) {
-	igTreePush_Str(str_id)
+tree_node_ptr_direct :: igTreeNode_Ptr  // Direct variadic version
+tree_node_ptr ::  proc (ptr_id: rawptr, fmt_: string, args: ..any) -> bool {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	return igTreeNode_Ptr(ptr_id, "%s", _formatted_str)
+}
+tree_node_ex_str ::  proc (label: string, flags := Tree_Node_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igTreeNodeEx_Str(_temp_label, flags)
+}
+tree_node_ex_str_str_direct :: igTreeNodeEx_StrStr  // Direct variadic version
+tree_node_ex_str_str ::  proc (str_id: string, flags: Tree_Node_Flags, fmt_: string, args: ..any) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	return igTreeNodeEx_StrStr(_temp_str_id, flags, "%s", _formatted_str)
+}
+tree_node_ex_ptr_direct :: igTreeNodeEx_Ptr  // Direct variadic version
+tree_node_ex_ptr ::  proc (ptr_id: rawptr, flags: Tree_Node_Flags, fmt_: string, args: ..any) -> bool {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	return igTreeNodeEx_Ptr(ptr_id, flags, "%s", _formatted_str)
+}
+tree_push_str ::  proc (str_id: string) {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	igTreePush_Str(_temp_str_id)
 }
 tree_push_ptr :: #force_inline proc (ptr_id: rawptr) {
 	igTreePush_Ptr(ptr_id)
@@ -657,61 +804,76 @@ tree_pop :: #force_inline proc () {
 get_tree_node_to_label_spacing :: #force_inline proc () -> f32 {
 	return igGetTreeNodeToLabelSpacing()
 }
-collapsing_header_tree_node_flags :: #force_inline proc (label: cstring, flags := Tree_Node_Flags{}) -> bool {
-	return igCollapsingHeader_TreeNodeFlags(label, flags)
+collapsing_header_tree_node_flags ::  proc (label: string, flags := Tree_Node_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCollapsingHeader_TreeNodeFlags(_temp_label, flags)
 }
-collapsing_header_bool_ptr :: #force_inline proc (label: cstring, p_visible: ^bool, flags := Tree_Node_Flags{}) -> bool {
-	return igCollapsingHeader_BoolPtr(label, p_visible, flags)
+collapsing_header_bool_ptr ::  proc (label: string, p_visible: ^bool, flags := Tree_Node_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCollapsingHeader_BoolPtr(_temp_label, p_visible, flags)
 }
 set_next_item_open :: #force_inline proc (is_open: bool, cond := Cond{}) {
 	igSetNextItemOpen(is_open, cond)
 }
-selectable_bool :: #force_inline proc (label: cstring, selected: bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
-	return igSelectable_Bool(label, selected, flags, size)
+selectable_bool ::  proc (label: string, selected: bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igSelectable_Bool(_temp_label, selected, flags, size)
 }
-selectable_bool_ptr :: #force_inline proc (label: cstring, p_selected: ^bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
-	return igSelectable_BoolPtr(label, p_selected, flags, size)
+selectable_bool_ptr ::  proc (label: string, p_selected: ^bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igSelectable_BoolPtr(_temp_label, p_selected, flags, size)
 }
-begin_list_box :: #force_inline proc (label: cstring, size := [2]f32{}) -> bool {
-	return igBeginListBox(label, size)
+begin_list_box ::  proc (label: string, size := [2]f32{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igBeginListBox(_temp_label, size)
 }
 end_list_box :: #force_inline proc () {
 	igEndListBox()
 }
-list_box_str_arr :: #force_inline proc (label: cstring, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool {
-	return igListBox_Str_arr(label, current_item, items, items_count, height_in_items)
+list_box_str_arr ::  proc (label: string, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igListBox_Str_arr(_temp_label, current_item, items, items_count, height_in_items)
 }
-list_box_fn_bool_ptr :: #force_inline proc (label: cstring, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
-	return igListBox_FnBoolPtr(label, current_item, items_getter, data, items_count, height_in_items)
+list_box_fn_bool_ptr ::  proc (label: string, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igListBox_FnBoolPtr(_temp_label, current_item, items_getter, data, items_count, height_in_items)
 }
-plot_lines_float_ptr :: #force_inline proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+plot_lines_float_ptr ::  proc (label: string, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotLines_FloatPtr(label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
+	igPlotLines_FloatPtr(_temp_label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_lines_fn_float_ptr :: #force_inline proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
+plot_lines_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotLines_FnFloatPtr(label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
+	igPlotLines_FnFloatPtr(_temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
 }
-plot_histogram_float_ptr :: #force_inline proc (label: cstring, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+plot_histogram_float_ptr ::  proc (label: string, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotHistogram_FloatPtr(label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
+	igPlotHistogram_FloatPtr(_temp_label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_histogram_fn_float_ptr :: #force_inline proc (label: cstring, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
+plot_histogram_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotHistogram_FnFloatPtr(label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
+	igPlotHistogram_FnFloatPtr(_temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
 }
-value_bool :: #force_inline proc (prefix: cstring, b: bool) {
-	igValue_Bool(prefix, b)
+value_bool ::  proc (prefix: string, b: bool) {
+	_temp_prefix := semisafe_string_to_cstring(prefix)
+	igValue_Bool(_temp_prefix, b)
 }
-value_int :: #force_inline proc (prefix: cstring, v: i32) {
-	igValue_Int(prefix, v)
+value_int ::  proc (prefix: string, v: i32) {
+	_temp_prefix := semisafe_string_to_cstring(prefix)
+	igValue_Int(_temp_prefix, v)
 }
-value_uint :: #force_inline proc (prefix: cstring, v: u32) {
-	igValue_Uint(prefix, v)
+value_uint ::  proc (prefix: string, v: u32) {
+	_temp_prefix := semisafe_string_to_cstring(prefix)
+	igValue_Uint(_temp_prefix, v)
 }
-value_float :: #force_inline proc (prefix: cstring, v: f32, float_format: string) {
+value_float ::  proc (prefix: string, v: f32, float_format: string) {
+	_temp_prefix := semisafe_string_to_cstring(prefix)
 	_temp_float_format := semisafe_string_to_cstring(float_format)
-	igValue_Float(prefix, v, _temp_float_format)
+	igValue_Float(_temp_prefix, v, _temp_float_format)
 }
 begin_menu_bar :: #force_inline proc () -> bool {
 	return igBeginMenuBar()
@@ -725,19 +887,22 @@ begin_main_menu_bar :: #force_inline proc () -> bool {
 end_main_menu_bar :: #force_inline proc () {
 	igEndMainMenuBar()
 }
-begin_menu :: #force_inline proc (label: cstring, enabled: bool) -> bool {
-	return igBeginMenu(label, enabled)
+begin_menu ::  proc (label: string, enabled: bool) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igBeginMenu(_temp_label, enabled)
 }
 end_menu :: #force_inline proc () {
 	igEndMenu()
 }
-menu_item_bool :: #force_inline proc (label: cstring, shortcut: string, selected: bool, enabled: bool) -> bool {
+menu_item_bool ::  proc (label: string, shortcut: string, selected: bool, enabled: bool) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_shortcut := semisafe_string_to_cstring(shortcut)
-	return igMenuItem_Bool(label, _temp_shortcut, selected, enabled)
+	return igMenuItem_Bool(_temp_label, _temp_shortcut, selected, enabled)
 }
-menu_item_bool_ptr :: #force_inline proc (label: cstring, shortcut: string, p_selected: ^bool, enabled: bool) -> bool {
+menu_item_bool_ptr ::  proc (label: string, shortcut: string, p_selected: ^bool, enabled: bool) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_shortcut := semisafe_string_to_cstring(shortcut)
-	return igMenuItem_BoolPtr(label, _temp_shortcut, p_selected, enabled)
+	return igMenuItem_BoolPtr(_temp_label, _temp_shortcut, p_selected, enabled)
 }
 begin_tooltip :: #force_inline proc () -> bool {
 	return igBeginTooltip()
@@ -745,42 +910,58 @@ begin_tooltip :: #force_inline proc () -> bool {
 end_tooltip :: #force_inline proc () {
 	igEndTooltip()
 }
-set_tooltip :: igSetTooltip  // Cannot be wrapped due to variadic args
-begin_popup :: #force_inline proc (str_id: cstring, flags := Window_Flags{}) -> bool {
-	return igBeginPopup(str_id, flags)
+set_tooltip_direct :: igSetTooltip  // Direct variadic version
+set_tooltip ::  proc (fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igSetTooltip("%s", _formatted_str)
 }
-begin_popup_modal :: #force_inline proc (name: cstring, p_open: ^bool, flags := Window_Flags{}) -> bool {
-	return igBeginPopupModal(name, p_open, flags)
+begin_popup ::  proc (str_id: string, flags := Window_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igBeginPopup(_temp_str_id, flags)
+}
+begin_popup_modal ::  proc (name: string, p_open: ^bool, flags := Window_Flags{}) -> bool {
+	_temp_name := semisafe_string_to_cstring(name)
+	return igBeginPopupModal(_temp_name, p_open, flags)
 }
 end_popup :: #force_inline proc () {
 	igEndPopup()
 }
-open_popup_str :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) {
-	igOpenPopup_Str(str_id, popup_flags)
+open_popup_str ::  proc (str_id: string, popup_flags := Popup_Flags{}) {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	igOpenPopup_Str(_temp_str_id, popup_flags)
 }
 open_popup_id :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) {
 	igOpenPopup_ID(id, popup_flags)
 }
-open_popup_on_item_click :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) {
-	igOpenPopupOnItemClick(str_id, popup_flags)
+open_popup_on_item_click ::  proc (str_id: string, popup_flags := Popup_Flags{}) {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	igOpenPopupOnItemClick(_temp_str_id, popup_flags)
 }
 close_current_popup :: #force_inline proc () {
 	igCloseCurrentPopup()
 }
-begin_popup_context_item :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) -> bool {
-	return igBeginPopupContextItem(str_id, popup_flags)
+begin_popup_context_item ::  proc (str_id: string, popup_flags := Popup_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igBeginPopupContextItem(_temp_str_id, popup_flags)
 }
-begin_popup_context_window :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) -> bool {
-	return igBeginPopupContextWindow(str_id, popup_flags)
+begin_popup_context_window ::  proc (str_id: string, popup_flags := Popup_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igBeginPopupContextWindow(_temp_str_id, popup_flags)
 }
-begin_popup_context_void :: #force_inline proc (str_id: cstring, popup_flags := Popup_Flags{}) -> bool {
-	return igBeginPopupContextVoid(str_id, popup_flags)
+begin_popup_context_void ::  proc (str_id: string, popup_flags := Popup_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igBeginPopupContextVoid(_temp_str_id, popup_flags)
 }
-is_popup_open_str :: #force_inline proc (str_id: cstring, flags := Popup_Flags{}) -> bool {
-	return igIsPopupOpen_Str(str_id, flags)
+is_popup_open_str ::  proc (str_id: string, flags := Popup_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igIsPopupOpen_Str(_temp_str_id, flags)
 }
-begin_table :: #force_inline proc (str_id: cstring, column: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
-	return igBeginTable(str_id, column, flags, outer_size, inner_width)
+begin_table ::  proc (str_id: string, column: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igBeginTable(_temp_str_id, column, flags, outer_size, inner_width)
 }
 end_table :: #force_inline proc () {
 	igEndTable()
@@ -794,8 +975,9 @@ table_next_column :: #force_inline proc () -> bool {
 table_set_column_index :: #force_inline proc (column_n: i32) -> bool {
 	return igTableSetColumnIndex(column_n)
 }
-table_setup_column :: #force_inline proc (label: cstring, flags: Table_Column_Flags, init_width_or_weight: f32, user_id: ID) {
-	igTableSetupColumn(label, flags, init_width_or_weight, user_id)
+table_setup_column ::  proc (label: string, flags: Table_Column_Flags, init_width_or_weight: f32, user_id: ID) {
+	_temp_label := semisafe_string_to_cstring(label)
+	igTableSetupColumn(_temp_label, flags, init_width_or_weight, user_id)
 }
 table_setup_scroll_freeze :: #force_inline proc (cols: i32, rows: i32) {
 	igTableSetupScrollFreeze(cols, rows)
@@ -803,8 +985,9 @@ table_setup_scroll_freeze :: #force_inline proc (cols: i32, rows: i32) {
 table_headers_row :: #force_inline proc () {
 	igTableHeadersRow()
 }
-table_header :: #force_inline proc (label: cstring) {
-	igTableHeader(label)
+table_header ::  proc (label: string) {
+	_temp_label := semisafe_string_to_cstring(label)
+	igTableHeader(_temp_label)
 }
 table_get_sort_specs :: #force_inline proc () -> ^Table_Sort_Specs {
 	return igTableGetSortSpecs()
@@ -830,7 +1013,7 @@ table_set_column_enabled :: #force_inline proc (column_n: i32, v: bool) {
 table_set_bg_color :: #force_inline proc (target: Table_Bg_Target, color: u32, column_n: i32) {
 	igTableSetBgColor(target, color, column_n)
 }
-columns :: #force_inline proc (count: i32, id: string, border: bool) {
+columns ::  proc (count: i32, id: string, border: bool) {
 	_temp_id := semisafe_string_to_cstring(id)
 	igColumns(count, _temp_id, border)
 }
@@ -855,28 +1038,32 @@ set_column_offset :: #force_inline proc (column_index: i32, offset_x: f32) {
 get_columns_count :: #force_inline proc () -> i32 {
 	return igGetColumnsCount()
 }
-begin_tab_bar :: #force_inline proc (str_id: cstring, flags := Tab_Bar_Flags{}) -> bool {
-	return igBeginTabBar(str_id, flags)
+begin_tab_bar ::  proc (str_id: string, flags := Tab_Bar_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igBeginTabBar(_temp_str_id, flags)
 }
 end_tab_bar :: #force_inline proc () {
 	igEndTabBar()
 }
-begin_tab_item :: #force_inline proc (label: cstring, p_open: ^bool, flags := Tab_Item_Flags{}) -> bool {
-	return igBeginTabItem(label, p_open, flags)
+begin_tab_item ::  proc (label: string, p_open: ^bool, flags := Tab_Item_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igBeginTabItem(_temp_label, p_open, flags)
 }
 end_tab_item :: #force_inline proc () {
 	igEndTabItem()
 }
-tab_item_button :: #force_inline proc (label: cstring, flags := Tab_Item_Flags{}) -> bool {
-	return igTabItemButton(label, flags)
+tab_item_button ::  proc (label: string, flags := Tab_Item_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igTabItemButton(_temp_label, flags)
 }
-set_tab_item_closed :: #force_inline proc (tab_or_docked_window_label: cstring) {
-	igSetTabItemClosed(tab_or_docked_window_label)
+set_tab_item_closed ::  proc (tab_or_docked_window_label: string) {
+	_temp_tab_or_docked_window_label := semisafe_string_to_cstring(tab_or_docked_window_label)
+	igSetTabItemClosed(_temp_tab_or_docked_window_label)
 }
 log_to_tty :: #force_inline proc (auto_open_depth: i32) {
 	igLogToTTY(auto_open_depth)
 }
-log_to_file :: #force_inline proc (auto_open_depth: i32, filename: string) {
+log_to_file ::  proc (auto_open_depth: i32, filename: string) {
 	_temp_filename := semisafe_string_to_cstring(filename)
 	igLogToFile(auto_open_depth, _temp_filename)
 }
@@ -892,8 +1079,9 @@ log_buttons :: #force_inline proc () {
 begin_drag_drop_source :: #force_inline proc (flags := Drag_Drop_Flags{}) -> bool {
 	return igBeginDragDropSource(flags)
 }
-set_drag_drop_payload :: #force_inline proc (type: cstring, data: rawptr, sz: int, cond := Cond{}) -> bool {
-	return igSetDragDropPayload(type, data, sz, cond)
+set_drag_drop_payload ::  proc (type: string, data: rawptr, sz: int, cond := Cond{}) -> bool {
+	_temp_type := semisafe_string_to_cstring(type)
+	return igSetDragDropPayload(_temp_type, data, sz, cond)
 }
 end_drag_drop_source :: #force_inline proc () {
 	igEndDragDropSource()
@@ -901,8 +1089,9 @@ end_drag_drop_source :: #force_inline proc () {
 begin_drag_drop_target :: #force_inline proc () -> bool {
 	return igBeginDragDropTarget()
 }
-accept_drag_drop_payload :: #force_inline proc (type: cstring, flags := Drag_Drop_Flags{}) -> ^Payload {
-	return igAcceptDragDropPayload(type, flags)
+accept_drag_drop_payload ::  proc (type: string, flags := Drag_Drop_Flags{}) -> ^Payload {
+	_temp_type := semisafe_string_to_cstring(type)
+	return igAcceptDragDropPayload(_temp_type, flags)
 }
 end_drag_drop_target :: #force_inline proc () {
 	igEndDragDropTarget()
@@ -1024,7 +1213,7 @@ begin_child_frame :: #force_inline proc (id: ID, size := [2]f32{}, flags := Wind
 end_child_frame :: #force_inline proc () {
 	igEndChildFrame()
 }
-calc_text_size :: #force_inline proc (text: string, hide_text_after_double_hash: bool, wrap_width: f32) -> (p_out: [2]f32) {
+calc_text_size ::  proc (text: string, hide_text_after_double_hash: bool, wrap_width: f32) -> (p_out: [2]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igCalcTextSize(&p_out, text_begin, text_end, hide_text_after_double_hash, wrap_width)
@@ -1117,27 +1306,33 @@ set_next_frame_want_capture_mouse :: #force_inline proc (want_capture_mouse: boo
 get_clipboard_text :: #force_inline proc () -> cstring {
 	return igGetClipboardText()
 }
-set_clipboard_text :: #force_inline proc (text: cstring) {
-	igSetClipboardText(text)
+set_clipboard_text ::  proc (text: string) {
+	_temp_text := semisafe_string_to_cstring(text)
+	igSetClipboardText(_temp_text)
 }
-load_ini_settings_from_disk :: #force_inline proc (ini_filename: cstring) {
-	igLoadIniSettingsFromDisk(ini_filename)
+load_ini_settings_from_disk ::  proc (ini_filename: string) {
+	_temp_ini_filename := semisafe_string_to_cstring(ini_filename)
+	igLoadIniSettingsFromDisk(_temp_ini_filename)
 }
-load_ini_settings_from_memory :: #force_inline proc (ini_data: cstring, ini_size: int) {
-	igLoadIniSettingsFromMemory(ini_data, ini_size)
+load_ini_settings_from_memory ::  proc (ini_data: string, ini_size: int) {
+	_temp_ini_data := semisafe_string_to_cstring(ini_data)
+	igLoadIniSettingsFromMemory(_temp_ini_data, ini_size)
 }
-save_ini_settings_to_disk :: #force_inline proc (ini_filename: cstring) {
-	igSaveIniSettingsToDisk(ini_filename)
+save_ini_settings_to_disk ::  proc (ini_filename: string) {
+	_temp_ini_filename := semisafe_string_to_cstring(ini_filename)
+	igSaveIniSettingsToDisk(_temp_ini_filename)
 }
 save_ini_settings_to_memory :: #force_inline proc () -> (out_ini_size: int, _ret: cstring) {
 	_ret = igSaveIniSettingsToMemory(&out_ini_size)
 	return
 }
-debug_text_encoding :: #force_inline proc (text: cstring) {
-	igDebugTextEncoding(text)
+debug_text_encoding ::  proc (text: string) {
+	_temp_text := semisafe_string_to_cstring(text)
+	igDebugTextEncoding(_temp_text)
 }
-debug_check_version_and_data_layout :: #force_inline proc (version_str: cstring, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool {
-	return igDebugCheckVersionAndDataLayout(version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
+debug_check_version_and_data_layout ::  proc (version_str: string, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool {
+	_temp_version_str := semisafe_string_to_cstring(version_str)
+	return igDebugCheckVersionAndDataLayout(_temp_version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
 }
 set_allocator_functions :: #force_inline proc (alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) {
 	igSetAllocatorFunctions(alloc_func, free_func, user_data)
@@ -1181,7 +1376,7 @@ io_add_input_character :: #force_inline proc (self: ^IO, c: u32) {
 io_add_input_character_u_t_f16 :: #force_inline proc (self: ^IO, c: u16) {
 	ImGuiIO_AddInputCharacterUTF16(self, c)
 }
-io_add_input_characters_u_t_f8 :: #force_inline proc (self: ^IO, str: string) {
+io_add_input_characters_u_t_f8 ::  proc (self: ^IO, str: string) {
 	_temp_str := semisafe_string_to_cstring(str)
 	ImGuiIO_AddInputCharactersUTF8(self, _temp_str)
 }
@@ -1212,7 +1407,7 @@ input_text_callback_data_destroy :: #force_inline proc (self: ^Input_Text_Callba
 input_text_callback_data_delete_chars :: #force_inline proc (self: ^Input_Text_Callback_Data, pos: i32, bytes_count: i32) {
 	ImGuiInputTextCallbackData_DeleteChars(self, pos, bytes_count)
 }
-input_text_callback_data_insert_chars :: #force_inline proc (self: ^Input_Text_Callback_Data, pos: i32, text: string) {
+input_text_callback_data_insert_chars ::  proc (self: ^Input_Text_Callback_Data, pos: i32, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImGuiInputTextCallbackData_InsertChars(self, pos, text_begin, text_end)
@@ -1235,7 +1430,7 @@ payload_destroy :: #force_inline proc (self: ^Payload) {
 payload_clear :: #force_inline proc (self: ^Payload) {
 	ImGuiPayload_Clear(self)
 }
-payload_is_data_type :: #force_inline proc (self: ^Payload, type: string) -> bool {
+payload_is_data_type ::  proc (self: ^Payload, type: string) -> bool {
 	_temp_type := semisafe_string_to_cstring(type)
 	return ImGuiPayload_IsDataType(self, _temp_type)
 }
@@ -1263,17 +1458,18 @@ once_upon_a_frame_new :: #force_inline proc () -> ^Once_Upon_A_Frame {
 once_upon_a_frame_destroy :: #force_inline proc (self: ^Once_Upon_A_Frame) {
 	ImGuiOnceUponAFrame_destroy(self)
 }
-text_filter_new :: #force_inline proc (default_filter: cstring) -> ^Text_Filter {
-	return ImGuiTextFilter_ImGuiTextFilter(default_filter)
+text_filter_new ::  proc (default_filter: string) -> ^Text_Filter {
+	_temp_default_filter := semisafe_string_to_cstring(default_filter)
+	return ImGuiTextFilter_ImGuiTextFilter(_temp_default_filter)
 }
 text_filter_destroy :: #force_inline proc (self: ^Text_Filter) {
 	ImGuiTextFilter_destroy(self)
 }
-text_filter_draw :: #force_inline proc (self: ^Text_Filter, label: string, width: f32) -> bool {
+text_filter_draw ::  proc (self: ^Text_Filter, label: string, width: f32) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return ImGuiTextFilter_Draw(self, _temp_label, width)
 }
-text_filter_pass_filter :: #force_inline proc (self: ^Text_Filter, text: string) -> bool {
+text_filter_pass_filter ::  proc (self: ^Text_Filter, text: string) -> bool {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	return ImGuiTextFilter_PassFilter(self, text_begin, text_end)
@@ -1293,9 +1489,10 @@ text_range_new_nil :: #force_inline proc () -> ^Text_Range {
 text_range_destroy :: #force_inline proc (self: ^Text_Range) {
 	ImGuiTextRange_destroy(self)
 }
-text_range_new_str :: #force_inline proc (_b: cstring, _e: string) -> ^Text_Range {
+text_range_new_str ::  proc (_b: string, _e: string) -> ^Text_Range {
+	_temp__b := semisafe_string_to_cstring(_b)
 	_temp__e := semisafe_string_to_cstring(_e)
-	return ImGuiTextRange_ImGuiTextRange_Str(_b, _temp__e)
+	return ImGuiTextRange_ImGuiTextRange_Str(_temp__b, _temp__e)
 }
 text_range_empty :: #force_inline proc (self: ^Text_Range) -> bool {
 	return ImGuiTextRange_empty(self)
@@ -1330,7 +1527,7 @@ text_buffer_reserve :: #force_inline proc (self: ^Text_Buffer, capacity: i32) {
 text_buffer_c_str :: #force_inline proc (self: ^Text_Buffer) -> cstring {
 	return ImGuiTextBuffer_c_str(self)
 }
-text_buffer_append :: #force_inline proc (self: ^Text_Buffer, str: string) {
+text_buffer_append ::  proc (self: ^Text_Buffer, str: string) {
 	str_begin := raw_data(str)
 	str_end := cast([^]u8)(uintptr(str_begin) + uintptr(len(str)))
 	ImGuiTextBuffer_append(self, str_begin, str_end)
@@ -1530,12 +1727,12 @@ draw_list_add_ngon :: #force_inline proc (self: ^Draw_List, center: [2]f32, radi
 draw_list_add_ngon_filled :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) {
 	ImDrawList_AddNgonFilled(self, center, radius, col, num_segments)
 }
-draw_list_add_text_vec2 :: #force_inline proc (self: ^Draw_List, pos: [2]f32, col: u32, text: string) {
+draw_list_add_text_vec2 ::  proc (self: ^Draw_List, pos: [2]f32, col: u32, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImDrawList_AddText_Vec2(self, pos, col, text_begin, text_end)
 }
-draw_list_add_text_font_ptr :: #force_inline proc (self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text: string, wrap_width: f32, cpu_fine_clip_rect: ^[4]f32) {
+draw_list_add_text_font_ptr ::  proc (self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text: string, wrap_width: f32, cpu_fine_clip_rect: ^[4]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImDrawList_AddText_FontPtr(self, font, font_size, pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect)
@@ -1672,7 +1869,7 @@ font_glyph_ranges_builder_set_bit :: #force_inline proc (self: ^Font_Glyph_Range
 font_glyph_ranges_builder_add_char :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, c: u16) {
 	ImFontGlyphRangesBuilder_AddChar(self, c)
 }
-font_glyph_ranges_builder_add_text :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, text: string) {
+font_glyph_ranges_builder_add_text ::  proc (self: ^Font_Glyph_Ranges_Builder, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImFontGlyphRangesBuilder_AddText(self, text_begin, text_end)
@@ -1705,7 +1902,7 @@ font_atlas_add_font :: #force_inline proc (self: ^Font_Atlas, font_cfg: ^Font_Co
 font_atlas_add_font_default :: #force_inline proc (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font {
 	return ImFontAtlas_AddFontDefault(self, font_cfg)
 }
-font_atlas_add_font_from_file_ttf :: #force_inline proc (self: ^Font_Atlas, filename: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
+font_atlas_add_font_from_file_ttf ::  proc (self: ^Font_Atlas, filename: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
 	_temp_filename := semisafe_string_to_cstring(filename)
 	return ImFontAtlas_AddFontFromFileTTF(self, _temp_filename, size_pixels, font_cfg, glyph_ranges)
 }
@@ -1715,7 +1912,7 @@ font_atlas_add_font_from_memory_ttf :: #force_inline proc (self: ^Font_Atlas, fo
 font_atlas_add_font_from_memory_compressed_ttf :: #force_inline proc (self: ^Font_Atlas, compressed_font_data: rawptr, compressed_font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
 	return ImFontAtlas_AddFontFromMemoryCompressedTTF(self, compressed_font_data, compressed_font_size, size_pixels, font_cfg, glyph_ranges)
 }
-font_atlas_add_font_from_memory_compressed_base85_ttf :: #force_inline proc (self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
+font_atlas_add_font_from_memory_compressed_base85_ttf ::  proc (self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
 	_temp_compressed_font_data_base85 := semisafe_string_to_cstring(compressed_font_data_base85)
 	return ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self, _temp_compressed_font_data_base85, size_pixels, font_cfg, glyph_ranges)
 }
@@ -1813,13 +2010,13 @@ font_is_loaded :: #force_inline proc (self: ^Font) -> bool {
 font_get_debug_name :: #force_inline proc (self: ^Font) -> cstring {
 	return ImFont_GetDebugName(self)
 }
-font_calc_text_size_a :: #force_inline proc (self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring) -> (p_out: [2]f32) {
+font_calc_text_size_a ::  proc (self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring) -> (p_out: [2]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImFont_CalcTextSizeA(&p_out, self, size, max_width, wrap_width, text_begin, text_end, remaining)
 	return
 }
-font_calc_word_wrap_position_a :: #force_inline proc (self: ^Font, scale: f32, text: string, wrap_width: f32) -> cstring {
+font_calc_word_wrap_position_a ::  proc (self: ^Font, scale: f32, text: string, wrap_width: f32) -> cstring {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	return ImFont_CalcWordWrapPositionA(self, scale, text_begin, text_end, wrap_width)
@@ -1827,7 +2024,7 @@ font_calc_word_wrap_position_a :: #force_inline proc (self: ^Font, scale: f32, t
 font_render_char :: #force_inline proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, c: u16) {
 	ImFont_RenderChar(self, draw_list, size, pos, col, c)
 }
-font_render_text :: #force_inline proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text: string, wrap_width: f32, cpu_fine_clip: bool) {
+font_render_text ::  proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text: string, wrap_width: f32, cpu_fine_clip: bool) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	ImFont_RenderText(self, draw_list, size, pos, col, clip_rect, text_begin, text_end, wrap_width, cpu_fine_clip)
@@ -1992,15 +2189,15 @@ text_index_clear :: #force_inline proc (self: ^Text_Index) {
 text_index_size :: #force_inline proc (self: ^Text_Index) -> i32 {
 	return ImGuiTextIndex_size(self)
 }
-text_index_get_line_begin :: #force_inline proc (self: ^Text_Index, base: string, n: i32) -> cstring {
+text_index_get_line_begin ::  proc (self: ^Text_Index, base: string, n: i32) -> cstring {
 	_temp_base := semisafe_string_to_cstring(base)
 	return ImGuiTextIndex_get_line_begin(self, _temp_base, n)
 }
-text_index_get_line_end :: #force_inline proc (self: ^Text_Index, base: string, n: i32) -> cstring {
+text_index_get_line_end ::  proc (self: ^Text_Index, base: string, n: i32) -> cstring {
 	_temp_base := semisafe_string_to_cstring(base)
 	return ImGuiTextIndex_get_line_end(self, _temp_base, n)
 }
-text_index_append :: #force_inline proc (self: ^Text_Index, base: string, old_size: i32, new_size: i32) {
+text_index_append ::  proc (self: ^Text_Index, base: string, old_size: i32, new_size: i32) {
 	_temp_base := semisafe_string_to_cstring(base)
 	ImGuiTextIndex_append(self, _temp_base, old_size, new_size)
 }
@@ -2297,14 +2494,14 @@ context_new :: #force_inline proc (shared_font_atlas: ^Font_Atlas) -> ^Context {
 context_destroy :: #force_inline proc (self: ^Context) {
 	ImGuiContext_destroy(self)
 }
-window_new :: #force_inline proc (context_: ^Context, name: string) -> ^Window {
+window_new ::  proc (context_: ^Context, name: string) -> ^Window {
 	_temp_name := semisafe_string_to_cstring(name)
 	return ImGuiWindow_ImGuiWindow(context_, _temp_name)
 }
 window_destroy :: #force_inline proc (self: ^Window) {
 	ImGuiWindow_destroy(self)
 }
-window_get_id_str :: #force_inline proc (self: ^Window, str: string) -> ID {
+window_get_id_str ::  proc (self: ^Window, str: string) -> ID {
 	str_begin := raw_data(str)
 	str_end := cast([^]u8)(uintptr(str_begin) + uintptr(len(str)))
 	return ImGuiWindow_GetID_Str(self, str_begin, str_end)
@@ -2399,8 +2596,9 @@ get_current_window :: #force_inline proc () -> ^Window {
 find_window_by_id :: #force_inline proc (id: ID) -> ^Window {
 	return igFindWindowByID(id)
 }
-find_window_by_name :: #force_inline proc (name: cstring) -> ^Window {
-	return igFindWindowByName(name)
+find_window_by_name ::  proc (name: string) -> ^Window {
+	_temp_name := semisafe_string_to_cstring(name)
+	return igFindWindowByName(_temp_name)
 }
 update_window_parent_and_root_links :: #force_inline proc (window: ^Window, flags: Window_Flags, parent_window: ^Window) {
 	igUpdateWindowParentAndRootLinks(window, flags, parent_window)
@@ -2528,14 +2726,17 @@ clear_ini_settings :: #force_inline proc () {
 add_settings_handler :: #force_inline proc (handler: ^Settings_Handler) {
 	igAddSettingsHandler(handler)
 }
-remove_settings_handler :: #force_inline proc (type_name: cstring) {
-	igRemoveSettingsHandler(type_name)
+remove_settings_handler ::  proc (type_name: string) {
+	_temp_type_name := semisafe_string_to_cstring(type_name)
+	igRemoveSettingsHandler(_temp_type_name)
 }
-find_settings_handler :: #force_inline proc (type_name: cstring) -> ^Settings_Handler {
-	return igFindSettingsHandler(type_name)
+find_settings_handler ::  proc (type_name: string) -> ^Settings_Handler {
+	_temp_type_name := semisafe_string_to_cstring(type_name)
+	return igFindSettingsHandler(_temp_type_name)
 }
-create_new_window_settings :: #force_inline proc (name: cstring) -> ^Window_Settings {
-	return igCreateNewWindowSettings(name)
+create_new_window_settings ::  proc (name: string) -> ^Window_Settings {
+	_temp_name := semisafe_string_to_cstring(name)
+	return igCreateNewWindowSettings(_temp_name)
 }
 find_window_settings_by_id :: #force_inline proc (id: ID) -> ^Window_Settings {
 	return igFindWindowSettingsByID(id)
@@ -2543,8 +2744,9 @@ find_window_settings_by_id :: #force_inline proc (id: ID) -> ^Window_Settings {
 find_window_settings_by_window :: #force_inline proc (window: ^Window) -> ^Window_Settings {
 	return igFindWindowSettingsByWindow(window)
 }
-clear_window_settings :: #force_inline proc (name: cstring) {
-	igClearWindowSettings(name)
+clear_window_settings ::  proc (name: string) {
+	_temp_name := semisafe_string_to_cstring(name)
+	igClearWindowSettings(_temp_name)
 }
 localize_register_entries :: #force_inline proc (entries: ^Loc_Entry, count: i32) {
 	igLocalizeRegisterEntries(entries, count)
@@ -2613,7 +2815,7 @@ mark_item_edited :: #force_inline proc (id: ID) {
 push_override_id :: #force_inline proc (id: ID) {
 	igPushOverrideID(id)
 }
-get_id_with_seed_str :: #force_inline proc (str_id: string, seed: ID) -> ID {
+get_id_with_seed_str ::  proc (str_id: string, seed: ID) -> ID {
 	str_id_begin := raw_data(str_id)
 	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
 	return igGetIDWithSeed_Str(str_id_begin, str_id_end, seed)
@@ -2677,17 +2879,19 @@ log_begin :: #force_inline proc (type: Log_Type, auto_open_depth: i32) {
 log_to_buffer :: #force_inline proc (auto_open_depth: i32) {
 	igLogToBuffer(auto_open_depth)
 }
-log_rendered_text :: #force_inline proc (ref_pos: ^[2]f32, text: string) {
+log_rendered_text ::  proc (ref_pos: ^[2]f32, text: string) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igLogRenderedText(ref_pos, text_begin, text_end)
 }
-log_set_next_text_decoration :: #force_inline proc (prefix: cstring, suffix: string) {
+log_set_next_text_decoration ::  proc (prefix: string, suffix: string) {
+	_temp_prefix := semisafe_string_to_cstring(prefix)
 	_temp_suffix := semisafe_string_to_cstring(suffix)
-	igLogSetNextTextDecoration(prefix, _temp_suffix)
+	igLogSetNextTextDecoration(_temp_prefix, _temp_suffix)
 }
-begin_child_ex :: #force_inline proc (name: cstring, id: ID, size_arg: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
-	return igBeginChildEx(name, id, size_arg, border, flags)
+begin_child_ex ::  proc (name: string, id: ID, size_arg: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
+	_temp_name := semisafe_string_to_cstring(name)
+	return igBeginChildEx(_temp_name, id, size_arg, border, flags)
 }
 open_popup_ex :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) {
 	igOpenPopupEx(id, popup_flags)
@@ -2728,17 +2932,20 @@ find_best_window_pos_for_popup_ex :: #force_inline proc (ref_pos: [2]f32, size: 
 	igFindBestWindowPosForPopupEx(&p_out, ref_pos, size, last_dir, r_outer, r_avoid, policy)
 	return
 }
-begin_viewport_side_bar :: #force_inline proc (name: cstring, viewport: ^Viewport, dir: Dir, size: f32, window_flags := Window_Flags{}) -> bool {
-	return igBeginViewportSideBar(name, viewport, dir, size, window_flags)
+begin_viewport_side_bar ::  proc (name: string, viewport: ^Viewport, dir: Dir, size: f32, window_flags := Window_Flags{}) -> bool {
+	_temp_name := semisafe_string_to_cstring(name)
+	return igBeginViewportSideBar(_temp_name, viewport, dir, size, window_flags)
 }
-begin_menu_ex :: #force_inline proc (label: cstring, icon: string, enabled: bool) -> bool {
+begin_menu_ex ::  proc (label: string, icon: string, enabled: bool) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_icon := semisafe_string_to_cstring(icon)
-	return igBeginMenuEx(label, _temp_icon, enabled)
+	return igBeginMenuEx(_temp_label, _temp_icon, enabled)
 }
-menu_item_ex :: #force_inline proc (label: cstring, icon: string, shortcut: string, selected: bool, enabled: bool) -> bool {
+menu_item_ex ::  proc (label: string, icon: string, shortcut: string, selected: bool, enabled: bool) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_icon := semisafe_string_to_cstring(icon)
 	_temp_shortcut := semisafe_string_to_cstring(shortcut)
-	return igMenuItemEx(label, _temp_icon, _temp_shortcut, selected, enabled)
+	return igMenuItemEx(_temp_label, _temp_icon, _temp_shortcut, selected, enabled)
 }
 begin_combo_popup :: #force_inline proc (popup_id: ID, bb: Rect, flags := Combo_Flags{}) -> bool {
 	return igBeginComboPopup(popup_id, bb, flags)
@@ -2922,8 +3129,9 @@ render_drag_drop_target_rect :: #force_inline proc (bb: Rect) {
 set_window_clip_rect_before_set_channel :: #force_inline proc (window: ^Window, clip_rect: Rect) {
 	igSetWindowClipRectBeforeSetChannel(window, clip_rect)
 }
-begin_columns :: #force_inline proc (str_id: cstring, count: i32, flags := Old_Column_Flags{}) {
-	igBeginColumns(str_id, count, flags)
+begin_columns ::  proc (str_id: string, count: i32, flags := Old_Column_Flags{}) {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	igBeginColumns(_temp_str_id, count, flags)
 }
 end_columns :: #force_inline proc () {
 	igEndColumns()
@@ -2937,8 +3145,9 @@ push_columns_background :: #force_inline proc () {
 pop_columns_background :: #force_inline proc () {
 	igPopColumnsBackground()
 }
-get_columns_id :: #force_inline proc (str_id: cstring, count: i32) -> ID {
-	return igGetColumnsID(str_id, count)
+get_columns_id ::  proc (str_id: string, count: i32) -> ID {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igGetColumnsID(_temp_str_id, count)
 }
 find_or_create_columns :: #force_inline proc (window: ^Window, id: ID) -> ^Old_Columns {
 	return igFindOrCreateColumns(window, id)
@@ -2976,8 +3185,9 @@ get_current_table :: #force_inline proc () -> ^Table {
 table_find_by_id :: #force_inline proc (id: ID) -> ^Table {
 	return igTableFindByID(id)
 }
-begin_table_ex :: #force_inline proc (name: cstring, id: ID, columns_count: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
-	return igBeginTableEx(name, id, columns_count, flags, outer_size, inner_width)
+begin_table_ex ::  proc (name: string, id: ID, columns_count: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
+	_temp_name := semisafe_string_to_cstring(name)
+	return igBeginTableEx(_temp_name, id, columns_count, flags, outer_size, inner_width)
 }
 table_begin_init_memory :: #force_inline proc (table: ^Table, columns_count: i32) {
 	igTableBeginInitMemory(table, columns_count)
@@ -3133,11 +3343,11 @@ tab_bar_queue_reorder_from_mouse_pos :: #force_inline proc (tab_bar: ^Tab_Bar, t
 tab_bar_process_reorder :: #force_inline proc (tab_bar: ^Tab_Bar) -> bool {
 	return igTabBarProcessReorder(tab_bar)
 }
-tab_item_ex :: #force_inline proc (tab_bar: ^Tab_Bar, label: string, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool {
+tab_item_ex ::  proc (tab_bar: ^Tab_Bar, label: string, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igTabItemEx(tab_bar, _temp_label, p_open, flags, docked_window)
 }
-tab_item_calc_size_str :: #force_inline proc (label: string, has_close_button_or_unsaved_marker: bool) -> (p_out: [2]f32) {
+tab_item_calc_size_str ::  proc (label: string, has_close_button_or_unsaved_marker: bool) -> (p_out: [2]f32) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igTabItemCalcSize_Str(&p_out, _temp_label, has_close_button_or_unsaved_marker)
 	return
@@ -3149,32 +3359,32 @@ tab_item_calc_size_window_ptr :: #force_inline proc (window: ^Window) -> (p_out:
 tab_item_background :: #force_inline proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, col: u32) {
 	igTabItemBackground(draw_list, bb, flags, col)
 }
-tab_item_label_and_close_button :: #force_inline proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: string, tab_id: ID, close_button_id: ID, is_contents_visible: bool) -> (out_just_closed: bool, out_text_clipped: bool) {
+tab_item_label_and_close_button ::  proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: string, tab_id: ID, close_button_id: ID, is_contents_visible: bool) -> (out_just_closed: bool, out_text_clipped: bool) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igTabItemLabelAndCloseButton(draw_list, bb, flags, frame_padding, _temp_label, tab_id, close_button_id, is_contents_visible, &out_just_closed, &out_text_clipped)
 	return
 }
-render_text :: #force_inline proc (pos: [2]f32, text: string, hide_text_after_hash: bool) {
+render_text ::  proc (pos: [2]f32, text: string, hide_text_after_hash: bool) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderText(pos, text_begin, text_end, hide_text_after_hash)
 }
-render_text_wrapped :: #force_inline proc (pos: [2]f32, text: string, wrap_width: f32) {
+render_text_wrapped ::  proc (pos: [2]f32, text: string, wrap_width: f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextWrapped(pos, text_begin, text_end, wrap_width)
 }
-render_text_clipped :: #force_inline proc (pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
+render_text_clipped ::  proc (pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextClipped(pos_min, pos_max, text_begin, text_end, text_size_if_known, align, clip_rect)
 }
-render_text_clipped_ex :: #force_inline proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
+render_text_clipped_ex ::  proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextClippedEx(draw_list, pos_min, pos_max, text_begin, text_end, text_size_if_known, align, clip_rect)
 }
-render_text_ellipsis :: #force_inline proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: string, text_size_if_known: ^[2]f32) {
+render_text_ellipsis ::  proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: string, text_size_if_known: ^[2]f32) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igRenderTextEllipsis(draw_list, pos_min, pos_max, clip_max_x, ellipsis_max_x, text_begin, text_end, text_size_if_known)
@@ -3191,7 +3401,7 @@ render_color_rect_with_alpha_checkerboard :: #force_inline proc (draw_list: ^Dra
 render_nav_highlight :: #force_inline proc (bb: Rect, id: ID, flags := Nav_Highlight_Flags{}) {
 	igRenderNavHighlight(bb, id, flags)
 }
-find_rendered_text_end :: #force_inline proc (text: string) -> cstring {
+find_rendered_text_end ::  proc (text: string) -> cstring {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	return igFindRenderedTextEnd(text_begin, text_end)
@@ -3217,16 +3427,18 @@ render_rect_filled_range_h :: #force_inline proc (draw_list: ^Draw_List, rect: R
 render_rect_filled_with_hole :: #force_inline proc (draw_list: ^Draw_List, outer: Rect, inner: Rect, col: u32, rounding: f32) {
 	igRenderRectFilledWithHole(draw_list, outer, inner, col, rounding)
 }
-text_ex :: #force_inline proc (text: string, flags := Text_Flags{}) {
+text_ex ::  proc (text: string, flags := Text_Flags{}) {
 	text_begin := raw_data(text)
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igTextEx(text_begin, text_end, flags)
 }
-button_ex :: #force_inline proc (label: cstring, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
-	return igButtonEx(label, size_arg, flags)
+button_ex ::  proc (label: string, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igButtonEx(_temp_label, size_arg, flags)
 }
-arrow_button_ex :: #force_inline proc (str_id: cstring, dir: Dir, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
-	return igArrowButtonEx(str_id, dir, size_arg, flags)
+arrow_button_ex ::  proc (str_id: string, dir: Dir, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
+	_temp_str_id := semisafe_string_to_cstring(str_id)
+	return igArrowButtonEx(_temp_str_id, dir, size_arg, flags)
 }
 image_button_ex :: #force_inline proc (id: ID, texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, bg_col := [4]f32{}, tint_col := [4]f32{}, flags := Button_Flags{}) -> bool {
 	return igImageButtonEx(id, texture_id, size, uv0, uv1, bg_col, tint_col, flags)
@@ -3234,16 +3446,18 @@ image_button_ex :: #force_inline proc (id: ID, texture_id: Texture_ID, size := [
 separator_ex :: #force_inline proc (flags := Separator_Flags{}) {
 	igSeparatorEx(flags)
 }
-separator_text_ex :: #force_inline proc (id: ID, label: string, extra_width: f32) {
+separator_text_ex ::  proc (id: ID, label: string, extra_width: f32) {
 	label_begin := raw_data(label)
 	label_end := cast([^]u8)(uintptr(label_begin) + uintptr(len(label)))
 	igSeparatorTextEx(id, label_begin, label_end, extra_width)
 }
-checkbox_flags_s64_ptr :: #force_inline proc (label: cstring, flags: ^i64, flags_value: i64) -> bool {
-	return igCheckboxFlags_S64Ptr(label, flags, flags_value)
+checkbox_flags_s64_ptr ::  proc (label: string, flags: ^i64, flags_value: i64) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCheckboxFlags_S64Ptr(_temp_label, flags, flags_value)
 }
-checkbox_flags_u64_ptr :: #force_inline proc (label: cstring, flags: ^u64, flags_value: u64) -> bool {
-	return igCheckboxFlags_U64Ptr(label, flags, flags_value)
+checkbox_flags_u64_ptr ::  proc (label: string, flags: ^u64, flags_value: u64) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
+	return igCheckboxFlags_U64Ptr(_temp_label, flags, flags_value)
 }
 close_button :: #force_inline proc (id: ID, pos := [2]f32{}) -> bool {
 	return igCloseButton(id, pos)
@@ -3274,11 +3488,11 @@ button_behavior :: #force_inline proc (bb: Rect, id: ID, flags := Button_Flags{}
 	_ret = igButtonBehavior(bb, id, &out_hovered, &out_held, flags)
 	return
 }
-drag_behavior :: #force_inline proc (id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
+drag_behavior ::  proc (id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDragBehavior(id, data_type, p_v, v_speed, p_min, p_max, _temp_format, flags)
 }
-slider_behavior :: #force_inline proc (bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> (out_grab_bb: Rect, _ret: bool) {
+slider_behavior ::  proc (bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> (out_grab_bb: Rect, _ret: bool) {
 	_temp_format := semisafe_string_to_cstring(format)
 	_ret = igSliderBehavior(bb, id, data_type, p_v, p_min, p_max, _temp_format, flags, &out_grab_bb)
 	return
@@ -3286,7 +3500,7 @@ slider_behavior :: #force_inline proc (bb: Rect, id: ID, data_type: Data_Type, p
 splitter_behavior :: #force_inline proc (bb: Rect, id: ID, axis: Axis, size1: ^f32, size2: ^f32, min_size1: f32, min_size2: f32, hover_extend: f32, hover_visibility_delay: f32, bg_col: u32) -> bool {
 	return igSplitterBehavior(bb, id, axis, size1, size2, min_size1, min_size2, hover_extend, hover_visibility_delay, bg_col)
 }
-tree_node_behavior :: #force_inline proc (id: ID, flags: Tree_Node_Flags, label: string) -> bool {
+tree_node_behavior ::  proc (id: ID, flags: Tree_Node_Flags, label: string) -> bool {
 	label_begin := raw_data(label)
 	label_end := cast([^]u8)(uintptr(label_begin) + uintptr(len(label)))
 	return igTreeNodeBehavior(id, flags, label_begin, label_end)
@@ -3303,16 +3517,17 @@ tree_node_update_next_open :: #force_inline proc (id: ID, flags := Tree_Node_Fla
 data_type_get_info :: #force_inline proc (data_type: Data_Type) -> ^Data_Type_Info {
 	return igDataTypeGetInfo(data_type)
 }
-data_type_format_string :: #force_inline proc (buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
+data_type_format_string ::  proc (buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
 	_temp_format := semisafe_string_to_cstring(format)
 	return igDataTypeFormatString(raw_data(buf), cast(i32)len(buf), data_type, p_data, _temp_format)
 }
 data_type_apply_op :: #force_inline proc (data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) {
 	igDataTypeApplyOp(data_type, op, output, arg_1, arg_2)
 }
-data_type_apply_from_text :: #force_inline proc (buf: cstring, data_type: Data_Type, p_data: rawptr, format: string) -> bool {
+data_type_apply_from_text ::  proc (buf: string, data_type: Data_Type, p_data: rawptr, format: string) -> bool {
+	_temp_buf := semisafe_string_to_cstring(buf)
 	_temp_format := semisafe_string_to_cstring(format)
-	return igDataTypeApplyFromText(buf, data_type, p_data, _temp_format)
+	return igDataTypeApplyFromText(_temp_buf, data_type, p_data, _temp_format)
 }
 data_type_compare :: #force_inline proc (data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -> i32 {
 	return igDataTypeCompare(data_type, arg_1, arg_2)
@@ -3320,18 +3535,19 @@ data_type_compare :: #force_inline proc (data_type: Data_Type, arg_1: rawptr, ar
 data_type_clamp :: #force_inline proc (data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr) -> bool {
 	return igDataTypeClamp(data_type, p_data, p_min, p_max)
 }
-input_text_ex :: #force_inline proc (label: cstring, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+input_text_ex ::  proc (label: string, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
+	_temp_label := semisafe_string_to_cstring(label)
 	_temp_hint := semisafe_string_to_cstring(hint)
-	return igInputTextEx(label, _temp_hint, raw_data(buf), cast(i32)len(buf), size_arg, flags, callback, user_data)
+	return igInputTextEx(_temp_label, _temp_hint, raw_data(buf), cast(i32)len(buf), size_arg, flags, callback, user_data)
 }
 input_text_deactivate_hook :: #force_inline proc (id: ID) {
 	igInputTextDeactivateHook(id)
 }
-temp_input_text :: #force_inline proc (bb: Rect, id: ID, label: string, buf: []i8, flags := Input_Text_Flags{}) -> bool {
+temp_input_text ::  proc (bb: Rect, id: ID, label: string, buf: []i8, flags := Input_Text_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igTempInputText(bb, id, _temp_label, raw_data(buf), cast(i32)len(buf), flags)
 }
-temp_input_scalar :: #force_inline proc (bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool {
+temp_input_scalar ::  proc (bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_format := semisafe_string_to_cstring(format)
 	return igTempInputScalar(bb, id, _temp_label, data_type, p_data, _temp_format, p_clamp_min, p_clamp_max)
@@ -3342,8 +3558,9 @@ temp_input_is_active :: #force_inline proc (id: ID) -> bool {
 get_input_text_state :: #force_inline proc (id: ID) -> ^Input_Text_State {
 	return igGetInputTextState(id)
 }
-color_tooltip :: #force_inline proc (text: cstring, col: ^f32, flags := Color_Edit_Flags{}) {
-	igColorTooltip(text, col, flags)
+color_tooltip ::  proc (text: string, col: ^f32, flags := Color_Edit_Flags{}) {
+	_temp_text := semisafe_string_to_cstring(text)
+	igColorTooltip(_temp_text, col, flags)
 }
 color_edit_options_popup :: #force_inline proc (col: ^f32, flags := Color_Edit_Flags{}) {
 	igColorEditOptionsPopup(col, flags)
@@ -3351,7 +3568,7 @@ color_edit_options_popup :: #force_inline proc (col: ^f32, flags := Color_Edit_F
 color_picker_options_popup :: #force_inline proc (ref_col: ^f32, flags := Color_Edit_Flags{}) {
 	igColorPickerOptionsPopup(ref_col, flags)
 }
-plot_ex :: #force_inline proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg := [2]f32{}) -> i32 {
+plot_ex ::  proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg := [2]f32{}) -> i32 {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	return igPlotEx(plot_type, _temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, size_arg)
@@ -3371,7 +3588,14 @@ gc_compact_transient_window_buffers :: #force_inline proc (window: ^Window) {
 gc_awake_transient_window_buffers :: #force_inline proc (window: ^Window) {
 	igGcAwakeTransientWindowBuffers(window)
 }
-debug_log :: igDebugLog  // Cannot be wrapped due to variadic args
+debug_log_direct :: igDebugLog  // Direct variadic version
+debug_log ::  proc (fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igDebugLog("%s", _formatted_str)
+}
 error_check_end_frame_recover :: #force_inline proc (log_callback: Error_Log_Callback, user_data: rawptr) {
 	igErrorCheckEndFrameRecover(log_callback, user_data)
 }
@@ -3405,7 +3629,7 @@ debug_hook_id_info :: #force_inline proc (id: ID, data_type: Data_Type, data_id:
 debug_node_columns :: #force_inline proc (columns: ^Old_Columns) {
 	igDebugNodeColumns(columns)
 }
-debug_node_draw_list :: #force_inline proc (window: ^Window, draw_list: ^Draw_List, label: string) {
+debug_node_draw_list ::  proc (window: ^Window, draw_list: ^Draw_List, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeDrawList(window, draw_list, _temp_label)
 }
@@ -3419,11 +3643,11 @@ debug_node_font :: #force_inline proc (font: ^Font) {
 debug_node_font_glyph :: #force_inline proc (font: ^Font, glyph: ^Font_Glyph) {
 	igDebugNodeFontGlyph(font, glyph)
 }
-debug_node_storage :: #force_inline proc (storage: ^Storage, label: string) {
+debug_node_storage ::  proc (storage: ^Storage, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeStorage(storage, _temp_label)
 }
-debug_node_tab_bar :: #force_inline proc (tab_bar: ^Tab_Bar, label: string) {
+debug_node_tab_bar ::  proc (tab_bar: ^Tab_Bar, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeTabBar(tab_bar, _temp_label)
 }
@@ -3436,14 +3660,14 @@ debug_node_table_settings :: #force_inline proc (settings: ^Table_Settings) {
 debug_node_input_text_state :: #force_inline proc (state: ^Input_Text_State) {
 	igDebugNodeInputTextState(state)
 }
-debug_node_window :: #force_inline proc (window: ^Window, label: string) {
+debug_node_window ::  proc (window: ^Window, label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeWindow(window, _temp_label)
 }
 debug_node_window_settings :: #force_inline proc (settings: ^Window_Settings) {
 	igDebugNodeWindowSettings(settings)
 }
-debug_node_windows_list :: #force_inline proc (windows: ^Vector(^Window), label: string) {
+debug_node_windows_list ::  proc (windows: ^Vector(^Window), label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igDebugNodeWindowsList(windows, _temp_label)
 }
@@ -3477,11 +3701,11 @@ im_font_atlas_build_pack_custom_rects :: #force_inline proc (atlas: ^Font_Atlas,
 im_font_atlas_build_finish :: #force_inline proc (atlas: ^Font_Atlas) {
 	igImFontAtlasBuildFinish(atlas)
 }
-im_font_atlas_build_render8bpp_rect_from_string :: #force_inline proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u8) {
+im_font_atlas_build_render8bpp_rect_from_string ::  proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u8) {
 	_temp_in_str := semisafe_string_to_cstring(in_str)
 	igImFontAtlasBuildRender8bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
 }
-im_font_atlas_build_render32bpp_rect_from_string :: #force_inline proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u32) {
+im_font_atlas_build_render32bpp_rect_from_string ::  proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u32) {
 	_temp_in_str := semisafe_string_to_cstring(in_str)
 	igImFontAtlasBuildRender32bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
 }
@@ -3491,8 +3715,22 @@ im_font_atlas_build_multiply_calc_lookup_table :: #force_inline proc (out_table:
 im_font_atlas_build_multiply_rect_alpha8 :: #force_inline proc (table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) {
 	igImFontAtlasBuildMultiplyRectAlpha8(table, pixels, x, y, w, h, stride)
 }
-log_text :: igLogText  // Cannot be wrapped due to variadic args
-text_buffer_appendf :: ImGuiTextBuffer_appendf  // Cannot be wrapped due to variadic args
+log_text_direct :: igLogText  // Direct variadic version
+log_text ::  proc (fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	igLogText("%s", _formatted_str)
+}
+text_buffer_appendf_direct :: ImGuiTextBuffer_appendf  // Direct variadic version
+text_buffer_appendf ::  proc (buffer: ^Text_Buffer, fmt_: string, args: ..any) {
+	_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_sb, fmt_, ..args)
+	append(&_sb.buf, 0)
+	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
+	ImGuiTextBuffer_appendf(buffer, "%s", _formatted_str)
+}
 
 begin_child :: proc {
 	begin_child_str,

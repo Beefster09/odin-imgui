@@ -144,18 +144,18 @@ foreign cimgui {
 	igGetID_StrStr :: proc(str_id_begin: [^]u8, str_id_end: [^]u8) -> ID ---
 	igGetID_Ptr :: proc(ptr_id: rawptr) -> ID ---
 	igTextUnformatted :: proc(text: [^]u8, text_end: [^]u8) ---
-	igText :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
-	igTextV :: proc(fmt: cstring, args: ^libc.va_list) ---
-	igTextColored :: proc(col: [4]f32, fmt: cstring, #c_vararg _args_: ..any) ---
-	igTextColoredV :: proc(col: [4]f32, fmt: cstring, args: ^libc.va_list) ---
-	igTextDisabled :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
-	igTextDisabledV :: proc(fmt: cstring, args: ^libc.va_list) ---
-	igTextWrapped :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
-	igTextWrappedV :: proc(fmt: cstring, args: ^libc.va_list) ---
-	igLabelText :: proc(label: cstring, fmt: cstring, #c_vararg _args_: ..any) ---
-	igLabelTextV :: proc(label: cstring, fmt: cstring, args: ^libc.va_list) ---
-	igBulletText :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
-	igBulletTextV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igText :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	igTextV :: proc(fmt_: cstring, args: ^libc.va_list) ---
+	igTextColored :: proc(col: [4]f32, fmt_: cstring, #c_vararg _args_: ..any) ---
+	igTextColoredV :: proc(col: [4]f32, fmt_: cstring, args: ^libc.va_list) ---
+	igTextDisabled :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	igTextDisabledV :: proc(fmt_: cstring, args: ^libc.va_list) ---
+	igTextWrapped :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	igTextWrappedV :: proc(fmt_: cstring, args: ^libc.va_list) ---
+	igLabelText :: proc(label: cstring, fmt_: cstring, #c_vararg _args_: ..any) ---
+	igLabelTextV :: proc(label: cstring, fmt_: cstring, args: ^libc.va_list) ---
+	igBulletText :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	igBulletTextV :: proc(fmt_: cstring, args: ^libc.va_list) ---
 	igSeparatorText :: proc(label: cstring) ---
 	igButton :: proc(label: cstring, size: [2]f32) -> bool ---
 	igSmallButton :: proc(label: cstring) -> bool ---
@@ -222,15 +222,15 @@ foreign cimgui {
 	igColorButton :: proc(desc_id: cstring, col: [4]f32, flags: Color_Edit_Flags, size: [2]f32) -> bool ---
 	igSetColorEditOptions :: proc(flags: Color_Edit_Flags) ---
 	igTreeNode_Str :: proc(label: cstring) -> bool ---
-	igTreeNode_StrStr :: proc(str_id: cstring, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
-	igTreeNode_Ptr :: proc(ptr_id: rawptr, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
-	igTreeNodeV_Str :: proc(str_id: cstring, fmt: cstring, args: ^libc.va_list) -> bool ---
-	igTreeNodeV_Ptr :: proc(ptr_id: rawptr, fmt: cstring, args: ^libc.va_list) -> bool ---
+	igTreeNode_StrStr :: proc(str_id: cstring, fmt_: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNode_Ptr :: proc(ptr_id: rawptr, fmt_: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNodeV_Str :: proc(str_id: cstring, fmt_: cstring, args: ^libc.va_list) -> bool ---
+	igTreeNodeV_Ptr :: proc(ptr_id: rawptr, fmt_: cstring, args: ^libc.va_list) -> bool ---
 	igTreeNodeEx_Str :: proc(label: cstring, flags: Tree_Node_Flags) -> bool ---
-	igTreeNodeEx_StrStr :: proc(str_id: cstring, flags: Tree_Node_Flags, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
-	igTreeNodeEx_Ptr :: proc(ptr_id: rawptr, flags: Tree_Node_Flags, fmt: cstring, #c_vararg _args_: ..any) -> bool ---
-	igTreeNodeExV_Str :: proc(str_id: cstring, flags: Tree_Node_Flags, fmt: cstring, args: ^libc.va_list) -> bool ---
-	igTreeNodeExV_Ptr :: proc(ptr_id: rawptr, flags: Tree_Node_Flags, fmt: cstring, args: ^libc.va_list) -> bool ---
+	igTreeNodeEx_StrStr :: proc(str_id: cstring, flags: Tree_Node_Flags, fmt_: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNodeEx_Ptr :: proc(ptr_id: rawptr, flags: Tree_Node_Flags, fmt_: cstring, #c_vararg _args_: ..any) -> bool ---
+	igTreeNodeExV_Str :: proc(str_id: cstring, flags: Tree_Node_Flags, fmt_: cstring, args: ^libc.va_list) -> bool ---
+	igTreeNodeExV_Ptr :: proc(ptr_id: rawptr, flags: Tree_Node_Flags, fmt_: cstring, args: ^libc.va_list) -> bool ---
 	igTreePush_Str :: proc(str_id: cstring) ---
 	igTreePush_Ptr :: proc(ptr_id: rawptr) ---
 	igTreePop :: proc() ---
@@ -262,8 +262,8 @@ foreign cimgui {
 	igMenuItem_BoolPtr :: proc(label: cstring, shortcut: cstring, p_selected: ^bool, enabled: bool) -> bool ---
 	igBeginTooltip :: proc() -> bool ---
 	igEndTooltip :: proc() ---
-	igSetTooltip :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
-	igSetTooltipV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igSetTooltip :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	igSetTooltipV :: proc(fmt_: cstring, args: ^libc.va_list) ---
 	igBeginPopup :: proc(str_id: cstring, flags: Window_Flags) -> bool ---
 	igBeginPopupModal :: proc(name: cstring, p_open: ^bool, flags: Window_Flags) -> bool ---
 	igEndPopup :: proc() ---
@@ -311,7 +311,7 @@ foreign cimgui {
 	igLogToClipboard :: proc(auto_open_depth: i32) ---
 	igLogFinish :: proc() ---
 	igLogButtons :: proc() ---
-	igLogTextV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igLogTextV :: proc(fmt_: cstring, args: ^libc.va_list) ---
 	igBeginDragDropSource :: proc(flags: Drag_Drop_Flags) -> bool ---
 	igSetDragDropPayload :: proc(type: cstring, data: rawptr, sz: int, cond: Cond) -> bool ---
 	igEndDragDropSource :: proc() ---
@@ -453,7 +453,7 @@ foreign cimgui {
 	ImGuiTextBuffer_reserve :: proc(self: ^Text_Buffer, capacity: i32) ---
 	ImGuiTextBuffer_c_str :: proc(self: ^Text_Buffer) -> cstring ---
 	ImGuiTextBuffer_append :: proc(self: ^Text_Buffer, str: [^]u8, str_end: [^]u8) ---
-	ImGuiTextBuffer_appendfv :: proc(self: ^Text_Buffer, fmt: cstring, args: ^libc.va_list) ---
+	ImGuiTextBuffer_appendfv :: proc(self: ^Text_Buffer, fmt_: cstring, args: ^libc.va_list) ---
 	ImGuiStoragePair_ImGuiStoragePair_Int :: proc(_key: ID, _val_i: i32) -> ^Storage_Pair ---
 	ImGuiStoragePair_destroy :: proc(self: ^Storage_Pair) ---
 	ImGuiStoragePair_ImGuiStoragePair_Float :: proc(_key: ID, _val_f: f32) -> ^Storage_Pair ---
@@ -1097,8 +1097,8 @@ foreign cimgui {
 	igGcCompactTransientMiscBuffers :: proc() ---
 	igGcCompactTransientWindowBuffers :: proc(window: ^Window) ---
 	igGcAwakeTransientWindowBuffers :: proc(window: ^Window) ---
-	igDebugLog :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
-	igDebugLogV :: proc(fmt: cstring, args: ^libc.va_list) ---
+	igDebugLog :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	igDebugLogV :: proc(fmt_: cstring, args: ^libc.va_list) ---
 	igErrorCheckEndFrameRecover :: proc(log_callback: Error_Log_Callback, user_data: rawptr) ---
 	igErrorCheckEndWindowRecover :: proc(log_callback: Error_Log_Callback, user_data: rawptr) ---
 	igErrorCheckUsingSetCursorPosToExtendParentBoundaries :: proc() ---
@@ -1136,6 +1136,6 @@ foreign cimgui {
 	igImFontAtlasBuildRender32bppRectFromString :: proc(atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: cstring, in_marker_char: i8, in_marker_pixel_value: u32) ---
 	igImFontAtlasBuildMultiplyCalcLookupTable :: proc(out_table: [256]u8, in_multiply_factor: f32) ---
 	igImFontAtlasBuildMultiplyRectAlpha8 :: proc(table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) ---
-	igLogText :: proc(fmt: cstring, #c_vararg _args_: ..any) ---
-	ImGuiTextBuffer_appendf :: proc(buffer: ^Text_Buffer, fmt: cstring, #c_vararg _args_: ..any) ---
+	igLogText :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	ImGuiTextBuffer_appendf :: proc(buffer: ^Text_Buffer, fmt_: cstring, #c_vararg _args_: ..any) ---
 }
