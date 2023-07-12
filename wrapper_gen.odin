@@ -304,7 +304,7 @@ get_style_color_vec4 :: #force_inline proc (idx: Col) -> ^[4]f32 {
 separator :: #force_inline proc () {
 	igSeparator()
 }
-same_line :: #force_inline proc (offset_from_start_x: f32, spacing: f32) {
+same_line :: #force_inline proc (offset_from_start_x: f32 = 0, spacing: f32 = 1) {
 	igSameLine(offset_from_start_x, spacing)
 }
 new_line :: #force_inline proc () {
@@ -406,7 +406,6 @@ text_unformatted ::  proc (text: string) {
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igTextUnformatted(text_begin, text_end)
 }
-text_direct :: igText  // Direct variadic version
 text ::  proc (fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -414,7 +413,6 @@ text ::  proc (fmt_: string, args: ..any) {
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	igText("%s", _formatted_str)
 }
-text_colored_direct :: igTextColored  // Direct variadic version
 text_colored ::  proc (col: [4]f32, fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -422,7 +420,6 @@ text_colored ::  proc (col: [4]f32, fmt_: string, args: ..any) {
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	igTextColored(col, "%s", _formatted_str)
 }
-text_disabled_direct :: igTextDisabled  // Direct variadic version
 text_disabled ::  proc (fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -430,7 +427,6 @@ text_disabled ::  proc (fmt_: string, args: ..any) {
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	igTextDisabled("%s", _formatted_str)
 }
-text_wrapped_direct :: igTextWrapped  // Direct variadic version
 text_wrapped ::  proc (fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -438,7 +434,6 @@ text_wrapped ::  proc (fmt_: string, args: ..any) {
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	igTextWrapped("%s", _formatted_str)
 }
-label_text_direct :: igLabelText  // Direct variadic version
 label_text ::  proc (label: string, fmt_: string, args: ..any) {
 	_temp_label := semisafe_string_to_cstring(label)
 	_sb := strings.builder_make(context.temp_allocator)
@@ -447,7 +442,6 @@ label_text ::  proc (label: string, fmt_: string, args: ..any) {
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	igLabelText(_temp_label, "%s", _formatted_str)
 }
-bullet_text_direct :: igBulletText  // Direct variadic version
 bullet_text ::  proc (fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -753,7 +747,6 @@ tree_node_str ::  proc (label: string) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igTreeNode_Str(_temp_label)
 }
-tree_node_str_str_direct :: igTreeNode_StrStr  // Direct variadic version
 tree_node_str_str ::  proc (str_id: string, fmt_: string, args: ..any) -> bool {
 	_temp_str_id := semisafe_string_to_cstring(str_id)
 	_sb := strings.builder_make(context.temp_allocator)
@@ -762,7 +755,6 @@ tree_node_str_str ::  proc (str_id: string, fmt_: string, args: ..any) -> bool {
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	return igTreeNode_StrStr(_temp_str_id, "%s", _formatted_str)
 }
-tree_node_ptr_direct :: igTreeNode_Ptr  // Direct variadic version
 tree_node_ptr ::  proc (ptr_id: rawptr, fmt_: string, args: ..any) -> bool {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -774,7 +766,6 @@ tree_node_ex_str ::  proc (label: string, flags := Tree_Node_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igTreeNodeEx_Str(_temp_label, flags)
 }
-tree_node_ex_str_str_direct :: igTreeNodeEx_StrStr  // Direct variadic version
 tree_node_ex_str_str ::  proc (str_id: string, flags: Tree_Node_Flags, fmt_: string, args: ..any) -> bool {
 	_temp_str_id := semisafe_string_to_cstring(str_id)
 	_sb := strings.builder_make(context.temp_allocator)
@@ -783,7 +774,6 @@ tree_node_ex_str_str ::  proc (str_id: string, flags: Tree_Node_Flags, fmt_: str
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	return igTreeNodeEx_StrStr(_temp_str_id, flags, "%s", _formatted_str)
 }
-tree_node_ex_ptr_direct :: igTreeNodeEx_Ptr  // Direct variadic version
 tree_node_ex_ptr ::  proc (ptr_id: rawptr, flags: Tree_Node_Flags, fmt_: string, args: ..any) -> bool {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -910,7 +900,6 @@ begin_tooltip :: #force_inline proc () -> bool {
 end_tooltip :: #force_inline proc () {
 	igEndTooltip()
 }
-set_tooltip_direct :: igSetTooltip  // Direct variadic version
 set_tooltip ::  proc (fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -3588,7 +3577,6 @@ gc_compact_transient_window_buffers :: #force_inline proc (window: ^Window) {
 gc_awake_transient_window_buffers :: #force_inline proc (window: ^Window) {
 	igGcAwakeTransientWindowBuffers(window)
 }
-debug_log_direct :: igDebugLog  // Direct variadic version
 debug_log ::  proc (fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -3715,7 +3703,6 @@ im_font_atlas_build_multiply_calc_lookup_table :: #force_inline proc (out_table:
 im_font_atlas_build_multiply_rect_alpha8 :: #force_inline proc (table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) {
 	igImFontAtlasBuildMultiplyRectAlpha8(table, pixels, x, y, w, h, stride)
 }
-log_text_direct :: igLogText  // Direct variadic version
 log_text ::  proc (fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)
@@ -3723,7 +3710,6 @@ log_text ::  proc (fmt_: string, args: ..any) {
 	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
 	igLogText("%s", _formatted_str)
 }
-text_buffer_appendf_direct :: ImGuiTextBuffer_appendf  // Direct variadic version
 text_buffer_appendf ::  proc (buffer: ^Text_Buffer, fmt_: string, args: ..any) {
 	_sb := strings.builder_make(context.temp_allocator)
 	fmt.sbprintf(&_sb, fmt_, ..args)

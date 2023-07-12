@@ -124,7 +124,6 @@ def generate_wrapper(ast):
 
                 setup_lines = []
 
-                is_vararg = False
                 fmt_index = None
 
                 for i, param in enumerate(all_params):
@@ -140,7 +139,6 @@ def generate_wrapper(ast):
 
                     elif isinstance(param, c_ast.EllipsisParam):
                         assert fmt_index is not None, f"did not see format arg in {node.name}"
-                        is_vararg = True
                         odin_params.append(f"args: ..any")
                         setup_lines += [
                             "_sb := strings.builder_make(context.temp_allocator)",
@@ -216,9 +214,6 @@ def generate_wrapper(ast):
                     else:
                         ret = f" -> {orig_ret_type}"
 
-                if is_vararg:
-                    fp.write(f"{proc_name}_direct :: {func_to_call}  // Direct variadic version\n")
-
                 fp.write(f"{proc_name} :: {'#force_inline' * (not setup_lines)} proc ({', '.join(odin_params)}){ret} {{\n")
 
                 for line in setup_lines:
@@ -246,6 +241,7 @@ DEFAULT_ARGS = {  # default values for the last N parameters of specific procs
     'style_colors_light': ['nil'],
     'style_colors_dark': ['nil'],
     'style_colors_classic': ['nil'],
+    'same_line': ['0', '1']
     # TODO
 }
 
