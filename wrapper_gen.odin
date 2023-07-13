@@ -124,16 +124,16 @@ get_window_width :: #force_inline proc () -> f32 {
 get_window_height :: #force_inline proc () -> f32 {
 	return igGetWindowHeight()
 }
-set_next_window_pos :: #force_inline proc (pos := [2]f32{}, cond := Cond{}, pivot := [2]f32{}) {
+set_next_window_pos :: #force_inline proc (pos: [2]f32, cond: Cond, pivot: [2]f32) {
 	igSetNextWindowPos(pos, cond, pivot)
 }
-set_next_window_size :: #force_inline proc (size := [2]f32{}, cond := Cond{}) {
+set_next_window_size :: #force_inline proc (size: [2]f32, cond := Cond{}) {
 	igSetNextWindowSize(size, cond)
 }
 set_next_window_size_constraints :: #force_inline proc (size_min: [2]f32, size_max: [2]f32, custom_callback: Size_Callback, custom_callback_data: rawptr) {
 	igSetNextWindowSizeConstraints(size_min, size_max, custom_callback, custom_callback_data)
 }
-set_next_window_content_size :: #force_inline proc (size := [2]f32{}) {
+set_next_window_content_size :: #force_inline proc (size: [2]f32) {
 	igSetNextWindowContentSize(size)
 }
 set_next_window_collapsed :: #force_inline proc (collapsed: bool, cond := Cond{}) {
@@ -142,16 +142,16 @@ set_next_window_collapsed :: #force_inline proc (collapsed: bool, cond := Cond{}
 set_next_window_focus :: #force_inline proc () {
 	igSetNextWindowFocus()
 }
-set_next_window_scroll :: #force_inline proc (scroll := [2]f32{}) {
+set_next_window_scroll :: #force_inline proc (scroll: [2]f32) {
 	igSetNextWindowScroll(scroll)
 }
 set_next_window_bg_alpha :: #force_inline proc (alpha: f32) {
 	igSetNextWindowBgAlpha(alpha)
 }
-set_window_pos_vec2 :: #force_inline proc (pos := [2]f32{}, cond := Cond{}) {
+set_window_pos_vec2 :: #force_inline proc (pos: [2]f32, cond := Cond{}) {
 	igSetWindowPos_Vec2(pos, cond)
 }
-set_window_size_vec2 :: #force_inline proc (size := [2]f32{}, cond := Cond{}) {
+set_window_size_vec2 :: #force_inline proc (size: [2]f32, cond := Cond{}) {
 	igSetWindowSize_Vec2(size, cond)
 }
 set_window_collapsed_bool :: #force_inline proc (collapsed: bool, cond := Cond{}) {
@@ -163,11 +163,11 @@ set_window_focus_nil :: #force_inline proc () {
 set_window_font_scale :: #force_inline proc (scale: f32) {
 	igSetWindowFontScale(scale)
 }
-set_window_pos_str ::  proc (name: string, pos := [2]f32{}, cond := Cond{}) {
+set_window_pos_str ::  proc (name: string, pos: [2]f32, cond := Cond{}) {
 	_temp_name := semisafe_string_to_cstring(name)
 	igSetWindowPos_Str(_temp_name, pos, cond)
 }
-set_window_size_str ::  proc (name: string, size := [2]f32{}, cond := Cond{}) {
+set_window_size_str ::  proc (name: string, size: [2]f32, cond := Cond{}) {
 	_temp_name := semisafe_string_to_cstring(name)
 	igSetWindowSize_Str(_temp_name, size, cond)
 }
@@ -234,7 +234,7 @@ pop_font :: #force_inline proc () {
 push_style_color_u32 :: #force_inline proc (idx: Col, col: u32) {
 	igPushStyleColor_U32(idx, col)
 }
-push_style_color_vec4 :: #force_inline proc (idx: Col, col := [4]f32{}) {
+push_style_color_vec4 :: #force_inline proc (idx: Col, col: [4]f32) {
 	igPushStyleColor_Vec4(idx, col)
 }
 pop_style_color :: #force_inline proc (count: i32) {
@@ -243,7 +243,7 @@ pop_style_color :: #force_inline proc (count: i32) {
 push_style_var_float :: #force_inline proc (idx: Style_Var, val: f32) {
 	igPushStyleVar_Float(idx, val)
 }
-push_style_var_vec2 :: #force_inline proc (idx: Style_Var, val := [2]f32{}) {
+push_style_var_vec2 :: #force_inline proc (idx: Style_Var, val: [2]f32) {
 	igPushStyleVar_Vec2(idx, val)
 }
 pop_style_var :: #force_inline proc (count: i32) {
@@ -292,7 +292,7 @@ get_font_tex_uv_white_pixel :: #force_inline proc () -> (p_out: [2]f32) {
 get_color_u32_col :: #force_inline proc (idx: Col, alpha_mul: f32) -> u32 {
 	return igGetColorU32_Col(idx, alpha_mul)
 }
-get_color_u32_vec4 :: #force_inline proc (col := [4]f32{}) -> u32 {
+get_color_u32_vec4 :: #force_inline proc (col: [4]f32) -> u32 {
 	return igGetColorU32_Vec4(col)
 }
 get_color_u32_u32 :: #force_inline proc (col: u32) -> u32 {
@@ -313,7 +313,7 @@ new_line :: #force_inline proc () {
 spacing :: #force_inline proc () {
 	igSpacing()
 }
-dummy :: #force_inline proc (size := [2]f32{}) {
+dummy :: #force_inline proc (size: [2]f32) {
 	igDummy(size)
 }
 indent :: #force_inline proc (indent_w: f32) {
@@ -338,7 +338,7 @@ get_cursor_pos_x :: #force_inline proc () -> f32 {
 get_cursor_pos_y :: #force_inline proc () -> f32 {
 	return igGetCursorPosY()
 }
-set_cursor_pos :: #force_inline proc (local_pos := [2]f32{}) {
+set_cursor_pos :: #force_inline proc (local_pos: [2]f32) {
 	igSetCursorPos(local_pos)
 }
 set_cursor_pos_x :: #force_inline proc (local_x: f32) {
@@ -355,7 +355,7 @@ get_cursor_screen_pos :: #force_inline proc () -> (p_out: [2]f32) {
 	igGetCursorScreenPos(&p_out)
 	return
 }
-set_cursor_screen_pos :: #force_inline proc (pos := [2]f32{}) {
+set_cursor_screen_pos :: #force_inline proc (pos: [2]f32) {
 	igSetCursorScreenPos(pos)
 }
 align_text_to_frame_padding :: #force_inline proc () {
@@ -453,7 +453,7 @@ separator_text ::  proc (label: string) {
 	_temp_label := semisafe_string_to_cstring(label)
 	igSeparatorText(_temp_label)
 }
-button ::  proc (label: string, size := [2]f32{}) -> bool {
+button ::  proc (label: string, size: [2]f32) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igButton(_temp_label, size)
 }
@@ -461,7 +461,7 @@ small_button ::  proc (label: string) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igSmallButton(_temp_label)
 }
-invisible_button ::  proc (str_id: string, size := [2]f32{}, flags := Button_Flags{}) -> bool {
+invisible_button ::  proc (str_id: string, size: [2]f32, flags := Button_Flags{}) -> bool {
 	_temp_str_id := semisafe_string_to_cstring(str_id)
 	return igInvisibleButton(_temp_str_id, size, flags)
 }
@@ -496,10 +496,10 @@ progress_bar ::  proc (fraction: f32, size_arg: [2]f32, overlay: string) {
 bullet :: #force_inline proc () {
 	igBullet()
 }
-image :: #force_inline proc (user_texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, tint_col := [4]f32{}, border_col := [4]f32{}) {
+image :: #force_inline proc (user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32 = {0, 0}, uv1: [2]f32 = {1, 1}, tint_col: [4]f32 = {1, 1, 1, 1}, border_col: [4]f32 = {0, 0, 0, 0}) {
 	igImage(user_texture_id, size, uv0, uv1, tint_col, border_col)
 }
-image_button ::  proc (str_id: string, user_texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, bg_col := [4]f32{}, tint_col := [4]f32{}) -> bool {
+image_button ::  proc (str_id: string, user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32 = {0, 0}, uv1: [2]f32 = {1, 1}, bg_col: [4]f32 = {0, 0, 0, 0}, tint_col: [4]f32 = {1, 1, 1, 1}) -> bool {
 	_temp_str_id := semisafe_string_to_cstring(str_id)
 	return igImageButton(_temp_str_id, user_texture_id, size, uv0, uv1, bg_col, tint_col)
 }
@@ -693,15 +693,15 @@ input_int ::  proc (label: string, v: ^i32, step: i32, step_fast: i32, flags := 
 	_temp_label := semisafe_string_to_cstring(label)
 	return igInputInt(_temp_label, v, step, step_fast, flags)
 }
-input_int2 ::  proc (label: string, v := [2]i32{}, flags := Input_Text_Flags{}) -> bool {
+input_int2 ::  proc (label: string, v: [2]i32, flags := Input_Text_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igInputInt2(_temp_label, v, flags)
 }
-input_int3 ::  proc (label: string, v := [3]i32{}, flags := Input_Text_Flags{}) -> bool {
+input_int3 ::  proc (label: string, v: [3]i32, flags := Input_Text_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igInputInt3(_temp_label, v, flags)
 }
-input_int4 ::  proc (label: string, v := [4]i32{}, flags := Input_Text_Flags{}) -> bool {
+input_int4 ::  proc (label: string, v: [4]i32, flags := Input_Text_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igInputInt4(_temp_label, v, flags)
 }
@@ -720,15 +720,15 @@ input_scalar_n ::  proc (label: string, data_type: Data_Type, p_data: rawptr, co
 	_temp_format := semisafe_string_to_cstring(format)
 	return igInputScalarN(_temp_label, data_type, p_data, components, p_step, p_step_fast, _temp_format, flags)
 }
-color_edit3 ::  proc (label: string, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
+color_edit3 ::  proc (label: string, col: [3]f32, flags := Color_Edit_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igColorEdit3(_temp_label, col, flags)
 }
-color_edit4 ::  proc (label: string, col := [4]f32{}, flags := Color_Edit_Flags{}) -> bool {
+color_edit4 ::  proc (label: string, col: [4]f32, flags := Color_Edit_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igColorEdit4(_temp_label, col, flags)
 }
-color_picker3 ::  proc (label: string, col := [3]f32{}, flags := Color_Edit_Flags{}) -> bool {
+color_picker3 ::  proc (label: string, col: [3]f32, flags := Color_Edit_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igColorPicker3(_temp_label, col, flags)
 }
@@ -736,7 +736,7 @@ color_picker4 ::  proc (label: string, col: [4]f32, flags: Color_Edit_Flags, ref
 	_temp_label := semisafe_string_to_cstring(label)
 	return igColorPicker4(_temp_label, col, flags, ref_col)
 }
-color_button ::  proc (desc_id: string, col := [4]f32{}, flags := Color_Edit_Flags{}, size := [2]f32{}) -> bool {
+color_button ::  proc (desc_id: string, col: [4]f32, flags: Color_Edit_Flags, size: [2]f32) -> bool {
 	_temp_desc_id := semisafe_string_to_cstring(desc_id)
 	return igColorButton(_temp_desc_id, col, flags, size)
 }
@@ -805,15 +805,15 @@ collapsing_header_bool_ptr ::  proc (label: string, p_visible: ^bool, flags := T
 set_next_item_open :: #force_inline proc (is_open: bool, cond := Cond{}) {
 	igSetNextItemOpen(is_open, cond)
 }
-selectable_bool ::  proc (label: string, selected: bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
+selectable_bool ::  proc (label: string, selected: bool, flags: Selectable_Flags, size: [2]f32) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igSelectable_Bool(_temp_label, selected, flags, size)
 }
-selectable_bool_ptr ::  proc (label: string, p_selected: ^bool, flags := Selectable_Flags{}, size := [2]f32{}) -> bool {
+selectable_bool_ptr ::  proc (label: string, p_selected: ^bool, flags: Selectable_Flags, size: [2]f32) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igSelectable_BoolPtr(_temp_label, p_selected, flags, size)
 }
-begin_list_box ::  proc (label: string, size := [2]f32{}) -> bool {
+begin_list_box ::  proc (label: string, size: [2]f32) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igBeginListBox(_temp_label, size)
 }
@@ -833,7 +833,7 @@ plot_lines_float_ptr ::  proc (label: string, values: []f32, values_offset: i32,
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotLines_FloatPtr(_temp_label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_lines_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
+plot_lines_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotLines_FnFloatPtr(_temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
@@ -843,7 +843,7 @@ plot_histogram_float_ptr ::  proc (label: string, values: []f32, values_offset: 
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotHistogram_FloatPtr(_temp_label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
 }
-plot_histogram_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size := [2]f32{}) {
+plot_histogram_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	igPlotHistogram_FnFloatPtr(_temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
@@ -1172,10 +1172,10 @@ get_background_draw_list_nil :: #force_inline proc () -> ^Draw_List {
 get_foreground_draw_list_nil :: #force_inline proc () -> ^Draw_List {
 	return igGetForegroundDrawList_Nil()
 }
-is_rect_visible_nil :: #force_inline proc (size := [2]f32{}) -> bool {
+is_rect_visible_nil :: #force_inline proc (size: [2]f32) -> bool {
 	return igIsRectVisible_Nil(size)
 }
-is_rect_visible_vec2 :: #force_inline proc (rect_min := [2]f32{}, rect_max := [2]f32{}) -> bool {
+is_rect_visible_vec2 :: #force_inline proc (rect_min: [2]f32, rect_max: [2]f32) -> bool {
 	return igIsRectVisible_Vec2(rect_min, rect_max)
 }
 get_time :: #force_inline proc () -> f64 {
@@ -1196,7 +1196,7 @@ set_state_storage :: #force_inline proc (storage: ^Storage) {
 get_state_storage :: #force_inline proc () -> ^Storage {
 	return igGetStateStorage()
 }
-begin_child_frame :: #force_inline proc (id: ID, size := [2]f32{}, flags := Window_Flags{}) -> bool {
+begin_child_frame :: #force_inline proc (id: ID, size: [2]f32, flags := Window_Flags{}) -> bool {
 	return igBeginChildFrame(id, size, flags)
 }
 end_child_frame :: #force_inline proc () {
@@ -1212,7 +1212,7 @@ color_convert_u32_to_float4 :: #force_inline proc (in_: u32) -> (p_out: [4]f32) 
 	igColorConvertU32ToFloat4(&p_out, in_)
 	return
 }
-color_convert_float4_to_u32 :: #force_inline proc (in_ := [4]f32{}) -> u32 {
+color_convert_float4_to_u32 :: #force_inline proc (in_: [4]f32) -> u32 {
 	return igColorConvertFloat4ToU32(in_)
 }
 color_convert_rgbto_hsv :: #force_inline proc (r: f32, g: f32, b: f32) -> (out_h: f32, out_s: f32, out_v: f32) {
@@ -1605,7 +1605,7 @@ color_destroy :: #force_inline proc (self: ^Color) {
 color_new_float :: #force_inline proc (r: f32, g: f32, b: f32, a: f32) -> ^Color {
 	return ImColor_ImColor_Float(r, g, b, a)
 }
-color_new_vec4 :: #force_inline proc (col := [4]f32{}) -> ^Color {
+color_new_vec4 :: #force_inline proc (col: [4]f32) -> ^Color {
 	return ImColor_ImColor_Vec4(col)
 }
 color_new_int :: #force_inline proc (r: i32, g: i32, b: i32, a: i32) -> ^Color {
@@ -1750,10 +1750,10 @@ draw_list_add_image_rounded :: #force_inline proc (self: ^Draw_List, user_textur
 draw_list_path_clear :: #force_inline proc (self: ^Draw_List) {
 	ImDrawList_PathClear(self)
 }
-draw_list_path_line_to :: #force_inline proc (self: ^Draw_List, pos := [2]f32{}) {
+draw_list_path_line_to :: #force_inline proc (self: ^Draw_List, pos: [2]f32) {
 	ImDrawList_PathLineTo(self, pos)
 }
-draw_list_path_line_to_merge_duplicate :: #force_inline proc (self: ^Draw_List, pos := [2]f32{}) {
+draw_list_path_line_to_merge_duplicate :: #force_inline proc (self: ^Draw_List, pos: [2]f32) {
 	ImDrawList_PathLineToMergeDuplicate(self, pos)
 }
 draw_list_path_fill_convex :: #force_inline proc (self: ^Draw_List, col: u32) {
@@ -1831,7 +1831,7 @@ draw_data_clear :: #force_inline proc (self: ^Draw_Data) {
 draw_data_de_index_all_buffers :: #force_inline proc (self: ^Draw_Data) {
 	ImDrawData_DeIndexAllBuffers(self)
 }
-draw_data_scale_clip_rects :: #force_inline proc (self: ^Draw_Data, fb_scale := [2]f32{}) {
+draw_data_scale_clip_rects :: #force_inline proc (self: ^Draw_Data, fb_scale: [2]f32) {
 	ImDrawData_ScaleClipRects(self, fb_scale)
 }
 font_config_new :: #force_inline proc () -> ^Font_Config {
@@ -1964,7 +1964,7 @@ font_atlas_get_glyph_ranges_vietnamese :: #force_inline proc (self: ^Font_Atlas)
 font_atlas_add_custom_rect_regular :: #force_inline proc (self: ^Font_Atlas, width: i32, height: i32) -> i32 {
 	return ImFontAtlas_AddCustomRectRegular(self, width, height)
 }
-font_atlas_add_custom_rect_font_glyph :: #force_inline proc (self: ^Font_Atlas, font: ^Font, id: u16, width: i32, height: i32, advance_x: f32, offset := [2]f32{}) -> i32 {
+font_atlas_add_custom_rect_font_glyph :: #force_inline proc (self: ^Font_Atlas, font: ^Font, id: u16, width: i32, height: i32, advance_x: f32, offset: [2]f32) -> i32 {
 	return ImFontAtlas_AddCustomRectFontGlyph(self, font, id, width, height, advance_x, offset)
 }
 font_atlas_get_custom_rect_by_index :: #force_inline proc (self: ^Font_Atlas, index: i32) -> ^Font_Atlas_Custom_Rect {
@@ -2084,10 +2084,10 @@ rect_new_nil :: #force_inline proc () -> ^Rect {
 rect_destroy :: #force_inline proc (self: ^Rect) {
 	ImRect_destroy(self)
 }
-rect_new_vec2 :: #force_inline proc (min := [2]f32{}, max := [2]f32{}) -> ^Rect {
+rect_new_vec2 :: #force_inline proc (min: [2]f32, max: [2]f32) -> ^Rect {
 	return ImRect_ImRect_Vec2(min, max)
 }
-rect_new_vec4 :: #force_inline proc (v := [4]f32{}) -> ^Rect {
+rect_new_vec4 :: #force_inline proc (v: [4]f32) -> ^Rect {
 	return ImRect_ImRect_Vec4(v)
 }
 rect_new_float :: #force_inline proc (x1: f32, y1: f32, x2: f32, y2: f32) -> ^Rect {
@@ -2126,7 +2126,7 @@ rect_get_br :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
 	ImRect_GetBR(&p_out, self)
 	return
 }
-rect_contains_vec2 :: #force_inline proc (self: ^Rect, p := [2]f32{}) -> bool {
+rect_contains_vec2 :: #force_inline proc (self: ^Rect, p: [2]f32) -> bool {
 	return ImRect_Contains_Vec2(self, p)
 }
 rect_contains_rect :: #force_inline proc (self: ^Rect, r: Rect) -> bool {
@@ -2135,7 +2135,7 @@ rect_contains_rect :: #force_inline proc (self: ^Rect, r: Rect) -> bool {
 rect_overlaps :: #force_inline proc (self: ^Rect, r: Rect) -> bool {
 	return ImRect_Overlaps(self, r)
 }
-rect_add_vec2 :: #force_inline proc (self: ^Rect, p := [2]f32{}) {
+rect_add_vec2 :: #force_inline proc (self: ^Rect, p: [2]f32) {
 	ImRect_Add_Vec2(self, p)
 }
 rect_add_rect :: #force_inline proc (self: ^Rect, r: Rect) {
@@ -2144,10 +2144,10 @@ rect_add_rect :: #force_inline proc (self: ^Rect, r: Rect) {
 rect_expand_float :: #force_inline proc (self: ^Rect, amount: f32) {
 	ImRect_Expand_Float(self, amount)
 }
-rect_expand_vec2 :: #force_inline proc (self: ^Rect, amount := [2]f32{}) {
+rect_expand_vec2 :: #force_inline proc (self: ^Rect, amount: [2]f32) {
 	ImRect_Expand_Vec2(self, amount)
 }
-rect_translate :: #force_inline proc (self: ^Rect, d := [2]f32{}) {
+rect_translate :: #force_inline proc (self: ^Rect, d: [2]f32) {
 	ImRect_Translate(self, d)
 }
 rect_translate_x :: #force_inline proc (self: ^Rect, dx: f32) {
@@ -2223,7 +2223,7 @@ style_mod_destroy :: #force_inline proc (self: ^Style_Mod) {
 style_mod_new_float :: #force_inline proc (idx: Style_Var, v: f32) -> ^Style_Mod {
 	return ImGuiStyleMod_ImGuiStyleMod_Float(idx, v)
 }
-style_mod_new_vec2 :: #force_inline proc (idx: Style_Var, v := [2]f32{}) -> ^Style_Mod {
+style_mod_new_vec2 :: #force_inline proc (idx: Style_Var, v: [2]f32) -> ^Style_Mod {
 	return ImGuiStyleMod_ImGuiStyleMod_Vec2(idx, v)
 }
 combo_preview_data_new :: #force_inline proc () -> ^Combo_Preview_Data {
@@ -2421,11 +2421,11 @@ viewport_p_new :: #force_inline proc () -> ^Viewport_P {
 viewport_p_destroy :: #force_inline proc (self: ^Viewport_P) {
 	ImGuiViewportP_destroy(self)
 }
-viewport_p_calc_work_rect_pos :: #force_inline proc (self: ^Viewport_P, off_min := [2]f32{}) -> (p_out: [2]f32) {
+viewport_p_calc_work_rect_pos :: #force_inline proc (self: ^Viewport_P, off_min: [2]f32) -> (p_out: [2]f32) {
 	ImGuiViewportP_CalcWorkRectPos(&p_out, self, off_min)
 	return
 }
-viewport_p_calc_work_rect_size :: #force_inline proc (self: ^Viewport_P, off_min := [2]f32{}, off_max := [2]f32{}) -> (p_out: [2]f32) {
+viewport_p_calc_work_rect_size :: #force_inline proc (self: ^Viewport_P, off_min: [2]f32, off_max: [2]f32) -> (p_out: [2]f32) {
 	ImGuiViewportP_CalcWorkRectSize(&p_out, self, off_min, off_max)
 	return
 }
@@ -2608,16 +2608,16 @@ is_window_above :: #force_inline proc (potential_above: ^Window, potential_below
 is_window_nav_focusable :: #force_inline proc (window: ^Window) -> bool {
 	return igIsWindowNavFocusable(window)
 }
-set_window_pos_window_ptr :: #force_inline proc (window: ^Window, pos := [2]f32{}, cond := Cond{}) {
+set_window_pos_window_ptr :: #force_inline proc (window: ^Window, pos: [2]f32, cond := Cond{}) {
 	igSetWindowPos_WindowPtr(window, pos, cond)
 }
-set_window_size_window_ptr :: #force_inline proc (window: ^Window, size := [2]f32{}, cond := Cond{}) {
+set_window_size_window_ptr :: #force_inline proc (window: ^Window, size: [2]f32, cond := Cond{}) {
 	igSetWindowSize_WindowPtr(window, size, cond)
 }
 set_window_collapsed_window_ptr :: #force_inline proc (window: ^Window, collapsed: bool, cond := Cond{}) {
 	igSetWindowCollapsed_WindowPtr(window, collapsed, cond)
 }
-set_window_hit_test_hole :: #force_inline proc (window: ^Window, pos := [2]f32{}, size := [2]f32{}) {
+set_window_hit_test_hole :: #force_inline proc (window: ^Window, pos: [2]f32, size: [2]f32) {
 	igSetWindowHitTestHole(window, pos, size)
 }
 set_window_hiddend_and_skip_items_for_current_frame :: #force_inline proc (window: ^Window) {
@@ -3326,7 +3326,7 @@ tab_bar_queue_focus :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) {
 tab_bar_queue_reorder :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, offset: i32) {
 	igTabBarQueueReorder(tab_bar, tab, offset)
 }
-tab_bar_queue_reorder_from_mouse_pos :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, mouse_pos := [2]f32{}) {
+tab_bar_queue_reorder_from_mouse_pos :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, mouse_pos: [2]f32) {
 	igTabBarQueueReorderFromMousePos(tab_bar, tab, mouse_pos)
 }
 tab_bar_process_reorder :: #force_inline proc (tab_bar: ^Tab_Bar) -> bool {
@@ -3421,15 +3421,15 @@ text_ex ::  proc (text: string, flags := Text_Flags{}) {
 	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
 	igTextEx(text_begin, text_end, flags)
 }
-button_ex ::  proc (label: string, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
+button_ex ::  proc (label: string, size_arg: [2]f32, flags := Button_Flags{}) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igButtonEx(_temp_label, size_arg, flags)
 }
-arrow_button_ex ::  proc (str_id: string, dir: Dir, size_arg := [2]f32{}, flags := Button_Flags{}) -> bool {
+arrow_button_ex ::  proc (str_id: string, dir: Dir, size_arg: [2]f32, flags := Button_Flags{}) -> bool {
 	_temp_str_id := semisafe_string_to_cstring(str_id)
 	return igArrowButtonEx(_temp_str_id, dir, size_arg, flags)
 }
-image_button_ex :: #force_inline proc (id: ID, texture_id: Texture_ID, size := [2]f32{}, uv0 := [2]f32{}, uv1 := [2]f32{}, bg_col := [4]f32{}, tint_col := [4]f32{}, flags := Button_Flags{}) -> bool {
+image_button_ex :: #force_inline proc (id: ID, texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32, flags := Button_Flags{}) -> bool {
 	return igImageButtonEx(id, texture_id, size, uv0, uv1, bg_col, tint_col, flags)
 }
 separator_ex :: #force_inline proc (flags := Separator_Flags{}) {
@@ -3448,10 +3448,10 @@ checkbox_flags_u64_ptr ::  proc (label: string, flags: ^u64, flags_value: u64) -
 	_temp_label := semisafe_string_to_cstring(label)
 	return igCheckboxFlags_U64Ptr(_temp_label, flags, flags_value)
 }
-close_button :: #force_inline proc (id: ID, pos := [2]f32{}) -> bool {
+close_button :: #force_inline proc (id: ID, pos: [2]f32) -> bool {
 	return igCloseButton(id, pos)
 }
-collapse_button :: #force_inline proc (id: ID, pos := [2]f32{}) -> bool {
+collapse_button :: #force_inline proc (id: ID, pos: [2]f32) -> bool {
 	return igCollapseButton(id, pos)
 }
 scrollbar :: #force_inline proc (axis: Axis) {
@@ -3557,7 +3557,7 @@ color_edit_options_popup :: #force_inline proc (col: ^f32, flags := Color_Edit_F
 color_picker_options_popup :: #force_inline proc (ref_col: ^f32, flags := Color_Edit_Flags{}) {
 	igColorPickerOptionsPopup(ref_col, flags)
 }
-plot_ex ::  proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg := [2]f32{}) -> i32 {
+plot_ex ::  proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
 	return igPlotEx(plot_type, _temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, size_arg)

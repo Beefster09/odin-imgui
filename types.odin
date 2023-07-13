@@ -1,7 +1,6 @@
 package imgui
 
-Texture_ID :: distinct rawptr
-
+Texture_ID :: distinct uintptr
 File_Handle :: distinct uintptr
 
 Context_Hook_Callback :: #type proc "c" (ctx: ^Context, hook: ^Context_Hook)

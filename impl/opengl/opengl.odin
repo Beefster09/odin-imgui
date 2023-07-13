@@ -73,7 +73,7 @@ setup_state :: proc(using state: ^OpenGL_State) {
     gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    io.fonts.tex_id = imgui.Texture_ID(uintptr(font_tex_h));
+    io.fonts.tex_id = imgui.Texture_ID(font_tex_h);
 }
 
 imgui_render :: proc(data: ^imgui.Draw_Data, state: OpenGL_State) {

@@ -3,6 +3,7 @@ package imgui
 import "core:log"
 import "core:runtime"
 import "core:strings"
+import "core:slice"
 
 
 semisafe_string_to_cstring :: proc(s: string) -> cstring {
@@ -12,6 +13,11 @@ semisafe_string_to_cstring :: proc(s: string) -> cstring {
     } else {
         return strings.clone_to_cstring(s, context.temp_allocator)
     }
+}
+
+
+vector_to_slice :: #force_inline proc(vec: Vector($T)) -> []T {
+    return slice.from_ptr(vec.data, int(vec.size))
 }
 
 

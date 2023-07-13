@@ -198,7 +198,7 @@ def generate_wrapper(ast):
                         name, ptype = map(str.strip, odin_params[i].split(':'))
                         if ptype == 'Table_Flags':
                             odin_params[i] = f"{name} := Table_Flags(0)"
-                        elif re.fullmatch(r"\[\d\][uif](8|16|32|64)|[\w_]*(Cond|Flags)", ptype):
+                        elif re.fullmatch(r"[\w_]*(Cond|Flags)", ptype):
                             odin_params[i] = f"{name} := {ptype}{{}}"
                         else:
                             break
@@ -241,8 +241,10 @@ DEFAULT_ARGS = {  # default values for the last N parameters of specific procs
     'style_colors_light': ['nil'],
     'style_colors_dark': ['nil'],
     'style_colors_classic': ['nil'],
-    'same_line': ['0', '1']
-    # TODO
+    'same_line': ['0', '1'],
+    'image': ['{0, 0}', '{1, 1}', '{1, 1, 1, 1}', '{0, 0, 0, 0}'],
+    'image_button': ['{0, 0}', '{1, 1}', '{0, 0, 0, 0}', '{1, 1, 1, 1}'],
+    # TODO - defaults are defined in the C++ header and do not appear in the C header
 }
 
 
