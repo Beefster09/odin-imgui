@@ -3,7 +3,7 @@ package imgui_impl_sdl;
 import "core:runtime";
 import "core:fmt";
 
-import sdl "shared:odin-sdl2";
+import sdl "vendor:sdl2";
 
 import imgui "../..";
 
@@ -43,7 +43,7 @@ setup_state :: proc(using state: ^SDL_State) {
 
     io.get_clipboard_text_fn = get_clipboard_text;
     io.set_clipboard_text_fn = set_clipboard_text;
-    
+
     cursor_handles[imgui.Mouse_Cursor.Arrow]      = sdl.create_system_cursor(sdl.System_Cursor.Arrow);
     cursor_handles[imgui.Mouse_Cursor.TextInput]  = sdl.create_system_cursor(sdl.System_Cursor.IBeam);
     cursor_handles[imgui.Mouse_Cursor.ResizeAll]  = sdl.create_system_cursor(sdl.System_Cursor.Size_All);
