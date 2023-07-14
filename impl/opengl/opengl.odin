@@ -97,12 +97,8 @@ imgui_render :: proc(data: ^imgui.Draw_Data, state: ^OpenGL_State) {
         cmds := mem.slice_ptr(list.cmd_buffer.data, int(list.cmd_buffer.size));
         for cmd, idx in cmds {
             if cmd.user_callback != nil {
-                if false {
-                //if cmd.user_callback == Draw_Callback_ResetRenderState {
-                    imgui_setup_render_state(data, state);
-                } else {
-                    cmd.user_callback(list, &cmds[idx]);
-                }
+                cmd.user_callback(list, &cmds[idx]);
+                imgui_setup_render_state(data, state);
             } else {
                 clip_off   := data.display_pos;
                 clip_scale := data.framebuffer_scale;
