@@ -877,22 +877,20 @@ begin_main_menu_bar :: #force_inline proc () -> bool {
 end_main_menu_bar :: #force_inline proc () {
 	igEndMainMenuBar()
 }
-begin_menu ::  proc (label: string, enabled: bool) -> bool {
+begin_menu ::  proc (label: string, enabled: bool = true) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	return igBeginMenu(_temp_label, enabled)
 }
 end_menu :: #force_inline proc () {
 	igEndMenu()
 }
-menu_item_bool ::  proc (label: string, shortcut: string, selected: bool, enabled: bool) -> bool {
+menu_item_bool ::  proc (label: string, shortcut: cstring = nil, selected: bool = false, enabled: bool = true) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
-	_temp_shortcut := semisafe_string_to_cstring(shortcut)
-	return igMenuItem_Bool(_temp_label, _temp_shortcut, selected, enabled)
+	return igMenuItem_Bool(_temp_label, shortcut, selected, enabled)
 }
-menu_item_bool_ptr ::  proc (label: string, shortcut: string, p_selected: ^bool, enabled: bool) -> bool {
+menu_item_bool_ptr ::  proc (label: string, shortcut: cstring, p_selected: ^bool, enabled: bool = true) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
-	_temp_shortcut := semisafe_string_to_cstring(shortcut)
-	return igMenuItem_BoolPtr(_temp_label, _temp_shortcut, p_selected, enabled)
+	return igMenuItem_BoolPtr(_temp_label, shortcut, p_selected, enabled)
 }
 begin_tooltip :: #force_inline proc () -> bool {
 	return igBeginTooltip()
@@ -2930,11 +2928,10 @@ begin_menu_ex ::  proc (label: string, icon: string, enabled: bool) -> bool {
 	_temp_icon := semisafe_string_to_cstring(icon)
 	return igBeginMenuEx(_temp_label, _temp_icon, enabled)
 }
-menu_item_ex ::  proc (label: string, icon: string, shortcut: string, selected: bool, enabled: bool) -> bool {
+menu_item_ex ::  proc (label: string, icon: string, shortcut: cstring, selected: bool, enabled: bool) -> bool {
 	_temp_label := semisafe_string_to_cstring(label)
 	_temp_icon := semisafe_string_to_cstring(icon)
-	_temp_shortcut := semisafe_string_to_cstring(shortcut)
-	return igMenuItemEx(_temp_label, _temp_icon, _temp_shortcut, selected, enabled)
+	return igMenuItemEx(_temp_label, _temp_icon, shortcut, selected, enabled)
 }
 begin_combo_popup :: #force_inline proc (popup_id: ID, bb: Rect, flags := Combo_Flags{}) -> bool {
 	return igBeginComboPopup(popup_id, bb, flags)

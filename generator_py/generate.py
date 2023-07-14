@@ -161,7 +161,10 @@ def generate_wrapper(ast):
                                 f"{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))",
                             ]
 
-                        elif node.name in ['igPushID_Str', 'igGetID_Str']:  # HACK b/c of overload
+                        elif (
+                            node.name in ['igPushID_Str', 'igGetID_Str']  # HACK b/c of overload
+                            or param.name == 'shortcut'
+                        ):
                             pname = odin_id(param.name)
                             odin_params.append(f"{pname}: cstring")
                             call_args.append(pname)
@@ -238,6 +241,9 @@ def generate_wrapper(ast):
 
 DEFAULT_ARGS = {  # default values for the last N parameters of specific procs
     'begin': ['nil', '{}'],
+    'begin_menu': ['true'],
+    'menu_item_bool': ['nil', 'false', 'true'],
+    'menu_item_bool_ptr': ['true'],
     'create_context': ['nil'],
     'style_colors_light': ['nil'],
     'style_colors_dark': ['nil'],
