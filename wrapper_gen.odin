@@ -78,7 +78,7 @@ style_colors_light :: #force_inline proc (dst: ^Style = nil) {
 style_colors_classic :: #force_inline proc (dst: ^Style = nil) {
 	igStyleColorsClassic(dst)
 }
-begin ::  proc (name: string, p_open: ^bool, flags := Window_Flags{}) -> bool {
+begin ::  proc (name: string, p_open: ^bool = nil, flags: Window_Flags = {}) -> bool {
 	_temp_name := semisafe_string_to_cstring(name)
 	return igBegin(_temp_name, p_open, flags)
 }

@@ -3,7 +3,6 @@ package imgui
 import "core:log"
 import "core:runtime"
 import "core:strings"
-import "core:slice"
 
 
 semisafe_string_to_cstring :: proc(s: string) -> cstring {
@@ -17,7 +16,28 @@ semisafe_string_to_cstring :: proc(s: string) -> cstring {
 
 
 vector_to_slice :: #force_inline proc(vec: Vector($T)) -> []T {
-    return slice.from_ptr(vec.data, int(vec.size))
+    return from_ptr(vec.data, int(vec.size))
+}
+
+
+
+draw_list_add_closure :: proc(dl: ^Draw_List, $cb: #type proc(data: ^$T, dl: ^Draw_List, cmd: ^Draw_Cmd), data: T) {
+    _data_with_context :: struct {
+        ctx: runtime.Context,
+        data: T,
+    }
+
+    _wrapper :: proc "c" (dl: ^Draw_List, cmd: ^Draw_Cmd) {
+        dwc := cast(^_data_with_context) cmd.user_callback_data
+        context = dwc.ctx
+        cb(&dwc.data, dl, cmd)
+    }
+
+    dwc := new(_data_with_context, context.temp_allocator)
+    dwc.data = data
+    dwc.ctx = context
+
+    ImDrawList_AddCallback(dl, _wrapper, dwc)
 }
 
 

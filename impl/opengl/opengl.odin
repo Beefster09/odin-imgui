@@ -76,8 +76,7 @@ setup_state :: proc(using state: ^OpenGL_State) {
     io.fonts.tex_id = imgui.Texture_ID(font_tex_h);
 }
 
-imgui_render :: proc(data: ^imgui.Draw_Data, state: OpenGL_State) {
-    state := state;
+imgui_render :: proc(data: ^imgui.Draw_Data, state: ^OpenGL_State) {
     fb_width  := data.display_size.x * data.framebuffer_scale.x;
     fb_height := data.display_size.y * data.framebuffer_scale.y;
     if fb_width <= 0 do return;
@@ -134,7 +133,7 @@ imgui_render :: proc(data: ^imgui.Draw_Data, state: OpenGL_State) {
     }
 }
 
-imgui_setup_render_state :: proc(data: ^imgui.Draw_Data, state: OpenGL_State) {
+imgui_setup_render_state :: proc(data: ^imgui.Draw_Data, state: ^OpenGL_State) {
     gl.Enable(gl.BLEND);
     gl.BlendEquation(gl.FUNC_ADD);
     gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

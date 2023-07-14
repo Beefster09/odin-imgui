@@ -237,6 +237,7 @@ def generate_wrapper(ast):
 
 
 DEFAULT_ARGS = {  # default values for the last N parameters of specific procs
+    'begin': ['nil', '{}'],
     'create_context': ['nil'],
     'style_colors_light': ['nil'],
     'style_colors_dark': ['nil'],
