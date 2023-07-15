@@ -14,14 +14,11 @@ semisafe_string_to_cstring :: proc(s: string) -> cstring {
     }
 }
 
-
 vector_to_slice :: #force_inline proc(vec: Vector($T)) -> []T {
     return from_ptr(vec.data, int(vec.size))
 }
 
-
-
-draw_list_add_closure :: proc(dl: ^Draw_List, $cb: #type proc(data: ^$T, dl: ^Draw_List, cmd: ^Draw_Cmd), data: T) {
+draw_list_add_closure :: proc(dl: ^Draw_List, data: $T, $cb: #type proc(data: ^T, dl: ^Draw_List, cmd: ^Draw_Cmd)) {
     _data_with_context :: struct {
         ctx: runtime.Context,
         data: T,
@@ -40,8 +37,7 @@ draw_list_add_closure :: proc(dl: ^Draw_List, $cb: #type proc(data: ^$T, dl: ^Dr
     ImDrawList_AddCallback(dl, _wrapper, dwc)
 }
 
-
-@(deferred_out=_free)
+@(deferred_out=_cleanup_context)
 use_current_odin_context :: proc() -> rawptr {
     ctx := new(runtime.Context)
     ctx^ = context
@@ -52,7 +48,7 @@ use_current_odin_context :: proc() -> rawptr {
 }
 
 @(private="file")
-_free :: proc (mem: rawptr) {
+_cleanup_context :: proc (mem: rawptr) {
     runtime.mem_free(mem)
 }
 

@@ -54,12 +54,16 @@ setup_state :: proc(window: glfw.WindowHandle, install_callbacks: bool) {
     io.key_map[imgui.Key.Enter]       = i32(glfw.KEY_ENTER)
     io.key_map[imgui.Key.Escape]      = i32(glfw.KEY_ESCAPE)
     io.key_map[imgui.Key.Keypad_Enter] = i32(glfw.KEY_KP_ENTER)
-    io.key_map[imgui.Key.A]           = i32(glfw.KEY_A)
-    io.key_map[imgui.Key.C]           = i32(glfw.KEY_C)
-    io.key_map[imgui.Key.V]           = i32(glfw.KEY_V)
-    io.key_map[imgui.Key.X]           = i32(glfw.KEY_X)
-    io.key_map[imgui.Key.Y]           = i32(glfw.KEY_Y)
-    io.key_map[imgui.Key.Z]           = i32(glfw.KEY_Z)
+    for i in 0..<26 {
+        io.key_map[int(imgui.Key.A) + i] = i32(glfw.KEY_A + i)
+    }
+    for i in 0..=9 {
+        io.key_map[int(imgui.Key._0) + i] = i32(glfw.KEY_0 + i)
+        io.key_map[int(imgui.Key.Keypad0) + i] = i32(glfw.KEY_KP_0 + i)
+    }
+    for i in 0..<12 {
+        io.key_map[int(imgui.Key.F1) + i] = i32(glfw.KEY_F1 + i)
+    }
 
     io.get_clipboard_text_fn = get_clipboard_text
     io.set_clipboard_text_fn = set_clipboard_text
