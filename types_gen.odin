@@ -464,10 +464,10 @@ Key_Super :: ImGuiMod_Super
 Key_Shortcut :: ImGuiMod_Shortcut
 Key_Mask_ :: ImGuiMod_Mask_
 Key_Named_Key__BEGIN :: ImGuiKey_NamedKey_BEGIN
-Key_Named_Key__E_N_D :: ImGuiKey_NamedKey_END
+Key_Named_Key__END :: ImGuiKey_NamedKey_END
 Key_Named_Key__COUNT :: ImGuiKey_NamedKey_COUNT
 Key_Keys_Data__SIZE :: ImGuiKey_KeysData_SIZE
-Key_Keys_Data__O_F_F_S_E_T :: ImGuiKey_KeysData_OFFSET
+Key_Keys_Data__OFFSET :: ImGuiKey_KeysData_OFFSET
 
 
 Nav_Input :: enum i32 {

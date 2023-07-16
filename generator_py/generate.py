@@ -616,8 +616,9 @@ def proc_overload_group(name: str) -> str:
 
 
 ACRONYMS = (
-    'IO', 'ID', 'BEGIN', 'COUNT', 'SIZE', 'OSX', 'STB', 'RGB', 'RGBA', 'RGBA32', 'HSV',
-    'NS', 'EW', 'NESW', 'NWSE', 'HSV', 'TL', 'TR', 'BL', 'BR', 'TTY', 'UV', 'TTF',
+    'IO', 'ID', 'BEGIN', 'END', 'COUNT', 'SIZE', 'OFFSET', 'OSX', 'STB',
+    'RGB', 'RGBA', 'RGBA32', 'HSV', 'TTY', 'UV', 'TTF',
+    'NS', 'EW', 'NESW', 'NWSE', 'TL', 'TR', 'BL', 'BR',
 )
 
 
