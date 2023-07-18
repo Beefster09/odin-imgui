@@ -1,13 +1,16 @@
 import argparse
-from collections import defaultdict
 import io
 import re
 import sys
 import textwrap
+from collections import defaultdict
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from pycparser import parse_file, c_ast
+
+import models
 
 THIS_DIR = Path(__file__).parent.absolute()
 CIMGUI_DIR = THIS_DIR.parent / 'cimgui'
@@ -26,14 +29,66 @@ def main():
         ],
     )
 
-    header_ast = [
-        node for node in header_ast
-        if is_cimgui(node)
-    ]
+    enums = []
+    structs = []
+    func_types = {}
+    overload_groups = defaultdict(list)
 
-    generate_types(header_ast)
-    generate_foreign(header_ast)
-    generate_wrapper(header_ast)
+    class V(c_ast.NodeVisitor):
+        def visit_Enum(self, node: c_ast.Enum, name: str | None):
+            enums.append(models.CEnum.from_ast(node))
+
+        def visit_Struct(self, node: c_ast.Struct):
+            structs.append(models.CStruct.from_ast(node))
+
+        def visit_Typedef(self, typedef: c_ast.Typedef):
+            if isinstance(typedef.type, c_ast.TypeDecl) and isinstance(typedef.type.type, c_ast.Enum):
+                    return self.visit_Enum(typedef.type.type, typedef.name)
+            elif isinstance(typedef.type, c_ast.PtrDecl) and isinstance(typedef.type.type, c_ast.FuncDecl):
+                func_types[typedef.name] = models.ast_to_type(typedef.type.type)
+            else:
+                return self.generic_visit(typedef)
+
+    for node in header_ast:
+        if not is_cimgui(node):
+            continue
+
+        if (
+            isinstance(node, c_ast.Decl)
+            and 'extern' in node.storage
+            and isinstance(node.type, c_ast.FuncDecl)
+        ):
+            if not (
+                '__' not in node.name  # probably intended as private
+                and (
+                    not node.name.startswith(FUNC_PREFIX_BLACKLIST)
+                    or node.name.startswith(FUNC_PREFIX_WHITELIST)
+                )
+                and node.name not in FUNC_BLACKLIST
+            ):
+                continue
+
+            func = models.ForeignFunc.from_ast(node)
+
+            if func.params and func.params[-1].type == models.NamedCType('va_list'):
+                continue
+
+            overload_groups[proc_overload_group(func.name)].append(func)
+
+        else:
+            V().visit(node)
+
+    generate_foreign(foreign_funcs)
+
+    # header_ast = [
+    #     node for node in header_ast
+    #     if is_cimgui(node)
+    # ]
+
+    # generate_types(header_ast)
+    # generate_foreign(header_ast)
+    # generate_wrapper(header_ast)
+
 
 
 def generate_types(ast):
@@ -44,7 +99,7 @@ def generate_types(ast):
             visitor.visit(node)
 
 
-def generate_foreign(ast):
+def generate_foreign(funcs: list[models.ForeignFunc]) -> list[models.ForeignFunc]:
     with open(ODIN_DIR / 'foreign_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent("""
@@ -64,36 +119,58 @@ def generate_foreign(ast):
             foreign cimgui {
         """))
 
-        for node in ast:
-            if is_exported_proc(node):
-                all_params = param_list(node.type.args)
+        funcs_to_wrap = []
 
-                odin_params = []
+        for func in funcs:
 
-                for i, param in enumerate(all_params):
-                    prev_param = all_params[i - 1] if i > 0 else None
+            odin_params = []
 
-                    if isinstance(param, c_ast.EllipsisParam):
-                        odin_params.append('#c_vararg _args_: ..any')
+            for i, param in enumerate(func.params):
+                prev_param = func.params[i - 1] if i > 0 else None
 
-                    elif is_string_span_pair(prev_param, param):
-                        odin_params[-1:] = [
-                            f"{odin_id(prev_param.name)}: [^]u8",
-                            f"{odin_id(param.name)}: [^]u8",
-                        ]
+                if is_string_span_pair(prev_param, param):
+                    odin_params[-1:] = [
+                        f"{odin_id(prev_param.name)}: [^]u8",
+                        f"{odin_id(param.name)}: [^]u8",
+                    ]
 
-                    else:
-                        odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
-
-                ret_type = type_as_odin(node.type.type)
-                if ret_type == 'void':
-                    ret = ''
                 else:
-                    ret = f" -> {ret_type}"
+                    odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
 
-                fp.write(f"\t{node.name} :: proc({', '.join(odin_params)}){ret} ---\n")
+            ret_type = type_as_odin(node.type.type)
+            if ret_type == 'void':
+                ret = ''
+            else:
+                ret = f" -> {ret_type}"
+
+            fp.write(f"\t{node.name} :: proc({', '.join(odin_params)}){ret} ---\n")
+
+            linked_funcs.append(func)
 
         fp.write("}\n")
+
+        return funcs_to_wrap
+
+FUNC_BLACKLIST = [
+    'igMemAlloc',
+    'igMemFree',
+    'igPushID_Str',  # should use _StrStr variant
+    'igGetID_Str',   # should use _StrStr variant
+]
+
+FUNC_PREFIX_BLACKLIST = (
+    'igIm',
+    'ImVec',
+    'ImBitVector',
+    'igGET',
+    'imBitVector',
+)
+
+FUNC_PREFIX_WHITELIST = (
+    'igImage',
+    'igImFont',
+    'igImBezier',
+)
 
 
 def generate_wrapper(ast):
@@ -765,36 +842,6 @@ def is_out_param(ast_node) -> bool:
         and isinstance(ast_node.type.type, (c_ast.TypeDecl, c_ast.PtrDecl))
         and 'const' not in ast_node.type.type.quals
     )
-
-
-def is_exported_proc(ast_node):
-    return (
-        isinstance(ast_node, c_ast.Decl)
-        and isinstance(ast_node.type, c_ast.FuncDecl)
-        and ast_node.name
-        and '__' not in ast_node.name  # probably intended as private
-        and (
-            not ast_node.name.startswith(FUNC_PREFIX_BLACKLIST)
-            or ast_node.name.startswith(FUNC_PREFIX_WHITELIST)
-        )
-    )
-
-
-FUNC_PREFIX_BLACKLIST = (
-    'igIm',
-    'ImVec',
-    'ImBitVector',
-    'igGET',
-    'igMemAlloc',
-    'igMemFree',
-    'imBitVector',
-)
-
-FUNC_PREFIX_WHITELIST = (
-    'igImage',
-    'igImFont',
-    'igImBezier',
-)
 
 
 def deref(ast_node):
