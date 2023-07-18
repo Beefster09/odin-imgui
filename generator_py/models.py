@@ -139,6 +139,7 @@ class ForeignFunc:
     has_vararg: bool = False
     defaults: list[str | None] = field(default_factory=list)
     fmtarg_idx: int | None = None
+    cpp_header: str | None = None
 
     @classmethod
     def from_ast(cls, decl: c_ast.Decl) -> Self:

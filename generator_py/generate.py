@@ -4,9 +4,8 @@ import re
 import sys
 import textwrap
 from collections import defaultdict
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, List
+from typing import Iterable
 
 from pycparser import parse_file, c_ast
 
@@ -88,55 +87,10 @@ def main():
     # scrape C++ header for defaults
 
     with open(CPPIMGUI_DIR / 'imgui.h') as fp:
-        context = None, None
-        for line in fp:
-            if match := re.match(r'\s*IMGUI_API\s.*?\s(\w+)\((.*?)\)\s*(?:IM_FMT(?:ARGS|LIST)\((\d+)\))?;', line):
-                match context:
-                    case ('namespace', 'ImGui'):
-                        c_name = 'ig' + match[1]
-                    case ('struct', struct_name):
-                        c_name = f"{struct_name}_{match[1]}"
-                    case _:
-                        print("unexpected context", context)
-                        c_name = match[1]
+        scrape_cpp_for_defaults(fp, 'primary', overload_groups)
 
-                params = bracket_aware_split(match[2])
-
-                if context[0] == 'struct': # is a method
-                    defaults = [None]
-                    argnames = ['self']
-                else: # is a free function
-                    defaults = []
-                    argnames = []
-
-                for param in params:
-                    if '=' in param:
-                        cdecl, default = param.split('=', maxsplit=1)
-                        defaults.append(cpp_to_odin(default))
-                        argnames.append(cpp_argname(cdecl))
-                    elif param and '...' not in param:
-                        defaults.append(None)
-                        argnames.append(cpp_argname(param))
-
-                # find the right func in the overload group
-                ffunc = None
-                ogroup = proc_overload_group(c_name)
-                if ogroup in overload_groups:
-                    if len(overload_groups[ogroup]) == 1:
-                        ffunc = overload_groups[ogroup][0]
-                    else:
-                        ffunc = match_overload(overload_groups[ogroup], argnames)
-
-                if ffunc is None:
-                    print(f"{c_name}({', '.join(argnames)}) not found")
-                    continue
-
-                ffunc.defaults = defaults
-                if match[3] is not None:
-                    ffunc.fmtarg_idx = int(match[3])
-
-            elif match := re.match(r'(struct|namespace)\s+(\w+)', line):
-                context = match[1], match[2]
+    with open(CPPIMGUI_DIR / 'imgui_internal.h') as fp:
+        scrape_cpp_for_defaults(fp, 'internal', overload_groups)
 
     generate_foreign(foreign_funcs)
 
@@ -180,7 +134,7 @@ def generate_types(ast):
             visitor.visit(node)
 
 
-def generate_foreign(funcs: Iterable[models.ForeignFunc]) -> list[models.ForeignFunc]:
+def generate_foreign(funcs: Iterable[models.ForeignFunc]):
     with open(ODIN_DIR / 'foreign_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent("""
@@ -199,8 +153,6 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]) -> list[models.Foreign
             @(default_calling_convention="c")
             foreign cimgui {
         """))
-
-        funcs_to_wrap = []
 
         for func in funcs:
 
@@ -224,8 +176,6 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]) -> list[models.Foreign
                 for i, default in enumerate(func.defaults):
                     if default is not None:
                         odin_params[i] += f" = {default}"
-            else:
-                print(f"{func.odin_name}({', '.join(odin_params)}) has defaults {func.defaults}")
 
             if func.ret_type:
                 ret = f" -> {func.ret_type.as_odin()}"
@@ -236,8 +186,6 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]) -> list[models.Foreign
             fp.write(f"\t{func.odin_name} :: proc({', '.join(odin_params)}){ret} ---\n")
 
         fp.write("}\n")
-
-        return funcs_to_wrap
 
 
 def generate_wrapper(ast):
@@ -383,20 +331,76 @@ def generate_wrapper(ast):
                 fp.write("}\n")
 
 
-DEFAULT_ARGS = {  # default values for the last N parameters of specific procs
-    'begin': ['nil', '{}'],
-    'begin_menu': ['true'],
-    'menu_item_bool': ['nil', 'false', 'true'],
-    'menu_item_bool_ptr': ['true'],
-    'create_context': ['nil'],
-    'style_colors_light': ['nil'],
-    'style_colors_dark': ['nil'],
-    'style_colors_classic': ['nil'],
-    'same_line': ['0', '1'],
-    'image': ['{0, 0}', '{1, 1}', '{1, 1, 1, 1}', '{0, 0, 0, 0}'],
-    'image_button': ['{0, 0}', '{1, 1}', '{0, 0, 0, 0}', '{1, 1, 1, 1}'],
-    # TODO - defaults are defined in the C++ header and do not appear in the C header
-}
+def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[models.ForeignFunc]]):
+    context = None, None
+    disable_level = 0
+    for line in fp:
+        # if 'IMGUI_API' in line:
+        #     print(line.rstrip())
+        #     print(re.match(r'\s*IMGUI_API\s.*?\s(\w+)\((.*?)\)\s*(?:IM_FMT(?:ARGS|LIST)\((\d+)\))?;', line))
+
+        if line.startswith('#ifndef IMGUI_DISABLE_OBSOLETE'):
+            disable_level += 1
+            continue
+        if disable_level > 0:
+            if line.startswith('#endif'):
+                disable_level -= 1
+            continue
+
+        elif match := re.match(r'(struct|namespace)\s+(?:IMGUI_API\s+)?(\w+)', line):
+            context = match[1], match[2]
+
+        elif match := re.match(r'\s*IMGUI_API\s.*?\s(~?\w+)\((.*?)\)\s*(?:IM_FMT(?:ARGS|LIST)\((\d+)\))?(?:const)?;', line):
+            match context:
+                case ('namespace', 'ImGui'):
+                    c_name = 'ig' + match[1]
+                case ('struct', struct_name):
+                    if match[1].startswith('~'):
+                        c_name = f"{struct_name}_destroy"
+                    else:
+                        c_name = f"{struct_name}_{match[1]}"
+                case _:
+                    continue
+
+            # print(context, line.rstrip())
+            params = bracket_aware_split(match[2])
+
+            defaults: list[str | None] = []
+            argnames: list[str] = []
+            if context[0] == 'struct': # is a method
+                defaults = [None]
+                argnames = ['self']
+
+            for param in params:
+                if '=' in param:
+                    cdecl, default = param.split('=', maxsplit=1)
+                    defaults.append(cpp_to_odin(default))
+                    argnames.append(cpp_argname(cdecl))
+                elif param and '...' not in param:
+                    defaults.append(None)
+                    argnames.append(cpp_argname(param))
+
+            # find the right func in the overload group
+            ffunc = None
+            ogroup = proc_overload_group(c_name)
+            # print(ogroup, [proc.name for proc in overload_groups[ogroup]])
+            if ogroup in overload_groups:
+                if len(overload_groups[ogroup]) == 1:
+                    ffunc = overload_groups[ogroup][0]
+                else:
+                    ffunc = match_overload(overload_groups[ogroup], argnames)
+
+            if ffunc is None:
+                print(f"{c_name}({', '.join(argnames)}) not found")
+                continue
+
+            if ffunc.cpp_header is not None:
+                raise Exception(f"{c_name}({', '.join(argnames)}) was already enriched with cpp header data")
+
+            ffunc.defaults = defaults
+            ffunc.cpp_header = header
+            if match[3] is not None:
+                ffunc.fmtarg_idx = int(match[3])
 
 
 def write_header(fp):
@@ -571,58 +575,6 @@ class TypeGenVisitor(c_ast.NodeVisitor):
             return self.generic_visit(typedef)
 
 
-def type_as_odin(type_node) -> str:
-    if isinstance(type_node, c_ast.PtrDecl):
-        if is_cstring(type_node):
-            return 'cstring'
-
-        inner = type_as_odin(type_node.type)
-        if inner == 'void':
-            return 'rawptr'
-        elif inner.startswith('#type proc'):  # HACK: would break on pointer to function pointer
-            return inner
-        else:
-            return f"^{inner}"
-
-    elif isinstance(type_node, c_ast.ArrayDecl):
-        inner = type_as_odin(type_node.type)
-        if type_node.dim is not None:
-            return f"[{value_as_odin(type_node.dim)}]{inner}"
-        else:
-            return f"[^]{inner}"
-
-    elif isinstance(type_node, c_ast.TypeDecl):
-        t = type_node.type
-        if isinstance(t, c_ast.IdentifierType):
-            return odin_typename(' '.join(t.names))
-        elif isinstance(t, c_ast.Struct):
-            return odin_typename(t.name)
-        else:
-            raise Exception(f"Unhandled type decl type: {type(t)}")
-
-    elif isinstance(type_node, c_ast.FuncDecl):
-        ret_type = type_as_odin(type_node.type)
-        ret = f" -> {ret_type}" if ret_type != 'void' else ''
-
-        params = ', '.join(
-            f"#c_vararg args: ..any"
-            if isinstance(param, c_ast.EllipsisParam)
-            else f"{odin_id(param.name)}: {type_as_odin(param.type)}"
-
-            for param in param_list(type_node.args)
-        )
-        return f'#type proc "c" ({params}){ret}'
-
-    elif isinstance(type_node, c_ast.Union):
-        fields = '\n'.join(
-            f"\t\t{field.name}: {type_as_odin(field.type)},"
-            for field in type_node.decls
-        )
-        return f"struct #raw_union {{\n{fields}\n\t}}"
-
-    raise Exception(f"Unhandled {type(type_node)} at {type_node.coord}")
-
-
 def is_cimgui(ast_node) -> bool:
     if coord := getattr(ast_node, 'coord', None):
         return coord.file.endswith('cimgui.h')
@@ -631,8 +583,12 @@ def is_cimgui(ast_node) -> bool:
 
 def match_overload(funcs: list[models.ForeignFunc], argnames: list[str]):
     for func in funcs:
-        if all(arg.name == argname for arg, argname in zip(func.params, argnames)):
+        if func.cpp_header is not None:  # assumption: overloads are in the same order
+            continue
+
+        if len(func.params) == len(argnames) and all(arg.name == argname for arg, argname in zip(func.params, argnames)):
             return func
+
     return None
 
 
