@@ -1,7 +1,10 @@
+import re
 from dataclasses import dataclass
-from typing import Self
+from typing import Optional, Self
 
 from pycparser import c_ast
+
+from utils import *
 
 
 @dataclass
@@ -9,12 +12,24 @@ class NamedCType:
     name: str
     is_const: bool = False
 
+    def as_odin(self) -> str:
+        return odin_typename(self.name)
 
 @dataclass
 class PtrCType:
     to: 'AnyCType'
     is_const: bool = False
     array_hint: bool = False
+
+    def as_odin(self) -> str:
+        if self.array_hint:
+            return '[^]' + self.to.as_odin()
+        elif isinstance(self.to, NamedCType) and self.to.name == 'char':
+            return 'cstring'
+        elif isinstance(self.to, NamedCType) and self.to.name == 'void':
+            return 'rawptr'
+        else:
+            return '^' + self.to.as_odin()
 
 
 @dataclass
@@ -23,18 +38,36 @@ class ArrayCType:  # fixed array; non-fixed arrays are actually pointers in C
     count: c_ast.Node
     is_const: bool = False
 
+    def as_odin(self) -> str:
+        return f"[{odin_expr(self.count)}]{self.of.as_odin()}"
+
 
 @dataclass
 class FuncCType:
-    ret_type: 'AnyCType'
+    ret_type: Optional['AnyCType']
     params: list['CParam']
-    has_vararg: bool = False
+
+    def as_odin(self) -> str:
+        return f"""#type proc({
+            ', '.join(
+                f"{param.name}: {param.type.as_odin()}"
+                for param in self.params
+            )
+        }){f' -> {self.ret_type.as_odin()}' if self.ret_type else ''}"""
 
 
 @dataclass
 class UnionCType:
     orig_name: str | None
     fields: list[tuple[str, 'AnyCType']]
+
+    def as_odin(self) -> str:
+        return f"""struct #raw_union {{ {
+            ', '.join([
+                f"{name}: {typ.as_odin()}"
+                for name, typ in self.fields
+            ])
+        } }}"""
 
 
 AnyCType = NamedCType | ArrayCType | PtrCType | FuncCType | UnionCType
@@ -48,7 +81,10 @@ def ast_to_type(node: c_ast.Node) -> AnyCType:
         return NamedCType(node.name)
 
     elif isinstance(node, c_ast.PtrDecl):
-        return PtrCType(ast_to_type(node.type), 'const' in node.quals)
+        if isinstance(node.type, c_ast.FuncDecl):
+            return ast_to_type(node.type)
+        else:
+            return PtrCType(ast_to_type(node.type), 'const' in node.quals)
 
     elif isinstance(node, c_ast.ArrayDecl):
         if node.dim:
@@ -58,17 +94,25 @@ def ast_to_type(node: c_ast.Node) -> AnyCType:
 
     elif isinstance(node, c_ast.FuncDecl):
         params: list[CParam] = []
-        va = False
         for param in node.args:
             if isinstance(param, c_ast.EllipsisParam):
-                va = True
+                raise TypeError(param)
             else:
                 params.append(CParam(param.name, ast_to_type(param.type)))
 
-        return FuncCType(ast_to_type(node.type), params, va)
+        ret_type = ast_to_type(node.type)
+
+        if isinstance(ret_type, NamedCType) and ret_type.name == 'void':
+            return FuncCType(None, params)
+        else:
+            return FuncCType(ret_type, params)
 
     elif isinstance(node, c_ast.TypeDecl):
-        return ast_to_type(node.type)
+        typ = ast_to_type(node.type)
+        if hasattr(typ, 'is_const'):
+            typ.is_const = 'const' in node.quals
+
+        return typ
 
     elif isinstance(node, c_ast.Union):
         return UnionCType(node.name, [
@@ -89,7 +133,8 @@ class CParam:
 @dataclass(kw_only=True)
 class ForeignFunc:
     name: str
-    ret_type: AnyCType
+    odin_name: str
+    ret_type: AnyCType | None
     params: list[CParam]
     has_vararg: bool = False
 
@@ -109,9 +154,18 @@ class ForeignFunc:
         if len(params) == 1 and params[0].type == NamedCType('void'):
             params = []
 
+        ret_type = ast_to_type(decl.type.type)
+        if isinstance(ret_type, NamedCType) and ret_type.name == 'void':
+            ret_type = None
+
+        odin_name = decl.name.removeprefix('ig')
+        if match := re.match(r'^Im(?:Gui)?([A-Z][A-Za-z]*)_(?:Im(?:Gui)?)?(.*)$', odin_name):
+            odin_name = f"{match[1]}_{match[2]}"
+
         return cls(
             name=decl.name,
-            ret_type=ast_to_type(decl.type.type),
+            odin_name=odin_name,
+            ret_type=ret_type,
             params=params,
             has_vararg=va,
         )
@@ -199,3 +253,21 @@ class CStruct:
             (field.name, ast_to_type(field.type))
             for field in struct
         ])
+
+
+def odin_expr(value_node) -> str:
+    assert value_node is not None
+
+    if isinstance(value_node, c_ast.ID):
+        return value_node.name
+
+    elif isinstance(value_node, c_ast.Constant):
+        return value_node.value
+
+    elif isinstance(value_node, c_ast.BinaryOp):
+        return f"({odin_expr(value_node.left)} {value_node.op} {odin_expr(value_node.right)})"
+
+    elif isinstance(value_node, c_ast.UnaryOp):
+        return f"({value_node.op}{odin_expr(value_node.expr)})"
+
+    raise Exception(f"Unhandled {type(value_node)} at {value_node.coord}")

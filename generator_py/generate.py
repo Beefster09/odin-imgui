@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, List
 from pycparser import parse_file, c_ast
 
 import models
+from utils import *
 
 THIS_DIR = Path(__file__).parent.absolute()
 CIMGUI_DIR = THIS_DIR.parent / 'cimgui'
@@ -32,6 +33,7 @@ def main():
     enums = []
     structs = []
     func_types = {}
+    foreign_funcs = []
     overload_groups = defaultdict(list)
 
     class V(c_ast.NodeVisitor):
@@ -74,10 +76,17 @@ def main():
                 continue
 
             overload_groups[proc_overload_group(func.name)].append(func)
+            foreign_funcs.append(func)
 
         else:
-            V().visit(node)
+            try:
+                V().visit(node)
+            except TypeError:
+                pass
 
+    # TODO: scrape the cpp header for default args (the entire reason for the rewrite)
+
+    # foreign_funcs.sort(key=lambda fn: fn.name)
     generate_foreign(foreign_funcs)
 
     # header_ast = [
@@ -89,6 +98,27 @@ def main():
     # generate_foreign(header_ast)
     # generate_wrapper(header_ast)
 
+
+FUNC_BLACKLIST = [
+    'igMemAlloc',
+    'igMemFree',
+    'igPushID_Str',  # should use _StrStr variant
+    'igGetID_Str',   # should use _StrStr variant
+]
+
+FUNC_PREFIX_BLACKLIST = (
+    'igIm',
+    'ImVec',
+    'ImBitVector',
+    'igGET',
+    'imBitVector',
+)
+
+FUNC_PREFIX_WHITELIST = (
+    'igImage',
+    'igImFont',
+    'igImBezier',
+)
 
 
 def generate_types(ast):
@@ -135,42 +165,22 @@ def generate_foreign(funcs: list[models.ForeignFunc]) -> list[models.ForeignFunc
                     ]
 
                 else:
-                    odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
+                    odin_params.append(f"{odin_id(param.name)}: {param.type.as_odin()}")
 
-            ret_type = type_as_odin(node.type.type)
-            if ret_type == 'void':
-                ret = ''
+            if func.has_vararg:
+                odin_params.append("#c_vararg _args_: ..any")
+
+            if func.ret_type:
+                ret = f" -> {func.ret_type.as_odin()}"
             else:
-                ret = f" -> {ret_type}"
+                ret = ''
 
-            fp.write(f"\t{node.name} :: proc({', '.join(odin_params)}){ret} ---\n")
-
-            linked_funcs.append(func)
+            fp.write(f'\t@(link_name = "{func.name}")\n')
+            fp.write(f"\t{func.odin_name} :: proc({', '.join(odin_params)}){ret} ---\n")
 
         fp.write("}\n")
 
         return funcs_to_wrap
-
-FUNC_BLACKLIST = [
-    'igMemAlloc',
-    'igMemFree',
-    'igPushID_Str',  # should use _StrStr variant
-    'igGetID_Str',   # should use _StrStr variant
-]
-
-FUNC_PREFIX_BLACKLIST = (
-    'igIm',
-    'ImVec',
-    'ImBitVector',
-    'igGET',
-    'imBitVector',
-)
-
-FUNC_PREFIX_WHITELIST = (
-    'igImage',
-    'igImFont',
-    'igImBezier',
-)
 
 
 def generate_wrapper(ast):
@@ -504,24 +514,6 @@ class TypeGenVisitor(c_ast.NodeVisitor):
             return self.generic_visit(typedef)
 
 
-def value_as_odin(value_node) -> str:
-    assert value_node is not None
-
-    if isinstance(value_node, c_ast.ID):
-        return value_node.name
-
-    elif isinstance(value_node, c_ast.Constant):
-        return value_node.value
-
-    elif isinstance(value_node, c_ast.BinaryOp):
-        return f"({value_as_odin(value_node.left)} {value_node.op} {value_as_odin(value_node.right)})"
-
-    elif isinstance(value_node, c_ast.UnaryOp):
-        return f"({value_node.op}{value_as_odin(value_node.expr)})"
-
-    raise Exception(f"Unhandled {type(value_node)} at {value_node.coord}")
-
-
 def type_as_odin(type_node) -> str:
     if isinstance(type_node, c_ast.PtrDecl):
         if is_cstring(type_node):
@@ -572,162 +564,6 @@ def type_as_odin(type_node) -> str:
         return f"struct #raw_union {{\n{fields}\n\t}}"
 
     raise Exception(f"Unhandled {type(type_node)} at {type_node.coord}")
-
-
-TYPE_MAP = {
-    'ImS8': 'i8',
-    'ImU8': 'u8',
-    'ImS16': 'i16',
-    'ImU16': 'u16',
-    'ImS32': 'i32',
-    'ImU32': 'u32',
-    'ImS64': 'i64',
-    'ImU64': 'u64',
-    'bool': 'bool',
-    'unsigned int': 'u32',
-    'int': 'i32',
-    'unsigned short': 'u16',
-    'char': 'i8',
-    'signed char': 'i8',
-    'unsigned char': 'u8',
-    'short': 'i16',
-    'float': 'f32',
-    'double': 'f64',
-    'ImWchar': 'u16',
-    'ImWchar16': 'u16',
-    'ImWchar32': 'rune',
-    'ImBitArrayPtr': 'rawptr',
-    'ImVec1': '[1]f32',
-    'ImVec2': '[2]f32',
-    'ImVec3': '[3]f32',
-    'ImVec4': '[4]f32',
-    'ImVec2ih': '[2]i16',
-    'size_t': 'int',
-    'va_list': '^libc.va_list',
-}
-
-for k, v in list(TYPE_MAP.items()):
-    if ' ' in k:
-        TYPE_MAP[k.replace(' ', '_')] = v
-
-
-def odin_typename(name: str) -> str:
-    if name in TYPE_MAP:
-        return TYPE_MAP[name]
-
-    if name.startswith('ImVector_'):
-        _, elem = name.split('_', 1)
-
-        if elem.endswith('Ptr'):
-            return f"Vector(^{odin_typename(elem[:-3])})"
-        elif elem.endswith('PPtr'):
-            return f"Vector(^^{odin_typename(elem[:-4])})"
-
-        return f"Vector({odin_typename(elem)})"
-
-    elif name.startswith('ImSpan_'):
-        _, elem = name.split('_', 1)
-        return f"Span({odin_typename(elem)})"
-
-    return '_'.join(camel_split(trim_type_prefix(name)))
-
-
-RESERVED_IDS = ['where', 'map', 'in', 'context', 'fmt']
-
-def odin_id(name: str) -> str:
-    base_id = '_'.join(map(str.lower, camel_split(name)))
-
-    if base_id in RESERVED_IDS:
-        return base_id + '_'
-
-    return base_id
-
-
-def odin_enumname(name: str) -> str:
-    if '_' not in name:
-        return '_no_name_'
-
-    _, valname = name.split('_', 1)
-
-    if not valname:
-        return ''
-
-    if valname[0].isnumeric():
-        valname = '_' + valname
-    return '_'.join(camel_split(valname))
-
-
-def odin_procname(name: str) -> str:
-    if name.startswith(('ImGui', 'Im')):  # is a method in the C++ ... probably
-        classname, method = name.split('_', 1)
-
-        if method.startswith(classname):  # is a constructor
-            method = method.replace(classname, 'new', 1)
-
-        all_chunks = camel_split(trim_type_prefix(classname)) + camel_split(trim_type_prefix(method))
-
-        return '_'.join(map(str.lower, all_chunks)).replace('__', '_')
-
-    elif name.startswith('ig'):
-        name = name[2:]
-
-    base_id = '_'.join(map(str.lower, camel_split(name))).replace('__', '_')
-
-    if base_id in RESERVED_IDS:
-        return base_id + '_'
-
-    return base_id
-
-
-def proc_overload_group(name: str) -> str:
-    if name.startswith('ig') and name.count('_') >= 1:
-        group, _ = name.split('_', 1)
-        return odin_procname(group)
-
-    elif name.startswith(('ImGui', 'Im')) and name.count('_') >= 2 and not name.endswith(('_begin', '_end')):
-        typename, method, _ = name.split('_', 2)
-        return odin_procname(f"{typename}_{method}")
-
-    else:
-        return odin_procname(name)
-
-
-ACRONYMS = (
-    'IO', 'ID', 'BEGIN', 'END', 'COUNT', 'SIZE', 'OFFSET', 'OSX', 'STB',
-    'RGB', 'RGBA', 'RGBA32', 'HSV', 'TTY', 'UV', 'TTF',
-    'NS', 'EW', 'NESW', 'NWSE', 'TL', 'TR', 'BL', 'BR',
-)
-
-
-def camel_split(s: str) -> List[str]:
-    def _is_part_of_acronym(start: int, idx: int):
-        for acro in ACRONYMS:
-            if s.startswith(acro, start) and idx - start < len(acro):
-                return True
-        return False
-
-    result = []
-    start = 0
-    for i, c in enumerate(s):
-        if c.isupper():
-            if _is_part_of_acronym(start, i):
-                continue
-            result.append(s[start:i])
-            start = i
-    result.append(s[start:])
-    if result[0] == '':
-        result = result[1:]
-    return result
-
-
-def trim_type_prefix(s: str) -> str:
-    if s.startswith('ImGui'):
-        return s[5:]
-
-    elif s.startswith('Im'):
-        return s[2:]
-
-    return s
 
 
 def is_cimgui(ast_node) -> bool:
