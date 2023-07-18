@@ -1,3 +1,5 @@
+import re
+
 TYPE_MAP = {
     'ImS8': 'i8',
     'ImU8': 'u8',
@@ -120,6 +122,21 @@ def proc_overload_group(name: str) -> str:
         return odin_procname(name)
 
 
+def cpp_to_odin(expr: str) -> str:
+    expr = expr.strip()
+
+    if expr in ('NULL', 'nullptr'):
+        return 'nil'
+
+    if match := re.match(r'ImVec\w+\((.*)\)', expr):
+        return f"{{{', '.join(map(cpp_to_odin, match[1].split(',')))}}}"
+
+    if match := re.match(r'([-+]?\d+\.\d+)f', expr):
+        return match[1]
+
+    return expr
+
+
 ACRONYMS = (
     'IO', 'ID', 'BEGIN', 'END', 'COUNT', 'SIZE', 'OFFSET', 'OSX', 'STB',
     'RGB', 'RGBA', 'RGBA32', 'HSV', 'TTY', 'UV', 'TTF',
@@ -145,6 +162,23 @@ def camel_split(s: str) -> list[str]:
     result.append(s[start:])
     if result[0] == '':
         result = result[1:]
+    return result
+
+
+def bracket_aware_split(s: str) -> list[str]:
+    result = []
+    start = 0
+    bracket_stack = []
+    for i, c in enumerate(s):
+        if (x := '({['.find(c)) >= 0:
+            bracket_stack.append(')}]'[x])
+        elif bracket_stack:
+            if c == bracket_stack[-1]:
+                bracket_stack.pop()
+        elif c == ',':
+            result.append(s[start:i])
+            start = i + 1
+    result.append(s[start:])
     return result
 
 

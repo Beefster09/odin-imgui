@@ -1,5 +1,5 @@
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, Self
 
 from pycparser import c_ast
@@ -137,6 +137,8 @@ class ForeignFunc:
     ret_type: AnyCType | None
     params: list[CParam]
     has_vararg: bool = False
+    defaults: list[str | None] = field(default_factory=list)
+    fmtarg_idx: int | None = None
 
     @classmethod
     def from_ast(cls, decl: c_ast.Decl) -> Self:

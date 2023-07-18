@@ -6,7 +6,7 @@ import textwrap
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Iterable, List
 
 from pycparser import parse_file, c_ast
 
@@ -15,6 +15,7 @@ from utils import *
 
 THIS_DIR = Path(__file__).parent.absolute()
 CIMGUI_DIR = THIS_DIR.parent / 'cimgui'
+CPPIMGUI_DIR = CIMGUI_DIR / 'imgui'
 ODIN_DIR = THIS_DIR.parent
 
 
@@ -33,7 +34,7 @@ def main():
     enums = []
     structs = []
     func_types = {}
-    foreign_funcs = []
+    foreign_funcs = {}
     overload_groups = defaultdict(list)
 
     class V(c_ast.NodeVisitor):
@@ -76,7 +77,7 @@ def main():
                 continue
 
             overload_groups[proc_overload_group(func.name)].append(func)
-            foreign_funcs.append(func)
+            foreign_funcs[func.name] = func
 
         else:
             try:
@@ -84,10 +85,46 @@ def main():
             except TypeError:
                 pass
 
-    # TODO: scrape the cpp header for default args (the entire reason for the rewrite)
+    # scrape C++ header for defaults
 
-    # foreign_funcs.sort(key=lambda fn: fn.name)
-    generate_foreign(foreign_funcs)
+    with open(CPPIMGUI_DIR / 'imgui.h') as fp:
+        context = None, None
+        for line in fp:
+            if match := re.match(r'\s*IMGUI_API\s.*?\s(\w+)\((.*?)\)\s*(?:IM_FMTARGS\((\d+)\))?;', line):
+                match context:
+                    case ('namespace', 'ImGui'):
+                        c_name = 'ig' + match[1]
+                    case ('struct', struct_name):
+                        c_name = f"{struct_name}_{match[1]}"
+                    case _:
+                        print("unexpected context", context)
+                        c_name = match[1]
+
+                # TODO: find the right func in the overload group
+
+                if c_name not in foreign_funcs:
+                    print(c_name, 'not found')
+                    continue
+
+                ffunc = foreign_funcs[c_name]
+
+                params = bracket_aware_split(match[2])
+                defaults = []
+                for param in params:
+                    if '=' in param:
+                        _, default = param.split('=', maxsplit=1)
+                        defaults.append(cpp_to_odin(default))
+                    else:
+                        defaults.append(None)
+
+                ffunc.defaults = defaults
+                if match[3] is not None:
+                    ffunc.fmtarg_idx = int(match[3])
+
+            elif match := re.match(r'(struct|namespace)\s+(\w+)', line):
+                context = match[1], match[2]
+
+    generate_foreign(foreign_funcs.values())
 
     # header_ast = [
     #     node for node in header_ast
@@ -129,7 +166,7 @@ def generate_types(ast):
             visitor.visit(node)
 
 
-def generate_foreign(funcs: list[models.ForeignFunc]) -> list[models.ForeignFunc]:
+def generate_foreign(funcs: Iterable[models.ForeignFunc]) -> list[models.ForeignFunc]:
     with open(ODIN_DIR / 'foreign_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent("""
@@ -169,6 +206,10 @@ def generate_foreign(funcs: list[models.ForeignFunc]) -> list[models.ForeignFunc
 
             if func.has_vararg:
                 odin_params.append("#c_vararg _args_: ..any")
+            elif len(func.defaults) == len(odin_params):
+                for i, default in enumerate(func.defaults):
+                    if default is not None:
+                        odin_params[i] += f" = {default}"
 
             if func.ret_type:
                 ret = f" -> {func.ret_type.as_odin()}"
