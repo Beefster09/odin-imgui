@@ -34,7 +34,7 @@ def main():
     enums = []
     structs = []
     func_types = {}
-    foreign_funcs = {}
+    foreign_funcs = []
     overload_groups = defaultdict(list)
 
     class V(c_ast.NodeVisitor):
@@ -77,7 +77,7 @@ def main():
                 continue
 
             overload_groups[proc_overload_group(func.name)].append(func)
-            foreign_funcs[func.name] = func
+            foreign_funcs.append(func)
 
         else:
             try:
@@ -90,7 +90,7 @@ def main():
     with open(CPPIMGUI_DIR / 'imgui.h') as fp:
         context = None, None
         for line in fp:
-            if match := re.match(r'\s*IMGUI_API\s.*?\s(\w+)\((.*?)\)\s*(?:IM_FMTARGS\((\d+)\))?;', line):
+            if match := re.match(r'\s*IMGUI_API\s.*?\s(\w+)\((.*?)\)\s*(?:IM_FMT(?:ARGS|LIST)\((\d+)\))?;', line):
                 match context:
                     case ('namespace', 'ImGui'):
                         c_name = 'ig' + match[1]
@@ -100,22 +100,36 @@ def main():
                         print("unexpected context", context)
                         c_name = match[1]
 
-                # TODO: find the right func in the overload group
-
-                if c_name not in foreign_funcs:
-                    print(c_name, 'not found')
-                    continue
-
-                ffunc = foreign_funcs[c_name]
-
                 params = bracket_aware_split(match[2])
-                defaults = []
+
+                if context[0] == 'struct': # is a method
+                    defaults = [None]
+                    argnames = ['self']
+                else: # is a free function
+                    defaults = []
+                    argnames = []
+
                 for param in params:
                     if '=' in param:
-                        _, default = param.split('=', maxsplit=1)
+                        cdecl, default = param.split('=', maxsplit=1)
                         defaults.append(cpp_to_odin(default))
-                    else:
+                        argnames.append(cpp_argname(cdecl))
+                    elif param and '...' not in param:
                         defaults.append(None)
+                        argnames.append(cpp_argname(param))
+
+                # find the right func in the overload group
+                ffunc = None
+                ogroup = proc_overload_group(c_name)
+                if ogroup in overload_groups:
+                    if len(overload_groups[ogroup]) == 1:
+                        ffunc = overload_groups[ogroup][0]
+                    else:
+                        ffunc = match_overload(overload_groups[ogroup], argnames)
+
+                if ffunc is None:
+                    print(f"{c_name}({', '.join(argnames)}) not found")
+                    continue
 
                 ffunc.defaults = defaults
                 if match[3] is not None:
@@ -124,7 +138,7 @@ def main():
             elif match := re.match(r'(struct|namespace)\s+(\w+)', line):
                 context = match[1], match[2]
 
-    generate_foreign(foreign_funcs.values())
+    generate_foreign(foreign_funcs)
 
     # header_ast = [
     #     node for node in header_ast
@@ -210,6 +224,8 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]) -> list[models.Foreign
                 for i, default in enumerate(func.defaults):
                     if default is not None:
                         odin_params[i] += f" = {default}"
+            else:
+                print(f"{func.odin_name}({', '.join(odin_params)}) has defaults {func.defaults}")
 
             if func.ret_type:
                 ret = f" -> {func.ret_type.as_odin()}"
@@ -611,6 +627,13 @@ def is_cimgui(ast_node) -> bool:
     if coord := getattr(ast_node, 'coord', None):
         return coord.file.endswith('cimgui.h')
     return False
+
+
+def match_overload(funcs: list[models.ForeignFunc], argnames: list[str]):
+    for func in funcs:
+        if all(arg.name == argname for arg, argname in zip(func.params, argnames)):
+            return func
+    return None
 
 
 def param_list(ast_node: c_ast.ParamList):

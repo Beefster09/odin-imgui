@@ -137,6 +137,18 @@ def cpp_to_odin(expr: str) -> str:
     return expr
 
 
+def cpp_argname(argdecl: str) -> str:
+    argdecl = argdecl.strip()
+    if match := re.fullmatch(r'(?:\w+[&*]*\s+)*(\w+)(?:\[.*\])?', argdecl):  # simple types
+        return match[1]
+    elif match := re.fullmatch(r'(?:\w+[&*]*\s*)*\(\*(\w+)\)\(.*\)', argdecl):  # func pointer
+        return match[1]
+    elif match := re.fullmatch(r'\w+\<.+?\>\**\s+(\w+)', argdecl):  # template type
+        return match[1]
+    else:
+        raise ValueError(argdecl)
+
+
 ACRONYMS = (
     'IO', 'ID', 'BEGIN', 'END', 'COUNT', 'SIZE', 'OFFSET', 'OSX', 'STB',
     'RGB', 'RGBA', 'RGBA32', 'HSV', 'TTY', 'UV', 'TTF',
