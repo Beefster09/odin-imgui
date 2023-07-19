@@ -70,7 +70,7 @@ def main():
             ):
                 continue
 
-            func = models.ForeignFunc.from_ast(node)
+            func = models.CFunc.from_ast(node)
 
             if func.params and func.params[-1].type == models.NamedCType('va_list'):
                 continue
@@ -91,6 +91,8 @@ def main():
 
     with open(CPPIMGUI_DIR / 'imgui_internal.h') as fp:
         scrape_cpp_for_defaults(fp, 'internal', overload_groups)
+
+    overload_groups['text_buffer_appendf'][0].fmtarg_idx = 1  # special case; not in cpp header
 
     generate_foreign(foreign_funcs)
     generate_wrapper(overload_groups)
@@ -126,12 +128,10 @@ def generate_types(ast):
             visitor.visit(node)
 
 
-def generate_foreign(funcs: Iterable[models.ForeignFunc]):
+def generate_foreign(funcs: Iterable[models.CFunc]):
     with open(ODIN_DIR / 'foreign_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent("""
-            import "core:c/libc"
-
             when ODIN_OS == .Windows {
             \twhen ODIN_DEBUG {
             \t\tforeign import cimgui "external/cimgui_debug.lib"
@@ -162,17 +162,10 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]):
                     ]
 
                 else:
-                    odin_params.append(f"{odin_id(param.name)}: {param.type.as_odin()}")
+                    odin_params.append(param.as_odin())
 
             if func.has_vararg:
                 odin_params.append("#c_vararg _args_: ..any")
-            elif len(func.defaults) == len(odin_params):
-                for i, default in enumerate(func.defaults):
-                    if default:
-                        if odin_params[i].endswith(('Cond', 'Flags')) and default == '0':  # HACK
-                            odin_params[i] += " = {}"
-                        else:
-                            odin_params[i] += f" = {default}"
 
             if func.ret_type:
                 ret = f" -> {func.ret_type.as_odin()}"
@@ -185,7 +178,7 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]):
         fp.write("}\n")
 
 
-def generate_wrapper(overloads: dict[str, list[models.ForeignFunc]]):
+def generate_wrapper(overloads: dict[str, list[models.CFunc]]):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent('''
@@ -210,21 +203,14 @@ def generate_wrapper(overloads: dict[str, list[models.ForeignFunc]]):
 
                 needs_wrapper = False
 
-                # TODO: fix defaults
-
                 for i, param in enumerate(func.params):
                     prev_param = func.params[i - 1] if i > 0 else None
                     pname = odin_id(param.name)
 
-                    try:
-                        default = func.defaults[i]
-                    except IndexError:
-                        default = None
-
                     if param.is_out():
                         needs_wrapper = True
                         multiple_returns.append(
-                            f"{pname}: {param.type.as_odin()}"
+                            f"{pname}: {param.type.to.as_odin()}"
                         )
                         call_args.append(f"&{pname}")
                         continue  # there is no default
@@ -245,7 +231,7 @@ def generate_wrapper(overloads: dict[str, list[models.ForeignFunc]]):
                         in_params[-1] = f"{new_pname}: string"
                         call_args[-1:] = [
                             f"raw_data({new_pname})",
-                            f"cast([^]u8) uintptr(raw_data({new_pname})) + uintptr(len({new_pname}))",
+                            f"cast([^]u8) (uintptr(raw_data({new_pname})) + uintptr(len({new_pname})))",
                         ]
                         continue  # there is no default
 
@@ -266,17 +252,12 @@ def generate_wrapper(overloads: dict[str, list[models.ForeignFunc]]):
                         call_args.append(f"semisafe_string_to_cstring({pname})")
 
                     else:
-                        in_params.append(f"{pname}: {param.type.as_odin()}")
+                        in_params.append(param.as_odin())
                         call_args.append(pname)
-
-                    if default is not None:
-                        if in_params[-1].endswith(('Cond', 'Flags')) and default == '0':  # HACK
-                            in_params[-1] += " = {}"
-                        else:
-                            in_params[-1] += f" = {default}"
 
                 if func.has_vararg:
                     in_params.append('_args_: ..any')
+                    call_args.append('cstring(raw_data(_fmt_sb.buf))')
 
                 if needs_wrapper:
                     if multiple_returns:
@@ -295,7 +276,7 @@ def generate_wrapper(overloads: dict[str, list[models.ForeignFunc]]):
 
                     fp.write('\t')
 
-                    if multiple_returns:
+                    if multiple_returns and func.ret_type:
                         fp.write("orig_ret = ")
                     elif func.ret_type:
                         fp.write("return ")
@@ -311,135 +292,6 @@ def generate_wrapper(overloads: dict[str, list[models.ForeignFunc]]):
                     fp.write(f"{odin_procname(func.name)} :: {func.odin_name}\n")
 
             fp.write('\n')
-        #         orig_ret_type = type_as_odin(node.type.type)
-        #         all_params = list(node.type.args) if not is_empty_param_list(node.type.args) else []
-
-        #         if all_params and is_va_list(all_params[-1]):
-        #             continue  # skip
-
-        #         proc_name = odin_procname(node.name)
-        #         func_to_call = node.name
-        #         overloads[proc_overload_group(node.name)].append(proc_name)
-
-        #         odin_params = []
-        #         call_args = []
-        #         multiple_returns = []
-
-        #         setup_lines = []
-
-        #         fmt_index = None
-
-        #         for i, param in enumerate(all_params):
-        #             prev_param = all_params[i - 1] if i > 0 else None
-        #             try:
-        #                 next_param = all_params[i + 1]
-        #             except IndexError:
-        #                 next_param = None
-
-        #             if is_out_param(param):
-        #                 multiple_returns.append(f"{odin_id(param.name)}: {type_as_odin(deref(param.type))}")
-        #                 call_args.append('&' + odin_id(param.name))
-
-        #             elif isinstance(param, c_ast.EllipsisParam):
-        #                 assert fmt_index is not None, f"did not see format arg in {node.name}"
-        #                 odin_params.append(f"args: ..any")
-        #                 setup_lines += [
-        #                     "_sb := strings.builder_make(context.temp_allocator)",
-        #                     f"fmt.sbprintf(&_sb, {call_args[fmt_index]}, ..args)",
-        #                     "append(&_sb.buf, 0)",
-        #                     "_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))"
-        #                 ]
-        #                 call_args[fmt_index] = '"%s"'
-        #                 call_args.append('_formatted_str')
-
-        #             elif is_cstring(param.type):
-
-        #                 if is_string_span_pair(prev_param, param):
-        #                     assert param.name.endswith('_end')
-        #                     pname = odin_id(param.name[:-4])
-        #                     odin_params[-1] = f"{pname}: string"
-        #                     call_args[-1:] = [f'{pname}_begin', f'{pname}_end']
-        #                     setup_lines[-1:] = [
-        #                         f"{pname}_begin := raw_data({pname})",
-        #                         f"{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))",
-        #                     ]
-
-        #                 elif (
-        #                     node.name in ['igPushID_Str', 'igGetID_Str']  # HACK b/c of overload
-        #                     or param.name == 'shortcut'
-        #                 ):
-        #                     pname = odin_id(param.name)
-        #                     odin_params.append(f"{pname}: cstring")
-        #                     call_args.append(pname)
-
-        #                 elif param.name in ('fmt', 'format') and fmt_index is None and isinstance(all_params[-1], c_ast.EllipsisParam):
-        #                     pname = odin_id(param.name)
-        #                     odin_params.append(f"{pname}: string")
-        #                     fmt_index = len(call_args)  # will be hijacked later by varargs
-        #                     call_args.append(pname)
-
-        #                 else:
-        #                     pname = odin_id(param.name)
-        #                     odin_params.append(f"{pname}: string")
-        #                     setup_lines.append(f"_temp_{pname} := semisafe_string_to_cstring({pname})")
-        #                     call_args.append('_temp_' + odin_id(param.name))
-
-
-        #             elif is_slice_pair(prev_param, param) and not is_out_param(prev_param):
-        #                 pname = odin_id(re.sub(r"_(?:len(?:gth)?|size|count)$", '', param.name))
-        #                 len_type = type_as_odin(param.type)
-        #                 odin_params[-1] = f"{pname}: []{type_as_odin(deref(prev_param.type))}"
-        #                 call_args[-1:] = [f"raw_data({pname})", f"{f'cast({len_type})' * (len_type != 'int')}len({pname})"]
-
-        #             else:
-        #                 odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
-        #                 call_args.append(odin_id(param.name))
-
-
-        #         if defaults := DEFAULT_ARGS.get(proc_name):
-        #             for i, value in enumerate(defaults, -len(defaults)):
-        #                 odin_params[i] += f" = {value}"
-        #         else:
-        #             for i in range(len(odin_params) - 1, -1, -1):
-        #                 name, ptype = map(str.strip, odin_params[i].split(':'))
-        #                 if ptype == 'Table_Flags':
-        #                     odin_params[i] = f"{name} := Table_Flags(0)"
-        #                 elif re.fullmatch(r"[\w_]*(Cond|Flags)", ptype):
-        #                     odin_params[i] = f"{name} := {ptype}{{}}"
-        #                 else:
-        #                     break
-
-        #         if orig_ret_type == 'void':
-        #             if multiple_returns:
-        #                 ret = f" -> ({', '.join(multiple_returns)})"
-        #             else:
-        #                 ret = ''
-        #         else:
-        #             if multiple_returns:
-        #                 ret = f" -> ({', '.join(multiple_returns)}, _ret: {orig_ret_type})"
-        #             else:
-        #                 ret = f" -> {orig_ret_type}"
-
-        #         fp.write(f"{proc_name} :: {'#force_inline' * (not setup_lines)} proc ({', '.join(odin_params)}){ret} {{\n")
-
-        #         for line in setup_lines:
-        #             fp.write(f"\t{line}\n")
-
-        #         if multiple_returns:
-        #             fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
-        #             fp.write("\treturn\n")
-
-        #         else:
-        #             fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
-
-        #         fp.write("}\n")
-
-        # for group, impls in overloads.items():
-        #     if len(impls) > 1:
-        #         fp.write(f"\n{group} :: proc {{\n")
-        #         for impl in impls:
-        #             fp.write(f"\t{impl},\n")
-        #         fp.write("}\n")
 
 
 
@@ -453,13 +305,10 @@ def write_header(fp):
     """))
 
 
-def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[models.ForeignFunc]]):
+def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[models.CFunc]]):
     context = None, None
     disable_level = 0
     for line in fp:
-        # if 'IMGUI_API' in line:
-        #     print(line.rstrip())
-        #     print(re.match(r'\s*IMGUI_API\s.*?\s(\w+)\((.*?)\)\s*(?:IM_FMT(?:ARGS|LIST)\((\d+)\))?;', line))
 
         if line.startswith('#ifndef IMGUI_DISABLE_OBSOLETE'):
             disable_level += 1
@@ -484,7 +333,6 @@ def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[mod
                 case _:
                     continue
 
-            # print(context, line.rstrip())
             params = bracket_aware_split(match[2])
 
             defaults: list[str | None] = []
@@ -513,16 +361,19 @@ def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[mod
                     ffunc = match_overload(overload_groups[ogroup], argnames)
 
             if ffunc is None:
-                print(f"{c_name}({', '.join(argnames)}) not found")
                 continue
 
             if ffunc.cpp_header is not None:
                 raise Exception(f"{c_name}({', '.join(argnames)}) was already enriched with cpp header data")
 
-            ffunc.defaults = defaults
+            if ffunc.params and ffunc.params[0].name == 'pOut':
+                defaults.insert(0, None)
+
+            for param, default in zip(ffunc.params, defaults):
+                param.default = default
             ffunc.cpp_header = header
             if match[3] is not None:
-                ffunc.fmtarg_idx = int(match[3])
+                ffunc.fmtarg_idx = int(match[3]) - int(context[0] == 'namespace')
 
 
 class TypeGenVisitor(c_ast.NodeVisitor):
@@ -693,7 +544,7 @@ def is_cimgui(ast_node) -> bool:
     return False
 
 
-def match_overload(funcs: list[models.ForeignFunc], argnames: list[str]):
+def match_overload(funcs: list[models.CFunc], argnames: list[str]):
     for func in funcs:
         if func.cpp_header is not None:  # assumption: overloads are in the same order
             continue

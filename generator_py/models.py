@@ -45,7 +45,7 @@ class PtrCType:
 @dataclass
 class ArrayCType:  # fixed array; non-fixed arrays are actually pointers in C
     of: 'AnyCType'
-    count: c_ast.Node
+    count: c_ast.Node | int
     is_const: bool = False
 
     def as_odin(self) -> str:
@@ -61,7 +61,7 @@ class FuncCType:
     params: list['CParam']
 
     def as_odin(self) -> str:
-        return f"""#type proc({
+        return f"""#type proc "c"({
             ', '.join(
                 f"{param.name}: {param.type.as_odin()}"
                 for param in self.params
@@ -91,10 +91,25 @@ class UnionCType:
 
 AnyCType = NamedCType | ArrayCType | PtrCType | FuncCType | UnionCType
 
+STRUCTURED_TYPES: dict[str, AnyCType] = {
+    'ImBitArrayPtr': PtrCType(NamedCType('ImU8'), array_hint=True),
+    'ImVec1': ArrayCType(NamedCType('float'), 1),
+    'ImVec2': ArrayCType(NamedCType('float'), 2),
+    'ImVec3': ArrayCType(NamedCType('float'), 3),
+    'ImVec4': ArrayCType(NamedCType('float'), 4),
+    'ImVec1ih': ArrayCType(NamedCType('ImS16'), 1),
+    'ImVec2ih': ArrayCType(NamedCType('ImS16'), 2),
+    'ImVec3ih': ArrayCType(NamedCType('ImS16'), 3),
+    'ImVec4ih': ArrayCType(NamedCType('ImS16'), 4),
+}
+
 
 def ast_to_type(node: c_ast.Node) -> AnyCType:
     if isinstance(node, c_ast.IdentifierType):
-        return NamedCType(' '.join(node.names))
+        name = ' '.join(node.names)
+        if name in STRUCTURED_TYPES:
+            return STRUCTURED_TYPES[name]
+        return NamedCType(name)
 
     if isinstance(node, c_ast.Struct):
         return NamedCType(node.name)
@@ -147,8 +162,9 @@ def ast_to_type(node: c_ast.Node) -> AnyCType:
 class CParam:
     name: str
     type: AnyCType
+    default: str | None = None
 
-    def is_out(self):
+    def is_out(self) -> bool:
         if not (
             self.name.startswith(('out_', 'Out'))
             or self.name.endswith(('_out', 'Out'))
@@ -160,15 +176,23 @@ class CParam:
             and not self.type.to.is_const
         )
 
+    def as_odin(self) -> str:
+        if self.default:
+            if isinstance(self.type, NamedCType) and self.type.name.endswith(('Flags', 'Cond')) and self.default == '0':
+                return f"{odin_id(self.name)}: {self.type.as_odin()} = {{}}"
+            else:
+                return f"{odin_id(self.name)}: {self.type.as_odin()} = {self.default}"
+        else:
+            return f"{odin_id(self.name)}: {self.type.as_odin()}"
+
 
 @dataclass(kw_only=True)
-class ForeignFunc:
+class CFunc:
     name: str
     odin_name: str
     ret_type: AnyCType | None
     params: list[CParam]
     has_vararg: bool = False
-    defaults: list[str | None] = field(default_factory=list)
     fmtarg_idx: int | None = None
     cpp_header: str | None = None
 
@@ -295,7 +319,10 @@ class CStruct:
 def odin_expr(value_node) -> str:
     assert value_node is not None
 
-    if isinstance(value_node, c_ast.ID):
+    if isinstance(value_node, int):
+        return str(value_node)
+
+    elif isinstance(value_node, c_ast.ID):
         return value_node.name
 
     elif isinstance(value_node, c_ast.Constant):

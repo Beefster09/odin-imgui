@@ -29,3 +29,5 @@ Span :: struct(T : typeid) {
     data_end: [^]T,
 }
 
+COL32_WHITE :: u32(0xFF_FFFFFF)
+COL32_BLACK :: u32(0xFF_000000)

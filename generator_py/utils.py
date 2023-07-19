@@ -123,7 +123,10 @@ def proc_overload_group(name: str) -> str:
 
 
 def cpp_to_odin(expr: str) -> str:
-    expr = expr.strip()
+    expr = expr.strip()\
+        .replace('FLT_MIN', 'min(f32)')\
+        .replace('FLT_MAX', 'max(f32)')\
+        .replace('sizeof(float)', 'size_of(f32)')
 
     if expr in ('NULL', 'nullptr'):
         return 'nil'
@@ -134,7 +137,13 @@ def cpp_to_odin(expr: str) -> str:
     if match := re.match(r'([-+]?\d+\.\d+)f', expr):
         return match[1]
 
-    return expr
+    if match := re.match(r'ImGui\w+Flags_(\w+)', expr):
+        if match[1] == 'None':
+            return '{}'
+        else:
+            return f"{{ .{odin_enumname(match[0])} }}"
+
+    return re.sub(r'IM_([A-Z_]+)', r'\1', expr)
 
 
 def cpp_argname(argdecl: str) -> str:
