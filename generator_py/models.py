@@ -15,6 +15,9 @@ class NamedCType:
     def as_odin(self) -> str:
         return odin_typename(self.name)
 
+    def is_cstring(self) -> bool:
+        return False
+
 @dataclass
 class PtrCType:
     to: 'AnyCType'
@@ -24,12 +27,19 @@ class PtrCType:
     def as_odin(self) -> str:
         if self.array_hint:
             return '[^]' + self.to.as_odin()
-        elif isinstance(self.to, NamedCType) and self.to.name == 'char':
+        elif self.is_cstring():
             return 'cstring'
         elif isinstance(self.to, NamedCType) and self.to.name == 'void':
             return 'rawptr'
         else:
             return '^' + self.to.as_odin()
+
+    def is_cstring(self) -> bool:
+        return (
+            isinstance(self.to, NamedCType)
+            and self.to.name == 'char'
+            and (self.is_const or self.to.is_const)
+        )
 
 
 @dataclass
@@ -40,6 +50,9 @@ class ArrayCType:  # fixed array; non-fixed arrays are actually pointers in C
 
     def as_odin(self) -> str:
         return f"[{odin_expr(self.count)}]{self.of.as_odin()}"
+
+    def is_cstring(self) -> bool:
+        return False
 
 
 @dataclass
@@ -55,6 +68,9 @@ class FuncCType:
             )
         }){f' -> {self.ret_type.as_odin()}' if self.ret_type else ''}"""
 
+    def is_cstring(self) -> bool:
+        return False
+
 
 @dataclass
 class UnionCType:
@@ -68,6 +84,9 @@ class UnionCType:
                 for name, typ in self.fields
             ])
         } }}"""
+
+    def is_cstring(self) -> bool:
+        return False
 
 
 AnyCType = NamedCType | ArrayCType | PtrCType | FuncCType | UnionCType
@@ -129,6 +148,18 @@ class CParam:
     name: str
     type: AnyCType
 
+    def is_out(self):
+        if not (
+            self.name.startswith(('out_', 'Out'))
+            or self.name.endswith(('_out', 'Out'))
+        ):
+            return False
+
+        return (
+            isinstance(self.type, PtrCType)
+            and not self.type.to.is_const
+        )
+
 
 @dataclass(kw_only=True)
 class ForeignFunc:
@@ -163,7 +194,10 @@ class ForeignFunc:
 
         odin_name = decl.name.removeprefix('ig')
         if match := re.match(r'^Im(?:Gui)?([A-Z][A-Za-z]*)_(?:Im(?:Gui)?)?(.*)$', odin_name):
-            odin_name = f"{match[1]}_{match[2]}"
+            if match[1] == match[2]:
+                odin_name = f"{match[1]}_new"
+            else:
+                odin_name = f"{match[1]}_{match[2]}"
 
         return cls(
             name=decl.name,

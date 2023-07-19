@@ -93,15 +93,7 @@ def main():
         scrape_cpp_for_defaults(fp, 'internal', overload_groups)
 
     generate_foreign(foreign_funcs)
-
-    # header_ast = [
-    #     node for node in header_ast
-    #     if is_cimgui(node)
-    # ]
-
-    # generate_types(header_ast)
-    # generate_foreign(header_ast)
-    # generate_wrapper(header_ast)
+    generate_wrapper(overload_groups)
 
 
 FUNC_BLACKLIST = [
@@ -158,6 +150,8 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]):
 
             odin_params = []
 
+            # TODO: fix defaults
+
             for i, param in enumerate(func.params):
                 prev_param = func.params[i - 1] if i > 0 else None
 
@@ -174,8 +168,11 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]):
                 odin_params.append("#c_vararg _args_: ..any")
             elif len(func.defaults) == len(odin_params):
                 for i, default in enumerate(func.defaults):
-                    if default is not None:
-                        odin_params[i] += f" = {default}"
+                    if default:
+                        if odin_params[i].endswith(('Cond', 'Flags')) and default == '0':  # HACK
+                            odin_params[i] += " = {}"
+                        else:
+                            odin_params[i] += f" = {default}"
 
             if func.ret_type:
                 ret = f" -> {func.ret_type.as_odin()}"
@@ -188,147 +185,272 @@ def generate_foreign(funcs: Iterable[models.ForeignFunc]):
         fp.write("}\n")
 
 
-def generate_wrapper(ast):
+def generate_wrapper(overloads: dict[str, list[models.ForeignFunc]]):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent('''
             import "core:fmt"
             import "core:strings"
+
         '''))
 
-        overloads = defaultdict(list)
+        for group, funcs in overloads.items():
+            if len(funcs) > 1:
+                fp.write(f"{group} :: proc {{\n")
+                for func in funcs:
+                    fp.write(f"\t{odin_procname(func.name)},\n")
+                fp.write("}\n")
 
-        for node in ast:
-            if is_exported_proc(node):
-                orig_ret_type = type_as_odin(node.type.type)
-                all_params = list(node.type.args) if not is_empty_param_list(node.type.args) else []
-
-                if all_params and is_va_list(all_params[-1]):
-                    continue  # skip
-
-                proc_name = odin_procname(node.name)
-                func_to_call = node.name
-                overloads[proc_overload_group(node.name)].append(proc_name)
-
-                odin_params = []
+            for func in funcs:
+                in_params = []
                 call_args = []
                 multiple_returns = []
 
                 setup_lines = []
 
-                fmt_index = None
+                needs_wrapper = False
 
-                for i, param in enumerate(all_params):
-                    prev_param = all_params[i - 1] if i > 0 else None
+                # TODO: fix defaults
+
+                for i, param in enumerate(func.params):
+                    prev_param = func.params[i - 1] if i > 0 else None
+                    pname = odin_id(param.name)
+
                     try:
-                        next_param = all_params[i + 1]
+                        default = func.defaults[i]
                     except IndexError:
-                        next_param = None
+                        default = None
 
-                    if is_out_param(param):
-                        multiple_returns.append(f"{odin_id(param.name)}: {type_as_odin(deref(param.type))}")
-                        call_args.append('&' + odin_id(param.name))
+                    if param.is_out():
+                        needs_wrapper = True
+                        multiple_returns.append(
+                            f"{pname}: {param.type.as_odin()}"
+                        )
+                        call_args.append(f"&{pname}")
+                        continue  # there is no default
 
-                    elif isinstance(param, c_ast.EllipsisParam):
-                        assert fmt_index is not None, f"did not see format arg in {node.name}"
-                        odin_params.append(f"args: ..any")
+                    elif func.has_vararg and i == func.fmtarg_idx:
+                        needs_wrapper = True
+                        in_params.append(f"{pname}: string")
+                        call_args.append('"%s"')
                         setup_lines += [
-                            "_sb := strings.builder_make(context.temp_allocator)",
-                            f"fmt.sbprintf(&_sb, {call_args[fmt_index]}, ..args)",
-                            "append(&_sb.buf, 0)",
-                            "_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))"
+                            "_fmt_sb := strings.builder_make(context.temp_allocator)",
+                            f"fmt.sbprintf(&_fmt_sb, {pname}, .._args_)",
+                            "append(&_fmt_sb.buf, 0)",
                         ]
-                        call_args[fmt_index] = '"%s"'
-                        call_args.append('_formatted_str')
 
-                    elif is_cstring(param.type):
+                    elif is_string_span_pair(prev_param, param):
+                        needs_wrapper = True
+                        new_pname = odin_id(prev_param.name.removesuffix('_begin'))
+                        in_params[-1] = f"{new_pname}: string"
+                        call_args[-1:] = [
+                            f"raw_data({new_pname})",
+                            f"cast([^]u8) uintptr(raw_data({new_pname})) + uintptr(len({new_pname}))",
+                        ]
+                        continue  # there is no default
 
-                        if is_string_span_pair(prev_param, param):
-                            assert param.name.endswith('_end')
-                            pname = odin_id(param.name[:-4])
-                            odin_params[-1] = f"{pname}: string"
-                            call_args[-1:] = [f'{pname}_begin', f'{pname}_end']
-                            setup_lines[-1:] = [
-                                f"{pname}_begin := raw_data({pname})",
-                                f"{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))",
-                            ]
-
-                        elif (
-                            node.name in ['igPushID_Str', 'igGetID_Str']  # HACK b/c of overload
-                            or param.name == 'shortcut'
-                        ):
-                            pname = odin_id(param.name)
-                            odin_params.append(f"{pname}: cstring")
-                            call_args.append(pname)
-
-                        elif param.name in ('fmt', 'format') and fmt_index is None and isinstance(all_params[-1], c_ast.EllipsisParam):
-                            pname = odin_id(param.name)
-                            odin_params.append(f"{pname}: string")
-                            fmt_index = len(call_args)  # will be hijacked later by varargs
-                            call_args.append(pname)
-
-                        else:
-                            pname = odin_id(param.name)
-                            odin_params.append(f"{pname}: string")
-                            setup_lines.append(f"_temp_{pname} := semisafe_string_to_cstring({pname})")
-                            call_args.append('_temp_' + odin_id(param.name))
-
-
-                    elif is_slice_pair(prev_param, param) and not is_out_param(prev_param):
+                    elif is_slice_pair(prev_param, param) and prev_param and not prev_param.is_out():
+                        needs_wrapper = True
                         pname = odin_id(re.sub(r"_(?:len(?:gth)?|size|count)$", '', param.name))
-                        len_type = type_as_odin(param.type)
-                        odin_params[-1] = f"{pname}: []{type_as_odin(deref(prev_param.type))}"
-                        call_args[-1:] = [f"raw_data({pname})", f"{f'cast({len_type})' * (len_type != 'int')}len({pname})"]
+                        len_type = param.type.as_odin()
+                        in_params[-1] = f"{pname}: []{prev_param.type.to.as_odin()}"
+                        call_args[-1:] = [
+                            f"raw_data({pname})",
+                            f"{f'cast({len_type})' * (len_type != 'int')}len({pname})",
+                        ]
+                        continue  # there is no default
+
+                    elif param.type.is_cstring():
+                        needs_wrapper = True
+                        in_params.append(f"{pname}: string")
+                        call_args.append(f"semisafe_string_to_cstring({pname})")
 
                     else:
-                        odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
-                        call_args.append(odin_id(param.name))
+                        in_params.append(f"{pname}: {param.type.as_odin()}")
+                        call_args.append(pname)
 
-
-                if defaults := DEFAULT_ARGS.get(proc_name):
-                    for i, value in enumerate(defaults, -len(defaults)):
-                        odin_params[i] += f" = {value}"
-                else:
-                    for i in range(len(odin_params) - 1, -1, -1):
-                        name, ptype = map(str.strip, odin_params[i].split(':'))
-                        if ptype == 'Table_Flags':
-                            odin_params[i] = f"{name} := Table_Flags(0)"
-                        elif re.fullmatch(r"[\w_]*(Cond|Flags)", ptype):
-                            odin_params[i] = f"{name} := {ptype}{{}}"
+                    if default is not None:
+                        if in_params[-1].endswith(('Cond', 'Flags')) and default == '0':  # HACK
+                            in_params[-1] += " = {}"
                         else:
-                            break
+                            in_params[-1] += f" = {default}"
 
-                if orig_ret_type == 'void':
+                if func.has_vararg:
+                    in_params.append('_args_: ..any')
+
+                if needs_wrapper:
                     if multiple_returns:
-                        ret = f" -> ({', '.join(multiple_returns)})"
+                        if func.ret_type:
+                            multiple_returns.insert(0, f"orig_ret: {func.ret_type.as_odin()}")
+                        returns = f" -> ({', '.join(multiple_returns)})"
+                    elif func.ret_type:
+                        returns = f" -> {func.ret_type.as_odin()}"
                     else:
-                        ret = ''
-                else:
+                        returns = ''
+
+                    fp.write(f"{odin_procname(func.name)} :: proc({', '.join(in_params)}){returns} {{\n")
+
+                    for line in setup_lines:
+                        fp.write(f"\t{line}\n")
+
+                    fp.write('\t')
+
                     if multiple_returns:
-                        ret = f" -> ({', '.join(multiple_returns)}, _ret: {orig_ret_type})"
-                    else:
-                        ret = f" -> {orig_ret_type}"
+                        fp.write("orig_ret = ")
+                    elif func.ret_type:
+                        fp.write("return ")
 
-                fp.write(f"{proc_name} :: {'#force_inline' * (not setup_lines)} proc ({', '.join(odin_params)}){ret} {{\n")
+                    fp.write(f"{func.odin_name}({', '.join(call_args)})\n")
 
-                for line in setup_lines:
-                    fp.write(f"\t{line}\n")
+                    if multiple_returns:
+                        fp.write("\treturn\n")
 
-                if multiple_returns:
-                    fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
-                    fp.write("\treturn\n")
+                    fp.write('}\n')
 
                 else:
-                    fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
+                    fp.write(f"{odin_procname(func.name)} :: {func.odin_name}\n")
 
-                fp.write("}\n")
+            fp.write('\n')
+        #         orig_ret_type = type_as_odin(node.type.type)
+        #         all_params = list(node.type.args) if not is_empty_param_list(node.type.args) else []
 
-        for group, impls in overloads.items():
-            if len(impls) > 1:
-                fp.write(f"\n{group} :: proc {{\n")
-                for impl in impls:
-                    fp.write(f"\t{impl},\n")
-                fp.write("}\n")
+        #         if all_params and is_va_list(all_params[-1]):
+        #             continue  # skip
+
+        #         proc_name = odin_procname(node.name)
+        #         func_to_call = node.name
+        #         overloads[proc_overload_group(node.name)].append(proc_name)
+
+        #         odin_params = []
+        #         call_args = []
+        #         multiple_returns = []
+
+        #         setup_lines = []
+
+        #         fmt_index = None
+
+        #         for i, param in enumerate(all_params):
+        #             prev_param = all_params[i - 1] if i > 0 else None
+        #             try:
+        #                 next_param = all_params[i + 1]
+        #             except IndexError:
+        #                 next_param = None
+
+        #             if is_out_param(param):
+        #                 multiple_returns.append(f"{odin_id(param.name)}: {type_as_odin(deref(param.type))}")
+        #                 call_args.append('&' + odin_id(param.name))
+
+        #             elif isinstance(param, c_ast.EllipsisParam):
+        #                 assert fmt_index is not None, f"did not see format arg in {node.name}"
+        #                 odin_params.append(f"args: ..any")
+        #                 setup_lines += [
+        #                     "_sb := strings.builder_make(context.temp_allocator)",
+        #                     f"fmt.sbprintf(&_sb, {call_args[fmt_index]}, ..args)",
+        #                     "append(&_sb.buf, 0)",
+        #                     "_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))"
+        #                 ]
+        #                 call_args[fmt_index] = '"%s"'
+        #                 call_args.append('_formatted_str')
+
+        #             elif is_cstring(param.type):
+
+        #                 if is_string_span_pair(prev_param, param):
+        #                     assert param.name.endswith('_end')
+        #                     pname = odin_id(param.name[:-4])
+        #                     odin_params[-1] = f"{pname}: string"
+        #                     call_args[-1:] = [f'{pname}_begin', f'{pname}_end']
+        #                     setup_lines[-1:] = [
+        #                         f"{pname}_begin := raw_data({pname})",
+        #                         f"{pname}_end := cast([^]u8)(uintptr({pname}_begin) + uintptr(len({pname})))",
+        #                     ]
+
+        #                 elif (
+        #                     node.name in ['igPushID_Str', 'igGetID_Str']  # HACK b/c of overload
+        #                     or param.name == 'shortcut'
+        #                 ):
+        #                     pname = odin_id(param.name)
+        #                     odin_params.append(f"{pname}: cstring")
+        #                     call_args.append(pname)
+
+        #                 elif param.name in ('fmt', 'format') and fmt_index is None and isinstance(all_params[-1], c_ast.EllipsisParam):
+        #                     pname = odin_id(param.name)
+        #                     odin_params.append(f"{pname}: string")
+        #                     fmt_index = len(call_args)  # will be hijacked later by varargs
+        #                     call_args.append(pname)
+
+        #                 else:
+        #                     pname = odin_id(param.name)
+        #                     odin_params.append(f"{pname}: string")
+        #                     setup_lines.append(f"_temp_{pname} := semisafe_string_to_cstring({pname})")
+        #                     call_args.append('_temp_' + odin_id(param.name))
+
+
+        #             elif is_slice_pair(prev_param, param) and not is_out_param(prev_param):
+        #                 pname = odin_id(re.sub(r"_(?:len(?:gth)?|size|count)$", '', param.name))
+        #                 len_type = type_as_odin(param.type)
+        #                 odin_params[-1] = f"{pname}: []{type_as_odin(deref(prev_param.type))}"
+        #                 call_args[-1:] = [f"raw_data({pname})", f"{f'cast({len_type})' * (len_type != 'int')}len({pname})"]
+
+        #             else:
+        #                 odin_params.append(f"{odin_id(param.name)}: {type_as_odin(param.type)}")
+        #                 call_args.append(odin_id(param.name))
+
+
+        #         if defaults := DEFAULT_ARGS.get(proc_name):
+        #             for i, value in enumerate(defaults, -len(defaults)):
+        #                 odin_params[i] += f" = {value}"
+        #         else:
+        #             for i in range(len(odin_params) - 1, -1, -1):
+        #                 name, ptype = map(str.strip, odin_params[i].split(':'))
+        #                 if ptype == 'Table_Flags':
+        #                     odin_params[i] = f"{name} := Table_Flags(0)"
+        #                 elif re.fullmatch(r"[\w_]*(Cond|Flags)", ptype):
+        #                     odin_params[i] = f"{name} := {ptype}{{}}"
+        #                 else:
+        #                     break
+
+        #         if orig_ret_type == 'void':
+        #             if multiple_returns:
+        #                 ret = f" -> ({', '.join(multiple_returns)})"
+        #             else:
+        #                 ret = ''
+        #         else:
+        #             if multiple_returns:
+        #                 ret = f" -> ({', '.join(multiple_returns)}, _ret: {orig_ret_type})"
+        #             else:
+        #                 ret = f" -> {orig_ret_type}"
+
+        #         fp.write(f"{proc_name} :: {'#force_inline' * (not setup_lines)} proc ({', '.join(odin_params)}){ret} {{\n")
+
+        #         for line in setup_lines:
+        #             fp.write(f"\t{line}\n")
+
+        #         if multiple_returns:
+        #             fp.write(f"\t{'_ret = ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
+        #             fp.write("\treturn\n")
+
+        #         else:
+        #             fp.write(f"\t{'return ' * (orig_ret_type != 'void')}{func_to_call}({', '.join(call_args)})\n")
+
+        #         fp.write("}\n")
+
+        # for group, impls in overloads.items():
+        #     if len(impls) > 1:
+        #         fp.write(f"\n{group} :: proc {{\n")
+        #         for impl in impls:
+        #             fp.write(f"\t{impl},\n")
+        #         fp.write("}\n")
+
+
+
+def write_header(fp):
+    fp.write(textwrap.dedent(f"""
+        // GENERATED FILE; DO NOT EDIT
+        // this file was generated by generator_v2/{Path(__file__).name}
+
+        package imgui
+
+    """))
 
 
 def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[models.ForeignFunc]]):
@@ -401,16 +523,6 @@ def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[mod
             ffunc.cpp_header = header
             if match[3] is not None:
                 ffunc.fmtarg_idx = int(match[3])
-
-
-def write_header(fp):
-    fp.write(textwrap.dedent(f"""
-        // GENERATED FILE; DO NOT EDIT
-        // this file was generated by generator_v2/{Path(__file__).name}
-
-        package imgui
-
-    """))
 
 
 class TypeGenVisitor(c_ast.NodeVisitor):
@@ -592,61 +704,17 @@ def match_overload(funcs: list[models.ForeignFunc], argnames: list[str]):
     return None
 
 
-def param_list(ast_node: c_ast.ParamList):
-    return list(ast_node) if not is_empty_param_list(ast_node) else []
-
-
-def is_empty_param_list(params: c_ast.ParamList) -> bool:
-    assert isinstance(params, c_ast.ParamList)
-    if len(params.params) > 1:
-        return False
-
-    if len(params.params) == 0:
-        return True
-
-    for only_param in params.params:
-        return (
-            only_param.name is None
-            and isinstance(only_param.type, c_ast.TypeDecl)
-            and isinstance(only_param.type.type, c_ast.IdentifierType)
-            and only_param.type.type.names == ['void']
-        )
-
-    return False
-
-
-def is_va_list(ast_node) -> bool:
-    return (
-        isinstance(ast_node, c_ast.Decl)
-        and isinstance(ast_node.type, c_ast.TypeDecl)
-        and isinstance(ast_node.type.type, c_ast.IdentifierType)
-        and ast_node.type.type.names == ['va_list']
-    )
-
-
-def is_cstring(ast_node) -> bool:
-    if not isinstance(ast_node, c_ast.PtrDecl):
-        return False
-
-    return (
-        isinstance(ast_node.type, c_ast.TypeDecl)
-        and isinstance(ast_node.type.type, c_ast.IdentifierType)
-        and 'const' in ast_node.type.quals
-        and 'char' in ast_node.type.type.names
-    )
-
-
-def is_string_span_pair(begin, end) -> bool:
+def is_string_span_pair(begin: models.CParam | None, end: models.CParam | None) -> bool:
     if begin is None or end is None:
         return False
 
     try:
-        if not (is_cstring(begin.type) and is_cstring(end.type)):
+        if not (begin.type.is_cstring() and end.type.is_cstring()):
             return False
     except AttributeError:
         return False
 
-    begin_name = begin.name[:-6] if begin.name.endswith('_begin') else begin.name  # in python 3.9, use removesuffix instead
+    begin_name = begin.name.removesuffix('_begin')  # in python 3.9, use removesuffix instead
 
     return end.name.startswith(begin_name) and end.name.endswith('_end')
 
@@ -681,32 +749,6 @@ def is_slice_pair(ptr, length) -> bool:
         length.name.startswith(base_name)
         and length.name.endswith(('_len', '_length', '_size', '_count'))
     )
-
-
-def is_out_param(ast_node) -> bool:
-    if not isinstance(ast_node, c_ast.Decl) or ast_node.name is None:
-        return False
-
-    if not (
-        ast_node.name.startswith(('out_', 'Out'))
-        or ast_node.name.endswith(('_out', 'Out'))
-    ):
-        return False
-
-    return (
-        isinstance(ast_node.type, c_ast.PtrDecl)
-        and isinstance(ast_node.type.type, (c_ast.TypeDecl, c_ast.PtrDecl))
-        and 'const' not in ast_node.type.type.quals
-    )
-
-
-def deref(ast_node):
-    if isinstance(ast_node, c_ast.TypeDecl):
-        ast_node = ast_node.type
-
-    assert isinstance(ast_node, c_ast.PtrDecl)
-
-    return ast_node.type
 
 
 if __name__ == '__main__':
