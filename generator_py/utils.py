@@ -43,6 +43,8 @@ def odin_typename(name: str) -> str:
     if name in TYPE_MAP:
         return TYPE_MAP[name]
 
+    name = name.rstrip('_')
+
     if name.startswith('ImVector_'):
         _, elem = name.split('_', 1)
 
@@ -136,12 +138,6 @@ def cpp_to_odin(expr: str) -> str:
 
     if match := re.match(r'([-+]?\d+\.\d+)f', expr):
         return match[1]
-
-    if match := re.match(r'ImGui\w+Flags_(\w+)', expr):
-        if match[1] == 'None':
-            return '{}'
-        else:
-            return f"{{ .{odin_enumname(match[0])} }}"
 
     return re.sub(r'IM_([A-Z_]+)', r'\1', expr)
 

@@ -38,9 +38,19 @@ def main():
 
     class V(c_ast.NodeVisitor):
         def visit_Enum(self, node: c_ast.Enum, name: str | None):
-            enums.append(models.CEnum.from_ast(node))
+            try:
+                enums.append(models.CEnum.from_ast(node, name))
+            except Exception as err:
+                import traceback; traceback.print_exc()
+                sys.exit(1)
 
         def visit_Struct(self, node: c_ast.Struct):
+            if node.decls is None:
+                return
+
+            if node.name.startswith(('ImVec', 'ImSpan_', 'BitArray_')):
+                return
+
             structs.append(models.CStruct.from_ast(node))
 
         def visit_Typedef(self, typedef: c_ast.Typedef):
@@ -84,7 +94,13 @@ def main():
             except TypeError:
                 pass
 
-    # scrape C++ header for defaults
+    types = {}
+
+    # for struct in structs:
+    #     types[odin_typename(struct.name)] = struct
+
+    for enum in enums:
+        types[odin_typename(enum.name)] = enum
 
     with open(CPPIMGUI_DIR / 'imgui.h') as fp:
         scrape_cpp_for_defaults(fp, 'primary', overload_groups)
@@ -94,8 +110,9 @@ def main():
 
     overload_groups['text_buffer_appendf'][0].fmtarg_idx = 1  # special case; not in cpp header
 
-    generate_foreign(foreign_funcs)
-    generate_wrapper(overload_groups)
+    generate_types(func_types, enums, structs)
+    generate_foreign(foreign_funcs, types)
+    generate_wrapper(overload_groups, types)
 
 
 FUNC_BLACKLIST = [
@@ -120,15 +137,66 @@ FUNC_PREFIX_WHITELIST = (
 )
 
 
-def generate_types(ast):
+def generate_types(
+    func_types: dict[str, models.FuncCType],
+    enums: list[models.CEnum],
+    structs: list[models.CStruct],
+):
     with open(ODIN_DIR / 'types_gen.odin', 'w') as fp:
         write_header(fp)
-        visitor = TypeGenVisitor(fp)
-        for node in ast:
-            visitor.visit(node)
+
+        fp.write("\n// === Function Types ===\n\n")
+
+        for name, proctype in func_types.items():
+            fp.write(f"{odin_typename(name)} :: {proctype.as_odin()}\n")
+
+        fp.write("\n// === Enums ===\n\n")
+
+        enums.sort(key=lambda e: (int(e.is_flags), e.name))
+
+        for enum in enums:
+            typename = odin_typename(enum.name)
+
+            if enum.is_flags:
+                fp.write(f"{typename} :: bit_set[{typename}_; u32]\n")
+                fp.write(f"{typename}_ :: enum {{\n")
+
+                for name, value in enum.members.items():
+                    if isinstance(value, models.FlagValue):
+                        fp.write(f"\t{odin_enumname(name)} = {value.flag},\n")
+
+                fp.write('}\n')
+
+                fp.write("/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */")
+
+                for name, value in enum.members.items():
+                    if isinstance(value, models.FlagValue):
+                        continue
+                    fp.write(f"{name}::{value};")
+
+            else:
+                fp.write(f"{typename} :: enum {{\n")
+
+                for name, value in enum.members.items():
+                    if value is None:
+                        fp.write(f"\t{odin_enumname(name)},\n")
+                    else:
+                        fp.write(f"\t{odin_enumname(name)} = {value},\n")
+
+                fp.write("}\n\n")
+
+        fp.write("\n// === Structs ===\n\n")
+
+        for struct in structs:
+            fp.write(f"{odin_typename(struct.name)} :: struct {{\n")
+            for i, (name, typ) in enumerate(struct.fields):
+                fieldname = odin_id(name) if name else f'_{i}_'
+                using = 'using ' if name is None else ''
+                fp.write(f"\t{using}{fieldname}: {typ.as_odin()},\n")
+            fp.write("}\n\n")
 
 
-def generate_foreign(funcs: Iterable[models.CFunc]):
+def generate_foreign(funcs: Iterable[models.CFunc], types: dict):
     with open(ODIN_DIR / 'foreign_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent("""
@@ -162,7 +230,7 @@ def generate_foreign(funcs: Iterable[models.CFunc]):
                     ]
 
                 else:
-                    odin_params.append(param.as_odin())
+                    odin_params.append(param.as_odin(types))
 
             if func.has_vararg:
                 odin_params.append("#c_vararg _args_: ..any")
@@ -178,7 +246,7 @@ def generate_foreign(funcs: Iterable[models.CFunc]):
         fp.write("}\n")
 
 
-def generate_wrapper(overloads: dict[str, list[models.CFunc]]):
+def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent('''
@@ -213,7 +281,6 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]]):
                             f"{pname}: {param.type.to.as_odin()}"
                         )
                         call_args.append(f"&{pname}")
-                        continue  # there is no default
 
                     elif func.has_vararg and i == func.fmtarg_idx:
                         needs_wrapper = True
@@ -233,7 +300,6 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]]):
                             f"raw_data({new_pname})",
                             f"cast([^]u8) (uintptr(raw_data({new_pname})) + uintptr(len({new_pname})))",
                         ]
-                        continue  # there is no default
 
                     elif is_slice_pair(prev_param, param) and prev_param and not prev_param.is_out():
                         needs_wrapper = True
@@ -244,7 +310,6 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]]):
                             f"raw_data({pname})",
                             f"{f'cast({len_type})' * (len_type != 'int')}len({pname})",
                         ]
-                        continue  # there is no default
 
                     elif param.type.is_cstring():
                         needs_wrapper = True
@@ -252,7 +317,7 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]]):
                         call_args.append(f"semisafe_string_to_cstring({pname})")
 
                     else:
-                        in_params.append(param.as_odin())
+                        in_params.append(param.as_odin(types))
                         call_args.append(pname)
 
                 if func.has_vararg:
@@ -305,7 +370,11 @@ def write_header(fp):
     """))
 
 
-def scrape_cpp_for_defaults(fp, header: str, overload_groups: dict[str, list[models.CFunc]]):
+def scrape_cpp_for_defaults(
+    fp,
+    header: str,
+    overload_groups: dict[str, list[models.CFunc]],
+):
     context = None, None
     disable_level = 0
     for line in fp:
@@ -570,28 +639,21 @@ def is_string_span_pair(begin: models.CParam | None, end: models.CParam | None) 
     return end.name.startswith(begin_name) and end.name.endswith('_end')
 
 
-def is_slice_pair(ptr, length) -> bool:
+def is_slice_pair(ptr: models.CParam | None, length: models.CParam | None) -> bool:
     if ptr is None or length is None:
         return False
 
-    try:
-        if not isinstance(ptr.type, c_ast.PtrDecl):
-            return False
-
-        if is_cstring(ptr.type):
-            return False
-
-        if not (
-            isinstance(length.type, c_ast.TypeDecl)
-            and isinstance(length.type.type, c_ast.IdentifierType)
-            and (
-                'int' in length.type.type.names
-                or 'size_t' in length.type.type.names
-            )
-        ):
-            return False
-
-    except AttributeError:
+    if not (
+        isinstance(ptr.type, models.PtrCType)
+        and isinstance(length.type, models.NamedCType)
+        and length.type.name in (
+            'int', 'size_t',
+            'ImS8', 'ImU8',
+            'ImS16', 'ImS16',
+            'ImS32', 'ImS32',
+            'ImS64', 'ImS64',
+        )
+    ):
         return False
 
     base_name = re.sub("_?(?:ptr)$", '', ptr.name)

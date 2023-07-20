@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass, field
-from typing import Optional, Self
+from typing import Optional, Self, Union
 
 from pycparser import c_ast
 
@@ -176,14 +176,16 @@ class CParam:
             and not self.type.to.is_const
         )
 
-    def as_odin(self) -> str:
+    def as_odin(self, types: dict[str, Union['CStruct', 'CEnum']]) -> str:
+        name = odin_id(self.name)
+        typename = self.type.as_odin()
         if self.default:
-            if isinstance(self.type, NamedCType) and self.type.name.endswith(('Flags', 'Cond')) and self.default == '0':
-                return f"{odin_id(self.name)}: {self.type.as_odin()} = {{}}"
-            else:
-                return f"{odin_id(self.name)}: {self.type.as_odin()} = {self.default}"
+            if isinstance(self.type, NamedCType) and typename in types:
+                return f"{name}: {typename} = {types[typename].value_as_odin(self.default)}"
+
+            return f"{name}: {typename} = {self.default}"
         else:
-            return f"{odin_id(self.name)}: {self.type.as_odin()}"
+            return f"{name}: {typename}"
 
 
 @dataclass(kw_only=True)
@@ -235,34 +237,50 @@ class CFunc:
 class FlagValue:
     flag: int
 
+    def __str__(self):
+        return f"1 << {self.flag}"
+
 
 @dataclass
 class Bits:
     value: int
     shift: int
 
+    def __str__(self):
+        return f"{self.value} << {self.shift}"
+
 
 @dataclass
 class MultiFlag:
     flags: list[str]
+
+    def __str__(self):
+        return ' | '.join(self.flags)
 
 
 @dataclass
 class Mask:
     hexvalue: str
 
+    def __str__(self):
+        return self.hexvalue
+
 
 @dataclass
 class CEnum:
-    none: str | None
-    members: list[tuple[str, int | FlagValue | Bits | Mask | MultiFlag | None]]
+    name: str
+    members: dict[str, int | FlagValue | Bits | Mask | MultiFlag | None]
+    is_flags: bool = False
 
     @classmethod
-    def from_ast(cls, node: c_ast.Enum) -> Self:
-        enum = cls(node.name, [])
+    def from_ast(cls, node: c_ast.Enum, name: str) -> Self:
+        enum = cls(node.name or name, {})
 
         for member in node.values:
-            enum.members.append((member.name, cls._value(member.value)))
+            value = cls._value(member.value)
+            enum.members[member.name] = value
+            if isinstance(value, (FlagValue)):
+                enum.is_flags = True
 
         return enum
 
@@ -301,6 +319,30 @@ class CEnum:
                 _walk(value.left)
                 _walk(value.right)
                 return MultiFlag(flags)
+
+    def value_as_odin(self, cpp_value: str):
+        if cpp_value.isdigit():
+            int_value = int(cpp_value)
+            if self.is_flags:
+                flags = []
+                for i, bit in enumerate(reversed(bin(int_value))):
+                    if bit == '1':
+                        for name, value in self.members.items():
+                            if isinstance(value, FlagValue) and value.flag == i:
+                                flags.append('.' + odin_enumname(name))
+                                break
+                return f"{{ {', '.join(flags)} }}"
+            else:
+                for name, value in self.members.items():
+                    if value == int_value:
+                        return '.' + odin_enumname(name)
+        else:
+            if self.is_flags and cpp_value.endswith('_None'):
+                return '{}'
+            elif self.is_flags:
+                return f"{{ .{odin_enumname(cpp_value)} }}"
+            else:
+                return '.' + odin_enumname(cpp_value)
 
 
 @dataclass
