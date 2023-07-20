@@ -172,7 +172,7 @@ class CParam:
 
         return (
             isinstance(self.type, PtrCType)
-            and not self.type.to.is_const
+            # and not self.type.to.is_const  # doesn't seem to work for [2]f32 and similar
         )
 
     def as_odin(self, types: dict[str, Union['CStruct', 'CEnum']]) -> str:

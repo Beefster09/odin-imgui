@@ -6,7 +6,9 @@ import "core:strings"
 
 
 semisafe_string_to_cstring :: proc(s: string) -> cstring {
-    if raw_data(s)[len(s)] == '\x00' {
+    if len(s) == 0 {
+        return nil
+    } else if raw_data(s)[len(s)] == '\x00' {
         // NOTE: this can segfault if the string is exactly at the end of addressible memory space
         return strings.unsafe_string_to_cstring(s)
     } else {
@@ -34,7 +36,7 @@ draw_list_add_closure :: proc(dl: ^Draw_List, data: $T, $cb: #type proc(data: ^T
     dwc.data = data
     dwc.ctx = context
 
-    ImDrawList_AddCallback(dl, _wrapper, dwc)
+    draw_list_add_callback(dl, _wrapper, dwc)
 }
 
 @(deferred_out=_cleanup_context)

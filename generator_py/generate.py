@@ -342,7 +342,12 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
 
                     elif param.type.is_cstring():
                         needs_wrapper = True
-                        in_params.append(f"{pname}: string")
+                        if param.default == 'nil':
+                            in_params.append(f'{pname}: string = ""')
+                        elif param.default is not None:
+                            in_params.append(f'{pname}: string = {param.default}')
+                        else:
+                            in_params.append(f"{pname}: string")
                         call_args.append(f"semisafe_string_to_cstring({pname})")
 
                     else:

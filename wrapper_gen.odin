@@ -85,9 +85,15 @@ is_window_hovered :: IsWindowHovered
 
 get_window_draw_list :: GetWindowDrawList
 
-get_window_pos :: GetWindowPos
+get_window_pos :: proc() -> (p_out: [2]f32) {
+	GetWindowPos(&p_out)
+	return
+}
 
-get_window_size :: GetWindowSize
+get_window_size :: proc() -> (p_out: [2]f32) {
+	GetWindowSize(&p_out)
+	return
+}
 
 get_window_width :: GetWindowWidth
 
@@ -153,13 +159,25 @@ set_window_focus_str :: proc(name: string) {
 
 set_window_font_scale :: SetWindowFontScale
 
-get_content_region_avail :: GetContentRegionAvail
+get_content_region_avail :: proc() -> (p_out: [2]f32) {
+	GetContentRegionAvail(&p_out)
+	return
+}
 
-get_content_region_max :: GetContentRegionMax
+get_content_region_max :: proc() -> (p_out: [2]f32) {
+	GetContentRegionMax(&p_out)
+	return
+}
 
-get_window_content_region_min :: GetWindowContentRegionMin
+get_window_content_region_min :: proc() -> (p_out: [2]f32) {
+	GetWindowContentRegionMin(&p_out)
+	return
+}
 
-get_window_content_region_max :: GetWindowContentRegionMax
+get_window_content_region_max :: proc() -> (p_out: [2]f32) {
+	GetWindowContentRegionMax(&p_out)
+	return
+}
 
 get_scroll_x :: GetScrollX
 
@@ -247,7 +265,10 @@ get_font :: GetFont
 
 get_font_size :: GetFontSize
 
-get_font_tex_uv_white_pixel :: GetFontTexUvWhitePixel
+get_font_tex_uv_white_pixel :: proc() -> (p_out: [2]f32) {
+	GetFontTexUvWhitePixel(&p_out)
+	return
+}
 
 get_color_u32 :: proc {
 	get_color_u32_col,
@@ -278,7 +299,10 @@ begin_group :: BeginGroup
 
 end_group :: EndGroup
 
-get_cursor_pos :: GetCursorPos
+get_cursor_pos :: proc() -> (p_out: [2]f32) {
+	GetCursorPos(&p_out)
+	return
+}
 
 get_cursor_pos_x :: GetCursorPosX
 
@@ -290,9 +314,15 @@ set_cursor_pos_x :: SetCursorPosX
 
 set_cursor_pos_y :: SetCursorPosY
 
-get_cursor_start_pos :: GetCursorStartPos
+get_cursor_start_pos :: proc() -> (p_out: [2]f32) {
+	GetCursorStartPos(&p_out)
+	return
+}
 
-get_cursor_screen_pos :: GetCursorScreenPos
+get_cursor_screen_pos :: proc() -> (p_out: [2]f32) {
+	GetCursorScreenPos(&p_out)
+	return
+}
 
 set_cursor_screen_pos :: SetCursorScreenPos
 
@@ -428,7 +458,7 @@ radio_button_int_ptr :: proc(label: string, v: ^i32, v_button: i32) -> bool {
 	return RadioButton_IntPtr(semisafe_string_to_cstring(label), v, v_button)
 }
 
-progress_bar :: proc(fraction: f32, size_arg: [2]f32 = {-min(f32), 0}, overlay: string) {
+progress_bar :: proc(fraction: f32, size_arg: [2]f32 = {-min(f32), 0}, overlay: string = "") {
 	ProgressBar(fraction, size_arg, semisafe_string_to_cstring(overlay))
 }
 
@@ -461,107 +491,107 @@ combo_fn_bool_ptr :: proc(label: string, current_item: ^i32, items_getter: #type
 	return Combo_FnBoolPtr(semisafe_string_to_cstring(label), current_item, items_getter, data, items_count, popup_max_height_in_items)
 }
 
-drag_float :: proc(label: string, v: ^f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_float :: proc(label: string, v: ^f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return DragFloat(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_float2 :: proc(label: string, v: [2]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_float2 :: proc(label: string, v: [2]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return DragFloat2(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_float3 :: proc(label: string, v: [3]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_float3 :: proc(label: string, v: [3]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return DragFloat3(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_float4 :: proc(label: string, v: [4]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_float4 :: proc(label: string, v: [4]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return DragFloat4(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_float_range2 :: proc(label: string, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, format_max: string, flags: Slider_Flags = {  }) -> bool {
+drag_float_range2 :: proc(label: string, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string = "%.3f", format_max: string = "", flags: Slider_Flags = {  }) -> bool {
 	return DragFloatRange2(semisafe_string_to_cstring(label), v_current_min, v_current_max, v_speed, v_min, v_max, semisafe_string_to_cstring(format), semisafe_string_to_cstring(format_max), flags)
 }
 
-drag_int :: proc(label: string, v: ^i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_int :: proc(label: string, v: ^i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return DragInt(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_int2 :: proc(label: string, v: [2]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_int2 :: proc(label: string, v: [2]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return DragInt2(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_int3 :: proc(label: string, v: [3]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_int3 :: proc(label: string, v: [3]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return DragInt3(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_int4 :: proc(label: string, v: [4]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_int4 :: proc(label: string, v: [4]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return DragInt4(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_int_range2 :: proc(label: string, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, format_max: string, flags: Slider_Flags = {  }) -> bool {
+drag_int_range2 :: proc(label: string, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string = "%d", format_max: string = "", flags: Slider_Flags = {  }) -> bool {
 	return DragIntRange2(semisafe_string_to_cstring(label), v_current_min, v_current_max, v_speed, v_min, v_max, semisafe_string_to_cstring(format), semisafe_string_to_cstring(format_max), flags)
 }
 
-drag_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, v_speed: f32 = 1.0, p_min: rawptr = nil, p_max: rawptr = nil, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, v_speed: f32 = 1.0, p_min: rawptr = nil, p_max: rawptr = nil, format: string = "", flags: Slider_Flags = {  }) -> bool {
 	return DragScalar(semisafe_string_to_cstring(label), data_type, p_data, v_speed, p_min, p_max, semisafe_string_to_cstring(format), flags)
 }
 
-drag_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32 = 1.0, p_min: rawptr = nil, p_max: rawptr = nil, format: string, flags: Slider_Flags = {  }) -> bool {
+drag_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32 = 1.0, p_min: rawptr = nil, p_max: rawptr = nil, format: string = "", flags: Slider_Flags = {  }) -> bool {
 	return DragScalarN(semisafe_string_to_cstring(label), data_type, p_data, components, v_speed, p_min, p_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_float :: proc(label: string, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_float :: proc(label: string, v: ^f32, v_min: f32, v_max: f32, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return SliderFloat(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_float2 :: proc(label: string, v: [2]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_float2 :: proc(label: string, v: [2]f32, v_min: f32, v_max: f32, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return SliderFloat2(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_float3 :: proc(label: string, v: [3]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_float3 :: proc(label: string, v: [3]f32, v_min: f32, v_max: f32, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return SliderFloat3(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_float4 :: proc(label: string, v: [4]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_float4 :: proc(label: string, v: [4]f32, v_min: f32, v_max: f32, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return SliderFloat4(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_angle :: proc(label: string, v_rad: ^f32, v_degrees_min: f32 = -360.0, v_degrees_max: f32 = +360.0, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_angle :: proc(label: string, v_rad: ^f32, v_degrees_min: f32 = -360.0, v_degrees_max: f32 = +360.0, format: string = "%.0f deg", flags: Slider_Flags = {  }) -> bool {
 	return SliderAngle(semisafe_string_to_cstring(label), v_rad, v_degrees_min, v_degrees_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_int :: proc(label: string, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_int :: proc(label: string, v: ^i32, v_min: i32, v_max: i32, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return SliderInt(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_int2 :: proc(label: string, v: [2]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_int2 :: proc(label: string, v: [2]i32, v_min: i32, v_max: i32, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return SliderInt2(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_int3 :: proc(label: string, v: [3]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_int3 :: proc(label: string, v: [3]i32, v_min: i32, v_max: i32, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return SliderInt3(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_int4 :: proc(label: string, v: [4]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_int4 :: proc(label: string, v: [4]i32, v_min: i32, v_max: i32, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return SliderInt4(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string = "", flags: Slider_Flags = {  }) -> bool {
 	return SliderScalar(semisafe_string_to_cstring(label), data_type, p_data, p_min, p_max, semisafe_string_to_cstring(format), flags)
 }
 
-slider_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags = {  }) -> bool {
+slider_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string = "", flags: Slider_Flags = {  }) -> bool {
 	return SliderScalarN(semisafe_string_to_cstring(label), data_type, p_data, components, p_min, p_max, semisafe_string_to_cstring(format), flags)
 }
 
-v_slider_float :: proc(label: string, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+v_slider_float :: proc(label: string, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string = "%.3f", flags: Slider_Flags = {  }) -> bool {
 	return VSliderFloat(semisafe_string_to_cstring(label), size, v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-v_slider_int :: proc(label: string, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+v_slider_int :: proc(label: string, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string = "%d", flags: Slider_Flags = {  }) -> bool {
 	return VSliderInt(semisafe_string_to_cstring(label), size, v, v_min, v_max, semisafe_string_to_cstring(format), flags)
 }
 
-v_slider_scalar :: proc(label: string, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags = {  }) -> bool {
+v_slider_scalar :: proc(label: string, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string = "", flags: Slider_Flags = {  }) -> bool {
 	return VSliderScalar(semisafe_string_to_cstring(label), size, data_type, p_data, p_min, p_max, semisafe_string_to_cstring(format), flags)
 }
 
@@ -577,19 +607,19 @@ input_text_with_hint :: proc(label: string, hint: string, buf: []i8, flags: Inpu
 	return InputTextWithHint(semisafe_string_to_cstring(label), semisafe_string_to_cstring(hint), raw_data(buf), len(buf), flags, callback, user_data)
 }
 
-input_float :: proc(label: string, v: ^f32, step: f32 = 0.0, step_fast: f32 = 0.0, format: string, flags: Input_Text_Flags = {  }) -> bool {
+input_float :: proc(label: string, v: ^f32, step: f32 = 0.0, step_fast: f32 = 0.0, format: string = "%.3f", flags: Input_Text_Flags = {  }) -> bool {
 	return InputFloat(semisafe_string_to_cstring(label), v, step, step_fast, semisafe_string_to_cstring(format), flags)
 }
 
-input_float2 :: proc(label: string, v: [2]f32, format: string, flags: Input_Text_Flags = {  }) -> bool {
+input_float2 :: proc(label: string, v: [2]f32, format: string = "%.3f", flags: Input_Text_Flags = {  }) -> bool {
 	return InputFloat2(semisafe_string_to_cstring(label), v, semisafe_string_to_cstring(format), flags)
 }
 
-input_float3 :: proc(label: string, v: [3]f32, format: string, flags: Input_Text_Flags = {  }) -> bool {
+input_float3 :: proc(label: string, v: [3]f32, format: string = "%.3f", flags: Input_Text_Flags = {  }) -> bool {
 	return InputFloat3(semisafe_string_to_cstring(label), v, semisafe_string_to_cstring(format), flags)
 }
 
-input_float4 :: proc(label: string, v: [4]f32, format: string, flags: Input_Text_Flags = {  }) -> bool {
+input_float4 :: proc(label: string, v: [4]f32, format: string = "%.3f", flags: Input_Text_Flags = {  }) -> bool {
 	return InputFloat4(semisafe_string_to_cstring(label), v, semisafe_string_to_cstring(format), flags)
 }
 
@@ -609,15 +639,15 @@ input_int4 :: proc(label: string, v: [4]i32, flags: Input_Text_Flags = {  }) -> 
 	return InputInt4(semisafe_string_to_cstring(label), v, flags)
 }
 
-input_double :: proc(label: string, v: ^f64, step: f64 = 0.0, step_fast: f64 = 0.0, format: string, flags: Input_Text_Flags = {  }) -> bool {
+input_double :: proc(label: string, v: ^f64, step: f64 = 0.0, step_fast: f64 = 0.0, format: string = "%.6f", flags: Input_Text_Flags = {  }) -> bool {
 	return InputDouble(semisafe_string_to_cstring(label), v, step, step_fast, semisafe_string_to_cstring(format), flags)
 }
 
-input_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, p_step: rawptr = nil, p_step_fast: rawptr = nil, format: string, flags: Input_Text_Flags = {  }) -> bool {
+input_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, p_step: rawptr = nil, p_step_fast: rawptr = nil, format: string = "", flags: Input_Text_Flags = {  }) -> bool {
 	return InputScalar(semisafe_string_to_cstring(label), data_type, p_data, p_step, p_step_fast, semisafe_string_to_cstring(format), flags)
 }
 
-input_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr = nil, p_step_fast: rawptr = nil, format: string, flags: Input_Text_Flags = {  }) -> bool {
+input_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr = nil, p_step_fast: rawptr = nil, format: string = "", flags: Input_Text_Flags = {  }) -> bool {
 	return InputScalarN(semisafe_string_to_cstring(label), data_type, p_data, components, p_step, p_step_fast, semisafe_string_to_cstring(format), flags)
 }
 
@@ -743,10 +773,10 @@ plot_lines :: proc {
 	plot_lines_float_ptr,
 	plot_lines_fn_float_ptr,
 }
-plot_lines_float_ptr :: proc(label: string, values: []f32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}, stride: i32 = size_of(f32)) {
+plot_lines_float_ptr :: proc(label: string, values: []f32, values_offset: i32 = 0, overlay_text: string = "", scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}, stride: i32 = size_of(f32)) {
 	PlotLines_FloatPtr(semisafe_string_to_cstring(label), raw_data(values), cast(i32)len(values), values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size, stride)
 }
-plot_lines_fn_float_ptr :: proc(label: string, values_getter: #type proc "c"(data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}) {
+plot_lines_fn_float_ptr :: proc(label: string, values_getter: #type proc "c"(data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32 = 0, overlay_text: string = "", scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}) {
 	PlotLines_FnFloatPtr(semisafe_string_to_cstring(label), values_getter, data, values_count, values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size)
 }
 
@@ -754,10 +784,10 @@ plot_histogram :: proc {
 	plot_histogram_float_ptr,
 	plot_histogram_fn_float_ptr,
 }
-plot_histogram_float_ptr :: proc(label: string, values: []f32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}, stride: i32 = size_of(f32)) {
+plot_histogram_float_ptr :: proc(label: string, values: []f32, values_offset: i32 = 0, overlay_text: string = "", scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}, stride: i32 = size_of(f32)) {
 	PlotHistogram_FloatPtr(semisafe_string_to_cstring(label), raw_data(values), cast(i32)len(values), values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size, stride)
 }
-plot_histogram_fn_float_ptr :: proc(label: string, values_getter: #type proc "c"(data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}) {
+plot_histogram_fn_float_ptr :: proc(label: string, values_getter: #type proc "c"(data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32 = 0, overlay_text: string = "", scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}) {
 	PlotHistogram_FnFloatPtr(semisafe_string_to_cstring(label), values_getter, data, values_count, values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size)
 }
 
@@ -776,7 +806,7 @@ value_int :: proc(prefix: string, v: i32) {
 value_uint :: proc(prefix: string, v: u32) {
 	Value_Uint(semisafe_string_to_cstring(prefix), v)
 }
-value_float :: proc(prefix: string, v: f32, float_format: string) {
+value_float :: proc(prefix: string, v: f32, float_format: string = "") {
 	Value_Float(semisafe_string_to_cstring(prefix), v, semisafe_string_to_cstring(float_format))
 }
 
@@ -798,7 +828,7 @@ menu_item :: proc {
 	menu_item_bool,
 	menu_item_bool_ptr,
 }
-menu_item_bool :: proc(label: string, shortcut: string, selected: bool = false, enabled: bool = true) -> bool {
+menu_item_bool :: proc(label: string, shortcut: string = "", selected: bool = false, enabled: bool = true) -> bool {
 	return MenuItem_Bool(semisafe_string_to_cstring(label), semisafe_string_to_cstring(shortcut), selected, enabled)
 }
 menu_item_bool_ptr :: proc(label: string, shortcut: string, p_selected: ^bool, enabled: bool = true) -> bool {
@@ -835,21 +865,21 @@ open_popup_str :: proc(str_id: string, popup_flags: Popup_Flags = {  }) {
 }
 open_popup_id :: OpenPopup_ID
 
-open_popup_on_item_click :: proc(str_id: string, popup_flags: Popup_Flags = {  }) {
+open_popup_on_item_click :: proc(str_id: string = "", popup_flags: Popup_Flags = {  }) {
 	OpenPopupOnItemClick(semisafe_string_to_cstring(str_id), popup_flags)
 }
 
 close_current_popup :: CloseCurrentPopup
 
-begin_popup_context_item :: proc(str_id: string, popup_flags: Popup_Flags = {  }) -> bool {
+begin_popup_context_item :: proc(str_id: string = "", popup_flags: Popup_Flags = {  }) -> bool {
 	return BeginPopupContextItem(semisafe_string_to_cstring(str_id), popup_flags)
 }
 
-begin_popup_context_window :: proc(str_id: string, popup_flags: Popup_Flags = {  }) -> bool {
+begin_popup_context_window :: proc(str_id: string = "", popup_flags: Popup_Flags = {  }) -> bool {
 	return BeginPopupContextWindow(semisafe_string_to_cstring(str_id), popup_flags)
 }
 
-begin_popup_context_void :: proc(str_id: string, popup_flags: Popup_Flags = {  }) -> bool {
+begin_popup_context_void :: proc(str_id: string = "", popup_flags: Popup_Flags = {  }) -> bool {
 	return BeginPopupContextVoid(semisafe_string_to_cstring(str_id), popup_flags)
 }
 
@@ -907,7 +937,7 @@ table_set_column_enabled :: TableSetColumnEnabled
 
 table_set_bg_color :: TableSetBgColor
 
-columns :: proc(count: i32 = 1, id: string, border: bool = true) {
+columns :: proc(count: i32 = 1, id: string = "", border: bool = true) {
 	Columns(count, semisafe_string_to_cstring(id), border)
 }
 
@@ -947,7 +977,7 @@ set_tab_item_closed :: proc(tab_or_docked_window_label: string) {
 
 log_to_tty :: LogToTTY
 
-log_to_file :: proc(auto_open_depth: i32 = -1, filename: string) {
+log_to_file :: proc(auto_open_depth: i32 = -1, filename: string = "") {
 	LogToFile(auto_open_depth, semisafe_string_to_cstring(filename))
 }
 
@@ -1015,11 +1045,20 @@ is_any_item_focused :: IsAnyItemFocused
 
 get_item_id :: GetItemID
 
-get_item_rect_min :: GetItemRectMin
+get_item_rect_min :: proc() -> (p_out: [2]f32) {
+	GetItemRectMin(&p_out)
+	return
+}
 
-get_item_rect_max :: GetItemRectMax
+get_item_rect_max :: proc() -> (p_out: [2]f32) {
+	GetItemRectMax(&p_out)
+	return
+}
 
-get_item_rect_size :: GetItemRectSize
+get_item_rect_size :: proc() -> (p_out: [2]f32) {
+	GetItemRectSize(&p_out)
+	return
+}
 
 set_item_allow_overlap :: SetItemAllowOverlap
 
@@ -1064,11 +1103,15 @@ begin_child_frame :: BeginChildFrame
 
 end_child_frame :: EndChildFrame
 
-calc_text_size :: proc(p_out: ^[2]f32, text: string, hide_text_after_double_hash: bool = false, wrap_width: f32 = -1.0) {
-	CalcTextSize(p_out, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), hide_text_after_double_hash, wrap_width)
+calc_text_size :: proc(text: string, hide_text_after_double_hash: bool = false, wrap_width: f32 = -1.0) -> (p_out: [2]f32) {
+	CalcTextSize(&p_out, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), hide_text_after_double_hash, wrap_width)
+	return
 }
 
-color_convert_u32_to_float4 :: ColorConvertU32ToFloat4
+color_convert_u32_to_float4 :: proc(in_: u32) -> (p_out: [4]f32) {
+	ColorConvertU32ToFloat4(&p_out, in_)
+	return
+}
 
 color_convert_float4_to_u32 :: ColorConvertFloat4ToU32
 
@@ -1140,13 +1183,22 @@ is_mouse_pos_valid :: IsMousePosValid
 
 is_any_mouse_down :: IsAnyMouseDown
 
-get_mouse_pos :: GetMousePos
+get_mouse_pos :: proc() -> (p_out: [2]f32) {
+	GetMousePos(&p_out)
+	return
+}
 
-get_mouse_pos_on_opening_current_popup :: GetMousePosOnOpeningCurrentPopup
+get_mouse_pos_on_opening_current_popup :: proc() -> (p_out: [2]f32) {
+	GetMousePosOnOpeningCurrentPopup(&p_out)
+	return
+}
 
 is_mouse_dragging :: IsMouseDragging
 
-get_mouse_drag_delta :: GetMouseDragDelta
+get_mouse_drag_delta :: proc(button: Mouse_Button = .Left, lock_threshold: f32 = -1.0) -> (p_out: [2]f32) {
+	GetMouseDragDelta(&p_out, button, lock_threshold)
+	return
+}
 
 reset_mouse_drag_delta :: ResetMouseDragDelta
 
@@ -1279,7 +1331,7 @@ text_filter_new :: proc(default_filter: string) -> ^Text_Filter {
 
 text_filter_destroy :: TextFilter_destroy
 
-text_filter_draw :: proc(self: ^Text_Filter, label: string, width: f32 = 0.0) -> bool {
+text_filter_draw :: proc(self: ^Text_Filter, label: string = "Filter (inc,-exc)", width: f32 = 0.0) -> bool {
 	return TextFilter_Draw(self, semisafe_string_to_cstring(label), width)
 }
 
@@ -1439,9 +1491,15 @@ draw_list_push_texture_id :: DrawList_PushTextureID
 
 draw_list_pop_texture_id :: DrawList_PopTextureID
 
-draw_list_get_clip_rect_min :: DrawList_GetClipRectMin
+draw_list_get_clip_rect_min :: proc(self: ^Draw_List) -> (p_out: [2]f32) {
+	DrawList_GetClipRectMin(&p_out, self)
+	return
+}
 
-draw_list_get_clip_rect_max :: DrawList_GetClipRectMax
+draw_list_get_clip_rect_max :: proc(self: ^Draw_List) -> (p_out: [2]f32) {
+	DrawList_GetClipRectMax(&p_out, self)
+	return
+}
 
 draw_list_add_line :: DrawList_AddLine
 
@@ -1651,9 +1709,15 @@ font_atlas_add_custom_rect_font_glyph :: FontAtlas_AddCustomRectFontGlyph
 
 font_atlas_get_custom_rect_by_index :: FontAtlas_GetCustomRectByIndex
 
-font_atlas_calc_custom_rect_uv :: FontAtlas_CalcCustomRectUV
+font_atlas_calc_custom_rect_uv :: proc(self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect) -> (out_uv_min: [2]f32, out_uv_max: [2]f32) {
+	FontAtlas_CalcCustomRectUV(self, rect, &out_uv_min, &out_uv_max)
+	return
+}
 
-font_atlas_get_mouse_cursor_tex_data :: FontAtlas_GetMouseCursorTexData
+font_atlas_get_mouse_cursor_tex_data :: proc(self: ^Font_Atlas, cursor: Mouse_Cursor, out_uv_border: [2][2]f32, out_uv_fill: [2][2]f32) -> (orig_ret: bool, out_offset: [2]f32, out_size: [2]f32) {
+	orig_ret = FontAtlas_GetMouseCursorTexData(self, cursor, &out_offset, &out_size, out_uv_border, out_uv_fill)
+	return
+}
 
 font_new :: Font_new
 
@@ -1669,8 +1733,9 @@ font_is_loaded :: Font_IsLoaded
 
 font_get_debug_name :: Font_GetDebugName
 
-font_calc_text_size_a :: proc(p_out: ^[2]f32, self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring = nil) {
-	Font_CalcTextSizeA(p_out, self, size, max_width, wrap_width, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), remaining)
+font_calc_text_size_a :: proc(self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring = nil) -> (p_out: [2]f32) {
+	Font_CalcTextSizeA(&p_out, self, size, max_width, wrap_width, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), remaining)
+	return
 }
 
 font_calc_word_wrap_position_a :: proc(self: ^Font, scale: f32, text: string, wrap_width: f32) -> cstring {
@@ -1701,9 +1766,15 @@ viewport_new :: Viewport_new
 
 viewport_destroy :: Viewport_destroy
 
-viewport_get_center :: Viewport_GetCenter
+viewport_get_center :: proc(self: ^Viewport) -> (p_out: [2]f32) {
+	Viewport_GetCenter(&p_out, self)
+	return
+}
 
-viewport_get_work_center :: Viewport_GetWorkCenter
+viewport_get_work_center :: proc(self: ^Viewport) -> (p_out: [2]f32) {
+	Viewport_GetWorkCenter(&p_out, self)
+	return
+}
 
 platform_ime_data_new :: PlatformImeData_new
 
@@ -1711,13 +1782,25 @@ platform_ime_data_destroy :: PlatformImeData_destroy
 
 get_key_index :: GetKeyIndex
 
-im_bezier_cubic_calc :: ImBezierCubicCalc
+im_bezier_cubic_calc :: proc(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, t: f32) -> (p_out: [2]f32) {
+	ImBezierCubicCalc(&p_out, p1, p2, p3, p4, t)
+	return
+}
 
-im_bezier_cubic_closest_point :: ImBezierCubicClosestPoint
+im_bezier_cubic_closest_point :: proc(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, num_segments: i32) -> (p_out: [2]f32) {
+	ImBezierCubicClosestPoint(&p_out, p1, p2, p3, p4, p, num_segments)
+	return
+}
 
-im_bezier_cubic_closest_point_casteljau :: ImBezierCubicClosestPointCasteljau
+im_bezier_cubic_closest_point_casteljau :: proc(p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, tess_tol: f32) -> (p_out: [2]f32) {
+	ImBezierCubicClosestPointCasteljau(&p_out, p1, p2, p3, p4, p, tess_tol)
+	return
+}
 
-im_bezier_quadratic_calc :: ImBezierQuadraticCalc
+im_bezier_quadratic_calc :: proc(p1: [2]f32, p2: [2]f32, p3: [2]f32, t: f32) -> (p_out: [2]f32) {
+	ImBezierQuadraticCalc(&p_out, p1, p2, p3, t)
+	return
+}
 
 rect_new :: proc {
 	rect_new_nil,
@@ -1732,9 +1815,15 @@ rect_new_float :: Rect_Rect_Float
 
 rect_destroy :: Rect_destroy
 
-rect_get_center :: Rect_GetCenter
+rect_get_center :: proc(self: ^Rect) -> (p_out: [2]f32) {
+	Rect_GetCenter(&p_out, self)
+	return
+}
 
-rect_get_size :: Rect_GetSize
+rect_get_size :: proc(self: ^Rect) -> (p_out: [2]f32) {
+	Rect_GetSize(&p_out, self)
+	return
+}
 
 rect_get_width :: Rect_GetWidth
 
@@ -1742,13 +1831,25 @@ rect_get_height :: Rect_GetHeight
 
 rect_get_area :: Rect_GetArea
 
-rect_get_tl :: Rect_GetTL
+rect_get_tl :: proc(self: ^Rect) -> (p_out: [2]f32) {
+	Rect_GetTL(&p_out, self)
+	return
+}
 
-rect_get_tr :: Rect_GetTR
+rect_get_tr :: proc(self: ^Rect) -> (p_out: [2]f32) {
+	Rect_GetTR(&p_out, self)
+	return
+}
 
-rect_get_bl :: Rect_GetBL
+rect_get_bl :: proc(self: ^Rect) -> (p_out: [2]f32) {
+	Rect_GetBL(&p_out, self)
+	return
+}
 
-rect_get_br :: Rect_GetBR
+rect_get_br :: proc(self: ^Rect) -> (p_out: [2]f32) {
+	Rect_GetBR(&p_out, self)
+	return
+}
 
 rect_contains :: proc {
 	rect_contains_vec2,
@@ -1787,7 +1888,10 @@ rect_floor :: Rect_Floor
 
 rect_is_inverted :: Rect_IsInverted
 
-rect_to_vec4 :: Rect_ToVec4
+rect_to_vec4 :: proc(self: ^Rect) -> (p_out: [4]f32) {
+	Rect_ToVec4(&p_out, self)
+	return
+}
 
 text_index_clear :: TextIndex_clear
 
@@ -1965,9 +2069,15 @@ viewport_p_new :: ViewportP_new
 
 viewport_p_destroy :: ViewportP_destroy
 
-viewport_p_calc_work_rect_pos :: ViewportP_CalcWorkRectPos
+viewport_p_calc_work_rect_pos :: proc(self: ^Viewport_P, off_min: [2]f32) -> (p_out: [2]f32) {
+	ViewportP_CalcWorkRectPos(&p_out, self, off_min)
+	return
+}
 
-viewport_p_calc_work_rect_size :: ViewportP_CalcWorkRectSize
+viewport_p_calc_work_rect_size :: proc(self: ^Viewport_P, off_min: [2]f32, off_max: [2]f32) -> (p_out: [2]f32) {
+	ViewportP_CalcWorkRectSize(&p_out, self, off_min, off_max)
+	return
+}
 
 viewport_p_update_work_rect :: ViewportP_UpdateWorkRect
 
@@ -2098,7 +2208,10 @@ find_window_by_name :: proc(name: string) -> ^Window {
 
 update_window_parent_and_root_links :: UpdateWindowParentAndRootLinks
 
-calc_window_next_auto_fit_size :: CalcWindowNextAutoFitSize
+calc_window_next_auto_fit_size :: proc(window: ^Window) -> (p_out: [2]f32) {
+	CalcWindowNextAutoFitSize(&p_out, window)
+	return
+}
 
 is_window_child_of :: IsWindowChildOf
 
@@ -2203,7 +2316,10 @@ scroll_to_item :: ScrollToItem
 
 scroll_to_rect :: ScrollToRect
 
-scroll_to_rect_ex :: ScrollToRectEx
+scroll_to_rect_ex :: proc(window: ^Window, rect: Rect, flags: Scroll_Flags = {  }) -> (p_out: [2]f32) {
+	ScrollToRectEx(&p_out, window, rect, flags)
+	return
+}
 
 scroll_to_bring_rect_into_view :: ScrollToBringRectIntoView
 
@@ -2257,7 +2373,10 @@ is_clipped_ex :: IsClippedEx
 
 set_last_item_data :: SetLastItemData
 
-calc_item_size :: CalcItemSize
+calc_item_size :: proc(size: [2]f32, default_w: f32, default_h: f32) -> (p_out: [2]f32) {
+	CalcItemSize(&p_out, size, default_w, default_h)
+	return
+}
 
 calc_wrap_width_for_pos :: CalcWrapWidthForPos
 
@@ -2265,7 +2384,10 @@ push_multi_items_widths :: PushMultiItemsWidths
 
 is_item_toggled_selection :: IsItemToggledSelection
 
-get_content_region_max_abs :: GetContentRegionMaxAbs
+get_content_region_max_abs :: proc() -> (p_out: [2]f32) {
+	GetContentRegionMaxAbs(&p_out)
+	return
+}
 
 shrink_widths :: ShrinkWidths
 
@@ -2312,9 +2434,15 @@ get_top_most_popup_modal :: GetTopMostPopupModal
 
 get_top_most_and_visible_popup_modal :: GetTopMostAndVisiblePopupModal
 
-find_best_window_pos_for_popup :: FindBestWindowPosForPopup
+find_best_window_pos_for_popup :: proc(window: ^Window) -> (p_out: [2]f32) {
+	FindBestWindowPosForPopup(&p_out, window)
+	return
+}
 
-find_best_window_pos_for_popup_ex :: FindBestWindowPosForPopupEx
+find_best_window_pos_for_popup_ex :: proc(ref_pos: [2]f32, size: [2]f32, last_dir: ^Dir, r_outer: Rect, r_avoid: Rect, policy: Popup_Position_Policy) -> (p_out: [2]f32) {
+	FindBestWindowPosForPopupEx(&p_out, ref_pos, size, last_dir, r_outer, r_avoid, policy)
+	return
+}
 
 begin_viewport_side_bar :: proc(name: string, viewport: ^Viewport, dir: Dir, size: f32, window_flags: Window_Flags) -> bool {
 	return BeginViewportSideBar(semisafe_string_to_cstring(name), viewport, dir, size, window_flags)
@@ -2324,7 +2452,7 @@ begin_menu_ex :: proc(label: string, icon: string, enabled: bool = true) -> bool
 	return BeginMenuEx(semisafe_string_to_cstring(label), semisafe_string_to_cstring(icon), enabled)
 }
 
-menu_item_ex :: proc(label: string, icon: string, shortcut: string, selected: bool = false, enabled: bool = true) -> bool {
+menu_item_ex :: proc(label: string, icon: string, shortcut: string = "", selected: bool = false, enabled: bool = true) -> bool {
 	return MenuItemEx(semisafe_string_to_cstring(label), semisafe_string_to_cstring(icon), semisafe_string_to_cstring(shortcut), selected, enabled)
 }
 
@@ -2392,7 +2520,10 @@ mouse_button_to_key :: MouseButtonToKey
 
 is_mouse_drag_past_threshold :: IsMouseDragPastThreshold
 
-get_key_magnitude2d :: GetKeyMagnitude2d
+get_key_magnitude2d :: proc(key_left: Key, key_right: Key, key_up: Key, key_down: Key) -> (p_out: [2]f32) {
+	GetKeyMagnitude2d(&p_out, key_left, key_right, key_up, key_down)
+	return
+}
 
 get_nav_tweak_pressed_amount :: GetNavTweakPressedAmount
 
@@ -2600,10 +2731,14 @@ tab_item_calc_size :: proc {
 	tab_item_calc_size_str,
 	tab_item_calc_size_window_ptr,
 }
-tab_item_calc_size_str :: proc(p_out: ^[2]f32, label: string, has_close_button_or_unsaved_marker: bool) {
-	TabItemCalcSize_Str(p_out, semisafe_string_to_cstring(label), has_close_button_or_unsaved_marker)
+tab_item_calc_size_str :: proc(label: string, has_close_button_or_unsaved_marker: bool) -> (p_out: [2]f32) {
+	TabItemCalcSize_Str(&p_out, semisafe_string_to_cstring(label), has_close_button_or_unsaved_marker)
+	return
 }
-tab_item_calc_size_window_ptr :: TabItemCalcSize_WindowPtr
+tab_item_calc_size_window_ptr :: proc(window: ^Window) -> (p_out: [2]f32) {
+	TabItemCalcSize_WindowPtr(&p_out, window)
+	return
+}
 
 tab_item_background :: TabItemBackground
 
