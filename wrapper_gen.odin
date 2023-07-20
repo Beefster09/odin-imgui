@@ -7,3789 +7,395 @@ package imgui
 
 import "core:fmt"
 import "core:strings"
-create_context :: #force_inline proc (shared_font_atlas: ^Font_Atlas = nil) -> ^Context {
-	return igCreateContext(shared_font_atlas)
-}
-destroy_context :: #force_inline proc (ctx: ^Context) {
-	igDestroyContext(ctx)
-}
-get_current_context :: #force_inline proc () -> ^Context {
-	return igGetCurrentContext()
-}
-set_current_context :: #force_inline proc (ctx: ^Context) {
-	igSetCurrentContext(ctx)
-}
-get_io :: #force_inline proc () -> ^IO {
-	return igGetIO()
-}
-get_style :: #force_inline proc () -> ^Style {
-	return igGetStyle()
-}
-new_frame :: #force_inline proc () {
-	igNewFrame()
-}
-end_frame :: #force_inline proc () {
-	igEndFrame()
-}
-render :: #force_inline proc () {
-	igRender()
-}
-get_draw_data :: #force_inline proc () -> ^Draw_Data {
-	return igGetDrawData()
-}
-show_demo_window :: #force_inline proc (p_open: ^bool) {
-	igShowDemoWindow(p_open)
-}
-show_metrics_window :: #force_inline proc (p_open: ^bool) {
-	igShowMetricsWindow(p_open)
-}
-show_debug_log_window :: #force_inline proc (p_open: ^bool) {
-	igShowDebugLogWindow(p_open)
-}
-show_stack_tool_window :: #force_inline proc (p_open: ^bool) {
-	igShowStackToolWindow(p_open)
-}
-show_about_window :: #force_inline proc (p_open: ^bool) {
-	igShowAboutWindow(p_open)
-}
-show_style_editor :: #force_inline proc (ref: ^Style) {
-	igShowStyleEditor(ref)
-}
-show_style_selector ::  proc (label: string) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igShowStyleSelector(_temp_label)
-}
-show_font_selector ::  proc (label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igShowFontSelector(_temp_label)
-}
-show_user_guide :: #force_inline proc () {
-	igShowUserGuide()
-}
-get_version :: #force_inline proc () -> cstring {
-	return igGetVersion()
-}
-style_colors_dark :: #force_inline proc (dst: ^Style = nil) {
-	igStyleColorsDark(dst)
-}
-style_colors_light :: #force_inline proc (dst: ^Style = nil) {
-	igStyleColorsLight(dst)
-}
-style_colors_classic :: #force_inline proc (dst: ^Style = nil) {
-	igStyleColorsClassic(dst)
-}
-begin ::  proc (name: string, p_open: ^bool = nil, flags: Window_Flags = {}) -> bool {
-	_temp_name := semisafe_string_to_cstring(name)
-	return igBegin(_temp_name, p_open, flags)
-}
-end :: #force_inline proc () {
-	igEnd()
-}
-begin_child_str ::  proc (str_id: string, size: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igBeginChild_Str(_temp_str_id, size, border, flags)
-}
-begin_child_id :: #force_inline proc (id: ID, size: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
-	return igBeginChild_ID(id, size, border, flags)
-}
-end_child :: #force_inline proc () {
-	igEndChild()
-}
-is_window_appearing :: #force_inline proc () -> bool {
-	return igIsWindowAppearing()
-}
-is_window_collapsed :: #force_inline proc () -> bool {
-	return igIsWindowCollapsed()
-}
-is_window_focused :: #force_inline proc (flags := Focused_Flags{}) -> bool {
-	return igIsWindowFocused(flags)
-}
-is_window_hovered :: #force_inline proc (flags := Hovered_Flags{}) -> bool {
-	return igIsWindowHovered(flags)
-}
-get_window_draw_list :: #force_inline proc () -> ^Draw_List {
-	return igGetWindowDrawList()
-}
-get_window_pos :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetWindowPos(&p_out)
-	return
-}
-get_window_size :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetWindowSize(&p_out)
-	return
-}
-get_window_width :: #force_inline proc () -> f32 {
-	return igGetWindowWidth()
-}
-get_window_height :: #force_inline proc () -> f32 {
-	return igGetWindowHeight()
-}
-set_next_window_pos :: #force_inline proc (pos: [2]f32, cond: Cond, pivot: [2]f32) {
-	igSetNextWindowPos(pos, cond, pivot)
-}
-set_next_window_size :: #force_inline proc (size: [2]f32, cond := Cond{}) {
-	igSetNextWindowSize(size, cond)
-}
-set_next_window_size_constraints :: #force_inline proc (size_min: [2]f32, size_max: [2]f32, custom_callback: Size_Callback, custom_callback_data: rawptr) {
-	igSetNextWindowSizeConstraints(size_min, size_max, custom_callback, custom_callback_data)
-}
-set_next_window_content_size :: #force_inline proc (size: [2]f32) {
-	igSetNextWindowContentSize(size)
-}
-set_next_window_collapsed :: #force_inline proc (collapsed: bool, cond := Cond{}) {
-	igSetNextWindowCollapsed(collapsed, cond)
-}
-set_next_window_focus :: #force_inline proc () {
-	igSetNextWindowFocus()
-}
-set_next_window_scroll :: #force_inline proc (scroll: [2]f32) {
-	igSetNextWindowScroll(scroll)
-}
-set_next_window_bg_alpha :: #force_inline proc (alpha: f32) {
-	igSetNextWindowBgAlpha(alpha)
-}
-set_window_pos_vec2 :: #force_inline proc (pos: [2]f32, cond := Cond{}) {
-	igSetWindowPos_Vec2(pos, cond)
-}
-set_window_size_vec2 :: #force_inline proc (size: [2]f32, cond := Cond{}) {
-	igSetWindowSize_Vec2(size, cond)
-}
-set_window_collapsed_bool :: #force_inline proc (collapsed: bool, cond := Cond{}) {
-	igSetWindowCollapsed_Bool(collapsed, cond)
-}
-set_window_focus_nil :: #force_inline proc () {
-	igSetWindowFocus_Nil()
-}
-set_window_font_scale :: #force_inline proc (scale: f32) {
-	igSetWindowFontScale(scale)
-}
-set_window_pos_str ::  proc (name: string, pos: [2]f32, cond := Cond{}) {
-	_temp_name := semisafe_string_to_cstring(name)
-	igSetWindowPos_Str(_temp_name, pos, cond)
-}
-set_window_size_str ::  proc (name: string, size: [2]f32, cond := Cond{}) {
-	_temp_name := semisafe_string_to_cstring(name)
-	igSetWindowSize_Str(_temp_name, size, cond)
-}
-set_window_collapsed_str ::  proc (name: string, collapsed: bool, cond := Cond{}) {
-	_temp_name := semisafe_string_to_cstring(name)
-	igSetWindowCollapsed_Str(_temp_name, collapsed, cond)
-}
-set_window_focus_str ::  proc (name: string) {
-	_temp_name := semisafe_string_to_cstring(name)
-	igSetWindowFocus_Str(_temp_name)
-}
-get_content_region_avail :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetContentRegionAvail(&p_out)
-	return
-}
-get_content_region_max :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetContentRegionMax(&p_out)
-	return
-}
-get_window_content_region_min :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetWindowContentRegionMin(&p_out)
-	return
-}
-get_window_content_region_max :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetWindowContentRegionMax(&p_out)
-	return
-}
-get_scroll_x :: #force_inline proc () -> f32 {
-	return igGetScrollX()
-}
-get_scroll_y :: #force_inline proc () -> f32 {
-	return igGetScrollY()
-}
-set_scroll_x_float :: #force_inline proc (scroll_x: f32) {
-	igSetScrollX_Float(scroll_x)
-}
-set_scroll_y_float :: #force_inline proc (scroll_y: f32) {
-	igSetScrollY_Float(scroll_y)
-}
-get_scroll_max_x :: #force_inline proc () -> f32 {
-	return igGetScrollMaxX()
-}
-get_scroll_max_y :: #force_inline proc () -> f32 {
-	return igGetScrollMaxY()
-}
-set_scroll_here_x :: #force_inline proc (center_x_ratio: f32) {
-	igSetScrollHereX(center_x_ratio)
-}
-set_scroll_here_y :: #force_inline proc (center_y_ratio: f32) {
-	igSetScrollHereY(center_y_ratio)
-}
-set_scroll_from_pos_x_float :: #force_inline proc (local_x: f32, center_x_ratio: f32) {
-	igSetScrollFromPosX_Float(local_x, center_x_ratio)
-}
-set_scroll_from_pos_y_float :: #force_inline proc (local_y: f32, center_y_ratio: f32) {
-	igSetScrollFromPosY_Float(local_y, center_y_ratio)
-}
-push_font :: #force_inline proc (font: ^Font) {
-	igPushFont(font)
-}
-pop_font :: #force_inline proc () {
-	igPopFont()
-}
-push_style_color_u32 :: #force_inline proc (idx: Col, col: u32) {
-	igPushStyleColor_U32(idx, col)
-}
-push_style_color_vec4 :: #force_inline proc (idx: Col, col: [4]f32) {
-	igPushStyleColor_Vec4(idx, col)
-}
-pop_style_color :: #force_inline proc (count: i32) {
-	igPopStyleColor(count)
-}
-push_style_var_float :: #force_inline proc (idx: Style_Var, val: f32) {
-	igPushStyleVar_Float(idx, val)
-}
-push_style_var_vec2 :: #force_inline proc (idx: Style_Var, val: [2]f32) {
-	igPushStyleVar_Vec2(idx, val)
-}
-pop_style_var :: #force_inline proc (count: i32) {
-	igPopStyleVar(count)
-}
-push_tab_stop :: #force_inline proc (tab_stop: bool) {
-	igPushTabStop(tab_stop)
-}
-pop_tab_stop :: #force_inline proc () {
-	igPopTabStop()
-}
-push_button_repeat :: #force_inline proc (repeat: bool) {
-	igPushButtonRepeat(repeat)
-}
-pop_button_repeat :: #force_inline proc () {
-	igPopButtonRepeat()
-}
-push_item_width :: #force_inline proc (item_width: f32) {
-	igPushItemWidth(item_width)
-}
-pop_item_width :: #force_inline proc () {
-	igPopItemWidth()
-}
-set_next_item_width :: #force_inline proc (item_width: f32) {
-	igSetNextItemWidth(item_width)
-}
-calc_item_width :: #force_inline proc () -> f32 {
-	return igCalcItemWidth()
-}
-push_text_wrap_pos :: #force_inline proc (wrap_local_pos_x: f32) {
-	igPushTextWrapPos(wrap_local_pos_x)
-}
-pop_text_wrap_pos :: #force_inline proc () {
-	igPopTextWrapPos()
-}
-get_font :: #force_inline proc () -> ^Font {
-	return igGetFont()
-}
-get_font_size :: #force_inline proc () -> f32 {
-	return igGetFontSize()
-}
-get_font_tex_uv_white_pixel :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetFontTexUvWhitePixel(&p_out)
-	return
-}
-get_color_u32_col :: #force_inline proc (idx: Col, alpha_mul: f32) -> u32 {
-	return igGetColorU32_Col(idx, alpha_mul)
-}
-get_color_u32_vec4 :: #force_inline proc (col: [4]f32) -> u32 {
-	return igGetColorU32_Vec4(col)
-}
-get_color_u32_u32 :: #force_inline proc (col: u32) -> u32 {
-	return igGetColorU32_U32(col)
-}
-get_style_color_vec4 :: #force_inline proc (idx: Col) -> ^[4]f32 {
-	return igGetStyleColorVec4(idx)
-}
-separator :: #force_inline proc () {
-	igSeparator()
-}
-same_line :: #force_inline proc (offset_from_start_x: f32 = 0, spacing: f32 = 1) {
-	igSameLine(offset_from_start_x, spacing)
-}
-new_line :: #force_inline proc () {
-	igNewLine()
-}
-spacing :: #force_inline proc () {
-	igSpacing()
-}
-dummy :: #force_inline proc (size: [2]f32) {
-	igDummy(size)
-}
-indent :: #force_inline proc (indent_w: f32) {
-	igIndent(indent_w)
-}
-unindent :: #force_inline proc (indent_w: f32) {
-	igUnindent(indent_w)
-}
-begin_group :: #force_inline proc () {
-	igBeginGroup()
-}
-end_group :: #force_inline proc () {
-	igEndGroup()
-}
-get_cursor_pos :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetCursorPos(&p_out)
-	return
-}
-get_cursor_pos_x :: #force_inline proc () -> f32 {
-	return igGetCursorPosX()
-}
-get_cursor_pos_y :: #force_inline proc () -> f32 {
-	return igGetCursorPosY()
-}
-set_cursor_pos :: #force_inline proc (local_pos: [2]f32) {
-	igSetCursorPos(local_pos)
-}
-set_cursor_pos_x :: #force_inline proc (local_x: f32) {
-	igSetCursorPosX(local_x)
-}
-set_cursor_pos_y :: #force_inline proc (local_y: f32) {
-	igSetCursorPosY(local_y)
-}
-get_cursor_start_pos :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetCursorStartPos(&p_out)
-	return
-}
-get_cursor_screen_pos :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetCursorScreenPos(&p_out)
-	return
-}
-set_cursor_screen_pos :: #force_inline proc (pos: [2]f32) {
-	igSetCursorScreenPos(pos)
-}
-align_text_to_frame_padding :: #force_inline proc () {
-	igAlignTextToFramePadding()
-}
-get_text_line_height :: #force_inline proc () -> f32 {
-	return igGetTextLineHeight()
-}
-get_text_line_height_with_spacing :: #force_inline proc () -> f32 {
-	return igGetTextLineHeightWithSpacing()
-}
-get_frame_height :: #force_inline proc () -> f32 {
-	return igGetFrameHeight()
-}
-get_frame_height_with_spacing :: #force_inline proc () -> f32 {
-	return igGetFrameHeightWithSpacing()
-}
-push_id_str :: #force_inline proc (str_id: cstring) {
-	igPushID_Str(str_id)
-}
-push_id_str_str ::  proc (str_id: string) {
-	str_id_begin := raw_data(str_id)
-	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
-	igPushID_StrStr(str_id_begin, str_id_end)
-}
-push_id_ptr :: #force_inline proc (ptr_id: rawptr) {
-	igPushID_Ptr(ptr_id)
-}
-push_id_int :: #force_inline proc (int_id: i32) {
-	igPushID_Int(int_id)
-}
-pop_id :: #force_inline proc () {
-	igPopID()
-}
-get_id_str :: #force_inline proc (str_id: cstring) -> ID {
-	return igGetID_Str(str_id)
-}
-get_id_str_str ::  proc (str_id: string) -> ID {
-	str_id_begin := raw_data(str_id)
-	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
-	return igGetID_StrStr(str_id_begin, str_id_end)
-}
-get_id_ptr :: #force_inline proc (ptr_id: rawptr) -> ID {
-	return igGetID_Ptr(ptr_id)
-}
-text_unformatted ::  proc (text: string) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igTextUnformatted(text_begin, text_end)
-}
-text ::  proc (fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igText("%s", _formatted_str)
-}
-text_colored ::  proc (col: [4]f32, fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igTextColored(col, "%s", _formatted_str)
-}
-text_disabled ::  proc (fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igTextDisabled("%s", _formatted_str)
-}
-text_wrapped ::  proc (fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igTextWrapped("%s", _formatted_str)
-}
-label_text ::  proc (label: string, fmt_: string, args: ..any) {
-	_temp_label := semisafe_string_to_cstring(label)
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igLabelText(_temp_label, "%s", _formatted_str)
-}
-bullet_text ::  proc (fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igBulletText("%s", _formatted_str)
-}
-separator_text ::  proc (label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igSeparatorText(_temp_label)
-}
-button ::  proc (label: string, size: [2]f32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igButton(_temp_label, size)
-}
-small_button ::  proc (label: string) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igSmallButton(_temp_label)
-}
-invisible_button ::  proc (str_id: string, size: [2]f32, flags := Button_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igInvisibleButton(_temp_str_id, size, flags)
-}
-arrow_button ::  proc (str_id: string, dir: Dir) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igArrowButton(_temp_str_id, dir)
-}
-checkbox ::  proc (label: string, v: ^bool) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCheckbox(_temp_label, v)
-}
-checkbox_flags_int_ptr ::  proc (label: string, flags: ^i32, flags_value: i32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCheckboxFlags_IntPtr(_temp_label, flags, flags_value)
-}
-checkbox_flags_uint_ptr ::  proc (label: string, flags: ^u32, flags_value: u32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCheckboxFlags_UintPtr(_temp_label, flags, flags_value)
-}
-radio_button_bool ::  proc (label: string, active: bool) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igRadioButton_Bool(_temp_label, active)
-}
-radio_button_int_ptr ::  proc (label: string, v: ^i32, v_button: i32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igRadioButton_IntPtr(_temp_label, v, v_button)
-}
-progress_bar ::  proc (fraction: f32, size_arg: [2]f32, overlay: string) {
-	_temp_overlay := semisafe_string_to_cstring(overlay)
-	igProgressBar(fraction, size_arg, _temp_overlay)
-}
-bullet :: #force_inline proc () {
-	igBullet()
-}
-image :: #force_inline proc (user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32 = {0, 0}, uv1: [2]f32 = {1, 1}, tint_col: [4]f32 = {1, 1, 1, 1}, border_col: [4]f32 = {0, 0, 0, 0}) {
-	igImage(user_texture_id, size, uv0, uv1, tint_col, border_col)
-}
-image_button ::  proc (str_id: string, user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32 = {0, 0}, uv1: [2]f32 = {1, 1}, bg_col: [4]f32 = {0, 0, 0, 0}, tint_col: [4]f32 = {1, 1, 1, 1}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igImageButton(_temp_str_id, user_texture_id, size, uv0, uv1, bg_col, tint_col)
-}
-begin_combo ::  proc (label: string, preview_value: string, flags := Combo_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_preview_value := semisafe_string_to_cstring(preview_value)
-	return igBeginCombo(_temp_label, _temp_preview_value, flags)
-}
-end_combo :: #force_inline proc () {
-	igEndCombo()
-}
-combo_str_arr ::  proc (label: string, current_item: ^i32, items: [^]cstring, items_count: i32, popup_max_height_in_items: i32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCombo_Str_arr(_temp_label, current_item, items, items_count, popup_max_height_in_items)
-}
-combo_str ::  proc (label: string, current_item: ^i32, items_separated_by_zeros: string, popup_max_height_in_items: i32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_items_separated_by_zeros := semisafe_string_to_cstring(items_separated_by_zeros)
-	return igCombo_Str(_temp_label, current_item, _temp_items_separated_by_zeros, popup_max_height_in_items)
-}
-combo_fn_bool_ptr ::  proc (label: string, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCombo_FnBoolPtr(_temp_label, current_item, items_getter, data, items_count, popup_max_height_in_items)
-}
-drag_float ::  proc (label: string, v: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_float2 ::  proc (label: string, v: [2]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat2(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_float3 ::  proc (label: string, v: [3]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat3(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_float4 ::  proc (label: string, v: [4]f32, v_speed: f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragFloat4(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_float_range2 ::  proc (label: string, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32, v_min: f32, v_max: f32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	_temp_format_max := semisafe_string_to_cstring(format_max)
-	return igDragFloatRange2(_temp_label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
-}
-drag_int ::  proc (label: string, v: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int2 ::  proc (label: string, v: [2]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt2(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int3 ::  proc (label: string, v: [3]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt3(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int4 ::  proc (label: string, v: [4]i32, v_speed: f32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragInt4(_temp_label, v, v_speed, v_min, v_max, _temp_format, flags)
-}
-drag_int_range2 ::  proc (label: string, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32, v_min: i32, v_max: i32, format: string, format_max: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	_temp_format_max := semisafe_string_to_cstring(format_max)
-	return igDragIntRange2(_temp_label, v_current_min, v_current_max, v_speed, v_min, v_max, _temp_format, _temp_format_max, flags)
-}
-drag_scalar ::  proc (label: string, data_type: Data_Type, p_data: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragScalar(_temp_label, data_type, p_data, v_speed, p_min, p_max, _temp_format, flags)
-}
-drag_scalar_n ::  proc (label: string, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragScalarN(_temp_label, data_type, p_data, components, v_speed, p_min, p_max, _temp_format, flags)
-}
-slider_float ::  proc (label: string, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_float2 ::  proc (label: string, v: [2]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat2(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_float3 ::  proc (label: string, v: [3]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat3(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_float4 ::  proc (label: string, v: [4]f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderFloat4(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_angle ::  proc (label: string, v_rad: ^f32, v_degrees_min: f32, v_degrees_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderAngle(_temp_label, v_rad, v_degrees_min, v_degrees_max, _temp_format, flags)
-}
-slider_int ::  proc (label: string, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_int2 ::  proc (label: string, v: [2]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt2(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_int3 ::  proc (label: string, v: [3]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt3(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_int4 ::  proc (label: string, v: [4]i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderInt4(_temp_label, v, v_min, v_max, _temp_format, flags)
-}
-slider_scalar ::  proc (label: string, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderScalar(_temp_label, data_type, p_data, p_min, p_max, _temp_format, flags)
-}
-slider_scalar_n ::  proc (label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igSliderScalarN(_temp_label, data_type, p_data, components, p_min, p_max, _temp_format, flags)
-}
-v_slider_float ::  proc (label: string, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igVSliderFloat(_temp_label, size, v, v_min, v_max, _temp_format, flags)
-}
-v_slider_int ::  proc (label: string, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igVSliderInt(_temp_label, size, v, v_min, v_max, _temp_format, flags)
-}
-v_slider_scalar ::  proc (label: string, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igVSliderScalar(_temp_label, size, data_type, p_data, p_min, p_max, _temp_format, flags)
-}
-input_text ::  proc (label: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igInputText(_temp_label, raw_data(buf), len(buf), flags, callback, user_data)
-}
-input_text_multiline ::  proc (label: string, buf: []i8, size: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igInputTextMultiline(_temp_label, raw_data(buf), len(buf), size, flags, callback, user_data)
-}
-input_text_with_hint ::  proc (label: string, hint: string, buf: []i8, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_hint := semisafe_string_to_cstring(hint)
-	return igInputTextWithHint(_temp_label, _temp_hint, raw_data(buf), len(buf), flags, callback, user_data)
-}
-input_float ::  proc (label: string, v: ^f32, step: f32, step_fast: f32, format: string, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat(_temp_label, v, step, step_fast, _temp_format, flags)
-}
-input_float2 ::  proc (label: string, v: [2]f32, format: string, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat2(_temp_label, v, _temp_format, flags)
-}
-input_float3 ::  proc (label: string, v: [3]f32, format: string, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat3(_temp_label, v, _temp_format, flags)
-}
-input_float4 ::  proc (label: string, v: [4]f32, format: string, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igInputFloat4(_temp_label, v, _temp_format, flags)
-}
-input_int ::  proc (label: string, v: ^i32, step: i32, step_fast: i32, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igInputInt(_temp_label, v, step, step_fast, flags)
-}
-input_int2 ::  proc (label: string, v: [2]i32, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igInputInt2(_temp_label, v, flags)
-}
-input_int3 ::  proc (label: string, v: [3]i32, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igInputInt3(_temp_label, v, flags)
-}
-input_int4 ::  proc (label: string, v: [4]i32, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igInputInt4(_temp_label, v, flags)
-}
-input_double ::  proc (label: string, v: ^f64, step: f64, step_fast: f64, format: string, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igInputDouble(_temp_label, v, step, step_fast, _temp_format, flags)
-}
-input_scalar ::  proc (label: string, data_type: Data_Type, p_data: rawptr, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igInputScalar(_temp_label, data_type, p_data, p_step, p_step_fast, _temp_format, flags)
-}
-input_scalar_n ::  proc (label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr, p_step_fast: rawptr, format: string, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igInputScalarN(_temp_label, data_type, p_data, components, p_step, p_step_fast, _temp_format, flags)
-}
-color_edit3 ::  proc (label: string, col: [3]f32, flags := Color_Edit_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igColorEdit3(_temp_label, col, flags)
-}
-color_edit4 ::  proc (label: string, col: [4]f32, flags := Color_Edit_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igColorEdit4(_temp_label, col, flags)
-}
-color_picker3 ::  proc (label: string, col: [3]f32, flags := Color_Edit_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igColorPicker3(_temp_label, col, flags)
-}
-color_picker4 ::  proc (label: string, col: [4]f32, flags: Color_Edit_Flags, ref_col: ^f32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igColorPicker4(_temp_label, col, flags, ref_col)
-}
-color_button ::  proc (desc_id: string, col: [4]f32, flags: Color_Edit_Flags, size: [2]f32) -> bool {
-	_temp_desc_id := semisafe_string_to_cstring(desc_id)
-	return igColorButton(_temp_desc_id, col, flags, size)
-}
-set_color_edit_options :: #force_inline proc (flags := Color_Edit_Flags{}) {
-	igSetColorEditOptions(flags)
-}
-tree_node_str ::  proc (label: string) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igTreeNode_Str(_temp_label)
-}
-tree_node_str_str ::  proc (str_id: string, fmt_: string, args: ..any) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	return igTreeNode_StrStr(_temp_str_id, "%s", _formatted_str)
-}
-tree_node_ptr ::  proc (ptr_id: rawptr, fmt_: string, args: ..any) -> bool {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	return igTreeNode_Ptr(ptr_id, "%s", _formatted_str)
-}
-tree_node_ex_str ::  proc (label: string, flags := Tree_Node_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igTreeNodeEx_Str(_temp_label, flags)
-}
-tree_node_ex_str_str ::  proc (str_id: string, flags: Tree_Node_Flags, fmt_: string, args: ..any) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	return igTreeNodeEx_StrStr(_temp_str_id, flags, "%s", _formatted_str)
-}
-tree_node_ex_ptr ::  proc (ptr_id: rawptr, flags: Tree_Node_Flags, fmt_: string, args: ..any) -> bool {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	return igTreeNodeEx_Ptr(ptr_id, flags, "%s", _formatted_str)
-}
-tree_push_str ::  proc (str_id: string) {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	igTreePush_Str(_temp_str_id)
-}
-tree_push_ptr :: #force_inline proc (ptr_id: rawptr) {
-	igTreePush_Ptr(ptr_id)
-}
-tree_pop :: #force_inline proc () {
-	igTreePop()
-}
-get_tree_node_to_label_spacing :: #force_inline proc () -> f32 {
-	return igGetTreeNodeToLabelSpacing()
-}
-collapsing_header_tree_node_flags ::  proc (label: string, flags := Tree_Node_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCollapsingHeader_TreeNodeFlags(_temp_label, flags)
-}
-collapsing_header_bool_ptr ::  proc (label: string, p_visible: ^bool, flags := Tree_Node_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCollapsingHeader_BoolPtr(_temp_label, p_visible, flags)
-}
-set_next_item_open :: #force_inline proc (is_open: bool, cond := Cond{}) {
-	igSetNextItemOpen(is_open, cond)
-}
-selectable_bool ::  proc (label: string, selected: bool, flags: Selectable_Flags, size: [2]f32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igSelectable_Bool(_temp_label, selected, flags, size)
-}
-selectable_bool_ptr ::  proc (label: string, p_selected: ^bool, flags: Selectable_Flags, size: [2]f32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igSelectable_BoolPtr(_temp_label, p_selected, flags, size)
-}
-begin_list_box ::  proc (label: string, size: [2]f32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igBeginListBox(_temp_label, size)
-}
-end_list_box :: #force_inline proc () {
-	igEndListBox()
-}
-list_box_str_arr ::  proc (label: string, current_item: ^i32, items: [^]cstring, items_count: i32, height_in_items: i32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igListBox_Str_arr(_temp_label, current_item, items, items_count, height_in_items)
-}
-list_box_fn_bool_ptr ::  proc (label: string, current_item: ^i32, items_getter: #type proc "c" (data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igListBox_FnBoolPtr(_temp_label, current_item, items_getter, data, items_count, height_in_items)
-}
-plot_lines_float_ptr ::  proc (label: string, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotLines_FloatPtr(_temp_label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
-}
-plot_lines_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotLines_FnFloatPtr(_temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
-}
-plot_histogram_float_ptr ::  proc (label: string, values: []f32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32, stride: i32) {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotHistogram_FloatPtr(_temp_label, raw_data(values), cast(i32)len(values), values_offset, _temp_overlay_text, scale_min, scale_max, graph_size, stride)
-}
-plot_histogram_fn_float_ptr ::  proc (label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, graph_size: [2]f32) {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	igPlotHistogram_FnFloatPtr(_temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, graph_size)
-}
-value_bool ::  proc (prefix: string, b: bool) {
-	_temp_prefix := semisafe_string_to_cstring(prefix)
-	igValue_Bool(_temp_prefix, b)
-}
-value_int ::  proc (prefix: string, v: i32) {
-	_temp_prefix := semisafe_string_to_cstring(prefix)
-	igValue_Int(_temp_prefix, v)
-}
-value_uint ::  proc (prefix: string, v: u32) {
-	_temp_prefix := semisafe_string_to_cstring(prefix)
-	igValue_Uint(_temp_prefix, v)
-}
-value_float ::  proc (prefix: string, v: f32, float_format: string) {
-	_temp_prefix := semisafe_string_to_cstring(prefix)
-	_temp_float_format := semisafe_string_to_cstring(float_format)
-	igValue_Float(_temp_prefix, v, _temp_float_format)
-}
-begin_menu_bar :: #force_inline proc () -> bool {
-	return igBeginMenuBar()
-}
-end_menu_bar :: #force_inline proc () {
-	igEndMenuBar()
-}
-begin_main_menu_bar :: #force_inline proc () -> bool {
-	return igBeginMainMenuBar()
-}
-end_main_menu_bar :: #force_inline proc () {
-	igEndMainMenuBar()
-}
-begin_menu ::  proc (label: string, enabled: bool = true) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igBeginMenu(_temp_label, enabled)
-}
-end_menu :: #force_inline proc () {
-	igEndMenu()
-}
-menu_item_bool ::  proc (label: string, shortcut: cstring = nil, selected: bool = false, enabled: bool = true) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igMenuItem_Bool(_temp_label, shortcut, selected, enabled)
-}
-menu_item_bool_ptr ::  proc (label: string, shortcut: cstring, p_selected: ^bool, enabled: bool = true) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igMenuItem_BoolPtr(_temp_label, shortcut, p_selected, enabled)
-}
-begin_tooltip :: #force_inline proc () -> bool {
-	return igBeginTooltip()
-}
-end_tooltip :: #force_inline proc () {
-	igEndTooltip()
-}
-set_tooltip ::  proc (fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igSetTooltip("%s", _formatted_str)
-}
-begin_popup ::  proc (str_id: string, flags := Window_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igBeginPopup(_temp_str_id, flags)
-}
-begin_popup_modal ::  proc (name: string, p_open: ^bool, flags := Window_Flags{}) -> bool {
-	_temp_name := semisafe_string_to_cstring(name)
-	return igBeginPopupModal(_temp_name, p_open, flags)
-}
-end_popup :: #force_inline proc () {
-	igEndPopup()
-}
-open_popup_str ::  proc (str_id: string, popup_flags := Popup_Flags{}) {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	igOpenPopup_Str(_temp_str_id, popup_flags)
-}
-open_popup_id :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) {
-	igOpenPopup_ID(id, popup_flags)
-}
-open_popup_on_item_click ::  proc (str_id: string, popup_flags := Popup_Flags{}) {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	igOpenPopupOnItemClick(_temp_str_id, popup_flags)
-}
-close_current_popup :: #force_inline proc () {
-	igCloseCurrentPopup()
-}
-begin_popup_context_item ::  proc (str_id: string, popup_flags := Popup_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igBeginPopupContextItem(_temp_str_id, popup_flags)
-}
-begin_popup_context_window ::  proc (str_id: string, popup_flags := Popup_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igBeginPopupContextWindow(_temp_str_id, popup_flags)
-}
-begin_popup_context_void ::  proc (str_id: string, popup_flags := Popup_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igBeginPopupContextVoid(_temp_str_id, popup_flags)
-}
-is_popup_open_str ::  proc (str_id: string, flags := Popup_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igIsPopupOpen_Str(_temp_str_id, flags)
-}
-begin_table ::  proc (str_id: string, column: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igBeginTable(_temp_str_id, column, flags, outer_size, inner_width)
-}
-end_table :: #force_inline proc () {
-	igEndTable()
-}
-table_next_row :: #force_inline proc (row_flags: Table_Row_Flags, min_row_height: f32) {
-	igTableNextRow(row_flags, min_row_height)
-}
-table_next_column :: #force_inline proc () -> bool {
-	return igTableNextColumn()
-}
-table_set_column_index :: #force_inline proc (column_n: i32) -> bool {
-	return igTableSetColumnIndex(column_n)
-}
-table_setup_column ::  proc (label: string, flags: Table_Column_Flags, init_width_or_weight: f32, user_id: ID) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igTableSetupColumn(_temp_label, flags, init_width_or_weight, user_id)
-}
-table_setup_scroll_freeze :: #force_inline proc (cols: i32, rows: i32) {
-	igTableSetupScrollFreeze(cols, rows)
-}
-table_headers_row :: #force_inline proc () {
-	igTableHeadersRow()
-}
-table_header ::  proc (label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igTableHeader(_temp_label)
-}
-table_get_sort_specs :: #force_inline proc () -> ^Table_Sort_Specs {
-	return igTableGetSortSpecs()
-}
-table_get_column_count :: #force_inline proc () -> i32 {
-	return igTableGetColumnCount()
-}
-table_get_column_index :: #force_inline proc () -> i32 {
-	return igTableGetColumnIndex()
-}
-table_get_row_index :: #force_inline proc () -> i32 {
-	return igTableGetRowIndex()
-}
-table_get_column_name_int :: #force_inline proc (column_n: i32) -> cstring {
-	return igTableGetColumnName_Int(column_n)
-}
-table_get_column_flags :: #force_inline proc (column_n: i32) -> Table_Column_Flags {
-	return igTableGetColumnFlags(column_n)
-}
-table_set_column_enabled :: #force_inline proc (column_n: i32, v: bool) {
-	igTableSetColumnEnabled(column_n, v)
-}
-table_set_bg_color :: #force_inline proc (target: Table_Bg_Target, color: u32, column_n: i32) {
-	igTableSetBgColor(target, color, column_n)
-}
-columns ::  proc (count: i32, id: string, border: bool) {
-	_temp_id := semisafe_string_to_cstring(id)
-	igColumns(count, _temp_id, border)
-}
-next_column :: #force_inline proc () {
-	igNextColumn()
-}
-get_column_index :: #force_inline proc () -> i32 {
-	return igGetColumnIndex()
-}
-get_column_width :: #force_inline proc (column_index: i32) -> f32 {
-	return igGetColumnWidth(column_index)
-}
-set_column_width :: #force_inline proc (column_index: i32, width: f32) {
-	igSetColumnWidth(column_index, width)
-}
-get_column_offset :: #force_inline proc (column_index: i32) -> f32 {
-	return igGetColumnOffset(column_index)
-}
-set_column_offset :: #force_inline proc (column_index: i32, offset_x: f32) {
-	igSetColumnOffset(column_index, offset_x)
-}
-get_columns_count :: #force_inline proc () -> i32 {
-	return igGetColumnsCount()
-}
-begin_tab_bar ::  proc (str_id: string, flags := Tab_Bar_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igBeginTabBar(_temp_str_id, flags)
-}
-end_tab_bar :: #force_inline proc () {
-	igEndTabBar()
-}
-begin_tab_item ::  proc (label: string, p_open: ^bool, flags := Tab_Item_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igBeginTabItem(_temp_label, p_open, flags)
-}
-end_tab_item :: #force_inline proc () {
-	igEndTabItem()
-}
-tab_item_button ::  proc (label: string, flags := Tab_Item_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igTabItemButton(_temp_label, flags)
-}
-set_tab_item_closed ::  proc (tab_or_docked_window_label: string) {
-	_temp_tab_or_docked_window_label := semisafe_string_to_cstring(tab_or_docked_window_label)
-	igSetTabItemClosed(_temp_tab_or_docked_window_label)
-}
-log_to_tty :: #force_inline proc (auto_open_depth: i32) {
-	igLogToTTY(auto_open_depth)
-}
-log_to_file ::  proc (auto_open_depth: i32, filename: string) {
-	_temp_filename := semisafe_string_to_cstring(filename)
-	igLogToFile(auto_open_depth, _temp_filename)
-}
-log_to_clipboard :: #force_inline proc (auto_open_depth: i32) {
-	igLogToClipboard(auto_open_depth)
-}
-log_finish :: #force_inline proc () {
-	igLogFinish()
-}
-log_buttons :: #force_inline proc () {
-	igLogButtons()
-}
-begin_drag_drop_source :: #force_inline proc (flags := Drag_Drop_Flags{}) -> bool {
-	return igBeginDragDropSource(flags)
-}
-set_drag_drop_payload ::  proc (type: string, data: rawptr, sz: int, cond := Cond{}) -> bool {
-	_temp_type := semisafe_string_to_cstring(type)
-	return igSetDragDropPayload(_temp_type, data, sz, cond)
-}
-end_drag_drop_source :: #force_inline proc () {
-	igEndDragDropSource()
-}
-begin_drag_drop_target :: #force_inline proc () -> bool {
-	return igBeginDragDropTarget()
-}
-accept_drag_drop_payload ::  proc (type: string, flags := Drag_Drop_Flags{}) -> ^Payload {
-	_temp_type := semisafe_string_to_cstring(type)
-	return igAcceptDragDropPayload(_temp_type, flags)
-}
-end_drag_drop_target :: #force_inline proc () {
-	igEndDragDropTarget()
-}
-get_drag_drop_payload :: #force_inline proc () -> ^Payload {
-	return igGetDragDropPayload()
-}
-begin_disabled :: #force_inline proc (disabled: bool) {
-	igBeginDisabled(disabled)
-}
-end_disabled :: #force_inline proc () {
-	igEndDisabled()
-}
-push_clip_rect :: #force_inline proc (clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) {
-	igPushClipRect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
-}
-pop_clip_rect :: #force_inline proc () {
-	igPopClipRect()
-}
-set_item_default_focus :: #force_inline proc () {
-	igSetItemDefaultFocus()
-}
-set_keyboard_focus_here :: #force_inline proc (offset: i32) {
-	igSetKeyboardFocusHere(offset)
-}
-is_item_hovered :: #force_inline proc (flags := Hovered_Flags{}) -> bool {
-	return igIsItemHovered(flags)
-}
-is_item_active :: #force_inline proc () -> bool {
-	return igIsItemActive()
-}
-is_item_focused :: #force_inline proc () -> bool {
-	return igIsItemFocused()
-}
-is_item_clicked :: #force_inline proc (mouse_button: Mouse_Button) -> bool {
-	return igIsItemClicked(mouse_button)
-}
-is_item_visible :: #force_inline proc () -> bool {
-	return igIsItemVisible()
-}
-is_item_edited :: #force_inline proc () -> bool {
-	return igIsItemEdited()
-}
-is_item_activated :: #force_inline proc () -> bool {
-	return igIsItemActivated()
-}
-is_item_deactivated :: #force_inline proc () -> bool {
-	return igIsItemDeactivated()
-}
-is_item_deactivated_after_edit :: #force_inline proc () -> bool {
-	return igIsItemDeactivatedAfterEdit()
-}
-is_item_toggled_open :: #force_inline proc () -> bool {
-	return igIsItemToggledOpen()
-}
-is_any_item_hovered :: #force_inline proc () -> bool {
-	return igIsAnyItemHovered()
-}
-is_any_item_active :: #force_inline proc () -> bool {
-	return igIsAnyItemActive()
-}
-is_any_item_focused :: #force_inline proc () -> bool {
-	return igIsAnyItemFocused()
-}
-get_item_id :: #force_inline proc () -> ID {
-	return igGetItemID()
-}
-get_item_rect_min :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetItemRectMin(&p_out)
-	return
-}
-get_item_rect_max :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetItemRectMax(&p_out)
-	return
-}
-get_item_rect_size :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetItemRectSize(&p_out)
-	return
-}
-set_item_allow_overlap :: #force_inline proc () {
-	igSetItemAllowOverlap()
-}
-get_main_viewport :: #force_inline proc () -> ^Viewport {
-	return igGetMainViewport()
-}
-get_background_draw_list_nil :: #force_inline proc () -> ^Draw_List {
-	return igGetBackgroundDrawList_Nil()
-}
-get_foreground_draw_list_nil :: #force_inline proc () -> ^Draw_List {
-	return igGetForegroundDrawList_Nil()
-}
-is_rect_visible_nil :: #force_inline proc (size: [2]f32) -> bool {
-	return igIsRectVisible_Nil(size)
-}
-is_rect_visible_vec2 :: #force_inline proc (rect_min: [2]f32, rect_max: [2]f32) -> bool {
-	return igIsRectVisible_Vec2(rect_min, rect_max)
-}
-get_time :: #force_inline proc () -> f64 {
-	return igGetTime()
-}
-get_frame_count :: #force_inline proc () -> i32 {
-	return igGetFrameCount()
-}
-get_draw_list_shared_data :: #force_inline proc () -> ^Draw_List_Shared_Data {
-	return igGetDrawListSharedData()
-}
-get_style_color_name :: #force_inline proc (idx: Col) -> cstring {
-	return igGetStyleColorName(idx)
-}
-set_state_storage :: #force_inline proc (storage: ^Storage) {
-	igSetStateStorage(storage)
-}
-get_state_storage :: #force_inline proc () -> ^Storage {
-	return igGetStateStorage()
-}
-begin_child_frame :: #force_inline proc (id: ID, size: [2]f32, flags := Window_Flags{}) -> bool {
-	return igBeginChildFrame(id, size, flags)
-}
-end_child_frame :: #force_inline proc () {
-	igEndChildFrame()
-}
-calc_text_size ::  proc (text: string, hide_text_after_double_hash: bool, wrap_width: f32) -> (p_out: [2]f32) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igCalcTextSize(&p_out, text_begin, text_end, hide_text_after_double_hash, wrap_width)
-	return
-}
-color_convert_u32_to_float4 :: #force_inline proc (in_: u32) -> (p_out: [4]f32) {
-	igColorConvertU32ToFloat4(&p_out, in_)
-	return
-}
-color_convert_float4_to_u32 :: #force_inline proc (in_: [4]f32) -> u32 {
-	return igColorConvertFloat4ToU32(in_)
-}
-color_convert_rgbto_hsv :: #force_inline proc (r: f32, g: f32, b: f32) -> (out_h: f32, out_s: f32, out_v: f32) {
-	igColorConvertRGBtoHSV(r, g, b, &out_h, &out_s, &out_v)
-	return
-}
-color_convert_hsvto_rgb :: #force_inline proc (h: f32, s: f32, v: f32) -> (out_r: f32, out_g: f32, out_b: f32) {
-	igColorConvertHSVtoRGB(h, s, v, &out_r, &out_g, &out_b)
-	return
-}
-is_key_down_nil :: #force_inline proc (key: Key) -> bool {
-	return igIsKeyDown_Nil(key)
-}
-is_key_pressed_bool :: #force_inline proc (key: Key, repeat: bool) -> bool {
-	return igIsKeyPressed_Bool(key, repeat)
-}
-is_key_released_nil :: #force_inline proc (key: Key) -> bool {
-	return igIsKeyReleased_Nil(key)
-}
-get_key_pressed_amount :: #force_inline proc (key: Key, repeat_delay: f32, rate: f32) -> i32 {
-	return igGetKeyPressedAmount(key, repeat_delay, rate)
-}
-get_key_name :: #force_inline proc (key: Key) -> cstring {
-	return igGetKeyName(key)
-}
-set_next_frame_want_capture_keyboard :: #force_inline proc (want_capture_keyboard: bool) {
-	igSetNextFrameWantCaptureKeyboard(want_capture_keyboard)
-}
-is_mouse_down_nil :: #force_inline proc (button: Mouse_Button) -> bool {
-	return igIsMouseDown_Nil(button)
-}
-is_mouse_clicked_bool :: #force_inline proc (button: Mouse_Button, repeat: bool) -> bool {
-	return igIsMouseClicked_Bool(button, repeat)
-}
-is_mouse_released_nil :: #force_inline proc (button: Mouse_Button) -> bool {
-	return igIsMouseReleased_Nil(button)
-}
-is_mouse_double_clicked :: #force_inline proc (button: Mouse_Button) -> bool {
-	return igIsMouseDoubleClicked(button)
-}
-get_mouse_clicked_count :: #force_inline proc (button: Mouse_Button) -> i32 {
-	return igGetMouseClickedCount(button)
-}
-is_mouse_hovering_rect :: #force_inline proc (r_min: [2]f32, r_max: [2]f32, clip: bool) -> bool {
-	return igIsMouseHoveringRect(r_min, r_max, clip)
-}
-is_mouse_pos_valid :: #force_inline proc (mouse_pos: ^[2]f32) -> bool {
-	return igIsMousePosValid(mouse_pos)
-}
-is_any_mouse_down :: #force_inline proc () -> bool {
-	return igIsAnyMouseDown()
-}
-get_mouse_pos :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetMousePos(&p_out)
-	return
-}
-get_mouse_pos_on_opening_current_popup :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetMousePosOnOpeningCurrentPopup(&p_out)
-	return
-}
-is_mouse_dragging :: #force_inline proc (button: Mouse_Button, lock_threshold: f32) -> bool {
-	return igIsMouseDragging(button, lock_threshold)
-}
-get_mouse_drag_delta :: #force_inline proc (button: Mouse_Button, lock_threshold: f32) -> (p_out: [2]f32) {
-	igGetMouseDragDelta(&p_out, button, lock_threshold)
-	return
-}
-reset_mouse_drag_delta :: #force_inline proc (button: Mouse_Button) {
-	igResetMouseDragDelta(button)
-}
-get_mouse_cursor :: #force_inline proc () -> Mouse_Cursor {
-	return igGetMouseCursor()
-}
-set_mouse_cursor :: #force_inline proc (cursor_type: Mouse_Cursor) {
-	igSetMouseCursor(cursor_type)
-}
-set_next_frame_want_capture_mouse :: #force_inline proc (want_capture_mouse: bool) {
-	igSetNextFrameWantCaptureMouse(want_capture_mouse)
-}
-get_clipboard_text :: #force_inline proc () -> cstring {
-	return igGetClipboardText()
-}
-set_clipboard_text ::  proc (text: string) {
-	_temp_text := semisafe_string_to_cstring(text)
-	igSetClipboardText(_temp_text)
-}
-load_ini_settings_from_disk ::  proc (ini_filename: string) {
-	_temp_ini_filename := semisafe_string_to_cstring(ini_filename)
-	igLoadIniSettingsFromDisk(_temp_ini_filename)
-}
-load_ini_settings_from_memory ::  proc (ini_data: string, ini_size: int) {
-	_temp_ini_data := semisafe_string_to_cstring(ini_data)
-	igLoadIniSettingsFromMemory(_temp_ini_data, ini_size)
-}
-save_ini_settings_to_disk ::  proc (ini_filename: string) {
-	_temp_ini_filename := semisafe_string_to_cstring(ini_filename)
-	igSaveIniSettingsToDisk(_temp_ini_filename)
-}
-save_ini_settings_to_memory :: #force_inline proc () -> (out_ini_size: int, _ret: cstring) {
-	_ret = igSaveIniSettingsToMemory(&out_ini_size)
-	return
-}
-debug_text_encoding ::  proc (text: string) {
-	_temp_text := semisafe_string_to_cstring(text)
-	igDebugTextEncoding(_temp_text)
-}
-debug_check_version_and_data_layout ::  proc (version_str: string, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool {
-	_temp_version_str := semisafe_string_to_cstring(version_str)
-	return igDebugCheckVersionAndDataLayout(_temp_version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
-}
-set_allocator_functions :: #force_inline proc (alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr) {
-	igSetAllocatorFunctions(alloc_func, free_func, user_data)
-}
-get_allocator_functions :: #force_inline proc (p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) {
-	igGetAllocatorFunctions(p_alloc_func, p_free_func, p_user_data)
-}
-style_new :: #force_inline proc () -> ^Style {
-	return ImGuiStyle_ImGuiStyle()
-}
-style_destroy :: #force_inline proc (self: ^Style) {
-	ImGuiStyle_destroy(self)
-}
-style_scale_all_sizes :: #force_inline proc (self: ^Style, scale_factor: f32) {
-	ImGuiStyle_ScaleAllSizes(self, scale_factor)
-}
-io_add_key_event :: #force_inline proc (self: ^IO, key: Key, down: bool) {
-	ImGuiIO_AddKeyEvent(self, key, down)
-}
-io_add_key_analog_event :: #force_inline proc (self: ^IO, key: Key, down: bool, v: f32) {
-	ImGuiIO_AddKeyAnalogEvent(self, key, down, v)
-}
-io_add_mouse_pos_event :: #force_inline proc (self: ^IO, x: f32, y: f32) {
-	ImGuiIO_AddMousePosEvent(self, x, y)
-}
-io_add_mouse_button_event :: #force_inline proc (self: ^IO, button: i32, down: bool) {
-	ImGuiIO_AddMouseButtonEvent(self, button, down)
-}
-io_add_mouse_wheel_event :: #force_inline proc (self: ^IO, wheel_x: f32, wheel_y: f32) {
-	ImGuiIO_AddMouseWheelEvent(self, wheel_x, wheel_y)
-}
-io_add_mouse_source_event :: #force_inline proc (self: ^IO, source: Mouse_Source) {
-	ImGuiIO_AddMouseSourceEvent(self, source)
-}
-io_add_focus_event :: #force_inline proc (self: ^IO, focused: bool) {
-	ImGuiIO_AddFocusEvent(self, focused)
-}
-io_add_input_character :: #force_inline proc (self: ^IO, c: u32) {
-	ImGuiIO_AddInputCharacter(self, c)
-}
-io_add_input_character_u_t_f16 :: #force_inline proc (self: ^IO, c: u16) {
-	ImGuiIO_AddInputCharacterUTF16(self, c)
-}
-io_add_input_characters_u_t_f8 ::  proc (self: ^IO, str: string) {
-	_temp_str := semisafe_string_to_cstring(str)
-	ImGuiIO_AddInputCharactersUTF8(self, _temp_str)
-}
-io_set_key_event_native_data :: #force_inline proc (self: ^IO, key: Key, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) {
-	ImGuiIO_SetKeyEventNativeData(self, key, native_keycode, native_scancode, native_legacy_index)
-}
-io_set_app_accepting_events :: #force_inline proc (self: ^IO, accepting_events: bool) {
-	ImGuiIO_SetAppAcceptingEvents(self, accepting_events)
-}
-io_clear_input_characters :: #force_inline proc (self: ^IO) {
-	ImGuiIO_ClearInputCharacters(self)
-}
-io_clear_input_keys :: #force_inline proc (self: ^IO) {
-	ImGuiIO_ClearInputKeys(self)
-}
-io_new :: #force_inline proc () -> ^IO {
-	return ImGuiIO_ImGuiIO()
-}
-io_destroy :: #force_inline proc (self: ^IO) {
-	ImGuiIO_destroy(self)
-}
-input_text_callback_data_new :: #force_inline proc () -> ^Input_Text_Callback_Data {
-	return ImGuiInputTextCallbackData_ImGuiInputTextCallbackData()
-}
-input_text_callback_data_destroy :: #force_inline proc (self: ^Input_Text_Callback_Data) {
-	ImGuiInputTextCallbackData_destroy(self)
-}
-input_text_callback_data_delete_chars :: #force_inline proc (self: ^Input_Text_Callback_Data, pos: i32, bytes_count: i32) {
-	ImGuiInputTextCallbackData_DeleteChars(self, pos, bytes_count)
-}
-input_text_callback_data_insert_chars ::  proc (self: ^Input_Text_Callback_Data, pos: i32, text: string) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	ImGuiInputTextCallbackData_InsertChars(self, pos, text_begin, text_end)
-}
-input_text_callback_data_select_all :: #force_inline proc (self: ^Input_Text_Callback_Data) {
-	ImGuiInputTextCallbackData_SelectAll(self)
-}
-input_text_callback_data_clear_selection :: #force_inline proc (self: ^Input_Text_Callback_Data) {
-	ImGuiInputTextCallbackData_ClearSelection(self)
-}
-input_text_callback_data_has_selection :: #force_inline proc (self: ^Input_Text_Callback_Data) -> bool {
-	return ImGuiInputTextCallbackData_HasSelection(self)
-}
-payload_new :: #force_inline proc () -> ^Payload {
-	return ImGuiPayload_ImGuiPayload()
-}
-payload_destroy :: #force_inline proc (self: ^Payload) {
-	ImGuiPayload_destroy(self)
-}
-payload_clear :: #force_inline proc (self: ^Payload) {
-	ImGuiPayload_Clear(self)
-}
-payload_is_data_type ::  proc (self: ^Payload, type: string) -> bool {
-	_temp_type := semisafe_string_to_cstring(type)
-	return ImGuiPayload_IsDataType(self, _temp_type)
-}
-payload_is_preview :: #force_inline proc (self: ^Payload) -> bool {
-	return ImGuiPayload_IsPreview(self)
-}
-payload_is_delivery :: #force_inline proc (self: ^Payload) -> bool {
-	return ImGuiPayload_IsDelivery(self)
-}
-table_column_sort_specs_new :: #force_inline proc () -> ^Table_Column_Sort_Specs {
-	return ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs()
-}
-table_column_sort_specs_destroy :: #force_inline proc (self: ^Table_Column_Sort_Specs) {
-	ImGuiTableColumnSortSpecs_destroy(self)
-}
-table_sort_specs_new :: #force_inline proc () -> ^Table_Sort_Specs {
-	return ImGuiTableSortSpecs_ImGuiTableSortSpecs()
-}
-table_sort_specs_destroy :: #force_inline proc (self: ^Table_Sort_Specs) {
-	ImGuiTableSortSpecs_destroy(self)
-}
-once_upon_a_frame_new :: #force_inline proc () -> ^Once_Upon_A_Frame {
-	return ImGuiOnceUponAFrame_ImGuiOnceUponAFrame()
-}
-once_upon_a_frame_destroy :: #force_inline proc (self: ^Once_Upon_A_Frame) {
-	ImGuiOnceUponAFrame_destroy(self)
-}
-text_filter_new ::  proc (default_filter: string) -> ^Text_Filter {
-	_temp_default_filter := semisafe_string_to_cstring(default_filter)
-	return ImGuiTextFilter_ImGuiTextFilter(_temp_default_filter)
-}
-text_filter_destroy :: #force_inline proc (self: ^Text_Filter) {
-	ImGuiTextFilter_destroy(self)
-}
-text_filter_draw ::  proc (self: ^Text_Filter, label: string, width: f32) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return ImGuiTextFilter_Draw(self, _temp_label, width)
-}
-text_filter_pass_filter ::  proc (self: ^Text_Filter, text: string) -> bool {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	return ImGuiTextFilter_PassFilter(self, text_begin, text_end)
-}
-text_filter_build :: #force_inline proc (self: ^Text_Filter) {
-	ImGuiTextFilter_Build(self)
-}
-text_filter_clear :: #force_inline proc (self: ^Text_Filter) {
-	ImGuiTextFilter_Clear(self)
-}
-text_filter_is_active :: #force_inline proc (self: ^Text_Filter) -> bool {
-	return ImGuiTextFilter_IsActive(self)
-}
-text_range_new_nil :: #force_inline proc () -> ^Text_Range {
-	return ImGuiTextRange_ImGuiTextRange_Nil()
-}
-text_range_destroy :: #force_inline proc (self: ^Text_Range) {
-	ImGuiTextRange_destroy(self)
-}
-text_range_new_str ::  proc (_b: string, _e: string) -> ^Text_Range {
-	_temp__b := semisafe_string_to_cstring(_b)
-	_temp__e := semisafe_string_to_cstring(_e)
-	return ImGuiTextRange_ImGuiTextRange_Str(_temp__b, _temp__e)
-}
-text_range_empty :: #force_inline proc (self: ^Text_Range) -> bool {
-	return ImGuiTextRange_empty(self)
-}
-text_range_split :: #force_inline proc (self: ^Text_Range, separator: i8, out: ^Vector(Text_Range)) {
-	ImGuiTextRange_split(self, separator, out)
-}
-text_buffer_new :: #force_inline proc () -> ^Text_Buffer {
-	return ImGuiTextBuffer_ImGuiTextBuffer()
-}
-text_buffer_destroy :: #force_inline proc (self: ^Text_Buffer) {
-	ImGuiTextBuffer_destroy(self)
-}
-text_buffer_begin :: #force_inline proc (self: ^Text_Buffer) -> cstring {
-	return ImGuiTextBuffer_begin(self)
-}
-text_buffer_end :: #force_inline proc (self: ^Text_Buffer) -> cstring {
-	return ImGuiTextBuffer_end(self)
-}
-text_buffer_size :: #force_inline proc (self: ^Text_Buffer) -> i32 {
-	return ImGuiTextBuffer_size(self)
-}
-text_buffer_empty :: #force_inline proc (self: ^Text_Buffer) -> bool {
-	return ImGuiTextBuffer_empty(self)
-}
-text_buffer_clear :: #force_inline proc (self: ^Text_Buffer) {
-	ImGuiTextBuffer_clear(self)
-}
-text_buffer_reserve :: #force_inline proc (self: ^Text_Buffer, capacity: i32) {
-	ImGuiTextBuffer_reserve(self, capacity)
-}
-text_buffer_c_str :: #force_inline proc (self: ^Text_Buffer) -> cstring {
-	return ImGuiTextBuffer_c_str(self)
-}
-text_buffer_append ::  proc (self: ^Text_Buffer, str: string) {
-	str_begin := raw_data(str)
-	str_end := cast([^]u8)(uintptr(str_begin) + uintptr(len(str)))
-	ImGuiTextBuffer_append(self, str_begin, str_end)
-}
-storage_pair_new_int :: #force_inline proc (_key: ID, _val_i: i32) -> ^Storage_Pair {
-	return ImGuiStoragePair_ImGuiStoragePair_Int(_key, _val_i)
-}
-storage_pair_destroy :: #force_inline proc (self: ^Storage_Pair) {
-	ImGuiStoragePair_destroy(self)
-}
-storage_pair_new_float :: #force_inline proc (_key: ID, _val_f: f32) -> ^Storage_Pair {
-	return ImGuiStoragePair_ImGuiStoragePair_Float(_key, _val_f)
-}
-storage_pair_new_ptr :: #force_inline proc (_key: ID, _val_p: rawptr) -> ^Storage_Pair {
-	return ImGuiStoragePair_ImGuiStoragePair_Ptr(_key, _val_p)
-}
-storage_clear :: #force_inline proc (self: ^Storage) {
-	ImGuiStorage_Clear(self)
-}
-storage_get_int :: #force_inline proc (self: ^Storage, key: ID, default_val: i32) -> i32 {
-	return ImGuiStorage_GetInt(self, key, default_val)
-}
-storage_set_int :: #force_inline proc (self: ^Storage, key: ID, val: i32) {
-	ImGuiStorage_SetInt(self, key, val)
-}
-storage_get_bool :: #force_inline proc (self: ^Storage, key: ID, default_val: bool) -> bool {
-	return ImGuiStorage_GetBool(self, key, default_val)
-}
-storage_set_bool :: #force_inline proc (self: ^Storage, key: ID, val: bool) {
-	ImGuiStorage_SetBool(self, key, val)
-}
-storage_get_float :: #force_inline proc (self: ^Storage, key: ID, default_val: f32) -> f32 {
-	return ImGuiStorage_GetFloat(self, key, default_val)
-}
-storage_set_float :: #force_inline proc (self: ^Storage, key: ID, val: f32) {
-	ImGuiStorage_SetFloat(self, key, val)
-}
-storage_get_void_ptr :: #force_inline proc (self: ^Storage, key: ID) -> rawptr {
-	return ImGuiStorage_GetVoidPtr(self, key)
-}
-storage_set_void_ptr :: #force_inline proc (self: ^Storage, key: ID, val: rawptr) {
-	ImGuiStorage_SetVoidPtr(self, key, val)
-}
-storage_get_int_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: i32) -> ^i32 {
-	return ImGuiStorage_GetIntRef(self, key, default_val)
-}
-storage_get_bool_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: bool) -> ^bool {
-	return ImGuiStorage_GetBoolRef(self, key, default_val)
-}
-storage_get_float_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: f32) -> ^f32 {
-	return ImGuiStorage_GetFloatRef(self, key, default_val)
-}
-storage_get_void_ptr_ref :: #force_inline proc (self: ^Storage, key: ID, default_val: rawptr) -> ^rawptr {
-	return ImGuiStorage_GetVoidPtrRef(self, key, default_val)
-}
-storage_set_all_int :: #force_inline proc (self: ^Storage, val: i32) {
-	ImGuiStorage_SetAllInt(self, val)
-}
-storage_build_sort_by_key :: #force_inline proc (self: ^Storage) {
-	ImGuiStorage_BuildSortByKey(self)
-}
-list_clipper_new :: #force_inline proc () -> ^List_Clipper {
-	return ImGuiListClipper_ImGuiListClipper()
-}
-list_clipper_destroy :: #force_inline proc (self: ^List_Clipper) {
-	ImGuiListClipper_destroy(self)
-}
-list_clipper_begin :: #force_inline proc (self: ^List_Clipper, items_count: i32, items_height: f32) {
-	ImGuiListClipper_Begin(self, items_count, items_height)
-}
-list_clipper_end :: #force_inline proc (self: ^List_Clipper) {
-	ImGuiListClipper_End(self)
-}
-list_clipper_step :: #force_inline proc (self: ^List_Clipper) -> bool {
-	return ImGuiListClipper_Step(self)
-}
-list_clipper_force_display_range_by_indices :: #force_inline proc (self: ^List_Clipper, item_min: i32, item_max: i32) {
-	ImGuiListClipper_ForceDisplayRangeByIndices(self, item_min, item_max)
-}
-color_new_nil :: #force_inline proc () -> ^Color {
-	return ImColor_ImColor_Nil()
-}
-color_destroy :: #force_inline proc (self: ^Color) {
-	ImColor_destroy(self)
-}
-color_new_float :: #force_inline proc (r: f32, g: f32, b: f32, a: f32) -> ^Color {
-	return ImColor_ImColor_Float(r, g, b, a)
-}
-color_new_vec4 :: #force_inline proc (col: [4]f32) -> ^Color {
-	return ImColor_ImColor_Vec4(col)
-}
-color_new_int :: #force_inline proc (r: i32, g: i32, b: i32, a: i32) -> ^Color {
-	return ImColor_ImColor_Int(r, g, b, a)
-}
-color_new_u32 :: #force_inline proc (rgba: u32) -> ^Color {
-	return ImColor_ImColor_U32(rgba)
-}
-color_set_hsv :: #force_inline proc (self: ^Color, h: f32, s: f32, v: f32, a: f32) {
-	ImColor_SetHSV(self, h, s, v, a)
-}
-color_hsv :: #force_inline proc (h: f32, s: f32, v: f32, a: f32) -> (p_out: Color) {
-	ImColor_HSV(&p_out, h, s, v, a)
-	return
-}
-draw_cmd_new :: #force_inline proc () -> ^Draw_Cmd {
-	return ImDrawCmd_ImDrawCmd()
-}
-draw_cmd_destroy :: #force_inline proc (self: ^Draw_Cmd) {
-	ImDrawCmd_destroy(self)
-}
-draw_cmd_get_tex_id :: #force_inline proc (self: ^Draw_Cmd) -> Texture_ID {
-	return ImDrawCmd_GetTexID(self)
-}
-draw_list_splitter_new :: #force_inline proc () -> ^Draw_List_Splitter {
-	return ImDrawListSplitter_ImDrawListSplitter()
-}
-draw_list_splitter_destroy :: #force_inline proc (self: ^Draw_List_Splitter) {
-	ImDrawListSplitter_destroy(self)
-}
-draw_list_splitter_clear :: #force_inline proc (self: ^Draw_List_Splitter) {
-	ImDrawListSplitter_Clear(self)
-}
-draw_list_splitter_clear_free_memory :: #force_inline proc (self: ^Draw_List_Splitter) {
-	ImDrawListSplitter_ClearFreeMemory(self)
-}
-draw_list_splitter_split :: #force_inline proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List, count: i32) {
-	ImDrawListSplitter_Split(self, draw_list, count)
-}
-draw_list_splitter_merge :: #force_inline proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List) {
-	ImDrawListSplitter_Merge(self, draw_list)
-}
-draw_list_splitter_set_current_channel :: #force_inline proc (self: ^Draw_List_Splitter, draw_list: ^Draw_List, channel_idx: i32) {
-	ImDrawListSplitter_SetCurrentChannel(self, draw_list, channel_idx)
-}
-draw_list_new :: #force_inline proc (shared_data: ^Draw_List_Shared_Data) -> ^Draw_List {
-	return ImDrawList_ImDrawList(shared_data)
-}
-draw_list_destroy :: #force_inline proc (self: ^Draw_List) {
-	ImDrawList_destroy(self)
-}
-draw_list_push_clip_rect :: #force_inline proc (self: ^Draw_List, clip_rect_min: [2]f32, clip_rect_max: [2]f32, intersect_with_current_clip_rect: bool) {
-	ImDrawList_PushClipRect(self, clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
-}
-draw_list_push_clip_rect_full_screen :: #force_inline proc (self: ^Draw_List) {
-	ImDrawList_PushClipRectFullScreen(self)
-}
-draw_list_pop_clip_rect :: #force_inline proc (self: ^Draw_List) {
-	ImDrawList_PopClipRect(self)
-}
-draw_list_push_texture_id :: #force_inline proc (self: ^Draw_List, texture_id: Texture_ID) {
-	ImDrawList_PushTextureID(self, texture_id)
-}
-draw_list_pop_texture_id :: #force_inline proc (self: ^Draw_List) {
-	ImDrawList_PopTextureID(self)
-}
-draw_list_get_clip_rect_min :: #force_inline proc (self: ^Draw_List) -> (p_out: [2]f32) {
-	ImDrawList_GetClipRectMin(&p_out, self)
-	return
-}
-draw_list_get_clip_rect_max :: #force_inline proc (self: ^Draw_List) -> (p_out: [2]f32) {
-	ImDrawList_GetClipRectMax(&p_out, self)
-	return
-}
-draw_list_add_line :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, col: u32, thickness: f32) {
-	ImDrawList_AddLine(self, p1, p2, col, thickness)
-}
-draw_list_add_rect :: #force_inline proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags: Draw_Flags, thickness: f32) {
-	ImDrawList_AddRect(self, p_min, p_max, col, rounding, flags, thickness)
-}
-draw_list_add_rect_filled :: #force_inline proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col: u32, rounding: f32, flags := Draw_Flags{}) {
-	ImDrawList_AddRectFilled(self, p_min, p_max, col, rounding, flags)
-}
-draw_list_add_rect_filled_multi_color :: #force_inline proc (self: ^Draw_List, p_min: [2]f32, p_max: [2]f32, col_upr_left: u32, col_upr_right: u32, col_bot_right: u32, col_bot_left: u32) {
-	ImDrawList_AddRectFilledMultiColor(self, p_min, p_max, col_upr_left, col_upr_right, col_bot_right, col_bot_left)
-}
-draw_list_add_quad :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32) {
-	ImDrawList_AddQuad(self, p1, p2, p3, p4, col, thickness)
-}
-draw_list_add_quad_filled :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32) {
-	ImDrawList_AddQuadFilled(self, p1, p2, p3, p4, col)
-}
-draw_list_add_triangle :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32) {
-	ImDrawList_AddTriangle(self, p1, p2, p3, col, thickness)
-}
-draw_list_add_triangle_filled :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32) {
-	ImDrawList_AddTriangleFilled(self, p1, p2, p3, col)
-}
-draw_list_add_circle :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) {
-	ImDrawList_AddCircle(self, center, radius, col, num_segments, thickness)
-}
-draw_list_add_circle_filled :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) {
-	ImDrawList_AddCircleFilled(self, center, radius, col, num_segments)
-}
-draw_list_add_ngon :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32, thickness: f32) {
-	ImDrawList_AddNgon(self, center, radius, col, num_segments, thickness)
-}
-draw_list_add_ngon_filled :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, col: u32, num_segments: i32) {
-	ImDrawList_AddNgonFilled(self, center, radius, col, num_segments)
-}
-draw_list_add_text_vec2 ::  proc (self: ^Draw_List, pos: [2]f32, col: u32, text: string) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	ImDrawList_AddText_Vec2(self, pos, col, text_begin, text_end)
-}
-draw_list_add_text_font_ptr ::  proc (self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text: string, wrap_width: f32, cpu_fine_clip_rect: ^[4]f32) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	ImDrawList_AddText_FontPtr(self, font, font_size, pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect)
-}
-draw_list_add_polyline :: #force_inline proc (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32, flags: Draw_Flags, thickness: f32) {
-	ImDrawList_AddPolyline(self, points, num_points, col, flags, thickness)
-}
-draw_list_add_convex_poly_filled :: #force_inline proc (self: ^Draw_List, points: ^[2]f32, num_points: i32, col: u32) {
-	ImDrawList_AddConvexPolyFilled(self, points, num_points, col)
-}
-draw_list_add_bezier_cubic :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, col: u32, thickness: f32, num_segments: i32) {
-	ImDrawList_AddBezierCubic(self, p1, p2, p3, p4, col, thickness, num_segments)
-}
-draw_list_add_bezier_quadratic :: #force_inline proc (self: ^Draw_List, p1: [2]f32, p2: [2]f32, p3: [2]f32, col: u32, thickness: f32, num_segments: i32) {
-	ImDrawList_AddBezierQuadratic(self, p1, p2, p3, col, thickness, num_segments)
-}
-draw_list_add_image :: #force_inline proc (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32) {
-	ImDrawList_AddImage(self, user_texture_id, p_min, p_max, uv_min, uv_max, col)
-}
-draw_list_add_image_quad :: #force_inline proc (self: ^Draw_List, user_texture_id: Texture_ID, p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, uv1: [2]f32, uv2: [2]f32, uv3: [2]f32, uv4: [2]f32, col: u32) {
-	ImDrawList_AddImageQuad(self, user_texture_id, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col)
-}
-draw_list_add_image_rounded :: #force_inline proc (self: ^Draw_List, user_texture_id: Texture_ID, p_min: [2]f32, p_max: [2]f32, uv_min: [2]f32, uv_max: [2]f32, col: u32, rounding: f32, flags := Draw_Flags{}) {
-	ImDrawList_AddImageRounded(self, user_texture_id, p_min, p_max, uv_min, uv_max, col, rounding, flags)
-}
-draw_list_path_clear :: #force_inline proc (self: ^Draw_List) {
-	ImDrawList_PathClear(self)
-}
-draw_list_path_line_to :: #force_inline proc (self: ^Draw_List, pos: [2]f32) {
-	ImDrawList_PathLineTo(self, pos)
-}
-draw_list_path_line_to_merge_duplicate :: #force_inline proc (self: ^Draw_List, pos: [2]f32) {
-	ImDrawList_PathLineToMergeDuplicate(self, pos)
-}
-draw_list_path_fill_convex :: #force_inline proc (self: ^Draw_List, col: u32) {
-	ImDrawList_PathFillConvex(self, col)
-}
-draw_list_path_stroke :: #force_inline proc (self: ^Draw_List, col: u32, flags: Draw_Flags, thickness: f32) {
-	ImDrawList_PathStroke(self, col, flags, thickness)
-}
-draw_list_path_arc_to :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, a_min: f32, a_max: f32, num_segments: i32) {
-	ImDrawList_PathArcTo(self, center, radius, a_min, a_max, num_segments)
-}
-draw_list_path_arc_to_fast :: #force_inline proc (self: ^Draw_List, center: [2]f32, radius: f32, a_min_of_12: i32, a_max_of_12: i32) {
-	ImDrawList_PathArcToFast(self, center, radius, a_min_of_12, a_max_of_12)
-}
-draw_list_path_bezier_cubic_curve_to :: #force_inline proc (self: ^Draw_List, p2: [2]f32, p3: [2]f32, p4: [2]f32, num_segments: i32) {
-	ImDrawList_PathBezierCubicCurveTo(self, p2, p3, p4, num_segments)
-}
-draw_list_path_bezier_quadratic_curve_to :: #force_inline proc (self: ^Draw_List, p2: [2]f32, p3: [2]f32, num_segments: i32) {
-	ImDrawList_PathBezierQuadraticCurveTo(self, p2, p3, num_segments)
-}
-draw_list_path_rect :: #force_inline proc (self: ^Draw_List, rect_min: [2]f32, rect_max: [2]f32, rounding: f32, flags := Draw_Flags{}) {
-	ImDrawList_PathRect(self, rect_min, rect_max, rounding, flags)
-}
-draw_list_add_callback :: #force_inline proc (self: ^Draw_List, callback: Draw_Callback, callback_data: rawptr) {
-	ImDrawList_AddCallback(self, callback, callback_data)
-}
-draw_list_add_draw_cmd :: #force_inline proc (self: ^Draw_List) {
-	ImDrawList_AddDrawCmd(self)
-}
-draw_list_clone_output :: #force_inline proc (self: ^Draw_List) -> ^Draw_List {
-	return ImDrawList_CloneOutput(self)
-}
-draw_list_channels_split :: #force_inline proc (self: ^Draw_List, count: i32) {
-	ImDrawList_ChannelsSplit(self, count)
-}
-draw_list_channels_merge :: #force_inline proc (self: ^Draw_List) {
-	ImDrawList_ChannelsMerge(self)
-}
-draw_list_channels_set_current :: #force_inline proc (self: ^Draw_List, n: i32) {
-	ImDrawList_ChannelsSetCurrent(self, n)
-}
-draw_list_prim_reserve :: #force_inline proc (self: ^Draw_List, idx_count: i32, vtx_count: i32) {
-	ImDrawList_PrimReserve(self, idx_count, vtx_count)
-}
-draw_list_prim_unreserve :: #force_inline proc (self: ^Draw_List, idx_count: i32, vtx_count: i32) {
-	ImDrawList_PrimUnreserve(self, idx_count, vtx_count)
-}
-draw_list_prim_rect :: #force_inline proc (self: ^Draw_List, a: [2]f32, b: [2]f32, col: u32) {
-	ImDrawList_PrimRect(self, a, b, col)
-}
-draw_list_prim_rect_uv :: #force_inline proc (self: ^Draw_List, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, col: u32) {
-	ImDrawList_PrimRectUV(self, a, b, uv_a, uv_b, col)
-}
-draw_list_prim_quad_uv :: #force_inline proc (self: ^Draw_List, a: [2]f32, b: [2]f32, c: [2]f32, d: [2]f32, uv_a: [2]f32, uv_b: [2]f32, uv_c: [2]f32, uv_d: [2]f32, col: u32) {
-	ImDrawList_PrimQuadUV(self, a, b, c, d, uv_a, uv_b, uv_c, uv_d, col)
-}
-draw_list_prim_write_vtx :: #force_inline proc (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) {
-	ImDrawList_PrimWriteVtx(self, pos, uv, col)
-}
-draw_list_prim_write_idx :: #force_inline proc (self: ^Draw_List, idx: Draw_Idx) {
-	ImDrawList_PrimWriteIdx(self, idx)
-}
-draw_list_prim_vtx :: #force_inline proc (self: ^Draw_List, pos: [2]f32, uv: [2]f32, col: u32) {
-	ImDrawList_PrimVtx(self, pos, uv, col)
-}
-draw_data_new :: #force_inline proc () -> ^Draw_Data {
-	return ImDrawData_ImDrawData()
-}
-draw_data_destroy :: #force_inline proc (self: ^Draw_Data) {
-	ImDrawData_destroy(self)
-}
-draw_data_clear :: #force_inline proc (self: ^Draw_Data) {
-	ImDrawData_Clear(self)
-}
-draw_data_de_index_all_buffers :: #force_inline proc (self: ^Draw_Data) {
-	ImDrawData_DeIndexAllBuffers(self)
-}
-draw_data_scale_clip_rects :: #force_inline proc (self: ^Draw_Data, fb_scale: [2]f32) {
-	ImDrawData_ScaleClipRects(self, fb_scale)
-}
-font_config_new :: #force_inline proc () -> ^Font_Config {
-	return ImFontConfig_ImFontConfig()
-}
-font_config_destroy :: #force_inline proc (self: ^Font_Config) {
-	ImFontConfig_destroy(self)
-}
-font_glyph_ranges_builder_new :: #force_inline proc () -> ^Font_Glyph_Ranges_Builder {
-	return ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder()
-}
-font_glyph_ranges_builder_destroy :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder) {
-	ImFontGlyphRangesBuilder_destroy(self)
-}
-font_glyph_ranges_builder_clear :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder) {
-	ImFontGlyphRangesBuilder_Clear(self)
-}
-font_glyph_ranges_builder_get_bit :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, n: int) -> bool {
-	return ImFontGlyphRangesBuilder_GetBit(self, n)
-}
-font_glyph_ranges_builder_set_bit :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, n: int) {
-	ImFontGlyphRangesBuilder_SetBit(self, n)
-}
-font_glyph_ranges_builder_add_char :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, c: u16) {
-	ImFontGlyphRangesBuilder_AddChar(self, c)
-}
-font_glyph_ranges_builder_add_text ::  proc (self: ^Font_Glyph_Ranges_Builder, text: string) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	ImFontGlyphRangesBuilder_AddText(self, text_begin, text_end)
-}
-font_glyph_ranges_builder_add_ranges :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder, ranges: ^u16) {
-	ImFontGlyphRangesBuilder_AddRanges(self, ranges)
-}
-font_glyph_ranges_builder_build_ranges :: #force_inline proc (self: ^Font_Glyph_Ranges_Builder) -> (out_ranges: Vector(u16)) {
-	ImFontGlyphRangesBuilder_BuildRanges(self, &out_ranges)
-	return
-}
-font_atlas_custom_rect_new :: #force_inline proc () -> ^Font_Atlas_Custom_Rect {
-	return ImFontAtlasCustomRect_ImFontAtlasCustomRect()
-}
-font_atlas_custom_rect_destroy :: #force_inline proc (self: ^Font_Atlas_Custom_Rect) {
-	ImFontAtlasCustomRect_destroy(self)
-}
-font_atlas_custom_rect_is_packed :: #force_inline proc (self: ^Font_Atlas_Custom_Rect) -> bool {
-	return ImFontAtlasCustomRect_IsPacked(self)
-}
-font_atlas_new :: #force_inline proc () -> ^Font_Atlas {
-	return ImFontAtlas_ImFontAtlas()
-}
-font_atlas_destroy :: #force_inline proc (self: ^Font_Atlas) {
-	ImFontAtlas_destroy(self)
-}
-font_atlas_add_font :: #force_inline proc (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font {
-	return ImFontAtlas_AddFont(self, font_cfg)
-}
-font_atlas_add_font_default :: #force_inline proc (self: ^Font_Atlas, font_cfg: ^Font_Config) -> ^Font {
-	return ImFontAtlas_AddFontDefault(self, font_cfg)
-}
-font_atlas_add_font_from_file_ttf ::  proc (self: ^Font_Atlas, filename: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
-	_temp_filename := semisafe_string_to_cstring(filename)
-	return ImFontAtlas_AddFontFromFileTTF(self, _temp_filename, size_pixels, font_cfg, glyph_ranges)
-}
-font_atlas_add_font_from_memory_ttf :: #force_inline proc (self: ^Font_Atlas, font_data: rawptr, font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
-	return ImFontAtlas_AddFontFromMemoryTTF(self, font_data, font_size, size_pixels, font_cfg, glyph_ranges)
-}
-font_atlas_add_font_from_memory_compressed_ttf :: #force_inline proc (self: ^Font_Atlas, compressed_font_data: rawptr, compressed_font_size: i32, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
-	return ImFontAtlas_AddFontFromMemoryCompressedTTF(self, compressed_font_data, compressed_font_size, size_pixels, font_cfg, glyph_ranges)
-}
-font_atlas_add_font_from_memory_compressed_base85_ttf ::  proc (self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config, glyph_ranges: ^u16) -> ^Font {
-	_temp_compressed_font_data_base85 := semisafe_string_to_cstring(compressed_font_data_base85)
-	return ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self, _temp_compressed_font_data_base85, size_pixels, font_cfg, glyph_ranges)
-}
-font_atlas_clear_input_data :: #force_inline proc (self: ^Font_Atlas) {
-	ImFontAtlas_ClearInputData(self)
-}
-font_atlas_clear_tex_data :: #force_inline proc (self: ^Font_Atlas) {
-	ImFontAtlas_ClearTexData(self)
-}
-font_atlas_clear_fonts :: #force_inline proc (self: ^Font_Atlas) {
-	ImFontAtlas_ClearFonts(self)
-}
-font_atlas_clear :: #force_inline proc (self: ^Font_Atlas) {
-	ImFontAtlas_Clear(self)
-}
-font_atlas_build :: #force_inline proc (self: ^Font_Atlas) -> bool {
-	return ImFontAtlas_Build(self)
-}
-font_atlas_get_tex_data_as_alpha8 :: #force_inline proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
-	ImFontAtlas_GetTexDataAsAlpha8(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
-	return
-}
-font_atlas_get_tex_data_as_rgba32 :: #force_inline proc (self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
-	ImFontAtlas_GetTexDataAsRGBA32(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
-	return
-}
-font_atlas_is_built :: #force_inline proc (self: ^Font_Atlas) -> bool {
-	return ImFontAtlas_IsBuilt(self)
-}
-font_atlas_set_tex_id :: #force_inline proc (self: ^Font_Atlas, id: Texture_ID) {
-	ImFontAtlas_SetTexID(self, id)
-}
-font_atlas_get_glyph_ranges_default :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesDefault(self)
-}
-font_atlas_get_glyph_ranges_greek :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesGreek(self)
-}
-font_atlas_get_glyph_ranges_korean :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesKorean(self)
-}
-font_atlas_get_glyph_ranges_japanese :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesJapanese(self)
-}
-font_atlas_get_glyph_ranges_chinese_full :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesChineseFull(self)
-}
-font_atlas_get_glyph_ranges_chinese_simplified_common :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon(self)
-}
-font_atlas_get_glyph_ranges_cyrillic :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesCyrillic(self)
-}
-font_atlas_get_glyph_ranges_thai :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesThai(self)
-}
-font_atlas_get_glyph_ranges_vietnamese :: #force_inline proc (self: ^Font_Atlas) -> ^u16 {
-	return ImFontAtlas_GetGlyphRangesVietnamese(self)
-}
-font_atlas_add_custom_rect_regular :: #force_inline proc (self: ^Font_Atlas, width: i32, height: i32) -> i32 {
-	return ImFontAtlas_AddCustomRectRegular(self, width, height)
-}
-font_atlas_add_custom_rect_font_glyph :: #force_inline proc (self: ^Font_Atlas, font: ^Font, id: u16, width: i32, height: i32, advance_x: f32, offset: [2]f32) -> i32 {
-	return ImFontAtlas_AddCustomRectFontGlyph(self, font, id, width, height, advance_x, offset)
-}
-font_atlas_get_custom_rect_by_index :: #force_inline proc (self: ^Font_Atlas, index: i32) -> ^Font_Atlas_Custom_Rect {
-	return ImFontAtlas_GetCustomRectByIndex(self, index)
-}
-font_atlas_calc_custom_rect_uv :: #force_inline proc (self: ^Font_Atlas, rect: ^Font_Atlas_Custom_Rect) -> (out_uv_min: [2]f32, out_uv_max: [2]f32) {
-	ImFontAtlas_CalcCustomRectUV(self, rect, &out_uv_min, &out_uv_max)
-	return
-}
-font_atlas_get_mouse_cursor_tex_data :: #force_inline proc (self: ^Font_Atlas, cursor: Mouse_Cursor, out_uv_border: [2][2]f32, out_uv_fill: [2][2]f32) -> (out_offset: [2]f32, out_size: [2]f32, _ret: bool) {
-	_ret = ImFontAtlas_GetMouseCursorTexData(self, cursor, &out_offset, &out_size, out_uv_border, out_uv_fill)
-	return
-}
-font_new :: #force_inline proc () -> ^Font {
-	return ImFont_ImFont()
-}
-font_destroy :: #force_inline proc (self: ^Font) {
-	ImFont_destroy(self)
-}
-font_find_glyph :: #force_inline proc (self: ^Font, c: u16) -> ^Font_Glyph {
-	return ImFont_FindGlyph(self, c)
-}
-font_find_glyph_no_fallback :: #force_inline proc (self: ^Font, c: u16) -> ^Font_Glyph {
-	return ImFont_FindGlyphNoFallback(self, c)
-}
-font_get_char_advance :: #force_inline proc (self: ^Font, c: u16) -> f32 {
-	return ImFont_GetCharAdvance(self, c)
-}
-font_is_loaded :: #force_inline proc (self: ^Font) -> bool {
-	return ImFont_IsLoaded(self)
-}
-font_get_debug_name :: #force_inline proc (self: ^Font) -> cstring {
-	return ImFont_GetDebugName(self)
-}
-font_calc_text_size_a ::  proc (self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring) -> (p_out: [2]f32) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	ImFont_CalcTextSizeA(&p_out, self, size, max_width, wrap_width, text_begin, text_end, remaining)
-	return
-}
-font_calc_word_wrap_position_a ::  proc (self: ^Font, scale: f32, text: string, wrap_width: f32) -> cstring {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	return ImFont_CalcWordWrapPositionA(self, scale, text_begin, text_end, wrap_width)
-}
-font_render_char :: #force_inline proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, c: u16) {
-	ImFont_RenderChar(self, draw_list, size, pos, col, c)
-}
-font_render_text ::  proc (self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text: string, wrap_width: f32, cpu_fine_clip: bool) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	ImFont_RenderText(self, draw_list, size, pos, col, clip_rect, text_begin, text_end, wrap_width, cpu_fine_clip)
-}
-font_build_lookup_table :: #force_inline proc (self: ^Font) {
-	ImFont_BuildLookupTable(self)
-}
-font_clear_output_data :: #force_inline proc (self: ^Font) {
-	ImFont_ClearOutputData(self)
-}
-font_grow_index :: #force_inline proc (self: ^Font, new_size: i32) {
-	ImFont_GrowIndex(self, new_size)
-}
-font_add_glyph :: #force_inline proc (self: ^Font, src_cfg: ^Font_Config, c: u16, x0: f32, y0: f32, x1: f32, y1: f32, u0: f32, v0: f32, u1: f32, v1: f32, advance_x: f32) {
-	ImFont_AddGlyph(self, src_cfg, c, x0, y0, x1, y1, u0, v0, u1, v1, advance_x)
-}
-font_add_remap_char :: #force_inline proc (self: ^Font, dst: u16, src: u16, overwrite_dst: bool) {
-	ImFont_AddRemapChar(self, dst, src, overwrite_dst)
-}
-font_set_glyph_visible :: #force_inline proc (self: ^Font, c: u16, visible: bool) {
-	ImFont_SetGlyphVisible(self, c, visible)
-}
-font_is_glyph_range_unused :: #force_inline proc (self: ^Font, c_begin: u32, c_last: u32) -> bool {
-	return ImFont_IsGlyphRangeUnused(self, c_begin, c_last)
-}
-viewport_new :: #force_inline proc () -> ^Viewport {
-	return ImGuiViewport_ImGuiViewport()
-}
-viewport_destroy :: #force_inline proc (self: ^Viewport) {
-	ImGuiViewport_destroy(self)
-}
-viewport_get_center :: #force_inline proc (self: ^Viewport) -> (p_out: [2]f32) {
-	ImGuiViewport_GetCenter(&p_out, self)
-	return
-}
-viewport_get_work_center :: #force_inline proc (self: ^Viewport) -> (p_out: [2]f32) {
-	ImGuiViewport_GetWorkCenter(&p_out, self)
-	return
-}
-platform_ime_data_new :: #force_inline proc () -> ^Platform_Ime_Data {
-	return ImGuiPlatformImeData_ImGuiPlatformImeData()
-}
-platform_ime_data_destroy :: #force_inline proc (self: ^Platform_Ime_Data) {
-	ImGuiPlatformImeData_destroy(self)
-}
-get_key_index :: #force_inline proc (key: Key) -> Key {
-	return igGetKeyIndex(key)
-}
-im_bezier_cubic_calc :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, t: f32) -> (p_out: [2]f32) {
-	igImBezierCubicCalc(&p_out, p1, p2, p3, p4, t)
-	return
-}
-im_bezier_cubic_closest_point :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, num_segments: i32) -> (p_out: [2]f32) {
-	igImBezierCubicClosestPoint(&p_out, p1, p2, p3, p4, p, num_segments)
-	return
-}
-im_bezier_cubic_closest_point_casteljau :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, p4: [2]f32, p: [2]f32, tess_tol: f32) -> (p_out: [2]f32) {
-	igImBezierCubicClosestPointCasteljau(&p_out, p1, p2, p3, p4, p, tess_tol)
-	return
-}
-im_bezier_quadratic_calc :: #force_inline proc (p1: [2]f32, p2: [2]f32, p3: [2]f32, t: f32) -> (p_out: [2]f32) {
-	igImBezierQuadraticCalc(&p_out, p1, p2, p3, t)
-	return
-}
-rect_new_nil :: #force_inline proc () -> ^Rect {
-	return ImRect_ImRect_Nil()
-}
-rect_destroy :: #force_inline proc (self: ^Rect) {
-	ImRect_destroy(self)
-}
-rect_new_vec2 :: #force_inline proc (min: [2]f32, max: [2]f32) -> ^Rect {
-	return ImRect_ImRect_Vec2(min, max)
-}
-rect_new_vec4 :: #force_inline proc (v: [4]f32) -> ^Rect {
-	return ImRect_ImRect_Vec4(v)
-}
-rect_new_float :: #force_inline proc (x1: f32, y1: f32, x2: f32, y2: f32) -> ^Rect {
-	return ImRect_ImRect_Float(x1, y1, x2, y2)
-}
-rect_get_center :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
-	ImRect_GetCenter(&p_out, self)
-	return
-}
-rect_get_size :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
-	ImRect_GetSize(&p_out, self)
-	return
-}
-rect_get_width :: #force_inline proc (self: ^Rect) -> f32 {
-	return ImRect_GetWidth(self)
-}
-rect_get_height :: #force_inline proc (self: ^Rect) -> f32 {
-	return ImRect_GetHeight(self)
-}
-rect_get_area :: #force_inline proc (self: ^Rect) -> f32 {
-	return ImRect_GetArea(self)
-}
-rect_get_tl :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
-	ImRect_GetTL(&p_out, self)
-	return
-}
-rect_get_tr :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
-	ImRect_GetTR(&p_out, self)
-	return
-}
-rect_get_bl :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
-	ImRect_GetBL(&p_out, self)
-	return
-}
-rect_get_br :: #force_inline proc (self: ^Rect) -> (p_out: [2]f32) {
-	ImRect_GetBR(&p_out, self)
-	return
-}
-rect_contains_vec2 :: #force_inline proc (self: ^Rect, p: [2]f32) -> bool {
-	return ImRect_Contains_Vec2(self, p)
-}
-rect_contains_rect :: #force_inline proc (self: ^Rect, r: Rect) -> bool {
-	return ImRect_Contains_Rect(self, r)
-}
-rect_overlaps :: #force_inline proc (self: ^Rect, r: Rect) -> bool {
-	return ImRect_Overlaps(self, r)
-}
-rect_add_vec2 :: #force_inline proc (self: ^Rect, p: [2]f32) {
-	ImRect_Add_Vec2(self, p)
-}
-rect_add_rect :: #force_inline proc (self: ^Rect, r: Rect) {
-	ImRect_Add_Rect(self, r)
-}
-rect_expand_float :: #force_inline proc (self: ^Rect, amount: f32) {
-	ImRect_Expand_Float(self, amount)
-}
-rect_expand_vec2 :: #force_inline proc (self: ^Rect, amount: [2]f32) {
-	ImRect_Expand_Vec2(self, amount)
-}
-rect_translate :: #force_inline proc (self: ^Rect, d: [2]f32) {
-	ImRect_Translate(self, d)
-}
-rect_translate_x :: #force_inline proc (self: ^Rect, dx: f32) {
-	ImRect_TranslateX(self, dx)
-}
-rect_translate_y :: #force_inline proc (self: ^Rect, dy: f32) {
-	ImRect_TranslateY(self, dy)
-}
-rect_clip_with :: #force_inline proc (self: ^Rect, r: Rect) {
-	ImRect_ClipWith(self, r)
-}
-rect_clip_with_full :: #force_inline proc (self: ^Rect, r: Rect) {
-	ImRect_ClipWithFull(self, r)
-}
-rect_floor :: #force_inline proc (self: ^Rect) {
-	ImRect_Floor(self)
-}
-rect_is_inverted :: #force_inline proc (self: ^Rect) -> bool {
-	return ImRect_IsInverted(self)
-}
-rect_to_vec4 :: #force_inline proc (self: ^Rect) -> (p_out: [4]f32) {
-	ImRect_ToVec4(&p_out, self)
-	return
-}
-text_index_clear :: #force_inline proc (self: ^Text_Index) {
-	ImGuiTextIndex_clear(self)
-}
-text_index_size :: #force_inline proc (self: ^Text_Index) -> i32 {
-	return ImGuiTextIndex_size(self)
-}
-text_index_get_line_begin ::  proc (self: ^Text_Index, base: string, n: i32) -> cstring {
-	_temp_base := semisafe_string_to_cstring(base)
-	return ImGuiTextIndex_get_line_begin(self, _temp_base, n)
-}
-text_index_get_line_end ::  proc (self: ^Text_Index, base: string, n: i32) -> cstring {
-	_temp_base := semisafe_string_to_cstring(base)
-	return ImGuiTextIndex_get_line_end(self, _temp_base, n)
-}
-text_index_append ::  proc (self: ^Text_Index, base: string, old_size: i32, new_size: i32) {
-	_temp_base := semisafe_string_to_cstring(base)
-	ImGuiTextIndex_append(self, _temp_base, old_size, new_size)
-}
-draw_list_shared_data_new :: #force_inline proc () -> ^Draw_List_Shared_Data {
-	return ImDrawListSharedData_ImDrawListSharedData()
-}
-draw_list_shared_data_destroy :: #force_inline proc (self: ^Draw_List_Shared_Data) {
-	ImDrawListSharedData_destroy(self)
-}
-draw_list_shared_data_set_circle_tessellation_max_error :: #force_inline proc (self: ^Draw_List_Shared_Data, max_error: f32) {
-	ImDrawListSharedData_SetCircleTessellationMaxError(self, max_error)
-}
-draw_data_builder_clear :: #force_inline proc (self: ^Draw_Data_Builder) {
-	ImDrawDataBuilder_Clear(self)
-}
-draw_data_builder_clear_free_memory :: #force_inline proc (self: ^Draw_Data_Builder) {
-	ImDrawDataBuilder_ClearFreeMemory(self)
-}
-draw_data_builder_get_draw_list_count :: #force_inline proc (self: ^Draw_Data_Builder) -> i32 {
-	return ImDrawDataBuilder_GetDrawListCount(self)
-}
-draw_data_builder_flatten_into_single_layer :: #force_inline proc (self: ^Draw_Data_Builder) {
-	ImDrawDataBuilder_FlattenIntoSingleLayer(self)
-}
-data_var_info_get_var_ptr :: #force_inline proc (self: ^Data_Var_Info, parent: rawptr) -> rawptr {
-	return ImGuiDataVarInfo_GetVarPtr(self, parent)
-}
-style_mod_new_int :: #force_inline proc (idx: Style_Var, v: i32) -> ^Style_Mod {
-	return ImGuiStyleMod_ImGuiStyleMod_Int(idx, v)
-}
-style_mod_destroy :: #force_inline proc (self: ^Style_Mod) {
-	ImGuiStyleMod_destroy(self)
-}
-style_mod_new_float :: #force_inline proc (idx: Style_Var, v: f32) -> ^Style_Mod {
-	return ImGuiStyleMod_ImGuiStyleMod_Float(idx, v)
-}
-style_mod_new_vec2 :: #force_inline proc (idx: Style_Var, v: [2]f32) -> ^Style_Mod {
-	return ImGuiStyleMod_ImGuiStyleMod_Vec2(idx, v)
-}
-combo_preview_data_new :: #force_inline proc () -> ^Combo_Preview_Data {
-	return ImGuiComboPreviewData_ImGuiComboPreviewData()
-}
-combo_preview_data_destroy :: #force_inline proc (self: ^Combo_Preview_Data) {
-	ImGuiComboPreviewData_destroy(self)
-}
-menu_columns_new :: #force_inline proc () -> ^Menu_Columns {
-	return ImGuiMenuColumns_ImGuiMenuColumns()
-}
-menu_columns_destroy :: #force_inline proc (self: ^Menu_Columns) {
-	ImGuiMenuColumns_destroy(self)
-}
-menu_columns_update :: #force_inline proc (self: ^Menu_Columns, spacing: f32, window_reappearing: bool) {
-	ImGuiMenuColumns_Update(self, spacing, window_reappearing)
-}
-menu_columns_decl_columns :: #force_inline proc (self: ^Menu_Columns, w_icon: f32, w_label: f32, w_shortcut: f32, w_mark: f32) -> f32 {
-	return ImGuiMenuColumns_DeclColumns(self, w_icon, w_label, w_shortcut, w_mark)
-}
-menu_columns_calc_next_total_width :: #force_inline proc (self: ^Menu_Columns, update_offsets: bool) {
-	ImGuiMenuColumns_CalcNextTotalWidth(self, update_offsets)
-}
-input_text_deactivated_state_new :: #force_inline proc () -> ^Input_Text_Deactivated_State {
-	return ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState()
-}
-input_text_deactivated_state_destroy :: #force_inline proc (self: ^Input_Text_Deactivated_State) {
-	ImGuiInputTextDeactivatedState_destroy(self)
-}
-input_text_deactivated_state_clear_free_memory :: #force_inline proc (self: ^Input_Text_Deactivated_State) {
-	ImGuiInputTextDeactivatedState_ClearFreeMemory(self)
-}
-input_text_state_new :: #force_inline proc () -> ^Input_Text_State {
-	return ImGuiInputTextState_ImGuiInputTextState()
-}
-input_text_state_destroy :: #force_inline proc (self: ^Input_Text_State) {
-	ImGuiInputTextState_destroy(self)
-}
-input_text_state_clear_text :: #force_inline proc (self: ^Input_Text_State) {
-	ImGuiInputTextState_ClearText(self)
-}
-input_text_state_clear_free_memory :: #force_inline proc (self: ^Input_Text_State) {
-	ImGuiInputTextState_ClearFreeMemory(self)
-}
-input_text_state_get_undo_avail_count :: #force_inline proc (self: ^Input_Text_State) -> i32 {
-	return ImGuiInputTextState_GetUndoAvailCount(self)
-}
-input_text_state_get_redo_avail_count :: #force_inline proc (self: ^Input_Text_State) -> i32 {
-	return ImGuiInputTextState_GetRedoAvailCount(self)
-}
-input_text_state_on_key_pressed :: #force_inline proc (self: ^Input_Text_State, key: i32) {
-	ImGuiInputTextState_OnKeyPressed(self, key)
-}
-input_text_state_cursor_anim_reset :: #force_inline proc (self: ^Input_Text_State) {
-	ImGuiInputTextState_CursorAnimReset(self)
-}
-input_text_state_cursor_clamp :: #force_inline proc (self: ^Input_Text_State) {
-	ImGuiInputTextState_CursorClamp(self)
-}
-input_text_state_has_selection :: #force_inline proc (self: ^Input_Text_State) -> bool {
-	return ImGuiInputTextState_HasSelection(self)
-}
-input_text_state_clear_selection :: #force_inline proc (self: ^Input_Text_State) {
-	ImGuiInputTextState_ClearSelection(self)
-}
-input_text_state_get_cursor_pos :: #force_inline proc (self: ^Input_Text_State) -> i32 {
-	return ImGuiInputTextState_GetCursorPos(self)
-}
-input_text_state_get_selection_start :: #force_inline proc (self: ^Input_Text_State) -> i32 {
-	return ImGuiInputTextState_GetSelectionStart(self)
-}
-input_text_state_get_selection_end :: #force_inline proc (self: ^Input_Text_State) -> i32 {
-	return ImGuiInputTextState_GetSelectionEnd(self)
-}
-input_text_state_select_all :: #force_inline proc (self: ^Input_Text_State) {
-	ImGuiInputTextState_SelectAll(self)
-}
-popup_data_new :: #force_inline proc () -> ^Popup_Data {
-	return ImGuiPopupData_ImGuiPopupData()
-}
-popup_data_destroy :: #force_inline proc (self: ^Popup_Data) {
-	ImGuiPopupData_destroy(self)
-}
-next_window_data_new :: #force_inline proc () -> ^Next_Window_Data {
-	return ImGuiNextWindowData_ImGuiNextWindowData()
-}
-next_window_data_destroy :: #force_inline proc (self: ^Next_Window_Data) {
-	ImGuiNextWindowData_destroy(self)
-}
-next_window_data_clear_flags :: #force_inline proc (self: ^Next_Window_Data) {
-	ImGuiNextWindowData_ClearFlags(self)
-}
-next_item_data_new :: #force_inline proc () -> ^Next_Item_Data {
-	return ImGuiNextItemData_ImGuiNextItemData()
-}
-next_item_data_destroy :: #force_inline proc (self: ^Next_Item_Data) {
-	ImGuiNextItemData_destroy(self)
-}
-next_item_data_clear_flags :: #force_inline proc (self: ^Next_Item_Data) {
-	ImGuiNextItemData_ClearFlags(self)
-}
-last_item_data_new :: #force_inline proc () -> ^Last_Item_Data {
-	return ImGuiLastItemData_ImGuiLastItemData()
-}
-last_item_data_destroy :: #force_inline proc (self: ^Last_Item_Data) {
-	ImGuiLastItemData_destroy(self)
-}
-stack_sizes_new :: #force_inline proc () -> ^Stack_Sizes {
-	return ImGuiStackSizes_ImGuiStackSizes()
-}
-stack_sizes_destroy :: #force_inline proc (self: ^Stack_Sizes) {
-	ImGuiStackSizes_destroy(self)
-}
-stack_sizes_set_to_context_state :: #force_inline proc (self: ^Stack_Sizes, ctx: ^Context) {
-	ImGuiStackSizes_SetToContextState(self, ctx)
-}
-stack_sizes_compare_with_context_state :: #force_inline proc (self: ^Stack_Sizes, ctx: ^Context) {
-	ImGuiStackSizes_CompareWithContextState(self, ctx)
-}
-ptr_or_index_new_ptr :: #force_inline proc (ptr: rawptr) -> ^Ptr_Or_Index {
-	return ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr(ptr)
-}
-ptr_or_index_destroy :: #force_inline proc (self: ^Ptr_Or_Index) {
-	ImGuiPtrOrIndex_destroy(self)
-}
-ptr_or_index_new_int :: #force_inline proc (index: i32) -> ^Ptr_Or_Index {
-	return ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int(index)
-}
-input_event_new :: #force_inline proc () -> ^Input_Event {
-	return ImGuiInputEvent_ImGuiInputEvent()
-}
-input_event_destroy :: #force_inline proc (self: ^Input_Event) {
-	ImGuiInputEvent_destroy(self)
-}
-key_routing_data_new :: #force_inline proc () -> ^Key_Routing_Data {
-	return ImGuiKeyRoutingData_ImGuiKeyRoutingData()
-}
-key_routing_data_destroy :: #force_inline proc (self: ^Key_Routing_Data) {
-	ImGuiKeyRoutingData_destroy(self)
-}
-key_routing_table_new :: #force_inline proc () -> ^Key_Routing_Table {
-	return ImGuiKeyRoutingTable_ImGuiKeyRoutingTable()
-}
-key_routing_table_destroy :: #force_inline proc (self: ^Key_Routing_Table) {
-	ImGuiKeyRoutingTable_destroy(self)
-}
-key_routing_table_clear :: #force_inline proc (self: ^Key_Routing_Table) {
-	ImGuiKeyRoutingTable_Clear(self)
-}
-key_owner_data_new :: #force_inline proc () -> ^Key_Owner_Data {
-	return ImGuiKeyOwnerData_ImGuiKeyOwnerData()
-}
-key_owner_data_destroy :: #force_inline proc (self: ^Key_Owner_Data) {
-	ImGuiKeyOwnerData_destroy(self)
-}
-list_clipper_range_from_indices :: #force_inline proc (min: i32, max: i32) -> List_Clipper_Range {
-	return ImGuiListClipperRange_FromIndices(min, max)
-}
-list_clipper_range_from_positions :: #force_inline proc (y1: f32, y2: f32, off_min: i32, off_max: i32) -> List_Clipper_Range {
-	return ImGuiListClipperRange_FromPositions(y1, y2, off_min, off_max)
-}
-list_clipper_data_new :: #force_inline proc () -> ^List_Clipper_Data {
-	return ImGuiListClipperData_ImGuiListClipperData()
-}
-list_clipper_data_destroy :: #force_inline proc (self: ^List_Clipper_Data) {
-	ImGuiListClipperData_destroy(self)
-}
-list_clipper_data_reset :: #force_inline proc (self: ^List_Clipper_Data, clipper: ^List_Clipper) {
-	ImGuiListClipperData_Reset(self, clipper)
-}
-nav_item_data_new :: #force_inline proc () -> ^Nav_Item_Data {
-	return ImGuiNavItemData_ImGuiNavItemData()
-}
-nav_item_data_destroy :: #force_inline proc (self: ^Nav_Item_Data) {
-	ImGuiNavItemData_destroy(self)
-}
-nav_item_data_clear :: #force_inline proc (self: ^Nav_Item_Data) {
-	ImGuiNavItemData_Clear(self)
-}
-old_column_data_new :: #force_inline proc () -> ^Old_Column_Data {
-	return ImGuiOldColumnData_ImGuiOldColumnData()
-}
-old_column_data_destroy :: #force_inline proc (self: ^Old_Column_Data) {
-	ImGuiOldColumnData_destroy(self)
-}
-old_columns_new :: #force_inline proc () -> ^Old_Columns {
-	return ImGuiOldColumns_ImGuiOldColumns()
-}
-old_columns_destroy :: #force_inline proc (self: ^Old_Columns) {
-	ImGuiOldColumns_destroy(self)
-}
-viewport_p_new :: #force_inline proc () -> ^Viewport_P {
-	return ImGuiViewportP_ImGuiViewportP()
-}
-viewport_p_destroy :: #force_inline proc (self: ^Viewport_P) {
-	ImGuiViewportP_destroy(self)
-}
-viewport_p_calc_work_rect_pos :: #force_inline proc (self: ^Viewport_P, off_min: [2]f32) -> (p_out: [2]f32) {
-	ImGuiViewportP_CalcWorkRectPos(&p_out, self, off_min)
-	return
-}
-viewport_p_calc_work_rect_size :: #force_inline proc (self: ^Viewport_P, off_min: [2]f32, off_max: [2]f32) -> (p_out: [2]f32) {
-	ImGuiViewportP_CalcWorkRectSize(&p_out, self, off_min, off_max)
-	return
-}
-viewport_p_update_work_rect :: #force_inline proc (self: ^Viewport_P) {
-	ImGuiViewportP_UpdateWorkRect(self)
-}
-viewport_p_get_main_rect :: #force_inline proc (self: ^Viewport_P) -> (p_out: Rect) {
-	ImGuiViewportP_GetMainRect(&p_out, self)
-	return
-}
-viewport_p_get_work_rect :: #force_inline proc (self: ^Viewport_P) -> (p_out: Rect) {
-	ImGuiViewportP_GetWorkRect(&p_out, self)
-	return
-}
-viewport_p_get_build_work_rect :: #force_inline proc (self: ^Viewport_P) -> (p_out: Rect) {
-	ImGuiViewportP_GetBuildWorkRect(&p_out, self)
-	return
-}
-window_settings_new :: #force_inline proc () -> ^Window_Settings {
-	return ImGuiWindowSettings_ImGuiWindowSettings()
-}
-window_settings_destroy :: #force_inline proc (self: ^Window_Settings) {
-	ImGuiWindowSettings_destroy(self)
-}
-window_settings_get_name :: #force_inline proc (self: ^Window_Settings) -> ^i8 {
-	return ImGuiWindowSettings_GetName(self)
-}
-settings_handler_new :: #force_inline proc () -> ^Settings_Handler {
-	return ImGuiSettingsHandler_ImGuiSettingsHandler()
-}
-settings_handler_destroy :: #force_inline proc (self: ^Settings_Handler) {
-	ImGuiSettingsHandler_destroy(self)
-}
-stack_level_info_new :: #force_inline proc () -> ^Stack_Level_Info {
-	return ImGuiStackLevelInfo_ImGuiStackLevelInfo()
-}
-stack_level_info_destroy :: #force_inline proc (self: ^Stack_Level_Info) {
-	ImGuiStackLevelInfo_destroy(self)
-}
-stack_tool_new :: #force_inline proc () -> ^Stack_Tool {
-	return ImGuiStackTool_ImGuiStackTool()
-}
-stack_tool_destroy :: #force_inline proc (self: ^Stack_Tool) {
-	ImGuiStackTool_destroy(self)
-}
-context_hook_new :: #force_inline proc () -> ^Context_Hook {
-	return ImGuiContextHook_ImGuiContextHook()
-}
-context_hook_destroy :: #force_inline proc (self: ^Context_Hook) {
-	ImGuiContextHook_destroy(self)
-}
-context_new :: #force_inline proc (shared_font_atlas: ^Font_Atlas) -> ^Context {
-	return ImGuiContext_ImGuiContext(shared_font_atlas)
-}
-context_destroy :: #force_inline proc (self: ^Context) {
-	ImGuiContext_destroy(self)
-}
-window_new ::  proc (context_: ^Context, name: string) -> ^Window {
-	_temp_name := semisafe_string_to_cstring(name)
-	return ImGuiWindow_ImGuiWindow(context_, _temp_name)
-}
-window_destroy :: #force_inline proc (self: ^Window) {
-	ImGuiWindow_destroy(self)
-}
-window_get_id_str ::  proc (self: ^Window, str: string) -> ID {
-	str_begin := raw_data(str)
-	str_end := cast([^]u8)(uintptr(str_begin) + uintptr(len(str)))
-	return ImGuiWindow_GetID_Str(self, str_begin, str_end)
-}
-window_get_id_ptr :: #force_inline proc (self: ^Window, ptr: rawptr) -> ID {
-	return ImGuiWindow_GetID_Ptr(self, ptr)
-}
-window_get_id_int :: #force_inline proc (self: ^Window, n: i32) -> ID {
-	return ImGuiWindow_GetID_Int(self, n)
-}
-window_get_id_from_rectangle :: #force_inline proc (self: ^Window, r_abs: Rect) -> ID {
-	return ImGuiWindow_GetIDFromRectangle(self, r_abs)
-}
-window_rect :: #force_inline proc (self: ^Window) -> (p_out: Rect) {
-	ImGuiWindow_Rect(&p_out, self)
-	return
-}
-window_calc_font_size :: #force_inline proc (self: ^Window) -> f32 {
-	return ImGuiWindow_CalcFontSize(self)
-}
-window_title_bar_height :: #force_inline proc (self: ^Window) -> f32 {
-	return ImGuiWindow_TitleBarHeight(self)
-}
-window_title_bar_rect :: #force_inline proc (self: ^Window) -> (p_out: Rect) {
-	ImGuiWindow_TitleBarRect(&p_out, self)
-	return
-}
-window_menu_bar_height :: #force_inline proc (self: ^Window) -> f32 {
-	return ImGuiWindow_MenuBarHeight(self)
-}
-window_menu_bar_rect :: #force_inline proc (self: ^Window) -> (p_out: Rect) {
-	ImGuiWindow_MenuBarRect(&p_out, self)
-	return
-}
-tab_item_new :: #force_inline proc () -> ^Tab_Item {
-	return ImGuiTabItem_ImGuiTabItem()
-}
-tab_item_destroy :: #force_inline proc (self: ^Tab_Item) {
-	ImGuiTabItem_destroy(self)
-}
-tab_bar_new :: #force_inline proc () -> ^Tab_Bar {
-	return ImGuiTabBar_ImGuiTabBar()
-}
-tab_bar_destroy :: #force_inline proc (self: ^Tab_Bar) {
-	ImGuiTabBar_destroy(self)
-}
-table_column_new :: #force_inline proc () -> ^Table_Column {
-	return ImGuiTableColumn_ImGuiTableColumn()
-}
-table_column_destroy :: #force_inline proc (self: ^Table_Column) {
-	ImGuiTableColumn_destroy(self)
-}
-table_instance_data_new :: #force_inline proc () -> ^Table_Instance_Data {
-	return ImGuiTableInstanceData_ImGuiTableInstanceData()
-}
-table_instance_data_destroy :: #force_inline proc (self: ^Table_Instance_Data) {
-	ImGuiTableInstanceData_destroy(self)
-}
-table_new :: #force_inline proc () -> ^Table {
-	return ImGuiTable_ImGuiTable()
-}
-table_destroy :: #force_inline proc (self: ^Table) {
-	ImGuiTable_destroy(self)
-}
-table_temp_data_new :: #force_inline proc () -> ^Table_Temp_Data {
-	return ImGuiTableTempData_ImGuiTableTempData()
-}
-table_temp_data_destroy :: #force_inline proc (self: ^Table_Temp_Data) {
-	ImGuiTableTempData_destroy(self)
-}
-table_column_settings_new :: #force_inline proc () -> ^Table_Column_Settings {
-	return ImGuiTableColumnSettings_ImGuiTableColumnSettings()
-}
-table_column_settings_destroy :: #force_inline proc (self: ^Table_Column_Settings) {
-	ImGuiTableColumnSettings_destroy(self)
-}
-table_settings_new :: #force_inline proc () -> ^Table_Settings {
-	return ImGuiTableSettings_ImGuiTableSettings()
-}
-table_settings_destroy :: #force_inline proc (self: ^Table_Settings) {
-	ImGuiTableSettings_destroy(self)
-}
-table_settings_get_column_settings :: #force_inline proc (self: ^Table_Settings) -> ^Table_Column_Settings {
-	return ImGuiTableSettings_GetColumnSettings(self)
-}
-get_current_window_read :: #force_inline proc () -> ^Window {
-	return igGetCurrentWindowRead()
-}
-get_current_window :: #force_inline proc () -> ^Window {
-	return igGetCurrentWindow()
-}
-find_window_by_id :: #force_inline proc (id: ID) -> ^Window {
-	return igFindWindowByID(id)
-}
-find_window_by_name ::  proc (name: string) -> ^Window {
-	_temp_name := semisafe_string_to_cstring(name)
-	return igFindWindowByName(_temp_name)
-}
-update_window_parent_and_root_links :: #force_inline proc (window: ^Window, flags: Window_Flags, parent_window: ^Window) {
-	igUpdateWindowParentAndRootLinks(window, flags, parent_window)
-}
-calc_window_next_auto_fit_size :: #force_inline proc (window: ^Window) -> (p_out: [2]f32) {
-	igCalcWindowNextAutoFitSize(&p_out, window)
-	return
-}
-is_window_child_of :: #force_inline proc (window: ^Window, potential_parent: ^Window, popup_hierarchy: bool) -> bool {
-	return igIsWindowChildOf(window, potential_parent, popup_hierarchy)
-}
-is_window_within_begin_stack_of :: #force_inline proc (window: ^Window, potential_parent: ^Window) -> bool {
-	return igIsWindowWithinBeginStackOf(window, potential_parent)
-}
-is_window_above :: #force_inline proc (potential_above: ^Window, potential_below: ^Window) -> bool {
-	return igIsWindowAbove(potential_above, potential_below)
-}
-is_window_nav_focusable :: #force_inline proc (window: ^Window) -> bool {
-	return igIsWindowNavFocusable(window)
-}
-set_window_pos_window_ptr :: #force_inline proc (window: ^Window, pos: [2]f32, cond := Cond{}) {
-	igSetWindowPos_WindowPtr(window, pos, cond)
-}
-set_window_size_window_ptr :: #force_inline proc (window: ^Window, size: [2]f32, cond := Cond{}) {
-	igSetWindowSize_WindowPtr(window, size, cond)
-}
-set_window_collapsed_window_ptr :: #force_inline proc (window: ^Window, collapsed: bool, cond := Cond{}) {
-	igSetWindowCollapsed_WindowPtr(window, collapsed, cond)
-}
-set_window_hit_test_hole :: #force_inline proc (window: ^Window, pos: [2]f32, size: [2]f32) {
-	igSetWindowHitTestHole(window, pos, size)
-}
-set_window_hiddend_and_skip_items_for_current_frame :: #force_inline proc (window: ^Window) {
-	igSetWindowHiddendAndSkipItemsForCurrentFrame(window)
-}
-window_rect_abs_to_rel :: #force_inline proc (window: ^Window, r: Rect) -> (p_out: Rect) {
-	igWindowRectAbsToRel(&p_out, window, r)
-	return
-}
-window_rect_rel_to_abs :: #force_inline proc (window: ^Window, r: Rect) -> (p_out: Rect) {
-	igWindowRectRelToAbs(&p_out, window, r)
-	return
-}
-focus_window :: #force_inline proc (window: ^Window) {
-	igFocusWindow(window)
-}
-focus_top_most_window_under_one :: #force_inline proc (under_this_window: ^Window, ignore_window: ^Window) {
-	igFocusTopMostWindowUnderOne(under_this_window, ignore_window)
-}
-bring_window_to_focus_front :: #force_inline proc (window: ^Window) {
-	igBringWindowToFocusFront(window)
-}
-bring_window_to_display_front :: #force_inline proc (window: ^Window) {
-	igBringWindowToDisplayFront(window)
-}
-bring_window_to_display_back :: #force_inline proc (window: ^Window) {
-	igBringWindowToDisplayBack(window)
-}
-bring_window_to_display_behind :: #force_inline proc (window: ^Window, above_window: ^Window) {
-	igBringWindowToDisplayBehind(window, above_window)
-}
-find_window_display_index :: #force_inline proc (window: ^Window) -> i32 {
-	return igFindWindowDisplayIndex(window)
-}
-find_bottom_most_visible_window_within_begin_stack :: #force_inline proc (window: ^Window) -> ^Window {
-	return igFindBottomMostVisibleWindowWithinBeginStack(window)
-}
-set_current_font :: #force_inline proc (font: ^Font) {
-	igSetCurrentFont(font)
-}
-get_default_font :: #force_inline proc () -> ^Font {
-	return igGetDefaultFont()
-}
-get_foreground_draw_list_window_ptr :: #force_inline proc (window: ^Window) -> ^Draw_List {
-	return igGetForegroundDrawList_WindowPtr(window)
-}
-get_background_draw_list_viewport_ptr :: #force_inline proc (viewport: ^Viewport) -> ^Draw_List {
-	return igGetBackgroundDrawList_ViewportPtr(viewport)
-}
-get_foreground_draw_list_viewport_ptr :: #force_inline proc (viewport: ^Viewport) -> ^Draw_List {
-	return igGetForegroundDrawList_ViewportPtr(viewport)
-}
-initialize :: #force_inline proc () {
-	igInitialize()
-}
-shutdown :: #force_inline proc () {
-	igShutdown()
-}
-update_input_events :: #force_inline proc (trickle_fast_inputs: bool) {
-	igUpdateInputEvents(trickle_fast_inputs)
-}
-update_hovered_window_and_capture_flags :: #force_inline proc () {
-	igUpdateHoveredWindowAndCaptureFlags()
-}
-start_mouse_moving_window :: #force_inline proc (window: ^Window) {
-	igStartMouseMovingWindow(window)
-}
-update_mouse_moving_window_new_frame :: #force_inline proc () {
-	igUpdateMouseMovingWindowNewFrame()
-}
-update_mouse_moving_window_end_frame :: #force_inline proc () {
-	igUpdateMouseMovingWindowEndFrame()
-}
-add_context_hook :: #force_inline proc (context_: ^Context, hook: ^Context_Hook) -> ID {
-	return igAddContextHook(context_, hook)
-}
-remove_context_hook :: #force_inline proc (context_: ^Context, hook_to_remove: ID) {
-	igRemoveContextHook(context_, hook_to_remove)
-}
-call_context_hooks :: #force_inline proc (context_: ^Context, type: Context_Hook_Type) {
-	igCallContextHooks(context_, type)
-}
-set_window_viewport :: #force_inline proc (window: ^Window, viewport: ^Viewport_P) {
-	igSetWindowViewport(window, viewport)
-}
-mark_ini_settings_dirty_nil :: #force_inline proc () {
-	igMarkIniSettingsDirty_Nil()
-}
-mark_ini_settings_dirty_window_ptr :: #force_inline proc (window: ^Window) {
-	igMarkIniSettingsDirty_WindowPtr(window)
-}
-clear_ini_settings :: #force_inline proc () {
-	igClearIniSettings()
-}
-add_settings_handler :: #force_inline proc (handler: ^Settings_Handler) {
-	igAddSettingsHandler(handler)
-}
-remove_settings_handler ::  proc (type_name: string) {
-	_temp_type_name := semisafe_string_to_cstring(type_name)
-	igRemoveSettingsHandler(_temp_type_name)
-}
-find_settings_handler ::  proc (type_name: string) -> ^Settings_Handler {
-	_temp_type_name := semisafe_string_to_cstring(type_name)
-	return igFindSettingsHandler(_temp_type_name)
-}
-create_new_window_settings ::  proc (name: string) -> ^Window_Settings {
-	_temp_name := semisafe_string_to_cstring(name)
-	return igCreateNewWindowSettings(_temp_name)
-}
-find_window_settings_by_id :: #force_inline proc (id: ID) -> ^Window_Settings {
-	return igFindWindowSettingsByID(id)
-}
-find_window_settings_by_window :: #force_inline proc (window: ^Window) -> ^Window_Settings {
-	return igFindWindowSettingsByWindow(window)
-}
-clear_window_settings ::  proc (name: string) {
-	_temp_name := semisafe_string_to_cstring(name)
-	igClearWindowSettings(_temp_name)
-}
-localize_register_entries :: #force_inline proc (entries: ^Loc_Entry, count: i32) {
-	igLocalizeRegisterEntries(entries, count)
-}
-localize_get_msg :: #force_inline proc (key: Loc_Key) -> cstring {
-	return igLocalizeGetMsg(key)
-}
-set_scroll_x_window_ptr :: #force_inline proc (window: ^Window, scroll_x: f32) {
-	igSetScrollX_WindowPtr(window, scroll_x)
-}
-set_scroll_y_window_ptr :: #force_inline proc (window: ^Window, scroll_y: f32) {
-	igSetScrollY_WindowPtr(window, scroll_y)
-}
-set_scroll_from_pos_x_window_ptr :: #force_inline proc (window: ^Window, local_x: f32, center_x_ratio: f32) {
-	igSetScrollFromPosX_WindowPtr(window, local_x, center_x_ratio)
-}
-set_scroll_from_pos_y_window_ptr :: #force_inline proc (window: ^Window, local_y: f32, center_y_ratio: f32) {
-	igSetScrollFromPosY_WindowPtr(window, local_y, center_y_ratio)
-}
-scroll_to_item :: #force_inline proc (flags := Scroll_Flags{}) {
-	igScrollToItem(flags)
-}
-scroll_to_rect :: #force_inline proc (window: ^Window, rect: Rect, flags := Scroll_Flags{}) {
-	igScrollToRect(window, rect, flags)
-}
-scroll_to_rect_ex :: #force_inline proc (window: ^Window, rect: Rect, flags := Scroll_Flags{}) -> (p_out: [2]f32) {
-	igScrollToRectEx(&p_out, window, rect, flags)
-	return
-}
-scroll_to_bring_rect_into_view :: #force_inline proc (window: ^Window, rect: Rect) {
-	igScrollToBringRectIntoView(window, rect)
-}
-get_item_status_flags :: #force_inline proc () -> Item_Status_Flags {
-	return igGetItemStatusFlags()
-}
-get_item_flags :: #force_inline proc () -> Item_Flags {
-	return igGetItemFlags()
-}
-get_active_id :: #force_inline proc () -> ID {
-	return igGetActiveID()
-}
-get_focus_id :: #force_inline proc () -> ID {
-	return igGetFocusID()
-}
-set_active_id :: #force_inline proc (id: ID, window: ^Window) {
-	igSetActiveID(id, window)
-}
-set_focus_id :: #force_inline proc (id: ID, window: ^Window) {
-	igSetFocusID(id, window)
-}
-clear_active_id :: #force_inline proc () {
-	igClearActiveID()
-}
-get_hovered_id :: #force_inline proc () -> ID {
-	return igGetHoveredID()
-}
-set_hovered_id :: #force_inline proc (id: ID) {
-	igSetHoveredID(id)
-}
-keep_alive_id :: #force_inline proc (id: ID) {
-	igKeepAliveID(id)
-}
-mark_item_edited :: #force_inline proc (id: ID) {
-	igMarkItemEdited(id)
-}
-push_override_id :: #force_inline proc (id: ID) {
-	igPushOverrideID(id)
-}
-get_id_with_seed_str ::  proc (str_id: string, seed: ID) -> ID {
-	str_id_begin := raw_data(str_id)
-	str_id_end := cast([^]u8)(uintptr(str_id_begin) + uintptr(len(str_id)))
-	return igGetIDWithSeed_Str(str_id_begin, str_id_end, seed)
-}
-get_id_with_seed_int :: #force_inline proc (n: i32, seed: ID) -> ID {
-	return igGetIDWithSeed_Int(n, seed)
-}
-item_size_vec2 :: #force_inline proc (size: [2]f32, text_baseline_y: f32) {
-	igItemSize_Vec2(size, text_baseline_y)
-}
-item_size_rect :: #force_inline proc (bb: Rect, text_baseline_y: f32) {
-	igItemSize_Rect(bb, text_baseline_y)
-}
-item_add :: #force_inline proc (bb: Rect, id: ID, nav_bb: ^Rect, extra_flags := Item_Flags{}) -> bool {
-	return igItemAdd(bb, id, nav_bb, extra_flags)
-}
-item_hoverable :: #force_inline proc (bb: Rect, id: ID) -> bool {
-	return igItemHoverable(bb, id)
-}
-is_window_content_hoverable :: #force_inline proc (window: ^Window, flags := Hovered_Flags{}) -> bool {
-	return igIsWindowContentHoverable(window, flags)
-}
-is_clipped_ex :: #force_inline proc (bb: Rect, id: ID) -> bool {
-	return igIsClippedEx(bb, id)
-}
-set_last_item_data :: #force_inline proc (item_id: ID, in_flags: Item_Flags, status_flags: Item_Status_Flags, item_rect: Rect) {
-	igSetLastItemData(item_id, in_flags, status_flags, item_rect)
-}
-calc_item_size :: #force_inline proc (size: [2]f32, default_w: f32, default_h: f32) -> (p_out: [2]f32) {
-	igCalcItemSize(&p_out, size, default_w, default_h)
-	return
-}
-calc_wrap_width_for_pos :: #force_inline proc (pos: [2]f32, wrap_pos_x: f32) -> f32 {
-	return igCalcWrapWidthForPos(pos, wrap_pos_x)
-}
-push_multi_items_widths :: #force_inline proc (components: i32, width_full: f32) {
-	igPushMultiItemsWidths(components, width_full)
-}
-is_item_toggled_selection :: #force_inline proc () -> bool {
-	return igIsItemToggledSelection()
-}
-get_content_region_max_abs :: #force_inline proc () -> (p_out: [2]f32) {
-	igGetContentRegionMaxAbs(&p_out)
-	return
-}
-shrink_widths :: #force_inline proc (items: ^Shrink_Width_Item, count: i32, width_excess: f32) {
-	igShrinkWidths(items, count, width_excess)
-}
-push_item_flag :: #force_inline proc (option: Item_Flags, enabled: bool) {
-	igPushItemFlag(option, enabled)
-}
-pop_item_flag :: #force_inline proc () {
-	igPopItemFlag()
-}
-get_style_var_info :: #force_inline proc (idx: Style_Var) -> ^Data_Var_Info {
-	return igGetStyleVarInfo(idx)
-}
-log_begin :: #force_inline proc (type: Log_Type, auto_open_depth: i32) {
-	igLogBegin(type, auto_open_depth)
-}
-log_to_buffer :: #force_inline proc (auto_open_depth: i32) {
-	igLogToBuffer(auto_open_depth)
-}
-log_rendered_text ::  proc (ref_pos: ^[2]f32, text: string) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igLogRenderedText(ref_pos, text_begin, text_end)
-}
-log_set_next_text_decoration ::  proc (prefix: string, suffix: string) {
-	_temp_prefix := semisafe_string_to_cstring(prefix)
-	_temp_suffix := semisafe_string_to_cstring(suffix)
-	igLogSetNextTextDecoration(_temp_prefix, _temp_suffix)
-}
-begin_child_ex ::  proc (name: string, id: ID, size_arg: [2]f32, border: bool, flags := Window_Flags{}) -> bool {
-	_temp_name := semisafe_string_to_cstring(name)
-	return igBeginChildEx(_temp_name, id, size_arg, border, flags)
-}
-open_popup_ex :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) {
-	igOpenPopupEx(id, popup_flags)
-}
-close_popup_to_level :: #force_inline proc (remaining: i32, restore_focus_to_window_under_popup: bool) {
-	igClosePopupToLevel(remaining, restore_focus_to_window_under_popup)
-}
-close_popups_over_window :: #force_inline proc (ref_window: ^Window, restore_focus_to_window_under_popup: bool) {
-	igClosePopupsOverWindow(ref_window, restore_focus_to_window_under_popup)
-}
-close_popups_except_modals :: #force_inline proc () {
-	igClosePopupsExceptModals()
-}
-is_popup_open_id :: #force_inline proc (id: ID, popup_flags := Popup_Flags{}) -> bool {
-	return igIsPopupOpen_ID(id, popup_flags)
-}
-begin_popup_ex :: #force_inline proc (id: ID, extra_flags := Window_Flags{}) -> bool {
-	return igBeginPopupEx(id, extra_flags)
-}
-begin_tooltip_ex :: #force_inline proc (tooltip_flags := Tooltip_Flags{}, extra_window_flags := Window_Flags{}) -> bool {
-	return igBeginTooltipEx(tooltip_flags, extra_window_flags)
-}
-get_popup_allowed_extent_rect :: #force_inline proc (window: ^Window) -> (p_out: Rect) {
-	igGetPopupAllowedExtentRect(&p_out, window)
-	return
-}
-get_top_most_popup_modal :: #force_inline proc () -> ^Window {
-	return igGetTopMostPopupModal()
-}
-get_top_most_and_visible_popup_modal :: #force_inline proc () -> ^Window {
-	return igGetTopMostAndVisiblePopupModal()
-}
-find_best_window_pos_for_popup :: #force_inline proc (window: ^Window) -> (p_out: [2]f32) {
-	igFindBestWindowPosForPopup(&p_out, window)
-	return
-}
-find_best_window_pos_for_popup_ex :: #force_inline proc (ref_pos: [2]f32, size: [2]f32, last_dir: ^Dir, r_outer: Rect, r_avoid: Rect, policy: Popup_Position_Policy) -> (p_out: [2]f32) {
-	igFindBestWindowPosForPopupEx(&p_out, ref_pos, size, last_dir, r_outer, r_avoid, policy)
-	return
-}
-begin_viewport_side_bar ::  proc (name: string, viewport: ^Viewport, dir: Dir, size: f32, window_flags := Window_Flags{}) -> bool {
-	_temp_name := semisafe_string_to_cstring(name)
-	return igBeginViewportSideBar(_temp_name, viewport, dir, size, window_flags)
-}
-begin_menu_ex ::  proc (label: string, icon: string, enabled: bool) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_icon := semisafe_string_to_cstring(icon)
-	return igBeginMenuEx(_temp_label, _temp_icon, enabled)
-}
-menu_item_ex ::  proc (label: string, icon: string, shortcut: cstring, selected: bool, enabled: bool) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_icon := semisafe_string_to_cstring(icon)
-	return igMenuItemEx(_temp_label, _temp_icon, shortcut, selected, enabled)
-}
-begin_combo_popup :: #force_inline proc (popup_id: ID, bb: Rect, flags := Combo_Flags{}) -> bool {
-	return igBeginComboPopup(popup_id, bb, flags)
-}
-begin_combo_preview :: #force_inline proc () -> bool {
-	return igBeginComboPreview()
-}
-end_combo_preview :: #force_inline proc () {
-	igEndComboPreview()
-}
-nav_init_window :: #force_inline proc (window: ^Window, force_reinit: bool) {
-	igNavInitWindow(window, force_reinit)
-}
-nav_init_request_apply_result :: #force_inline proc () {
-	igNavInitRequestApplyResult()
-}
-nav_move_request_but_no_result_yet :: #force_inline proc () -> bool {
-	return igNavMoveRequestButNoResultYet()
-}
-nav_move_request_submit :: #force_inline proc (move_dir: Dir, clip_dir: Dir, move_flags := Nav_Move_Flags{}, scroll_flags := Scroll_Flags{}) {
-	igNavMoveRequestSubmit(move_dir, clip_dir, move_flags, scroll_flags)
-}
-nav_move_request_forward :: #force_inline proc (move_dir: Dir, clip_dir: Dir, move_flags := Nav_Move_Flags{}, scroll_flags := Scroll_Flags{}) {
-	igNavMoveRequestForward(move_dir, clip_dir, move_flags, scroll_flags)
-}
-nav_move_request_resolve_with_last_item :: #force_inline proc (result: ^Nav_Item_Data) {
-	igNavMoveRequestResolveWithLastItem(result)
-}
-nav_move_request_cancel :: #force_inline proc () {
-	igNavMoveRequestCancel()
-}
-nav_move_request_apply_result :: #force_inline proc () {
-	igNavMoveRequestApplyResult()
-}
-nav_move_request_try_wrapping :: #force_inline proc (window: ^Window, move_flags := Nav_Move_Flags{}) {
-	igNavMoveRequestTryWrapping(window, move_flags)
-}
-activate_item :: #force_inline proc (id: ID) {
-	igActivateItem(id)
-}
-set_nav_window :: #force_inline proc (window: ^Window) {
-	igSetNavWindow(window)
-}
-set_nav_id :: #force_inline proc (id: ID, nav_layer: Nav_Layer, focus_scope_id: ID, rect_rel: Rect) {
-	igSetNavID(id, nav_layer, focus_scope_id, rect_rel)
-}
-is_named_key :: #force_inline proc (key: Key) -> bool {
-	return igIsNamedKey(key)
-}
-is_named_key_or_mod_key :: #force_inline proc (key: Key) -> bool {
-	return igIsNamedKeyOrModKey(key)
-}
-is_legacy_key :: #force_inline proc (key: Key) -> bool {
-	return igIsLegacyKey(key)
-}
-is_keyboard_key :: #force_inline proc (key: Key) -> bool {
-	return igIsKeyboardKey(key)
-}
-is_gamepad_key :: #force_inline proc (key: Key) -> bool {
-	return igIsGamepadKey(key)
-}
-is_mouse_key :: #force_inline proc (key: Key) -> bool {
-	return igIsMouseKey(key)
-}
-is_alias_key :: #force_inline proc (key: Key) -> bool {
-	return igIsAliasKey(key)
-}
-convert_shortcut_mod :: #force_inline proc (key_chord: Key_Chord) -> Key_Chord {
-	return igConvertShortcutMod(key_chord)
-}
-convert_single_mod_flag_to_key :: #force_inline proc (ctx: ^Context, key: Key) -> Key {
-	return igConvertSingleModFlagToKey(ctx, key)
-}
-get_key_data_context_ptr :: #force_inline proc (ctx: ^Context, key: Key) -> ^Key_Data {
-	return igGetKeyData_ContextPtr(ctx, key)
-}
-get_key_data_key :: #force_inline proc (key: Key) -> ^Key_Data {
-	return igGetKeyData_Key(key)
-}
-get_key_chord_name :: #force_inline proc (key_chord: Key_Chord, out_buf_size: i32) -> (out_buf: i8) {
-	igGetKeyChordName(key_chord, &out_buf, out_buf_size)
-	return
-}
-mouse_button_to_key :: #force_inline proc (button: Mouse_Button) -> Key {
-	return igMouseButtonToKey(button)
-}
-is_mouse_drag_past_threshold :: #force_inline proc (button: Mouse_Button, lock_threshold: f32) -> bool {
-	return igIsMouseDragPastThreshold(button, lock_threshold)
-}
-get_key_magnitude2d :: #force_inline proc (key_left: Key, key_right: Key, key_up: Key, key_down: Key) -> (p_out: [2]f32) {
-	igGetKeyMagnitude2d(&p_out, key_left, key_right, key_up, key_down)
-	return
-}
-get_nav_tweak_pressed_amount :: #force_inline proc (axis: Axis) -> f32 {
-	return igGetNavTweakPressedAmount(axis)
-}
-calc_typematic_repeat_amount :: #force_inline proc (t0: f32, t1: f32, repeat_delay: f32, repeat_rate: f32) -> i32 {
-	return igCalcTypematicRepeatAmount(t0, t1, repeat_delay, repeat_rate)
-}
-get_typematic_repeat_rate :: #force_inline proc (flags: Input_Flags, repeat_delay: ^f32, repeat_rate: ^f32) {
-	igGetTypematicRepeatRate(flags, repeat_delay, repeat_rate)
-}
-set_active_id_using_all_keyboard_keys :: #force_inline proc () {
-	igSetActiveIdUsingAllKeyboardKeys()
-}
-is_active_id_using_nav_dir :: #force_inline proc (dir: Dir) -> bool {
-	return igIsActiveIdUsingNavDir(dir)
-}
-get_key_owner :: #force_inline proc (key: Key) -> ID {
-	return igGetKeyOwner(key)
-}
-set_key_owner :: #force_inline proc (key: Key, owner_id: ID, flags := Input_Flags{}) {
-	igSetKeyOwner(key, owner_id, flags)
-}
-set_key_owners_for_key_chord :: #force_inline proc (key: Key_Chord, owner_id: ID, flags := Input_Flags{}) {
-	igSetKeyOwnersForKeyChord(key, owner_id, flags)
-}
-set_item_key_owner :: #force_inline proc (key: Key, flags := Input_Flags{}) {
-	igSetItemKeyOwner(key, flags)
-}
-test_key_owner :: #force_inline proc (key: Key, owner_id: ID) -> bool {
-	return igTestKeyOwner(key, owner_id)
-}
-get_key_owner_data :: #force_inline proc (ctx: ^Context, key: Key) -> ^Key_Owner_Data {
-	return igGetKeyOwnerData(ctx, key)
-}
-is_key_down_id :: #force_inline proc (key: Key, owner_id: ID) -> bool {
-	return igIsKeyDown_ID(key, owner_id)
-}
-is_key_pressed_id :: #force_inline proc (key: Key, owner_id: ID, flags := Input_Flags{}) -> bool {
-	return igIsKeyPressed_ID(key, owner_id, flags)
-}
-is_key_released_id :: #force_inline proc (key: Key, owner_id: ID) -> bool {
-	return igIsKeyReleased_ID(key, owner_id)
-}
-is_mouse_down_id :: #force_inline proc (button: Mouse_Button, owner_id: ID) -> bool {
-	return igIsMouseDown_ID(button, owner_id)
-}
-is_mouse_clicked_id :: #force_inline proc (button: Mouse_Button, owner_id: ID, flags := Input_Flags{}) -> bool {
-	return igIsMouseClicked_ID(button, owner_id, flags)
-}
-is_mouse_released_id :: #force_inline proc (button: Mouse_Button, owner_id: ID) -> bool {
-	return igIsMouseReleased_ID(button, owner_id)
-}
-shortcut :: #force_inline proc (key_chord: Key_Chord, owner_id: ID, flags := Input_Flags{}) -> bool {
-	return igShortcut(key_chord, owner_id, flags)
-}
-set_shortcut_routing :: #force_inline proc (key_chord: Key_Chord, owner_id: ID, flags := Input_Flags{}) -> bool {
-	return igSetShortcutRouting(key_chord, owner_id, flags)
-}
-test_shortcut_routing :: #force_inline proc (key_chord: Key_Chord, owner_id: ID) -> bool {
-	return igTestShortcutRouting(key_chord, owner_id)
-}
-get_shortcut_routing_data :: #force_inline proc (key_chord: Key_Chord) -> ^Key_Routing_Data {
-	return igGetShortcutRoutingData(key_chord)
-}
-push_focus_scope :: #force_inline proc (id: ID) {
-	igPushFocusScope(id)
-}
-pop_focus_scope :: #force_inline proc () {
-	igPopFocusScope()
-}
-get_current_focus_scope :: #force_inline proc () -> ID {
-	return igGetCurrentFocusScope()
-}
-is_drag_drop_active :: #force_inline proc () -> bool {
-	return igIsDragDropActive()
-}
-begin_drag_drop_target_custom :: #force_inline proc (bb: Rect, id: ID) -> bool {
-	return igBeginDragDropTargetCustom(bb, id)
-}
-clear_drag_drop :: #force_inline proc () {
-	igClearDragDrop()
-}
-is_drag_drop_payload_being_accepted :: #force_inline proc () -> bool {
-	return igIsDragDropPayloadBeingAccepted()
-}
-render_drag_drop_target_rect :: #force_inline proc (bb: Rect) {
-	igRenderDragDropTargetRect(bb)
-}
-set_window_clip_rect_before_set_channel :: #force_inline proc (window: ^Window, clip_rect: Rect) {
-	igSetWindowClipRectBeforeSetChannel(window, clip_rect)
-}
-begin_columns ::  proc (str_id: string, count: i32, flags := Old_Column_Flags{}) {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	igBeginColumns(_temp_str_id, count, flags)
-}
-end_columns :: #force_inline proc () {
-	igEndColumns()
-}
-push_column_clip_rect :: #force_inline proc (column_index: i32) {
-	igPushColumnClipRect(column_index)
-}
-push_columns_background :: #force_inline proc () {
-	igPushColumnsBackground()
-}
-pop_columns_background :: #force_inline proc () {
-	igPopColumnsBackground()
-}
-get_columns_id ::  proc (str_id: string, count: i32) -> ID {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igGetColumnsID(_temp_str_id, count)
-}
-find_or_create_columns :: #force_inline proc (window: ^Window, id: ID) -> ^Old_Columns {
-	return igFindOrCreateColumns(window, id)
-}
-get_column_offset_from_norm :: #force_inline proc (columns: ^Old_Columns, offset_norm: f32) -> f32 {
-	return igGetColumnOffsetFromNorm(columns, offset_norm)
-}
-get_column_norm_from_offset :: #force_inline proc (columns: ^Old_Columns, offset: f32) -> f32 {
-	return igGetColumnNormFromOffset(columns, offset)
-}
-table_open_context_menu :: #force_inline proc (column_n: i32) {
-	igTableOpenContextMenu(column_n)
-}
-table_set_column_width :: #force_inline proc (column_n: i32, width: f32) {
-	igTableSetColumnWidth(column_n, width)
-}
-table_set_column_sort_direction :: #force_inline proc (column_n: i32, sort_direction: Sort_Direction, append_to_sort_specs: bool) {
-	igTableSetColumnSortDirection(column_n, sort_direction, append_to_sort_specs)
-}
-table_get_hovered_column :: #force_inline proc () -> i32 {
-	return igTableGetHoveredColumn()
-}
-table_get_header_row_height :: #force_inline proc () -> f32 {
-	return igTableGetHeaderRowHeight()
-}
-table_push_background_channel :: #force_inline proc () {
-	igTablePushBackgroundChannel()
-}
-table_pop_background_channel :: #force_inline proc () {
-	igTablePopBackgroundChannel()
-}
-get_current_table :: #force_inline proc () -> ^Table {
-	return igGetCurrentTable()
-}
-table_find_by_id :: #force_inline proc (id: ID) -> ^Table {
-	return igTableFindByID(id)
-}
-begin_table_ex ::  proc (name: string, id: ID, columns_count: i32, flags: Table_Flags, outer_size: [2]f32, inner_width: f32) -> bool {
-	_temp_name := semisafe_string_to_cstring(name)
-	return igBeginTableEx(_temp_name, id, columns_count, flags, outer_size, inner_width)
-}
-table_begin_init_memory :: #force_inline proc (table: ^Table, columns_count: i32) {
-	igTableBeginInitMemory(table, columns_count)
-}
-table_begin_apply_requests :: #force_inline proc (table: ^Table) {
-	igTableBeginApplyRequests(table)
-}
-table_setup_draw_channels :: #force_inline proc (table: ^Table) {
-	igTableSetupDrawChannels(table)
-}
-table_update_layout :: #force_inline proc (table: ^Table) {
-	igTableUpdateLayout(table)
-}
-table_update_borders :: #force_inline proc (table: ^Table) {
-	igTableUpdateBorders(table)
-}
-table_update_columns_weight_from_width :: #force_inline proc (table: ^Table) {
-	igTableUpdateColumnsWeightFromWidth(table)
-}
-table_draw_borders :: #force_inline proc (table: ^Table) {
-	igTableDrawBorders(table)
-}
-table_draw_context_menu :: #force_inline proc (table: ^Table) {
-	igTableDrawContextMenu(table)
-}
-table_begin_context_menu_popup :: #force_inline proc (table: ^Table) -> bool {
-	return igTableBeginContextMenuPopup(table)
-}
-table_merge_draw_channels :: #force_inline proc (table: ^Table) {
-	igTableMergeDrawChannels(table)
-}
-table_get_instance_data :: #force_inline proc (table: ^Table, instance_no: i32) -> ^Table_Instance_Data {
-	return igTableGetInstanceData(table, instance_no)
-}
-table_get_instance_id :: #force_inline proc (table: ^Table, instance_no: i32) -> ID {
-	return igTableGetInstanceID(table, instance_no)
-}
-table_sort_specs_sanitize :: #force_inline proc (table: ^Table) {
-	igTableSortSpecsSanitize(table)
-}
-table_sort_specs_build :: #force_inline proc (table: ^Table) {
-	igTableSortSpecsBuild(table)
-}
-table_get_column_next_sort_direction :: #force_inline proc (column: ^Table_Column) -> Sort_Direction {
-	return igTableGetColumnNextSortDirection(column)
-}
-table_fix_column_sort_direction :: #force_inline proc (table: ^Table, column: ^Table_Column) {
-	igTableFixColumnSortDirection(table, column)
-}
-table_get_column_width_auto :: #force_inline proc (table: ^Table, column: ^Table_Column) -> f32 {
-	return igTableGetColumnWidthAuto(table, column)
-}
-table_begin_row :: #force_inline proc (table: ^Table) {
-	igTableBeginRow(table)
-}
-table_end_row :: #force_inline proc (table: ^Table) {
-	igTableEndRow(table)
-}
-table_begin_cell :: #force_inline proc (table: ^Table, column_n: i32) {
-	igTableBeginCell(table, column_n)
-}
-table_end_cell :: #force_inline proc (table: ^Table) {
-	igTableEndCell(table)
-}
-table_get_cell_bg_rect :: #force_inline proc (table: ^Table, column_n: i32) -> (p_out: Rect) {
-	igTableGetCellBgRect(&p_out, table, column_n)
-	return
-}
-table_get_column_name_table_ptr :: #force_inline proc (table: ^Table, column_n: i32) -> cstring {
-	return igTableGetColumnName_TablePtr(table, column_n)
-}
-table_get_column_resize_id :: #force_inline proc (table: ^Table, column_n: i32, instance_no: i32) -> ID {
-	return igTableGetColumnResizeID(table, column_n, instance_no)
-}
-table_get_max_column_width :: #force_inline proc (table: ^Table, column_n: i32) -> f32 {
-	return igTableGetMaxColumnWidth(table, column_n)
-}
-table_set_column_width_auto_single :: #force_inline proc (table: ^Table, column_n: i32) {
-	igTableSetColumnWidthAutoSingle(table, column_n)
-}
-table_set_column_width_auto_all :: #force_inline proc (table: ^Table) {
-	igTableSetColumnWidthAutoAll(table)
-}
-table_remove :: #force_inline proc (table: ^Table) {
-	igTableRemove(table)
-}
-table_gc_compact_transient_buffers_table_ptr :: #force_inline proc (table: ^Table) {
-	igTableGcCompactTransientBuffers_TablePtr(table)
-}
-table_gc_compact_transient_buffers_table_temp_data_ptr :: #force_inline proc (table: ^Table_Temp_Data) {
-	igTableGcCompactTransientBuffers_TableTempDataPtr(table)
-}
-table_gc_compact_settings :: #force_inline proc () {
-	igTableGcCompactSettings()
-}
-table_load_settings :: #force_inline proc (table: ^Table) {
-	igTableLoadSettings(table)
-}
-table_save_settings :: #force_inline proc (table: ^Table) {
-	igTableSaveSettings(table)
-}
-table_reset_settings :: #force_inline proc (table: ^Table) {
-	igTableResetSettings(table)
-}
-table_get_bound_settings :: #force_inline proc (table: ^Table) -> ^Table_Settings {
-	return igTableGetBoundSettings(table)
-}
-table_settings_add_settings_handler :: #force_inline proc () {
-	igTableSettingsAddSettingsHandler()
-}
-table_settings_create :: #force_inline proc (id: ID, columns_count: i32) -> ^Table_Settings {
-	return igTableSettingsCreate(id, columns_count)
-}
-table_settings_find_by_id :: #force_inline proc (id: ID) -> ^Table_Settings {
-	return igTableSettingsFindByID(id)
-}
-get_current_tab_bar :: #force_inline proc () -> ^Tab_Bar {
-	return igGetCurrentTabBar()
-}
-begin_tab_bar_ex :: #force_inline proc (tab_bar: ^Tab_Bar, bb: Rect, flags := Tab_Bar_Flags{}) -> bool {
-	return igBeginTabBarEx(tab_bar, bb, flags)
-}
-tab_bar_find_tab_by_id :: #force_inline proc (tab_bar: ^Tab_Bar, tab_id: ID) -> ^Tab_Item {
-	return igTabBarFindTabByID(tab_bar, tab_id)
-}
-tab_bar_find_tab_by_order :: #force_inline proc (tab_bar: ^Tab_Bar, order: i32) -> ^Tab_Item {
-	return igTabBarFindTabByOrder(tab_bar, order)
-}
-tab_bar_get_current_tab :: #force_inline proc (tab_bar: ^Tab_Bar) -> ^Tab_Item {
-	return igTabBarGetCurrentTab(tab_bar)
-}
-tab_bar_get_tab_order :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> i32 {
-	return igTabBarGetTabOrder(tab_bar, tab)
-}
-tab_bar_get_tab_name :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> cstring {
-	return igTabBarGetTabName(tab_bar, tab)
-}
-tab_bar_remove_tab :: #force_inline proc (tab_bar: ^Tab_Bar, tab_id: ID) {
-	igTabBarRemoveTab(tab_bar, tab_id)
-}
-tab_bar_close_tab :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) {
-	igTabBarCloseTab(tab_bar, tab)
-}
-tab_bar_queue_focus :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item) {
-	igTabBarQueueFocus(tab_bar, tab)
-}
-tab_bar_queue_reorder :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, offset: i32) {
-	igTabBarQueueReorder(tab_bar, tab, offset)
-}
-tab_bar_queue_reorder_from_mouse_pos :: #force_inline proc (tab_bar: ^Tab_Bar, tab: ^Tab_Item, mouse_pos: [2]f32) {
-	igTabBarQueueReorderFromMousePos(tab_bar, tab, mouse_pos)
-}
-tab_bar_process_reorder :: #force_inline proc (tab_bar: ^Tab_Bar) -> bool {
-	return igTabBarProcessReorder(tab_bar)
-}
-tab_item_ex ::  proc (tab_bar: ^Tab_Bar, label: string, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igTabItemEx(tab_bar, _temp_label, p_open, flags, docked_window)
-}
-tab_item_calc_size_str ::  proc (label: string, has_close_button_or_unsaved_marker: bool) -> (p_out: [2]f32) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igTabItemCalcSize_Str(&p_out, _temp_label, has_close_button_or_unsaved_marker)
-	return
-}
-tab_item_calc_size_window_ptr :: #force_inline proc (window: ^Window) -> (p_out: [2]f32) {
-	igTabItemCalcSize_WindowPtr(&p_out, window)
-	return
-}
-tab_item_background :: #force_inline proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, col: u32) {
-	igTabItemBackground(draw_list, bb, flags, col)
-}
-tab_item_label_and_close_button ::  proc (draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: string, tab_id: ID, close_button_id: ID, is_contents_visible: bool) -> (out_just_closed: bool, out_text_clipped: bool) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igTabItemLabelAndCloseButton(draw_list, bb, flags, frame_padding, _temp_label, tab_id, close_button_id, is_contents_visible, &out_just_closed, &out_text_clipped)
-	return
-}
-render_text ::  proc (pos: [2]f32, text: string, hide_text_after_hash: bool) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igRenderText(pos, text_begin, text_end, hide_text_after_hash)
-}
-render_text_wrapped ::  proc (pos: [2]f32, text: string, wrap_width: f32) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igRenderTextWrapped(pos, text_begin, text_end, wrap_width)
-}
-render_text_clipped ::  proc (pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igRenderTextClipped(pos_min, pos_max, text_begin, text_end, text_size_if_known, align, clip_rect)
-}
-render_text_clipped_ex ::  proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32, clip_rect: ^Rect) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igRenderTextClippedEx(draw_list, pos_min, pos_max, text_begin, text_end, text_size_if_known, align, clip_rect)
-}
-render_text_ellipsis ::  proc (draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: string, text_size_if_known: ^[2]f32) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igRenderTextEllipsis(draw_list, pos_min, pos_max, clip_max_x, ellipsis_max_x, text_begin, text_end, text_size_if_known)
-}
-render_frame :: #force_inline proc (p_min: [2]f32, p_max: [2]f32, fill_col: u32, border: bool, rounding: f32) {
-	igRenderFrame(p_min, p_max, fill_col, border, rounding)
-}
-render_frame_border :: #force_inline proc (p_min: [2]f32, p_max: [2]f32, rounding: f32) {
-	igRenderFrameBorder(p_min, p_max, rounding)
-}
-render_color_rect_with_alpha_checkerboard :: #force_inline proc (draw_list: ^Draw_List, p_min: [2]f32, p_max: [2]f32, fill_col: u32, grid_step: f32, grid_off: [2]f32, rounding: f32, flags := Draw_Flags{}) {
-	igRenderColorRectWithAlphaCheckerboard(draw_list, p_min, p_max, fill_col, grid_step, grid_off, rounding, flags)
-}
-render_nav_highlight :: #force_inline proc (bb: Rect, id: ID, flags := Nav_Highlight_Flags{}) {
-	igRenderNavHighlight(bb, id, flags)
-}
-find_rendered_text_end ::  proc (text: string) -> cstring {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	return igFindRenderedTextEnd(text_begin, text_end)
-}
-render_mouse_cursor :: #force_inline proc (pos: [2]f32, scale: f32, mouse_cursor: Mouse_Cursor, col_fill: u32, col_border: u32, col_shadow: u32) {
-	igRenderMouseCursor(pos, scale, mouse_cursor, col_fill, col_border, col_shadow)
-}
-render_arrow :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, col: u32, dir: Dir, scale: f32) {
-	igRenderArrow(draw_list, pos, col, dir, scale)
-}
-render_bullet :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, col: u32) {
-	igRenderBullet(draw_list, pos, col)
-}
-render_check_mark :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, col: u32, sz: f32) {
-	igRenderCheckMark(draw_list, pos, col, sz)
-}
-render_arrow_pointing_at :: #force_inline proc (draw_list: ^Draw_List, pos: [2]f32, half_sz: [2]f32, direction: Dir, col: u32) {
-	igRenderArrowPointingAt(draw_list, pos, half_sz, direction, col)
-}
-render_rect_filled_range_h :: #force_inline proc (draw_list: ^Draw_List, rect: Rect, col: u32, x_start_norm: f32, x_end_norm: f32, rounding: f32) {
-	igRenderRectFilledRangeH(draw_list, rect, col, x_start_norm, x_end_norm, rounding)
-}
-render_rect_filled_with_hole :: #force_inline proc (draw_list: ^Draw_List, outer: Rect, inner: Rect, col: u32, rounding: f32) {
-	igRenderRectFilledWithHole(draw_list, outer, inner, col, rounding)
-}
-text_ex ::  proc (text: string, flags := Text_Flags{}) {
-	text_begin := raw_data(text)
-	text_end := cast([^]u8)(uintptr(text_begin) + uintptr(len(text)))
-	igTextEx(text_begin, text_end, flags)
-}
-button_ex ::  proc (label: string, size_arg: [2]f32, flags := Button_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igButtonEx(_temp_label, size_arg, flags)
-}
-arrow_button_ex ::  proc (str_id: string, dir: Dir, size_arg: [2]f32, flags := Button_Flags{}) -> bool {
-	_temp_str_id := semisafe_string_to_cstring(str_id)
-	return igArrowButtonEx(_temp_str_id, dir, size_arg, flags)
-}
-image_button_ex :: #force_inline proc (id: ID, texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32, flags := Button_Flags{}) -> bool {
-	return igImageButtonEx(id, texture_id, size, uv0, uv1, bg_col, tint_col, flags)
-}
-separator_ex :: #force_inline proc (flags := Separator_Flags{}) {
-	igSeparatorEx(flags)
-}
-separator_text_ex ::  proc (id: ID, label: string, extra_width: f32) {
-	label_begin := raw_data(label)
-	label_end := cast([^]u8)(uintptr(label_begin) + uintptr(len(label)))
-	igSeparatorTextEx(id, label_begin, label_end, extra_width)
-}
-checkbox_flags_s64_ptr ::  proc (label: string, flags: ^i64, flags_value: i64) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCheckboxFlags_S64Ptr(_temp_label, flags, flags_value)
-}
-checkbox_flags_u64_ptr ::  proc (label: string, flags: ^u64, flags_value: u64) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igCheckboxFlags_U64Ptr(_temp_label, flags, flags_value)
-}
-close_button :: #force_inline proc (id: ID, pos: [2]f32) -> bool {
-	return igCloseButton(id, pos)
-}
-collapse_button :: #force_inline proc (id: ID, pos: [2]f32) -> bool {
-	return igCollapseButton(id, pos)
-}
-scrollbar :: #force_inline proc (axis: Axis) {
-	igScrollbar(axis)
-}
-scrollbar_ex :: #force_inline proc (bb: Rect, id: ID, axis: Axis, p_scroll_v: ^i64, avail_v: i64, contents_v: i64, flags := Draw_Flags{}) -> bool {
-	return igScrollbarEx(bb, id, axis, p_scroll_v, avail_v, contents_v, flags)
-}
-get_window_scrollbar_rect :: #force_inline proc (window: ^Window, axis: Axis) -> (p_out: Rect) {
-	igGetWindowScrollbarRect(&p_out, window, axis)
-	return
-}
-get_window_scrollbar_id :: #force_inline proc (window: ^Window, axis: Axis) -> ID {
-	return igGetWindowScrollbarID(window, axis)
-}
-get_window_resize_corner_id :: #force_inline proc (window: ^Window, n: i32) -> ID {
-	return igGetWindowResizeCornerID(window, n)
-}
-get_window_resize_border_id :: #force_inline proc (window: ^Window, dir: Dir) -> ID {
-	return igGetWindowResizeBorderID(window, dir)
-}
-button_behavior :: #force_inline proc (bb: Rect, id: ID, flags := Button_Flags{}) -> (out_hovered: bool, out_held: bool, _ret: bool) {
-	_ret = igButtonBehavior(bb, id, &out_hovered, &out_held, flags)
-	return
-}
-drag_behavior ::  proc (id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> bool {
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDragBehavior(id, data_type, p_v, v_speed, p_min, p_max, _temp_format, flags)
-}
-slider_behavior ::  proc (bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags := Slider_Flags{}) -> (out_grab_bb: Rect, _ret: bool) {
-	_temp_format := semisafe_string_to_cstring(format)
-	_ret = igSliderBehavior(bb, id, data_type, p_v, p_min, p_max, _temp_format, flags, &out_grab_bb)
-	return
-}
-splitter_behavior :: #force_inline proc (bb: Rect, id: ID, axis: Axis, size1: ^f32, size2: ^f32, min_size1: f32, min_size2: f32, hover_extend: f32, hover_visibility_delay: f32, bg_col: u32) -> bool {
-	return igSplitterBehavior(bb, id, axis, size1, size2, min_size1, min_size2, hover_extend, hover_visibility_delay, bg_col)
-}
-tree_node_behavior ::  proc (id: ID, flags: Tree_Node_Flags, label: string) -> bool {
-	label_begin := raw_data(label)
-	label_end := cast([^]u8)(uintptr(label_begin) + uintptr(len(label)))
-	return igTreeNodeBehavior(id, flags, label_begin, label_end)
-}
-tree_push_override_id :: #force_inline proc (id: ID) {
-	igTreePushOverrideID(id)
-}
-tree_node_set_open :: #force_inline proc (id: ID, open: bool) {
-	igTreeNodeSetOpen(id, open)
-}
-tree_node_update_next_open :: #force_inline proc (id: ID, flags := Tree_Node_Flags{}) -> bool {
-	return igTreeNodeUpdateNextOpen(id, flags)
-}
-data_type_get_info :: #force_inline proc (data_type: Data_Type) -> ^Data_Type_Info {
-	return igDataTypeGetInfo(data_type)
-}
-data_type_format_string ::  proc (buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDataTypeFormatString(raw_data(buf), cast(i32)len(buf), data_type, p_data, _temp_format)
-}
-data_type_apply_op :: #force_inline proc (data_type: Data_Type, op: i32, output: rawptr, arg_1: rawptr, arg_2: rawptr) {
-	igDataTypeApplyOp(data_type, op, output, arg_1, arg_2)
-}
-data_type_apply_from_text ::  proc (buf: string, data_type: Data_Type, p_data: rawptr, format: string) -> bool {
-	_temp_buf := semisafe_string_to_cstring(buf)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igDataTypeApplyFromText(_temp_buf, data_type, p_data, _temp_format)
-}
-data_type_compare :: #force_inline proc (data_type: Data_Type, arg_1: rawptr, arg_2: rawptr) -> i32 {
-	return igDataTypeCompare(data_type, arg_1, arg_2)
-}
-data_type_clamp :: #force_inline proc (data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr) -> bool {
-	return igDataTypeClamp(data_type, p_data, p_min, p_max)
-}
-input_text_ex ::  proc (label: string, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback, user_data: rawptr) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_hint := semisafe_string_to_cstring(hint)
-	return igInputTextEx(_temp_label, _temp_hint, raw_data(buf), cast(i32)len(buf), size_arg, flags, callback, user_data)
-}
-input_text_deactivate_hook :: #force_inline proc (id: ID) {
-	igInputTextDeactivateHook(id)
-}
-temp_input_text ::  proc (bb: Rect, id: ID, label: string, buf: []i8, flags := Input_Text_Flags{}) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	return igTempInputText(bb, id, _temp_label, raw_data(buf), cast(i32)len(buf), flags)
-}
-temp_input_scalar ::  proc (bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr, p_clamp_max: rawptr) -> bool {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_format := semisafe_string_to_cstring(format)
-	return igTempInputScalar(bb, id, _temp_label, data_type, p_data, _temp_format, p_clamp_min, p_clamp_max)
-}
-temp_input_is_active :: #force_inline proc (id: ID) -> bool {
-	return igTempInputIsActive(id)
-}
-get_input_text_state :: #force_inline proc (id: ID) -> ^Input_Text_State {
-	return igGetInputTextState(id)
-}
-color_tooltip ::  proc (text: string, col: ^f32, flags := Color_Edit_Flags{}) {
-	_temp_text := semisafe_string_to_cstring(text)
-	igColorTooltip(_temp_text, col, flags)
-}
-color_edit_options_popup :: #force_inline proc (col: ^f32, flags := Color_Edit_Flags{}) {
-	igColorEditOptionsPopup(col, flags)
-}
-color_picker_options_popup :: #force_inline proc (ref_col: ^f32, flags := Color_Edit_Flags{}) {
-	igColorPickerOptionsPopup(ref_col, flags)
-}
-plot_ex ::  proc (plot_type: Plot_Type, label: string, values_getter: #type proc "c" (data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 {
-	_temp_label := semisafe_string_to_cstring(label)
-	_temp_overlay_text := semisafe_string_to_cstring(overlay_text)
-	return igPlotEx(plot_type, _temp_label, values_getter, data, values_count, values_offset, _temp_overlay_text, scale_min, scale_max, size_arg)
-}
-shade_verts_linear_color_gradient_keep_alpha :: #force_inline proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, gradient_p0: [2]f32, gradient_p1: [2]f32, col0: u32, col1: u32) {
-	igShadeVertsLinearColorGradientKeepAlpha(draw_list, vert_start_idx, vert_end_idx, gradient_p0, gradient_p1, col0, col1)
-}
-shade_verts_linear_uv :: #force_inline proc (draw_list: ^Draw_List, vert_start_idx: i32, vert_end_idx: i32, a: [2]f32, b: [2]f32, uv_a: [2]f32, uv_b: [2]f32, clamp: bool) {
-	igShadeVertsLinearUV(draw_list, vert_start_idx, vert_end_idx, a, b, uv_a, uv_b, clamp)
-}
-gc_compact_transient_misc_buffers :: #force_inline proc () {
-	igGcCompactTransientMiscBuffers()
-}
-gc_compact_transient_window_buffers :: #force_inline proc (window: ^Window) {
-	igGcCompactTransientWindowBuffers(window)
-}
-gc_awake_transient_window_buffers :: #force_inline proc (window: ^Window) {
-	igGcAwakeTransientWindowBuffers(window)
-}
-debug_log ::  proc (fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igDebugLog("%s", _formatted_str)
-}
-error_check_end_frame_recover :: #force_inline proc (log_callback: Error_Log_Callback, user_data: rawptr) {
-	igErrorCheckEndFrameRecover(log_callback, user_data)
-}
-error_check_end_window_recover :: #force_inline proc (log_callback: Error_Log_Callback, user_data: rawptr) {
-	igErrorCheckEndWindowRecover(log_callback, user_data)
-}
-error_check_using_set_cursor_pos_to_extend_parent_boundaries :: #force_inline proc () {
-	igErrorCheckUsingSetCursorPosToExtendParentBoundaries()
-}
-debug_locate_item :: #force_inline proc (target_id: ID) {
-	igDebugLocateItem(target_id)
-}
-debug_locate_item_on_hover :: #force_inline proc (target_id: ID) {
-	igDebugLocateItemOnHover(target_id)
-}
-debug_locate_item_resolve_with_last_item :: #force_inline proc () {
-	igDebugLocateItemResolveWithLastItem()
-}
-debug_draw_item_rect :: #force_inline proc (col: u32) {
-	igDebugDrawItemRect(col)
-}
-debug_start_item_picker :: #force_inline proc () {
-	igDebugStartItemPicker()
-}
-show_font_atlas :: #force_inline proc (atlas: ^Font_Atlas) {
-	igShowFontAtlas(atlas)
-}
-debug_hook_id_info :: #force_inline proc (id: ID, data_type: Data_Type, data_id: rawptr, data_id_end: rawptr) {
-	igDebugHookIdInfo(id, data_type, data_id, data_id_end)
-}
-debug_node_columns :: #force_inline proc (columns: ^Old_Columns) {
-	igDebugNodeColumns(columns)
-}
-debug_node_draw_list ::  proc (window: ^Window, draw_list: ^Draw_List, label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igDebugNodeDrawList(window, draw_list, _temp_label)
-}
-debug_node_draw_cmd_show_mesh_and_bounding_box :: #force_inline proc (draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) -> (out_draw_list: Draw_List) {
-	igDebugNodeDrawCmdShowMeshAndBoundingBox(&out_draw_list, draw_list, draw_cmd, show_mesh, show_aabb)
-	return
-}
-debug_node_font :: #force_inline proc (font: ^Font) {
-	igDebugNodeFont(font)
-}
-debug_node_font_glyph :: #force_inline proc (font: ^Font, glyph: ^Font_Glyph) {
-	igDebugNodeFontGlyph(font, glyph)
-}
-debug_node_storage ::  proc (storage: ^Storage, label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igDebugNodeStorage(storage, _temp_label)
-}
-debug_node_tab_bar ::  proc (tab_bar: ^Tab_Bar, label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igDebugNodeTabBar(tab_bar, _temp_label)
-}
-debug_node_table :: #force_inline proc (table: ^Table) {
-	igDebugNodeTable(table)
-}
-debug_node_table_settings :: #force_inline proc (settings: ^Table_Settings) {
-	igDebugNodeTableSettings(settings)
-}
-debug_node_input_text_state :: #force_inline proc (state: ^Input_Text_State) {
-	igDebugNodeInputTextState(state)
-}
-debug_node_window ::  proc (window: ^Window, label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igDebugNodeWindow(window, _temp_label)
-}
-debug_node_window_settings :: #force_inline proc (settings: ^Window_Settings) {
-	igDebugNodeWindowSettings(settings)
-}
-debug_node_windows_list ::  proc (windows: ^Vector(^Window), label: string) {
-	_temp_label := semisafe_string_to_cstring(label)
-	igDebugNodeWindowsList(windows, _temp_label)
-}
-debug_node_windows_list_by_begin_stack_parent :: #force_inline proc (windows: []^Window, parent_in_begin_stack: ^Window) {
-	igDebugNodeWindowsListByBeginStackParent(raw_data(windows), cast(i32)len(windows), parent_in_begin_stack)
-}
-debug_node_viewport :: #force_inline proc (viewport: ^Viewport_P) {
-	igDebugNodeViewport(viewport)
-}
-debug_render_keyboard_preview :: #force_inline proc (draw_list: ^Draw_List) {
-	igDebugRenderKeyboardPreview(draw_list)
-}
-debug_render_viewport_thumbnail :: #force_inline proc (draw_list: ^Draw_List, viewport: ^Viewport_P, bb: Rect) {
-	igDebugRenderViewportThumbnail(draw_list, viewport, bb)
-}
-is_key_pressed_map :: #force_inline proc (key: Key, repeat: bool) -> bool {
-	return igIsKeyPressedMap(key, repeat)
-}
-im_font_atlas_get_builder_for_stb_truetype :: #force_inline proc () -> ^Font_Builder_IO {
-	return igImFontAtlasGetBuilderForStbTruetype()
-}
-im_font_atlas_build_init :: #force_inline proc (atlas: ^Font_Atlas) {
-	igImFontAtlasBuildInit(atlas)
-}
-im_font_atlas_build_setup_font :: #force_inline proc (atlas: ^Font_Atlas, font: ^Font, font_config: ^Font_Config, ascent: f32, descent: f32) {
-	igImFontAtlasBuildSetupFont(atlas, font, font_config, ascent, descent)
-}
-im_font_atlas_build_pack_custom_rects :: #force_inline proc (atlas: ^Font_Atlas, stbrp_context_opaque: rawptr) {
-	igImFontAtlasBuildPackCustomRects(atlas, stbrp_context_opaque)
-}
-im_font_atlas_build_finish :: #force_inline proc (atlas: ^Font_Atlas) {
-	igImFontAtlasBuildFinish(atlas)
-}
-im_font_atlas_build_render8bpp_rect_from_string ::  proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u8) {
-	_temp_in_str := semisafe_string_to_cstring(in_str)
-	igImFontAtlasBuildRender8bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
-}
-im_font_atlas_build_render32bpp_rect_from_string ::  proc (atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u32) {
-	_temp_in_str := semisafe_string_to_cstring(in_str)
-	igImFontAtlasBuildRender32bppRectFromString(atlas, x, y, w, h, _temp_in_str, in_marker_char, in_marker_pixel_value)
-}
-im_font_atlas_build_multiply_calc_lookup_table :: #force_inline proc (out_table: [256]u8, in_multiply_factor: f32) {
-	igImFontAtlasBuildMultiplyCalcLookupTable(out_table, in_multiply_factor)
-}
-im_font_atlas_build_multiply_rect_alpha8 :: #force_inline proc (table: [256]u8, pixels: ^u8, x: i32, y: i32, w: i32, h: i32, stride: i32) {
-	igImFontAtlasBuildMultiplyRectAlpha8(table, pixels, x, y, w, h, stride)
-}
-log_text ::  proc (fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	igLogText("%s", _formatted_str)
-}
-text_buffer_appendf ::  proc (buffer: ^Text_Buffer, fmt_: string, args: ..any) {
-	_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_sb, fmt_, ..args)
-	append(&_sb.buf, 0)
-	_formatted_str := strings.unsafe_string_to_cstring(strings.to_string(_sb))
-	ImGuiTextBuffer_appendf(buffer, "%s", _formatted_str)
-}
+
+create_context :: CreateContext
+
+destroy_context :: DestroyContext
+
+get_current_context :: GetCurrentContext
+
+set_current_context :: SetCurrentContext
+
+get_io :: GetIO
+
+get_style :: GetStyle
+
+new_frame :: NewFrame
+
+end_frame :: EndFrame
+
+render :: Render
+
+get_draw_data :: GetDrawData
+
+show_demo_window :: ShowDemoWindow
+
+show_metrics_window :: ShowMetricsWindow
+
+show_debug_log_window :: ShowDebugLogWindow
+
+show_stack_tool_window :: ShowStackToolWindow
+
+show_about_window :: ShowAboutWindow
+
+show_style_editor :: ShowStyleEditor
+
+show_style_selector :: proc(label: string) -> bool {
+	return ShowStyleSelector(semisafe_string_to_cstring(label))
+}
+
+show_font_selector :: proc(label: string) {
+	ShowFontSelector(semisafe_string_to_cstring(label))
+}
+
+show_user_guide :: ShowUserGuide
+
+get_version :: GetVersion
+
+style_colors_dark :: StyleColorsDark
+
+style_colors_light :: StyleColorsLight
+
+style_colors_classic :: StyleColorsClassic
+
+begin :: proc(name: string, p_open: ^bool = nil, flags: Window_Flags = {  }) -> bool {
+	return Begin(semisafe_string_to_cstring(name), p_open, flags)
+}
+
+end :: End
 
 begin_child :: proc {
 	begin_child_str,
 	begin_child_id,
 }
+begin_child_str :: proc(str_id: string, size: [2]f32 = {0, 0}, border: bool = false, flags: Window_Flags = {  }) -> bool {
+	return BeginChild_Str(semisafe_string_to_cstring(str_id), size, border, flags)
+}
+begin_child_id :: BeginChild_ID
+
+end_child :: EndChild
+
+is_window_appearing :: IsWindowAppearing
+
+is_window_collapsed :: IsWindowCollapsed
+
+is_window_focused :: IsWindowFocused
+
+is_window_hovered :: IsWindowHovered
+
+get_window_draw_list :: GetWindowDrawList
+
+get_window_pos :: GetWindowPos
+
+get_window_size :: GetWindowSize
+
+get_window_width :: GetWindowWidth
+
+get_window_height :: GetWindowHeight
+
+set_next_window_pos :: SetNextWindowPos
+
+set_next_window_size :: SetNextWindowSize
+
+set_next_window_size_constraints :: SetNextWindowSizeConstraints
+
+set_next_window_content_size :: SetNextWindowContentSize
+
+set_next_window_collapsed :: SetNextWindowCollapsed
+
+set_next_window_focus :: SetNextWindowFocus
+
+set_next_window_scroll :: SetNextWindowScroll
+
+set_next_window_bg_alpha :: SetNextWindowBgAlpha
 
 set_window_pos :: proc {
 	set_window_pos_vec2,
 	set_window_pos_str,
 	set_window_pos_window_ptr,
 }
+set_window_pos_vec2 :: SetWindowPos_Vec2
+set_window_pos_str :: proc(name: string, pos: [2]f32, cond: Cond = {  }) {
+	SetWindowPos_Str(semisafe_string_to_cstring(name), pos, cond)
+}
+set_window_pos_window_ptr :: SetWindowPos_WindowPtr
 
 set_window_size :: proc {
 	set_window_size_vec2,
 	set_window_size_str,
 	set_window_size_window_ptr,
 }
+set_window_size_vec2 :: SetWindowSize_Vec2
+set_window_size_str :: proc(name: string, size: [2]f32, cond: Cond = {  }) {
+	SetWindowSize_Str(semisafe_string_to_cstring(name), size, cond)
+}
+set_window_size_window_ptr :: SetWindowSize_WindowPtr
 
 set_window_collapsed :: proc {
 	set_window_collapsed_bool,
 	set_window_collapsed_str,
 	set_window_collapsed_window_ptr,
 }
+set_window_collapsed_bool :: SetWindowCollapsed_Bool
+set_window_collapsed_str :: proc(name: string, collapsed: bool, cond: Cond = {  }) {
+	SetWindowCollapsed_Str(semisafe_string_to_cstring(name), collapsed, cond)
+}
+set_window_collapsed_window_ptr :: SetWindowCollapsed_WindowPtr
 
 set_window_focus :: proc {
 	set_window_focus_nil,
 	set_window_focus_str,
 }
+set_window_focus_nil :: SetWindowFocus_Nil
+set_window_focus_str :: proc(name: string) {
+	SetWindowFocus_Str(semisafe_string_to_cstring(name))
+}
+
+set_window_font_scale :: SetWindowFontScale
+
+get_content_region_avail :: GetContentRegionAvail
+
+get_content_region_max :: GetContentRegionMax
+
+get_window_content_region_min :: GetWindowContentRegionMin
+
+get_window_content_region_max :: GetWindowContentRegionMax
+
+get_scroll_x :: GetScrollX
+
+get_scroll_y :: GetScrollY
 
 set_scroll_x :: proc {
 	set_scroll_x_float,
 	set_scroll_x_window_ptr,
 }
+set_scroll_x_float :: SetScrollX_Float
+set_scroll_x_window_ptr :: SetScrollX_WindowPtr
 
 set_scroll_y :: proc {
 	set_scroll_y_float,
 	set_scroll_y_window_ptr,
 }
+set_scroll_y_float :: SetScrollY_Float
+set_scroll_y_window_ptr :: SetScrollY_WindowPtr
+
+get_scroll_max_x :: GetScrollMaxX
+
+get_scroll_max_y :: GetScrollMaxY
+
+set_scroll_here_x :: SetScrollHereX
+
+set_scroll_here_y :: SetScrollHereY
 
 set_scroll_from_pos_x :: proc {
 	set_scroll_from_pos_x_float,
 	set_scroll_from_pos_x_window_ptr,
 }
+set_scroll_from_pos_x_float :: SetScrollFromPosX_Float
+set_scroll_from_pos_x_window_ptr :: SetScrollFromPosX_WindowPtr
 
 set_scroll_from_pos_y :: proc {
 	set_scroll_from_pos_y_float,
 	set_scroll_from_pos_y_window_ptr,
 }
+set_scroll_from_pos_y_float :: SetScrollFromPosY_Float
+set_scroll_from_pos_y_window_ptr :: SetScrollFromPosY_WindowPtr
+
+push_font :: PushFont
+
+pop_font :: PopFont
 
 push_style_color :: proc {
 	push_style_color_u32,
 	push_style_color_vec4,
 }
+push_style_color_u32 :: PushStyleColor_U32
+push_style_color_vec4 :: PushStyleColor_Vec4
+
+pop_style_color :: PopStyleColor
 
 push_style_var :: proc {
 	push_style_var_float,
 	push_style_var_vec2,
 }
+push_style_var_float :: PushStyleVar_Float
+push_style_var_vec2 :: PushStyleVar_Vec2
+
+pop_style_var :: PopStyleVar
+
+push_tab_stop :: PushTabStop
+
+pop_tab_stop :: PopTabStop
+
+push_button_repeat :: PushButtonRepeat
+
+pop_button_repeat :: PopButtonRepeat
+
+push_item_width :: PushItemWidth
+
+pop_item_width :: PopItemWidth
+
+set_next_item_width :: SetNextItemWidth
+
+calc_item_width :: CalcItemWidth
+
+push_text_wrap_pos :: PushTextWrapPos
+
+pop_text_wrap_pos :: PopTextWrapPos
+
+get_font :: GetFont
+
+get_font_size :: GetFontSize
+
+get_font_tex_uv_white_pixel :: GetFontTexUvWhitePixel
 
 get_color_u32 :: proc {
 	get_color_u32_col,
 	get_color_u32_vec4,
 	get_color_u32_u32,
 }
+get_color_u32_col :: GetColorU32_Col
+get_color_u32_vec4 :: GetColorU32_Vec4
+get_color_u32_u32 :: GetColorU32_U32
+
+get_style_color_vec4 :: GetStyleColorVec4
+
+separator :: Separator
+
+same_line :: SameLine
+
+new_line :: NewLine
+
+spacing :: Spacing
+
+dummy :: Dummy
+
+indent :: Indent
+
+unindent :: Unindent
+
+begin_group :: BeginGroup
+
+end_group :: EndGroup
+
+get_cursor_pos :: GetCursorPos
+
+get_cursor_pos_x :: GetCursorPosX
+
+get_cursor_pos_y :: GetCursorPosY
+
+set_cursor_pos :: SetCursorPos
+
+set_cursor_pos_x :: SetCursorPosX
+
+set_cursor_pos_y :: SetCursorPosY
+
+get_cursor_start_pos :: GetCursorStartPos
+
+get_cursor_screen_pos :: GetCursorScreenPos
+
+set_cursor_screen_pos :: SetCursorScreenPos
+
+align_text_to_frame_padding :: AlignTextToFramePadding
+
+get_text_line_height :: GetTextLineHeight
+
+get_text_line_height_with_spacing :: GetTextLineHeightWithSpacing
+
+get_frame_height :: GetFrameHeight
+
+get_frame_height_with_spacing :: GetFrameHeightWithSpacing
 
 push_id :: proc {
-	push_id_str,
 	push_id_str_str,
 	push_id_ptr,
 	push_id_int,
 }
+push_id_str_str :: proc(str_id: string) {
+	PushID_StrStr(raw_data(str_id), cast([^]u8) (uintptr(raw_data(str_id)) + uintptr(len(str_id))))
+}
+push_id_ptr :: PushID_Ptr
+push_id_int :: PushID_Int
+
+pop_id :: PopID
 
 get_id :: proc {
-	get_id_str,
 	get_id_str_str,
 	get_id_ptr,
+}
+get_id_str_str :: proc(str_id: string) -> ID {
+	return GetID_StrStr(raw_data(str_id), cast([^]u8) (uintptr(raw_data(str_id)) + uintptr(len(str_id))))
+}
+get_id_ptr :: GetID_Ptr
+
+text_unformatted :: proc(text: string) {
+	TextUnformatted(raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
+}
+
+text :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	Text("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+text_colored :: proc(col: [4]f32, fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	TextColored(col, "%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+text_disabled :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	TextDisabled("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+text_wrapped :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	TextWrapped("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+label_text :: proc(label: string, fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	LabelText(semisafe_string_to_cstring(label), "%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+bullet_text :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	BulletText("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+separator_text :: proc(label: string) {
+	SeparatorText(semisafe_string_to_cstring(label))
+}
+
+button :: proc(label: string, size: [2]f32 = {0, 0}) -> bool {
+	return Button(semisafe_string_to_cstring(label), size)
+}
+
+small_button :: proc(label: string) -> bool {
+	return SmallButton(semisafe_string_to_cstring(label))
+}
+
+invisible_button :: proc(str_id: string, size: [2]f32, flags: Button_Flags = {  }) -> bool {
+	return InvisibleButton(semisafe_string_to_cstring(str_id), size, flags)
+}
+
+arrow_button :: proc(str_id: string, dir: Dir) -> bool {
+	return ArrowButton(semisafe_string_to_cstring(str_id), dir)
+}
+
+checkbox :: proc(label: string, v: ^bool) -> bool {
+	return Checkbox(semisafe_string_to_cstring(label), v)
 }
 
 checkbox_flags :: proc {
@@ -3798,22 +404,264 @@ checkbox_flags :: proc {
 	checkbox_flags_s64_ptr,
 	checkbox_flags_u64_ptr,
 }
+checkbox_flags_int_ptr :: proc(label: string, flags: ^i32, flags_value: i32) -> bool {
+	return CheckboxFlags_IntPtr(semisafe_string_to_cstring(label), flags, flags_value)
+}
+checkbox_flags_uint_ptr :: proc(label: string, flags: ^u32, flags_value: u32) -> bool {
+	return CheckboxFlags_UintPtr(semisafe_string_to_cstring(label), flags, flags_value)
+}
+checkbox_flags_s64_ptr :: proc(label: string, flags: ^i64, flags_value: i64) -> bool {
+	return CheckboxFlags_S64Ptr(semisafe_string_to_cstring(label), flags, flags_value)
+}
+checkbox_flags_u64_ptr :: proc(label: string, flags: ^u64, flags_value: u64) -> bool {
+	return CheckboxFlags_U64Ptr(semisafe_string_to_cstring(label), flags, flags_value)
+}
 
 radio_button :: proc {
 	radio_button_bool,
 	radio_button_int_ptr,
 }
+radio_button_bool :: proc(label: string, active: bool) -> bool {
+	return RadioButton_Bool(semisafe_string_to_cstring(label), active)
+}
+radio_button_int_ptr :: proc(label: string, v: ^i32, v_button: i32) -> bool {
+	return RadioButton_IntPtr(semisafe_string_to_cstring(label), v, v_button)
+}
+
+progress_bar :: proc(fraction: f32, size_arg: [2]f32 = {-min(f32), 0}, overlay: string) {
+	ProgressBar(fraction, size_arg, semisafe_string_to_cstring(overlay))
+}
+
+bullet :: Bullet
+
+image :: Image
+
+image_button :: proc(str_id: string, user_texture_id: Texture_ID, size: [2]f32, uv0: [2]f32 = {0, 0}, uv1: [2]f32 = {1, 1}, bg_col: [4]f32 = {0, 0, 0, 0}, tint_col: [4]f32 = {1, 1, 1, 1}) -> bool {
+	return ImageButton(semisafe_string_to_cstring(str_id), user_texture_id, size, uv0, uv1, bg_col, tint_col)
+}
+
+begin_combo :: proc(label: string, preview_value: string, flags: Combo_Flags = {  }) -> bool {
+	return BeginCombo(semisafe_string_to_cstring(label), semisafe_string_to_cstring(preview_value), flags)
+}
+
+end_combo :: EndCombo
 
 combo :: proc {
 	combo_str_arr,
 	combo_str,
 	combo_fn_bool_ptr,
 }
+combo_str_arr :: proc(label: string, current_item: ^i32, items: []cstring, popup_max_height_in_items: i32 = -1) -> bool {
+	return Combo_Str_arr(semisafe_string_to_cstring(label), current_item, raw_data(items), cast(i32)len(items), popup_max_height_in_items)
+}
+combo_str :: proc(label: string, current_item: ^i32, items_separated_by_zeros: string, popup_max_height_in_items: i32 = -1) -> bool {
+	return Combo_Str(semisafe_string_to_cstring(label), current_item, semisafe_string_to_cstring(items_separated_by_zeros), popup_max_height_in_items)
+}
+combo_fn_bool_ptr :: proc(label: string, current_item: ^i32, items_getter: #type proc "c"(data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, popup_max_height_in_items: i32 = -1) -> bool {
+	return Combo_FnBoolPtr(semisafe_string_to_cstring(label), current_item, items_getter, data, items_count, popup_max_height_in_items)
+}
+
+drag_float :: proc(label: string, v: ^f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragFloat(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_float2 :: proc(label: string, v: [2]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragFloat2(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_float3 :: proc(label: string, v: [3]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragFloat3(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_float4 :: proc(label: string, v: [4]f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragFloat4(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_float_range2 :: proc(label: string, v_current_min: ^f32, v_current_max: ^f32, v_speed: f32 = 1.0, v_min: f32 = 0.0, v_max: f32 = 0.0, format: string, format_max: string, flags: Slider_Flags = {  }) -> bool {
+	return DragFloatRange2(semisafe_string_to_cstring(label), v_current_min, v_current_max, v_speed, v_min, v_max, semisafe_string_to_cstring(format), semisafe_string_to_cstring(format_max), flags)
+}
+
+drag_int :: proc(label: string, v: ^i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragInt(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_int2 :: proc(label: string, v: [2]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragInt2(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_int3 :: proc(label: string, v: [3]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragInt3(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_int4 :: proc(label: string, v: [4]i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragInt4(semisafe_string_to_cstring(label), v, v_speed, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_int_range2 :: proc(label: string, v_current_min: ^i32, v_current_max: ^i32, v_speed: f32 = 1.0, v_min: i32 = 0, v_max: i32 = 0, format: string, format_max: string, flags: Slider_Flags = {  }) -> bool {
+	return DragIntRange2(semisafe_string_to_cstring(label), v_current_min, v_current_max, v_speed, v_min, v_max, semisafe_string_to_cstring(format), semisafe_string_to_cstring(format_max), flags)
+}
+
+drag_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, v_speed: f32 = 1.0, p_min: rawptr = nil, p_max: rawptr = nil, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragScalar(semisafe_string_to_cstring(label), data_type, p_data, v_speed, p_min, p_max, semisafe_string_to_cstring(format), flags)
+}
+
+drag_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, v_speed: f32 = 1.0, p_min: rawptr = nil, p_max: rawptr = nil, format: string, flags: Slider_Flags = {  }) -> bool {
+	return DragScalarN(semisafe_string_to_cstring(label), data_type, p_data, components, v_speed, p_min, p_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_float :: proc(label: string, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderFloat(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_float2 :: proc(label: string, v: [2]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderFloat2(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_float3 :: proc(label: string, v: [3]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderFloat3(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_float4 :: proc(label: string, v: [4]f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderFloat4(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_angle :: proc(label: string, v_rad: ^f32, v_degrees_min: f32 = -360.0, v_degrees_max: f32 = +360.0, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderAngle(semisafe_string_to_cstring(label), v_rad, v_degrees_min, v_degrees_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_int :: proc(label: string, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderInt(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_int2 :: proc(label: string, v: [2]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderInt2(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_int3 :: proc(label: string, v: [3]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderInt3(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_int4 :: proc(label: string, v: [4]i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderInt4(semisafe_string_to_cstring(label), v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderScalar(semisafe_string_to_cstring(label), data_type, p_data, p_min, p_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags = {  }) -> bool {
+	return SliderScalarN(semisafe_string_to_cstring(label), data_type, p_data, components, p_min, p_max, semisafe_string_to_cstring(format), flags)
+}
+
+v_slider_float :: proc(label: string, size: [2]f32, v: ^f32, v_min: f32, v_max: f32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return VSliderFloat(semisafe_string_to_cstring(label), size, v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+v_slider_int :: proc(label: string, size: [2]f32, v: ^i32, v_min: i32, v_max: i32, format: string, flags: Slider_Flags = {  }) -> bool {
+	return VSliderInt(semisafe_string_to_cstring(label), size, v, v_min, v_max, semisafe_string_to_cstring(format), flags)
+}
+
+v_slider_scalar :: proc(label: string, size: [2]f32, data_type: Data_Type, p_data: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags = {  }) -> bool {
+	return VSliderScalar(semisafe_string_to_cstring(label), size, data_type, p_data, p_min, p_max, semisafe_string_to_cstring(format), flags)
+}
+
+input_text :: proc(label: string, buf: []i8, flags: Input_Text_Flags = {  }, callback: Input_Text_Callback = nil, user_data: rawptr = nil) -> bool {
+	return InputText(semisafe_string_to_cstring(label), raw_data(buf), len(buf), flags, callback, user_data)
+}
+
+input_text_multiline :: proc(label: string, buf: []i8, size: [2]f32 = {0, 0}, flags: Input_Text_Flags = {  }, callback: Input_Text_Callback = nil, user_data: rawptr = nil) -> bool {
+	return InputTextMultiline(semisafe_string_to_cstring(label), raw_data(buf), len(buf), size, flags, callback, user_data)
+}
+
+input_text_with_hint :: proc(label: string, hint: string, buf: []i8, flags: Input_Text_Flags = {  }, callback: Input_Text_Callback = nil, user_data: rawptr = nil) -> bool {
+	return InputTextWithHint(semisafe_string_to_cstring(label), semisafe_string_to_cstring(hint), raw_data(buf), len(buf), flags, callback, user_data)
+}
+
+input_float :: proc(label: string, v: ^f32, step: f32 = 0.0, step_fast: f32 = 0.0, format: string, flags: Input_Text_Flags = {  }) -> bool {
+	return InputFloat(semisafe_string_to_cstring(label), v, step, step_fast, semisafe_string_to_cstring(format), flags)
+}
+
+input_float2 :: proc(label: string, v: [2]f32, format: string, flags: Input_Text_Flags = {  }) -> bool {
+	return InputFloat2(semisafe_string_to_cstring(label), v, semisafe_string_to_cstring(format), flags)
+}
+
+input_float3 :: proc(label: string, v: [3]f32, format: string, flags: Input_Text_Flags = {  }) -> bool {
+	return InputFloat3(semisafe_string_to_cstring(label), v, semisafe_string_to_cstring(format), flags)
+}
+
+input_float4 :: proc(label: string, v: [4]f32, format: string, flags: Input_Text_Flags = {  }) -> bool {
+	return InputFloat4(semisafe_string_to_cstring(label), v, semisafe_string_to_cstring(format), flags)
+}
+
+input_int :: proc(label: string, v: ^i32, step: i32 = 1, step_fast: i32 = 100, flags: Input_Text_Flags = {  }) -> bool {
+	return InputInt(semisafe_string_to_cstring(label), v, step, step_fast, flags)
+}
+
+input_int2 :: proc(label: string, v: [2]i32, flags: Input_Text_Flags = {  }) -> bool {
+	return InputInt2(semisafe_string_to_cstring(label), v, flags)
+}
+
+input_int3 :: proc(label: string, v: [3]i32, flags: Input_Text_Flags = {  }) -> bool {
+	return InputInt3(semisafe_string_to_cstring(label), v, flags)
+}
+
+input_int4 :: proc(label: string, v: [4]i32, flags: Input_Text_Flags = {  }) -> bool {
+	return InputInt4(semisafe_string_to_cstring(label), v, flags)
+}
+
+input_double :: proc(label: string, v: ^f64, step: f64 = 0.0, step_fast: f64 = 0.0, format: string, flags: Input_Text_Flags = {  }) -> bool {
+	return InputDouble(semisafe_string_to_cstring(label), v, step, step_fast, semisafe_string_to_cstring(format), flags)
+}
+
+input_scalar :: proc(label: string, data_type: Data_Type, p_data: rawptr, p_step: rawptr = nil, p_step_fast: rawptr = nil, format: string, flags: Input_Text_Flags = {  }) -> bool {
+	return InputScalar(semisafe_string_to_cstring(label), data_type, p_data, p_step, p_step_fast, semisafe_string_to_cstring(format), flags)
+}
+
+input_scalar_n :: proc(label: string, data_type: Data_Type, p_data: rawptr, components: i32, p_step: rawptr = nil, p_step_fast: rawptr = nil, format: string, flags: Input_Text_Flags = {  }) -> bool {
+	return InputScalarN(semisafe_string_to_cstring(label), data_type, p_data, components, p_step, p_step_fast, semisafe_string_to_cstring(format), flags)
+}
+
+color_edit3 :: proc(label: string, col: [3]f32, flags: Color_Edit_Flags = {  }) -> bool {
+	return ColorEdit3(semisafe_string_to_cstring(label), col, flags)
+}
+
+color_edit4 :: proc(label: string, col: [4]f32, flags: Color_Edit_Flags = {  }) -> bool {
+	return ColorEdit4(semisafe_string_to_cstring(label), col, flags)
+}
+
+color_picker3 :: proc(label: string, col: [3]f32, flags: Color_Edit_Flags = {  }) -> bool {
+	return ColorPicker3(semisafe_string_to_cstring(label), col, flags)
+}
+
+color_picker4 :: proc(label: string, col: [4]f32, flags: Color_Edit_Flags = {  }, ref_col: ^f32 = nil) -> bool {
+	return ColorPicker4(semisafe_string_to_cstring(label), col, flags, ref_col)
+}
+
+color_button :: proc(desc_id: string, col: [4]f32, flags: Color_Edit_Flags = {  }, size: [2]f32 = {0, 0}) -> bool {
+	return ColorButton(semisafe_string_to_cstring(desc_id), col, flags, size)
+}
+
+set_color_edit_options :: SetColorEditOptions
 
 tree_node :: proc {
 	tree_node_str,
 	tree_node_str_str,
 	tree_node_ptr,
+}
+tree_node_str :: proc(label: string) -> bool {
+	return TreeNode_Str(semisafe_string_to_cstring(label))
+}
+tree_node_str_str :: proc(str_id: string, fmt_: string, _args_: ..any) -> bool {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	return TreeNode_StrStr(semisafe_string_to_cstring(str_id), "%s", cstring(raw_data(_fmt_sb.buf)))
+}
+tree_node_ptr :: proc(ptr_id: rawptr, fmt_: string, _args_: ..any) -> bool {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	return TreeNode_Ptr(ptr_id, "%s", cstring(raw_data(_fmt_sb.buf)))
 }
 
 tree_node_ex :: proc {
@@ -3821,35 +669,96 @@ tree_node_ex :: proc {
 	tree_node_ex_str_str,
 	tree_node_ex_ptr,
 }
+tree_node_ex_str :: proc(label: string, flags: Tree_Node_Flags = {  }) -> bool {
+	return TreeNodeEx_Str(semisafe_string_to_cstring(label), flags)
+}
+tree_node_ex_str_str :: proc(str_id: string, flags: Tree_Node_Flags, fmt_: string, _args_: ..any) -> bool {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	return TreeNodeEx_StrStr(semisafe_string_to_cstring(str_id), flags, "%s", cstring(raw_data(_fmt_sb.buf)))
+}
+tree_node_ex_ptr :: proc(ptr_id: rawptr, flags: Tree_Node_Flags, fmt_: string, _args_: ..any) -> bool {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	return TreeNodeEx_Ptr(ptr_id, flags, "%s", cstring(raw_data(_fmt_sb.buf)))
+}
 
 tree_push :: proc {
 	tree_push_str,
 	tree_push_ptr,
 }
+tree_push_str :: proc(str_id: string) {
+	TreePush_Str(semisafe_string_to_cstring(str_id))
+}
+tree_push_ptr :: TreePush_Ptr
+
+tree_pop :: TreePop
+
+get_tree_node_to_label_spacing :: GetTreeNodeToLabelSpacing
 
 collapsing_header :: proc {
 	collapsing_header_tree_node_flags,
 	collapsing_header_bool_ptr,
 }
+collapsing_header_tree_node_flags :: proc(label: string, flags: Tree_Node_Flags = {  }) -> bool {
+	return CollapsingHeader_TreeNodeFlags(semisafe_string_to_cstring(label), flags)
+}
+collapsing_header_bool_ptr :: proc(label: string, p_visible: ^bool, flags: Tree_Node_Flags = {  }) -> bool {
+	return CollapsingHeader_BoolPtr(semisafe_string_to_cstring(label), p_visible, flags)
+}
+
+set_next_item_open :: SetNextItemOpen
 
 selectable :: proc {
 	selectable_bool,
 	selectable_bool_ptr,
 }
+selectable_bool :: proc(label: string, selected: bool = false, flags: Selectable_Flags = {  }, size: [2]f32 = {0, 0}) -> bool {
+	return Selectable_Bool(semisafe_string_to_cstring(label), selected, flags, size)
+}
+selectable_bool_ptr :: proc(label: string, p_selected: ^bool, flags: Selectable_Flags = {  }, size: [2]f32 = {0, 0}) -> bool {
+	return Selectable_BoolPtr(semisafe_string_to_cstring(label), p_selected, flags, size)
+}
+
+begin_list_box :: proc(label: string, size: [2]f32 = {0, 0}) -> bool {
+	return BeginListBox(semisafe_string_to_cstring(label), size)
+}
+
+end_list_box :: EndListBox
 
 list_box :: proc {
 	list_box_str_arr,
 	list_box_fn_bool_ptr,
+}
+list_box_str_arr :: proc(label: string, current_item: ^i32, items: []cstring, height_in_items: i32 = -1) -> bool {
+	return ListBox_Str_arr(semisafe_string_to_cstring(label), current_item, raw_data(items), cast(i32)len(items), height_in_items)
+}
+list_box_fn_bool_ptr :: proc(label: string, current_item: ^i32, items_getter: #type proc "c"(data: rawptr, idx: i32, out_text: ^cstring) -> bool, data: rawptr, items_count: i32, height_in_items: i32 = -1) -> bool {
+	return ListBox_FnBoolPtr(semisafe_string_to_cstring(label), current_item, items_getter, data, items_count, height_in_items)
 }
 
 plot_lines :: proc {
 	plot_lines_float_ptr,
 	plot_lines_fn_float_ptr,
 }
+plot_lines_float_ptr :: proc(label: string, values: []f32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}, stride: i32 = size_of(f32)) {
+	PlotLines_FloatPtr(semisafe_string_to_cstring(label), raw_data(values), cast(i32)len(values), values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size, stride)
+}
+plot_lines_fn_float_ptr :: proc(label: string, values_getter: #type proc "c"(data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}) {
+	PlotLines_FnFloatPtr(semisafe_string_to_cstring(label), values_getter, data, values_count, values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size)
+}
 
 plot_histogram :: proc {
 	plot_histogram_float_ptr,
 	plot_histogram_fn_float_ptr,
+}
+plot_histogram_float_ptr :: proc(label: string, values: []f32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}, stride: i32 = size_of(f32)) {
+	PlotHistogram_FloatPtr(semisafe_string_to_cstring(label), raw_data(values), cast(i32)len(values), values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size, stride)
+}
+plot_histogram_fn_float_ptr :: proc(label: string, values_getter: #type proc "c"(data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32 = 0, overlay_text: string, scale_min: f32 = max(f32), scale_max: f32 = max(f32), graph_size: [2]f32 = {0, 0}) {
+	PlotHistogram_FnFloatPtr(semisafe_string_to_cstring(label), values_getter, data, values_count, values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, graph_size)
 }
 
 value :: proc {
@@ -3858,76 +767,567 @@ value :: proc {
 	value_uint,
 	value_float,
 }
+value_bool :: proc(prefix: string, b: bool) {
+	Value_Bool(semisafe_string_to_cstring(prefix), b)
+}
+value_int :: proc(prefix: string, v: i32) {
+	Value_Int(semisafe_string_to_cstring(prefix), v)
+}
+value_uint :: proc(prefix: string, v: u32) {
+	Value_Uint(semisafe_string_to_cstring(prefix), v)
+}
+value_float :: proc(prefix: string, v: f32, float_format: string) {
+	Value_Float(semisafe_string_to_cstring(prefix), v, semisafe_string_to_cstring(float_format))
+}
+
+begin_menu_bar :: BeginMenuBar
+
+end_menu_bar :: EndMenuBar
+
+begin_main_menu_bar :: BeginMainMenuBar
+
+end_main_menu_bar :: EndMainMenuBar
+
+begin_menu :: proc(label: string, enabled: bool = true) -> bool {
+	return BeginMenu(semisafe_string_to_cstring(label), enabled)
+}
+
+end_menu :: EndMenu
 
 menu_item :: proc {
 	menu_item_bool,
 	menu_item_bool_ptr,
 }
+menu_item_bool :: proc(label: string, shortcut: string, selected: bool = false, enabled: bool = true) -> bool {
+	return MenuItem_Bool(semisafe_string_to_cstring(label), semisafe_string_to_cstring(shortcut), selected, enabled)
+}
+menu_item_bool_ptr :: proc(label: string, shortcut: string, p_selected: ^bool, enabled: bool = true) -> bool {
+	return MenuItem_BoolPtr(semisafe_string_to_cstring(label), semisafe_string_to_cstring(shortcut), p_selected, enabled)
+}
+
+begin_tooltip :: BeginTooltip
+
+end_tooltip :: EndTooltip
+
+set_tooltip :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	SetTooltip("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+begin_popup :: proc(str_id: string, flags: Window_Flags = {  }) -> bool {
+	return BeginPopup(semisafe_string_to_cstring(str_id), flags)
+}
+
+begin_popup_modal :: proc(name: string, p_open: ^bool = nil, flags: Window_Flags = {  }) -> bool {
+	return BeginPopupModal(semisafe_string_to_cstring(name), p_open, flags)
+}
+
+end_popup :: EndPopup
 
 open_popup :: proc {
 	open_popup_str,
 	open_popup_id,
+}
+open_popup_str :: proc(str_id: string, popup_flags: Popup_Flags = {  }) {
+	OpenPopup_Str(semisafe_string_to_cstring(str_id), popup_flags)
+}
+open_popup_id :: OpenPopup_ID
+
+open_popup_on_item_click :: proc(str_id: string, popup_flags: Popup_Flags = {  }) {
+	OpenPopupOnItemClick(semisafe_string_to_cstring(str_id), popup_flags)
+}
+
+close_current_popup :: CloseCurrentPopup
+
+begin_popup_context_item :: proc(str_id: string, popup_flags: Popup_Flags = {  }) -> bool {
+	return BeginPopupContextItem(semisafe_string_to_cstring(str_id), popup_flags)
+}
+
+begin_popup_context_window :: proc(str_id: string, popup_flags: Popup_Flags = {  }) -> bool {
+	return BeginPopupContextWindow(semisafe_string_to_cstring(str_id), popup_flags)
+}
+
+begin_popup_context_void :: proc(str_id: string, popup_flags: Popup_Flags = {  }) -> bool {
+	return BeginPopupContextVoid(semisafe_string_to_cstring(str_id), popup_flags)
 }
 
 is_popup_open :: proc {
 	is_popup_open_str,
 	is_popup_open_id,
 }
+is_popup_open_str :: proc(str_id: string, flags: Popup_Flags = {  }) -> bool {
+	return IsPopupOpen_Str(semisafe_string_to_cstring(str_id), flags)
+}
+is_popup_open_id :: IsPopupOpen_ID
+
+begin_table :: proc(str_id: string, column: i32, flags: Table_Flags = {  }, outer_size: [2]f32 = {0.0, 0.0}, inner_width: f32 = 0.0) -> bool {
+	return BeginTable(semisafe_string_to_cstring(str_id), column, flags, outer_size, inner_width)
+}
+
+end_table :: EndTable
+
+table_next_row :: TableNextRow
+
+table_next_column :: TableNextColumn
+
+table_set_column_index :: TableSetColumnIndex
+
+table_setup_column :: proc(label: string, flags: Table_Column_Flags = {  }, init_width_or_weight: f32 = 0.0, user_id: ID = 0) {
+	TableSetupColumn(semisafe_string_to_cstring(label), flags, init_width_or_weight, user_id)
+}
+
+table_setup_scroll_freeze :: TableSetupScrollFreeze
+
+table_headers_row :: TableHeadersRow
+
+table_header :: proc(label: string) {
+	TableHeader(semisafe_string_to_cstring(label))
+}
+
+table_get_sort_specs :: TableGetSortSpecs
+
+table_get_column_count :: TableGetColumnCount
+
+table_get_column_index :: TableGetColumnIndex
+
+table_get_row_index :: TableGetRowIndex
 
 table_get_column_name :: proc {
 	table_get_column_name_int,
 	table_get_column_name_table_ptr,
 }
+table_get_column_name_int :: TableGetColumnName_Int
+table_get_column_name_table_ptr :: TableGetColumnName_TablePtr
+
+table_get_column_flags :: TableGetColumnFlags
+
+table_set_column_enabled :: TableSetColumnEnabled
+
+table_set_bg_color :: TableSetBgColor
+
+columns :: proc(count: i32 = 1, id: string, border: bool = true) {
+	Columns(count, semisafe_string_to_cstring(id), border)
+}
+
+next_column :: NextColumn
+
+get_column_index :: GetColumnIndex
+
+get_column_width :: GetColumnWidth
+
+set_column_width :: SetColumnWidth
+
+get_column_offset :: GetColumnOffset
+
+set_column_offset :: SetColumnOffset
+
+get_columns_count :: GetColumnsCount
+
+begin_tab_bar :: proc(str_id: string, flags: Tab_Bar_Flags = {  }) -> bool {
+	return BeginTabBar(semisafe_string_to_cstring(str_id), flags)
+}
+
+end_tab_bar :: EndTabBar
+
+begin_tab_item :: proc(label: string, p_open: ^bool = nil, flags: Tab_Item_Flags = {  }) -> bool {
+	return BeginTabItem(semisafe_string_to_cstring(label), p_open, flags)
+}
+
+end_tab_item :: EndTabItem
+
+tab_item_button :: proc(label: string, flags: Tab_Item_Flags = {  }) -> bool {
+	return TabItemButton(semisafe_string_to_cstring(label), flags)
+}
+
+set_tab_item_closed :: proc(tab_or_docked_window_label: string) {
+	SetTabItemClosed(semisafe_string_to_cstring(tab_or_docked_window_label))
+}
+
+log_to_tty :: LogToTTY
+
+log_to_file :: proc(auto_open_depth: i32 = -1, filename: string) {
+	LogToFile(auto_open_depth, semisafe_string_to_cstring(filename))
+}
+
+log_to_clipboard :: LogToClipboard
+
+log_finish :: LogFinish
+
+log_buttons :: LogButtons
+
+begin_drag_drop_source :: BeginDragDropSource
+
+set_drag_drop_payload :: proc(type: string, data: rawptr, sz: int, cond: Cond = {  }) -> bool {
+	return SetDragDropPayload(semisafe_string_to_cstring(type), data, sz, cond)
+}
+
+end_drag_drop_source :: EndDragDropSource
+
+begin_drag_drop_target :: BeginDragDropTarget
+
+accept_drag_drop_payload :: proc(type: string, flags: Drag_Drop_Flags = {  }) -> ^Payload {
+	return AcceptDragDropPayload(semisafe_string_to_cstring(type), flags)
+}
+
+end_drag_drop_target :: EndDragDropTarget
+
+get_drag_drop_payload :: GetDragDropPayload
+
+begin_disabled :: BeginDisabled
+
+end_disabled :: EndDisabled
+
+push_clip_rect :: PushClipRect
+
+pop_clip_rect :: PopClipRect
+
+set_item_default_focus :: SetItemDefaultFocus
+
+set_keyboard_focus_here :: SetKeyboardFocusHere
+
+is_item_hovered :: IsItemHovered
+
+is_item_active :: IsItemActive
+
+is_item_focused :: IsItemFocused
+
+is_item_clicked :: IsItemClicked
+
+is_item_visible :: IsItemVisible
+
+is_item_edited :: IsItemEdited
+
+is_item_activated :: IsItemActivated
+
+is_item_deactivated :: IsItemDeactivated
+
+is_item_deactivated_after_edit :: IsItemDeactivatedAfterEdit
+
+is_item_toggled_open :: IsItemToggledOpen
+
+is_any_item_hovered :: IsAnyItemHovered
+
+is_any_item_active :: IsAnyItemActive
+
+is_any_item_focused :: IsAnyItemFocused
+
+get_item_id :: GetItemID
+
+get_item_rect_min :: GetItemRectMin
+
+get_item_rect_max :: GetItemRectMax
+
+get_item_rect_size :: GetItemRectSize
+
+set_item_allow_overlap :: SetItemAllowOverlap
+
+get_main_viewport :: GetMainViewport
 
 get_background_draw_list :: proc {
 	get_background_draw_list_nil,
 	get_background_draw_list_viewport_ptr,
 }
+get_background_draw_list_nil :: GetBackgroundDrawList_Nil
+get_background_draw_list_viewport_ptr :: GetBackgroundDrawList_ViewportPtr
 
 get_foreground_draw_list :: proc {
 	get_foreground_draw_list_nil,
 	get_foreground_draw_list_window_ptr,
 	get_foreground_draw_list_viewport_ptr,
 }
+get_foreground_draw_list_nil :: GetForegroundDrawList_Nil
+get_foreground_draw_list_window_ptr :: GetForegroundDrawList_WindowPtr
+get_foreground_draw_list_viewport_ptr :: GetForegroundDrawList_ViewportPtr
 
 is_rect_visible :: proc {
 	is_rect_visible_nil,
 	is_rect_visible_vec2,
+}
+is_rect_visible_nil :: IsRectVisible_Nil
+is_rect_visible_vec2 :: IsRectVisible_Vec2
+
+get_time :: GetTime
+
+get_frame_count :: GetFrameCount
+
+get_draw_list_shared_data :: GetDrawListSharedData
+
+get_style_color_name :: GetStyleColorName
+
+set_state_storage :: SetStateStorage
+
+get_state_storage :: GetStateStorage
+
+begin_child_frame :: BeginChildFrame
+
+end_child_frame :: EndChildFrame
+
+calc_text_size :: proc(p_out: ^[2]f32, text: string, hide_text_after_double_hash: bool = false, wrap_width: f32 = -1.0) {
+	CalcTextSize(p_out, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), hide_text_after_double_hash, wrap_width)
+}
+
+color_convert_u32_to_float4 :: ColorConvertU32ToFloat4
+
+color_convert_float4_to_u32 :: ColorConvertFloat4ToU32
+
+color_convert_rgbto_hsv :: proc(r: f32, g: f32, b: f32) -> (out_h: f32, out_s: f32, out_v: f32) {
+	ColorConvertRGBtoHSV(r, g, b, &out_h, &out_s, &out_v)
+	return
+}
+
+color_convert_hsvto_rgb :: proc(h: f32, s: f32, v: f32) -> (out_r: f32, out_g: f32, out_b: f32) {
+	ColorConvertHSVtoRGB(h, s, v, &out_r, &out_g, &out_b)
+	return
 }
 
 is_key_down :: proc {
 	is_key_down_nil,
 	is_key_down_id,
 }
+is_key_down_nil :: IsKeyDown_Nil
+is_key_down_id :: IsKeyDown_ID
 
 is_key_pressed :: proc {
 	is_key_pressed_bool,
 	is_key_pressed_id,
 }
+is_key_pressed_bool :: IsKeyPressed_Bool
+is_key_pressed_id :: IsKeyPressed_ID
 
 is_key_released :: proc {
 	is_key_released_nil,
 	is_key_released_id,
 }
+is_key_released_nil :: IsKeyReleased_Nil
+is_key_released_id :: IsKeyReleased_ID
+
+get_key_pressed_amount :: GetKeyPressedAmount
+
+get_key_name :: GetKeyName
+
+set_next_frame_want_capture_keyboard :: SetNextFrameWantCaptureKeyboard
 
 is_mouse_down :: proc {
 	is_mouse_down_nil,
 	is_mouse_down_id,
 }
+is_mouse_down_nil :: IsMouseDown_Nil
+is_mouse_down_id :: IsMouseDown_ID
 
 is_mouse_clicked :: proc {
 	is_mouse_clicked_bool,
 	is_mouse_clicked_id,
 }
+is_mouse_clicked_bool :: IsMouseClicked_Bool
+is_mouse_clicked_id :: IsMouseClicked_ID
 
 is_mouse_released :: proc {
 	is_mouse_released_nil,
 	is_mouse_released_id,
 }
+is_mouse_released_nil :: IsMouseReleased_Nil
+is_mouse_released_id :: IsMouseReleased_ID
+
+is_mouse_double_clicked :: IsMouseDoubleClicked
+
+get_mouse_clicked_count :: GetMouseClickedCount
+
+is_mouse_hovering_rect :: IsMouseHoveringRect
+
+is_mouse_pos_valid :: IsMousePosValid
+
+is_any_mouse_down :: IsAnyMouseDown
+
+get_mouse_pos :: GetMousePos
+
+get_mouse_pos_on_opening_current_popup :: GetMousePosOnOpeningCurrentPopup
+
+is_mouse_dragging :: IsMouseDragging
+
+get_mouse_drag_delta :: GetMouseDragDelta
+
+reset_mouse_drag_delta :: ResetMouseDragDelta
+
+get_mouse_cursor :: GetMouseCursor
+
+set_mouse_cursor :: SetMouseCursor
+
+set_next_frame_want_capture_mouse :: SetNextFrameWantCaptureMouse
+
+get_clipboard_text :: GetClipboardText
+
+set_clipboard_text :: proc(text: string) {
+	SetClipboardText(semisafe_string_to_cstring(text))
+}
+
+load_ini_settings_from_disk :: proc(ini_filename: string) {
+	LoadIniSettingsFromDisk(semisafe_string_to_cstring(ini_filename))
+}
+
+load_ini_settings_from_memory :: proc(ini_data: string, ini_size: int = 0) {
+	LoadIniSettingsFromMemory(semisafe_string_to_cstring(ini_data), ini_size)
+}
+
+save_ini_settings_to_disk :: proc(ini_filename: string) {
+	SaveIniSettingsToDisk(semisafe_string_to_cstring(ini_filename))
+}
+
+save_ini_settings_to_memory :: proc() -> (orig_ret: cstring, out_ini_size: int) {
+	orig_ret = SaveIniSettingsToMemory(&out_ini_size)
+	return
+}
+
+debug_text_encoding :: proc(text: string) {
+	DebugTextEncoding(semisafe_string_to_cstring(text))
+}
+
+debug_check_version_and_data_layout :: proc(version_str: string, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int) -> bool {
+	return DebugCheckVersionAndDataLayout(semisafe_string_to_cstring(version_str), sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
+}
+
+set_allocator_functions :: SetAllocatorFunctions
+
+get_allocator_functions :: GetAllocatorFunctions
+
+style_new :: Style_new
+
+style_destroy :: Style_destroy
+
+style_scale_all_sizes :: Style_ScaleAllSizes
+
+io_add_key_event :: IO_AddKeyEvent
+
+io_add_key_analog_event :: IO_AddKeyAnalogEvent
+
+io_add_mouse_pos_event :: IO_AddMousePosEvent
+
+io_add_mouse_button_event :: IO_AddMouseButtonEvent
+
+io_add_mouse_wheel_event :: IO_AddMouseWheelEvent
+
+io_add_mouse_source_event :: IO_AddMouseSourceEvent
+
+io_add_focus_event :: IO_AddFocusEvent
+
+io_add_input_character :: IO_AddInputCharacter
+
+io_add_input_character_u_t_f16 :: IO_AddInputCharacterUTF16
+
+io_add_input_characters_u_t_f8 :: proc(self: ^IO, str: string) {
+	IO_AddInputCharactersUTF8(self, semisafe_string_to_cstring(str))
+}
+
+io_set_key_event_native_data :: IO_SetKeyEventNativeData
+
+io_set_app_accepting_events :: IO_SetAppAcceptingEvents
+
+io_clear_input_characters :: IO_ClearInputCharacters
+
+io_clear_input_keys :: IO_ClearInputKeys
+
+io_new :: IO_new
+
+io_destroy :: IO_destroy
+
+input_text_callback_data_new :: InputTextCallbackData_new
+
+input_text_callback_data_destroy :: InputTextCallbackData_destroy
+
+input_text_callback_data_delete_chars :: InputTextCallbackData_DeleteChars
+
+input_text_callback_data_insert_chars :: proc(self: ^Input_Text_Callback_Data, pos: i32, text: string) {
+	InputTextCallbackData_InsertChars(self, pos, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
+}
+
+input_text_callback_data_select_all :: InputTextCallbackData_SelectAll
+
+input_text_callback_data_clear_selection :: InputTextCallbackData_ClearSelection
+
+input_text_callback_data_has_selection :: InputTextCallbackData_HasSelection
+
+payload_new :: Payload_new
+
+payload_destroy :: Payload_destroy
+
+payload_clear :: Payload_Clear
+
+payload_is_data_type :: proc(self: ^Payload, type: string) -> bool {
+	return Payload_IsDataType(self, semisafe_string_to_cstring(type))
+}
+
+payload_is_preview :: Payload_IsPreview
+
+payload_is_delivery :: Payload_IsDelivery
+
+table_column_sort_specs_new :: TableColumnSortSpecs_new
+
+table_column_sort_specs_destroy :: TableColumnSortSpecs_destroy
+
+table_sort_specs_new :: TableSortSpecs_new
+
+table_sort_specs_destroy :: TableSortSpecs_destroy
+
+once_upon_a_frame_new :: OnceUponAFrame_new
+
+once_upon_a_frame_destroy :: OnceUponAFrame_destroy
+
+text_filter_new :: proc(default_filter: string) -> ^Text_Filter {
+	return TextFilter_new(semisafe_string_to_cstring(default_filter))
+}
+
+text_filter_destroy :: TextFilter_destroy
+
+text_filter_draw :: proc(self: ^Text_Filter, label: string, width: f32 = 0.0) -> bool {
+	return TextFilter_Draw(self, semisafe_string_to_cstring(label), width)
+}
+
+text_filter_pass_filter :: proc(self: ^Text_Filter, text: string) -> bool {
+	return TextFilter_PassFilter(self, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
+}
+
+text_filter_build :: TextFilter_Build
+
+text_filter_clear :: TextFilter_Clear
+
+text_filter_is_active :: TextFilter_IsActive
 
 text_range_new :: proc {
 	text_range_new_nil,
 	text_range_new_str,
+}
+text_range_new_nil :: TextRange_TextRange_Nil
+text_range_new_str :: proc(_b: string, _e: string) -> ^Text_Range {
+	return TextRange_TextRange_Str(semisafe_string_to_cstring(_b), semisafe_string_to_cstring(_e))
+}
+
+text_range_destroy :: TextRange_destroy
+
+text_range_empty :: TextRange_empty
+
+text_range_split :: TextRange_split
+
+text_buffer_new :: TextBuffer_new
+
+text_buffer_destroy :: TextBuffer_destroy
+
+text_buffer_begin :: TextBuffer_begin
+
+text_buffer_end :: TextBuffer_end
+
+text_buffer_size :: TextBuffer_size
+
+text_buffer_empty :: TextBuffer_empty
+
+text_buffer_clear :: TextBuffer_clear
+
+text_buffer_reserve :: TextBuffer_reserve
+
+text_buffer_c_str :: TextBuffer_c_str
+
+text_buffer_append :: proc(self: ^Text_Buffer, str: string) {
+	TextBuffer_append(self, raw_data(str), cast([^]u8) (uintptr(raw_data(str)) + uintptr(len(str))))
 }
 
 storage_pair_new :: proc {
@@ -3935,6 +1335,53 @@ storage_pair_new :: proc {
 	storage_pair_new_float,
 	storage_pair_new_ptr,
 }
+storage_pair_new_int :: StoragePair_StoragePair_Int
+storage_pair_new_float :: StoragePair_StoragePair_Float
+storage_pair_new_ptr :: StoragePair_StoragePair_Ptr
+
+storage_pair_destroy :: StoragePair_destroy
+
+storage_clear :: Storage_Clear
+
+storage_get_int :: Storage_GetInt
+
+storage_set_int :: Storage_SetInt
+
+storage_get_bool :: Storage_GetBool
+
+storage_set_bool :: Storage_SetBool
+
+storage_get_float :: Storage_GetFloat
+
+storage_set_float :: Storage_SetFloat
+
+storage_get_void_ptr :: Storage_GetVoidPtr
+
+storage_set_void_ptr :: Storage_SetVoidPtr
+
+storage_get_int_ref :: Storage_GetIntRef
+
+storage_get_bool_ref :: Storage_GetBoolRef
+
+storage_get_float_ref :: Storage_GetFloatRef
+
+storage_get_void_ptr_ref :: Storage_GetVoidPtrRef
+
+storage_set_all_int :: Storage_SetAllInt
+
+storage_build_sort_by_key :: Storage_BuildSortByKey
+
+list_clipper_new :: ListClipper_new
+
+list_clipper_destroy :: ListClipper_destroy
+
+list_clipper_begin :: ListClipper_Begin
+
+list_clipper_end :: ListClipper_End
+
+list_clipper_step :: ListClipper_Step
+
+list_clipper_force_display_range_by_indices :: ListClipper_ForceDisplayRangeByIndices
 
 color_new :: proc {
 	color_new_nil,
@@ -3943,11 +1390,334 @@ color_new :: proc {
 	color_new_int,
 	color_new_u32,
 }
+color_new_nil :: Color_Color_Nil
+color_new_float :: Color_Color_Float
+color_new_vec4 :: Color_Color_Vec4
+color_new_int :: Color_Color_Int
+color_new_u32 :: Color_Color_U32
+
+color_destroy :: Color_destroy
+
+color_set_hsv :: Color_SetHSV
+
+color_hsv :: proc(h: f32, s: f32, v: f32, a: f32) -> (p_out: Color) {
+	Color_HSV(&p_out, h, s, v, a)
+	return
+}
+
+draw_cmd_new :: DrawCmd_new
+
+draw_cmd_destroy :: DrawCmd_destroy
+
+draw_cmd_get_tex_id :: DrawCmd_GetTexID
+
+draw_list_splitter_new :: DrawListSplitter_new
+
+draw_list_splitter_destroy :: DrawListSplitter_destroy
+
+draw_list_splitter_clear :: DrawListSplitter_Clear
+
+draw_list_splitter_clear_free_memory :: DrawListSplitter_ClearFreeMemory
+
+draw_list_splitter_split :: DrawListSplitter_Split
+
+draw_list_splitter_merge :: DrawListSplitter_Merge
+
+draw_list_splitter_set_current_channel :: DrawListSplitter_SetCurrentChannel
+
+draw_list_new :: DrawList_new
+
+draw_list_destroy :: DrawList_destroy
+
+draw_list_push_clip_rect :: DrawList_PushClipRect
+
+draw_list_push_clip_rect_full_screen :: DrawList_PushClipRectFullScreen
+
+draw_list_pop_clip_rect :: DrawList_PopClipRect
+
+draw_list_push_texture_id :: DrawList_PushTextureID
+
+draw_list_pop_texture_id :: DrawList_PopTextureID
+
+draw_list_get_clip_rect_min :: DrawList_GetClipRectMin
+
+draw_list_get_clip_rect_max :: DrawList_GetClipRectMax
+
+draw_list_add_line :: DrawList_AddLine
+
+draw_list_add_rect :: DrawList_AddRect
+
+draw_list_add_rect_filled :: DrawList_AddRectFilled
+
+draw_list_add_rect_filled_multi_color :: DrawList_AddRectFilledMultiColor
+
+draw_list_add_quad :: DrawList_AddQuad
+
+draw_list_add_quad_filled :: DrawList_AddQuadFilled
+
+draw_list_add_triangle :: DrawList_AddTriangle
+
+draw_list_add_triangle_filled :: DrawList_AddTriangleFilled
+
+draw_list_add_circle :: DrawList_AddCircle
+
+draw_list_add_circle_filled :: DrawList_AddCircleFilled
+
+draw_list_add_ngon :: DrawList_AddNgon
+
+draw_list_add_ngon_filled :: DrawList_AddNgonFilled
 
 draw_list_add_text :: proc {
 	draw_list_add_text_vec2,
 	draw_list_add_text_font_ptr,
 }
+draw_list_add_text_vec2 :: proc(self: ^Draw_List, pos: [2]f32, col: u32, text: string) {
+	DrawList_AddText_Vec2(self, pos, col, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
+}
+draw_list_add_text_font_ptr :: proc(self: ^Draw_List, font: ^Font, font_size: f32, pos: [2]f32, col: u32, text: string, wrap_width: f32 = 0.0, cpu_fine_clip_rect: ^[4]f32 = nil) {
+	DrawList_AddText_FontPtr(self, font, font_size, pos, col, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), wrap_width, cpu_fine_clip_rect)
+}
+
+draw_list_add_polyline :: DrawList_AddPolyline
+
+draw_list_add_convex_poly_filled :: DrawList_AddConvexPolyFilled
+
+draw_list_add_bezier_cubic :: DrawList_AddBezierCubic
+
+draw_list_add_bezier_quadratic :: DrawList_AddBezierQuadratic
+
+draw_list_add_image :: DrawList_AddImage
+
+draw_list_add_image_quad :: DrawList_AddImageQuad
+
+draw_list_add_image_rounded :: DrawList_AddImageRounded
+
+draw_list_path_clear :: DrawList_PathClear
+
+draw_list_path_line_to :: DrawList_PathLineTo
+
+draw_list_path_line_to_merge_duplicate :: DrawList_PathLineToMergeDuplicate
+
+draw_list_path_fill_convex :: DrawList_PathFillConvex
+
+draw_list_path_stroke :: DrawList_PathStroke
+
+draw_list_path_arc_to :: DrawList_PathArcTo
+
+draw_list_path_arc_to_fast :: DrawList_PathArcToFast
+
+draw_list_path_bezier_cubic_curve_to :: DrawList_PathBezierCubicCurveTo
+
+draw_list_path_bezier_quadratic_curve_to :: DrawList_PathBezierQuadraticCurveTo
+
+draw_list_path_rect :: DrawList_PathRect
+
+draw_list_add_callback :: DrawList_AddCallback
+
+draw_list_add_draw_cmd :: DrawList_AddDrawCmd
+
+draw_list_clone_output :: DrawList_CloneOutput
+
+draw_list_channels_split :: DrawList_ChannelsSplit
+
+draw_list_channels_merge :: DrawList_ChannelsMerge
+
+draw_list_channels_set_current :: DrawList_ChannelsSetCurrent
+
+draw_list_prim_reserve :: DrawList_PrimReserve
+
+draw_list_prim_unreserve :: DrawList_PrimUnreserve
+
+draw_list_prim_rect :: DrawList_PrimRect
+
+draw_list_prim_rect_uv :: DrawList_PrimRectUV
+
+draw_list_prim_quad_uv :: DrawList_PrimQuadUV
+
+draw_list_prim_write_vtx :: DrawList_PrimWriteVtx
+
+draw_list_prim_write_idx :: DrawList_PrimWriteIdx
+
+draw_list_prim_vtx :: DrawList_PrimVtx
+
+draw_data_new :: DrawData_new
+
+draw_data_destroy :: DrawData_destroy
+
+draw_data_clear :: DrawData_Clear
+
+draw_data_de_index_all_buffers :: DrawData_DeIndexAllBuffers
+
+draw_data_scale_clip_rects :: DrawData_ScaleClipRects
+
+font_config_new :: FontConfig_new
+
+font_config_destroy :: FontConfig_destroy
+
+font_glyph_ranges_builder_new :: FontGlyphRangesBuilder_new
+
+font_glyph_ranges_builder_destroy :: FontGlyphRangesBuilder_destroy
+
+font_glyph_ranges_builder_clear :: FontGlyphRangesBuilder_Clear
+
+font_glyph_ranges_builder_get_bit :: FontGlyphRangesBuilder_GetBit
+
+font_glyph_ranges_builder_set_bit :: FontGlyphRangesBuilder_SetBit
+
+font_glyph_ranges_builder_add_char :: FontGlyphRangesBuilder_AddChar
+
+font_glyph_ranges_builder_add_text :: proc(self: ^Font_Glyph_Ranges_Builder, text: string) {
+	FontGlyphRangesBuilder_AddText(self, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
+}
+
+font_glyph_ranges_builder_add_ranges :: FontGlyphRangesBuilder_AddRanges
+
+font_glyph_ranges_builder_build_ranges :: proc(self: ^Font_Glyph_Ranges_Builder) -> (out_ranges: Vector(u16)) {
+	FontGlyphRangesBuilder_BuildRanges(self, &out_ranges)
+	return
+}
+
+font_atlas_custom_rect_new :: FontAtlasCustomRect_new
+
+font_atlas_custom_rect_destroy :: FontAtlasCustomRect_destroy
+
+font_atlas_custom_rect_is_packed :: FontAtlasCustomRect_IsPacked
+
+font_atlas_new :: FontAtlas_new
+
+font_atlas_destroy :: FontAtlas_destroy
+
+font_atlas_add_font :: FontAtlas_AddFont
+
+font_atlas_add_font_default :: FontAtlas_AddFontDefault
+
+font_atlas_add_font_from_file_ttf :: proc(self: ^Font_Atlas, filename: string, size_pixels: f32, font_cfg: ^Font_Config = nil, glyph_ranges: ^u16 = nil) -> ^Font {
+	return FontAtlas_AddFontFromFileTTF(self, semisafe_string_to_cstring(filename), size_pixels, font_cfg, glyph_ranges)
+}
+
+font_atlas_add_font_from_memory_ttf :: FontAtlas_AddFontFromMemoryTTF
+
+font_atlas_add_font_from_memory_compressed_ttf :: FontAtlas_AddFontFromMemoryCompressedTTF
+
+font_atlas_add_font_from_memory_compressed_base85_ttf :: proc(self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config = nil, glyph_ranges: ^u16 = nil) -> ^Font {
+	return FontAtlas_AddFontFromMemoryCompressedBase85TTF(self, semisafe_string_to_cstring(compressed_font_data_base85), size_pixels, font_cfg, glyph_ranges)
+}
+
+font_atlas_clear_input_data :: FontAtlas_ClearInputData
+
+font_atlas_clear_tex_data :: FontAtlas_ClearTexData
+
+font_atlas_clear_fonts :: FontAtlas_ClearFonts
+
+font_atlas_clear :: FontAtlas_Clear
+
+font_atlas_build :: FontAtlas_Build
+
+font_atlas_get_tex_data_as_alpha8 :: proc(self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
+	FontAtlas_GetTexDataAsAlpha8(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
+	return
+}
+
+font_atlas_get_tex_data_as_rgba32 :: proc(self: ^Font_Atlas) -> (out_pixels: ^u8, out_width: i32, out_height: i32, out_bytes_per_pixel: i32) {
+	FontAtlas_GetTexDataAsRGBA32(self, &out_pixels, &out_width, &out_height, &out_bytes_per_pixel)
+	return
+}
+
+font_atlas_is_built :: FontAtlas_IsBuilt
+
+font_atlas_set_tex_id :: FontAtlas_SetTexID
+
+font_atlas_get_glyph_ranges_default :: FontAtlas_GetGlyphRangesDefault
+
+font_atlas_get_glyph_ranges_greek :: FontAtlas_GetGlyphRangesGreek
+
+font_atlas_get_glyph_ranges_korean :: FontAtlas_GetGlyphRangesKorean
+
+font_atlas_get_glyph_ranges_japanese :: FontAtlas_GetGlyphRangesJapanese
+
+font_atlas_get_glyph_ranges_chinese_full :: FontAtlas_GetGlyphRangesChineseFull
+
+font_atlas_get_glyph_ranges_chinese_simplified_common :: FontAtlas_GetGlyphRangesChineseSimplifiedCommon
+
+font_atlas_get_glyph_ranges_cyrillic :: FontAtlas_GetGlyphRangesCyrillic
+
+font_atlas_get_glyph_ranges_thai :: FontAtlas_GetGlyphRangesThai
+
+font_atlas_get_glyph_ranges_vietnamese :: FontAtlas_GetGlyphRangesVietnamese
+
+font_atlas_add_custom_rect_regular :: FontAtlas_AddCustomRectRegular
+
+font_atlas_add_custom_rect_font_glyph :: FontAtlas_AddCustomRectFontGlyph
+
+font_atlas_get_custom_rect_by_index :: FontAtlas_GetCustomRectByIndex
+
+font_atlas_calc_custom_rect_uv :: FontAtlas_CalcCustomRectUV
+
+font_atlas_get_mouse_cursor_tex_data :: FontAtlas_GetMouseCursorTexData
+
+font_new :: Font_new
+
+font_destroy :: Font_destroy
+
+font_find_glyph :: Font_FindGlyph
+
+font_find_glyph_no_fallback :: Font_FindGlyphNoFallback
+
+font_get_char_advance :: Font_GetCharAdvance
+
+font_is_loaded :: Font_IsLoaded
+
+font_get_debug_name :: Font_GetDebugName
+
+font_calc_text_size_a :: proc(p_out: ^[2]f32, self: ^Font, size: f32, max_width: f32, wrap_width: f32, text: string, remaining: ^cstring = nil) {
+	Font_CalcTextSizeA(p_out, self, size, max_width, wrap_width, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), remaining)
+}
+
+font_calc_word_wrap_position_a :: proc(self: ^Font, scale: f32, text: string, wrap_width: f32) -> cstring {
+	return Font_CalcWordWrapPositionA(self, scale, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), wrap_width)
+}
+
+font_render_char :: Font_RenderChar
+
+font_render_text :: proc(self: ^Font, draw_list: ^Draw_List, size: f32, pos: [2]f32, col: u32, clip_rect: [4]f32, text: string, wrap_width: f32 = 0.0, cpu_fine_clip: bool = false) {
+	Font_RenderText(self, draw_list, size, pos, col, clip_rect, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), wrap_width, cpu_fine_clip)
+}
+
+font_build_lookup_table :: Font_BuildLookupTable
+
+font_clear_output_data :: Font_ClearOutputData
+
+font_grow_index :: Font_GrowIndex
+
+font_add_glyph :: Font_AddGlyph
+
+font_add_remap_char :: Font_AddRemapChar
+
+font_set_glyph_visible :: Font_SetGlyphVisible
+
+font_is_glyph_range_unused :: Font_IsGlyphRangeUnused
+
+viewport_new :: Viewport_new
+
+viewport_destroy :: Viewport_destroy
+
+viewport_get_center :: Viewport_GetCenter
+
+viewport_get_work_center :: Viewport_GetWorkCenter
+
+platform_ime_data_new :: PlatformImeData_new
+
+platform_ime_data_destroy :: PlatformImeData_destroy
+
+get_key_index :: GetKeyIndex
+
+im_bezier_cubic_calc :: ImBezierCubicCalc
+
+im_bezier_cubic_closest_point :: ImBezierCubicClosestPoint
+
+im_bezier_cubic_closest_point_casteljau :: ImBezierCubicClosestPointCasteljau
+
+im_bezier_quadratic_calc :: ImBezierQuadraticCalc
 
 rect_new :: proc {
 	rect_new_nil,
@@ -3955,65 +1725,1171 @@ rect_new :: proc {
 	rect_new_vec4,
 	rect_new_float,
 }
+rect_new_nil :: Rect_Rect_Nil
+rect_new_vec2 :: Rect_Rect_Vec2
+rect_new_vec4 :: Rect_Rect_Vec4
+rect_new_float :: Rect_Rect_Float
+
+rect_destroy :: Rect_destroy
+
+rect_get_center :: Rect_GetCenter
+
+rect_get_size :: Rect_GetSize
+
+rect_get_width :: Rect_GetWidth
+
+rect_get_height :: Rect_GetHeight
+
+rect_get_area :: Rect_GetArea
+
+rect_get_tl :: Rect_GetTL
+
+rect_get_tr :: Rect_GetTR
+
+rect_get_bl :: Rect_GetBL
+
+rect_get_br :: Rect_GetBR
 
 rect_contains :: proc {
 	rect_contains_vec2,
 	rect_contains_rect,
 }
+rect_contains_vec2 :: Rect_Contains_Vec2
+rect_contains_rect :: Rect_Contains_Rect
+
+rect_overlaps :: Rect_Overlaps
 
 rect_add :: proc {
 	rect_add_vec2,
 	rect_add_rect,
 }
+rect_add_vec2 :: Rect_Add_Vec2
+rect_add_rect :: Rect_Add_Rect
 
 rect_expand :: proc {
 	rect_expand_float,
 	rect_expand_vec2,
 }
+rect_expand_float :: Rect_Expand_Float
+rect_expand_vec2 :: Rect_Expand_Vec2
+
+rect_translate :: Rect_Translate
+
+rect_translate_x :: Rect_TranslateX
+
+rect_translate_y :: Rect_TranslateY
+
+rect_clip_with :: Rect_ClipWith
+
+rect_clip_with_full :: Rect_ClipWithFull
+
+rect_floor :: Rect_Floor
+
+rect_is_inverted :: Rect_IsInverted
+
+rect_to_vec4 :: Rect_ToVec4
+
+text_index_clear :: TextIndex_clear
+
+text_index_size :: TextIndex_size
+
+text_index_get_line_begin :: proc(self: ^Text_Index, base: string, n: i32) -> cstring {
+	return TextIndex_get_line_begin(self, semisafe_string_to_cstring(base), n)
+}
+
+text_index_get_line_end :: proc(self: ^Text_Index, base: string, n: i32) -> cstring {
+	return TextIndex_get_line_end(self, semisafe_string_to_cstring(base), n)
+}
+
+text_index_append :: proc(self: ^Text_Index, base: string, old_size: i32, new_size: i32) {
+	TextIndex_append(self, semisafe_string_to_cstring(base), old_size, new_size)
+}
+
+draw_list_shared_data_new :: DrawListSharedData_new
+
+draw_list_shared_data_destroy :: DrawListSharedData_destroy
+
+draw_list_shared_data_set_circle_tessellation_max_error :: DrawListSharedData_SetCircleTessellationMaxError
+
+draw_data_builder_clear :: DrawDataBuilder_Clear
+
+draw_data_builder_clear_free_memory :: DrawDataBuilder_ClearFreeMemory
+
+draw_data_builder_get_draw_list_count :: DrawDataBuilder_GetDrawListCount
+
+draw_data_builder_flatten_into_single_layer :: DrawDataBuilder_FlattenIntoSingleLayer
+
+data_var_info_get_var_ptr :: DataVarInfo_GetVarPtr
 
 style_mod_new :: proc {
 	style_mod_new_int,
 	style_mod_new_float,
 	style_mod_new_vec2,
 }
+style_mod_new_int :: StyleMod_StyleMod_Int
+style_mod_new_float :: StyleMod_StyleMod_Float
+style_mod_new_vec2 :: StyleMod_StyleMod_Vec2
+
+style_mod_destroy :: StyleMod_destroy
+
+combo_preview_data_new :: ComboPreviewData_new
+
+combo_preview_data_destroy :: ComboPreviewData_destroy
+
+menu_columns_new :: MenuColumns_new
+
+menu_columns_destroy :: MenuColumns_destroy
+
+menu_columns_update :: MenuColumns_Update
+
+menu_columns_decl_columns :: MenuColumns_DeclColumns
+
+menu_columns_calc_next_total_width :: MenuColumns_CalcNextTotalWidth
+
+input_text_deactivated_state_new :: InputTextDeactivatedState_new
+
+input_text_deactivated_state_destroy :: InputTextDeactivatedState_destroy
+
+input_text_deactivated_state_clear_free_memory :: InputTextDeactivatedState_ClearFreeMemory
+
+input_text_state_new :: InputTextState_new
+
+input_text_state_destroy :: InputTextState_destroy
+
+input_text_state_clear_text :: InputTextState_ClearText
+
+input_text_state_clear_free_memory :: InputTextState_ClearFreeMemory
+
+input_text_state_get_undo_avail_count :: InputTextState_GetUndoAvailCount
+
+input_text_state_get_redo_avail_count :: InputTextState_GetRedoAvailCount
+
+input_text_state_on_key_pressed :: InputTextState_OnKeyPressed
+
+input_text_state_cursor_anim_reset :: InputTextState_CursorAnimReset
+
+input_text_state_cursor_clamp :: InputTextState_CursorClamp
+
+input_text_state_has_selection :: InputTextState_HasSelection
+
+input_text_state_clear_selection :: InputTextState_ClearSelection
+
+input_text_state_get_cursor_pos :: InputTextState_GetCursorPos
+
+input_text_state_get_selection_start :: InputTextState_GetSelectionStart
+
+input_text_state_get_selection_end :: InputTextState_GetSelectionEnd
+
+input_text_state_select_all :: InputTextState_SelectAll
+
+popup_data_new :: PopupData_new
+
+popup_data_destroy :: PopupData_destroy
+
+next_window_data_new :: NextWindowData_new
+
+next_window_data_destroy :: NextWindowData_destroy
+
+next_window_data_clear_flags :: NextWindowData_ClearFlags
+
+next_item_data_new :: NextItemData_new
+
+next_item_data_destroy :: NextItemData_destroy
+
+next_item_data_clear_flags :: NextItemData_ClearFlags
+
+last_item_data_new :: LastItemData_new
+
+last_item_data_destroy :: LastItemData_destroy
+
+stack_sizes_new :: StackSizes_new
+
+stack_sizes_destroy :: StackSizes_destroy
+
+stack_sizes_set_to_context_state :: StackSizes_SetToContextState
+
+stack_sizes_compare_with_context_state :: StackSizes_CompareWithContextState
 
 ptr_or_index_new :: proc {
 	ptr_or_index_new_ptr,
 	ptr_or_index_new_int,
 }
+ptr_or_index_new_ptr :: PtrOrIndex_PtrOrIndex_Ptr
+ptr_or_index_new_int :: PtrOrIndex_PtrOrIndex_Int
+
+ptr_or_index_destroy :: PtrOrIndex_destroy
+
+input_event_new :: InputEvent_new
+
+input_event_destroy :: InputEvent_destroy
+
+key_routing_data_new :: KeyRoutingData_new
+
+key_routing_data_destroy :: KeyRoutingData_destroy
+
+key_routing_table_new :: KeyRoutingTable_new
+
+key_routing_table_destroy :: KeyRoutingTable_destroy
+
+key_routing_table_clear :: KeyRoutingTable_Clear
+
+key_owner_data_new :: KeyOwnerData_new
+
+key_owner_data_destroy :: KeyOwnerData_destroy
+
+list_clipper_range_from_indices :: ListClipperRange_FromIndices
+
+list_clipper_range_from_positions :: ListClipperRange_FromPositions
+
+list_clipper_data_new :: ListClipperData_new
+
+list_clipper_data_destroy :: ListClipperData_destroy
+
+list_clipper_data_reset :: ListClipperData_Reset
+
+nav_item_data_new :: NavItemData_new
+
+nav_item_data_destroy :: NavItemData_destroy
+
+nav_item_data_clear :: NavItemData_Clear
+
+old_column_data_new :: OldColumnData_new
+
+old_column_data_destroy :: OldColumnData_destroy
+
+old_columns_new :: OldColumns_new
+
+old_columns_destroy :: OldColumns_destroy
+
+viewport_p_new :: ViewportP_new
+
+viewport_p_destroy :: ViewportP_destroy
+
+viewport_p_calc_work_rect_pos :: ViewportP_CalcWorkRectPos
+
+viewport_p_calc_work_rect_size :: ViewportP_CalcWorkRectSize
+
+viewport_p_update_work_rect :: ViewportP_UpdateWorkRect
+
+viewport_p_get_main_rect :: proc(self: ^Viewport_P) -> (p_out: Rect) {
+	ViewportP_GetMainRect(&p_out, self)
+	return
+}
+
+viewport_p_get_work_rect :: proc(self: ^Viewport_P) -> (p_out: Rect) {
+	ViewportP_GetWorkRect(&p_out, self)
+	return
+}
+
+viewport_p_get_build_work_rect :: proc(self: ^Viewport_P) -> (p_out: Rect) {
+	ViewportP_GetBuildWorkRect(&p_out, self)
+	return
+}
+
+window_settings_new :: WindowSettings_new
+
+window_settings_destroy :: WindowSettings_destroy
+
+window_settings_get_name :: WindowSettings_GetName
+
+settings_handler_new :: SettingsHandler_new
+
+settings_handler_destroy :: SettingsHandler_destroy
+
+stack_level_info_new :: StackLevelInfo_new
+
+stack_level_info_destroy :: StackLevelInfo_destroy
+
+stack_tool_new :: StackTool_new
+
+stack_tool_destroy :: StackTool_destroy
+
+context_hook_new :: ContextHook_new
+
+context_hook_destroy :: ContextHook_destroy
+
+context_new :: Context_new
+
+context_destroy :: Context_destroy
+
+window_new :: proc(context_: ^Context, name: string) -> ^Window {
+	return Window_new(context_, semisafe_string_to_cstring(name))
+}
+
+window_destroy :: Window_destroy
 
 window_get_id :: proc {
 	window_get_id_str,
 	window_get_id_ptr,
 	window_get_id_int,
 }
+window_get_id_str :: proc(self: ^Window, str: string) -> ID {
+	return Window_GetID_Str(self, raw_data(str), cast([^]u8) (uintptr(raw_data(str)) + uintptr(len(str))))
+}
+window_get_id_ptr :: Window_GetID_Ptr
+window_get_id_int :: Window_GetID_Int
+
+window_get_id_from_rectangle :: Window_GetIDFromRectangle
+
+window_rect :: proc(self: ^Window) -> (p_out: Rect) {
+	Window_Rect(&p_out, self)
+	return
+}
+
+window_calc_font_size :: Window_CalcFontSize
+
+window_title_bar_height :: Window_TitleBarHeight
+
+window_title_bar_rect :: proc(self: ^Window) -> (p_out: Rect) {
+	Window_TitleBarRect(&p_out, self)
+	return
+}
+
+window_menu_bar_height :: Window_MenuBarHeight
+
+window_menu_bar_rect :: proc(self: ^Window) -> (p_out: Rect) {
+	Window_MenuBarRect(&p_out, self)
+	return
+}
+
+tab_item_new :: TabItem_new
+
+tab_item_destroy :: TabItem_destroy
+
+tab_bar_new :: TabBar_new
+
+tab_bar_destroy :: TabBar_destroy
+
+table_column_new :: TableColumn_new
+
+table_column_destroy :: TableColumn_destroy
+
+table_instance_data_new :: TableInstanceData_new
+
+table_instance_data_destroy :: TableInstanceData_destroy
+
+table_new :: Table_new
+
+table_destroy :: Table_destroy
+
+table_temp_data_new :: TableTempData_new
+
+table_temp_data_destroy :: TableTempData_destroy
+
+table_column_settings_new :: TableColumnSettings_new
+
+table_column_settings_destroy :: TableColumnSettings_destroy
+
+table_settings_new :: TableSettings_new
+
+table_settings_destroy :: TableSettings_destroy
+
+table_settings_get_column_settings :: TableSettings_GetColumnSettings
+
+get_current_window_read :: GetCurrentWindowRead
+
+get_current_window :: GetCurrentWindow
+
+find_window_by_id :: FindWindowByID
+
+find_window_by_name :: proc(name: string) -> ^Window {
+	return FindWindowByName(semisafe_string_to_cstring(name))
+}
+
+update_window_parent_and_root_links :: UpdateWindowParentAndRootLinks
+
+calc_window_next_auto_fit_size :: CalcWindowNextAutoFitSize
+
+is_window_child_of :: IsWindowChildOf
+
+is_window_within_begin_stack_of :: IsWindowWithinBeginStackOf
+
+is_window_above :: IsWindowAbove
+
+is_window_nav_focusable :: IsWindowNavFocusable
+
+set_window_hit_test_hole :: SetWindowHitTestHole
+
+set_window_hiddend_and_skip_items_for_current_frame :: SetWindowHiddendAndSkipItemsForCurrentFrame
+
+window_rect_abs_to_rel :: proc(window: ^Window, r: Rect) -> (p_out: Rect) {
+	WindowRectAbsToRel(&p_out, window, r)
+	return
+}
+
+window_rect_rel_to_abs :: proc(window: ^Window, r: Rect) -> (p_out: Rect) {
+	WindowRectRelToAbs(&p_out, window, r)
+	return
+}
+
+focus_window :: FocusWindow
+
+focus_top_most_window_under_one :: FocusTopMostWindowUnderOne
+
+bring_window_to_focus_front :: BringWindowToFocusFront
+
+bring_window_to_display_front :: BringWindowToDisplayFront
+
+bring_window_to_display_back :: BringWindowToDisplayBack
+
+bring_window_to_display_behind :: BringWindowToDisplayBehind
+
+find_window_display_index :: FindWindowDisplayIndex
+
+find_bottom_most_visible_window_within_begin_stack :: FindBottomMostVisibleWindowWithinBeginStack
+
+set_current_font :: SetCurrentFont
+
+get_default_font :: GetDefaultFont
+
+initialize :: Initialize
+
+shutdown :: Shutdown
+
+update_input_events :: UpdateInputEvents
+
+update_hovered_window_and_capture_flags :: UpdateHoveredWindowAndCaptureFlags
+
+start_mouse_moving_window :: StartMouseMovingWindow
+
+update_mouse_moving_window_new_frame :: UpdateMouseMovingWindowNewFrame
+
+update_mouse_moving_window_end_frame :: UpdateMouseMovingWindowEndFrame
+
+add_context_hook :: AddContextHook
+
+remove_context_hook :: RemoveContextHook
+
+call_context_hooks :: CallContextHooks
+
+set_window_viewport :: SetWindowViewport
 
 mark_ini_settings_dirty :: proc {
 	mark_ini_settings_dirty_nil,
 	mark_ini_settings_dirty_window_ptr,
 }
+mark_ini_settings_dirty_nil :: MarkIniSettingsDirty_Nil
+mark_ini_settings_dirty_window_ptr :: MarkIniSettingsDirty_WindowPtr
+
+clear_ini_settings :: ClearIniSettings
+
+add_settings_handler :: AddSettingsHandler
+
+remove_settings_handler :: proc(type_name: string) {
+	RemoveSettingsHandler(semisafe_string_to_cstring(type_name))
+}
+
+find_settings_handler :: proc(type_name: string) -> ^Settings_Handler {
+	return FindSettingsHandler(semisafe_string_to_cstring(type_name))
+}
+
+create_new_window_settings :: proc(name: string) -> ^Window_Settings {
+	return CreateNewWindowSettings(semisafe_string_to_cstring(name))
+}
+
+find_window_settings_by_id :: FindWindowSettingsByID
+
+find_window_settings_by_window :: FindWindowSettingsByWindow
+
+clear_window_settings :: proc(name: string) {
+	ClearWindowSettings(semisafe_string_to_cstring(name))
+}
+
+localize_register_entries :: LocalizeRegisterEntries
+
+localize_get_msg :: LocalizeGetMsg
+
+scroll_to_item :: ScrollToItem
+
+scroll_to_rect :: ScrollToRect
+
+scroll_to_rect_ex :: ScrollToRectEx
+
+scroll_to_bring_rect_into_view :: ScrollToBringRectIntoView
+
+get_item_status_flags :: GetItemStatusFlags
+
+get_item_flags :: GetItemFlags
+
+get_active_id :: GetActiveID
+
+get_focus_id :: GetFocusID
+
+set_active_id :: SetActiveID
+
+set_focus_id :: SetFocusID
+
+clear_active_id :: ClearActiveID
+
+get_hovered_id :: GetHoveredID
+
+set_hovered_id :: SetHoveredID
+
+keep_alive_id :: KeepAliveID
+
+mark_item_edited :: MarkItemEdited
+
+push_override_id :: PushOverrideID
 
 get_id_with_seed :: proc {
 	get_id_with_seed_str,
 	get_id_with_seed_int,
 }
+get_id_with_seed_str :: proc(str_id: string, seed: ID) -> ID {
+	return GetIDWithSeed_Str(raw_data(str_id), cast([^]u8) (uintptr(raw_data(str_id)) + uintptr(len(str_id))), seed)
+}
+get_id_with_seed_int :: GetIDWithSeed_Int
 
 item_size :: proc {
 	item_size_vec2,
 	item_size_rect,
 }
+item_size_vec2 :: ItemSize_Vec2
+item_size_rect :: ItemSize_Rect
+
+item_add :: ItemAdd
+
+item_hoverable :: ItemHoverable
+
+is_window_content_hoverable :: IsWindowContentHoverable
+
+is_clipped_ex :: IsClippedEx
+
+set_last_item_data :: SetLastItemData
+
+calc_item_size :: CalcItemSize
+
+calc_wrap_width_for_pos :: CalcWrapWidthForPos
+
+push_multi_items_widths :: PushMultiItemsWidths
+
+is_item_toggled_selection :: IsItemToggledSelection
+
+get_content_region_max_abs :: GetContentRegionMaxAbs
+
+shrink_widths :: ShrinkWidths
+
+push_item_flag :: PushItemFlag
+
+pop_item_flag :: PopItemFlag
+
+get_style_var_info :: GetStyleVarInfo
+
+log_begin :: LogBegin
+
+log_to_buffer :: LogToBuffer
+
+log_rendered_text :: proc(ref_pos: ^[2]f32, text: string) {
+	LogRenderedText(ref_pos, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
+}
+
+log_set_next_text_decoration :: proc(prefix: string, suffix: string) {
+	LogSetNextTextDecoration(semisafe_string_to_cstring(prefix), semisafe_string_to_cstring(suffix))
+}
+
+begin_child_ex :: proc(name: string, id: ID, size_arg: [2]f32, border: bool, flags: Window_Flags) -> bool {
+	return BeginChildEx(semisafe_string_to_cstring(name), id, size_arg, border, flags)
+}
+
+open_popup_ex :: OpenPopupEx
+
+close_popup_to_level :: ClosePopupToLevel
+
+close_popups_over_window :: ClosePopupsOverWindow
+
+close_popups_except_modals :: ClosePopupsExceptModals
+
+begin_popup_ex :: BeginPopupEx
+
+begin_tooltip_ex :: BeginTooltipEx
+
+get_popup_allowed_extent_rect :: proc(window: ^Window) -> (p_out: Rect) {
+	GetPopupAllowedExtentRect(&p_out, window)
+	return
+}
+
+get_top_most_popup_modal :: GetTopMostPopupModal
+
+get_top_most_and_visible_popup_modal :: GetTopMostAndVisiblePopupModal
+
+find_best_window_pos_for_popup :: FindBestWindowPosForPopup
+
+find_best_window_pos_for_popup_ex :: FindBestWindowPosForPopupEx
+
+begin_viewport_side_bar :: proc(name: string, viewport: ^Viewport, dir: Dir, size: f32, window_flags: Window_Flags) -> bool {
+	return BeginViewportSideBar(semisafe_string_to_cstring(name), viewport, dir, size, window_flags)
+}
+
+begin_menu_ex :: proc(label: string, icon: string, enabled: bool = true) -> bool {
+	return BeginMenuEx(semisafe_string_to_cstring(label), semisafe_string_to_cstring(icon), enabled)
+}
+
+menu_item_ex :: proc(label: string, icon: string, shortcut: string, selected: bool = false, enabled: bool = true) -> bool {
+	return MenuItemEx(semisafe_string_to_cstring(label), semisafe_string_to_cstring(icon), semisafe_string_to_cstring(shortcut), selected, enabled)
+}
+
+begin_combo_popup :: BeginComboPopup
+
+begin_combo_preview :: BeginComboPreview
+
+end_combo_preview :: EndComboPreview
+
+nav_init_window :: NavInitWindow
+
+nav_init_request_apply_result :: NavInitRequestApplyResult
+
+nav_move_request_but_no_result_yet :: NavMoveRequestButNoResultYet
+
+nav_move_request_submit :: NavMoveRequestSubmit
+
+nav_move_request_forward :: NavMoveRequestForward
+
+nav_move_request_resolve_with_last_item :: NavMoveRequestResolveWithLastItem
+
+nav_move_request_cancel :: NavMoveRequestCancel
+
+nav_move_request_apply_result :: NavMoveRequestApplyResult
+
+nav_move_request_try_wrapping :: NavMoveRequestTryWrapping
+
+activate_item :: ActivateItem
+
+set_nav_window :: SetNavWindow
+
+set_nav_id :: SetNavID
+
+is_named_key :: IsNamedKey
+
+is_named_key_or_mod_key :: IsNamedKeyOrModKey
+
+is_legacy_key :: IsLegacyKey
+
+is_keyboard_key :: IsKeyboardKey
+
+is_gamepad_key :: IsGamepadKey
+
+is_mouse_key :: IsMouseKey
+
+is_alias_key :: IsAliasKey
+
+convert_shortcut_mod :: ConvertShortcutMod
+
+convert_single_mod_flag_to_key :: ConvertSingleModFlagToKey
 
 get_key_data :: proc {
 	get_key_data_context_ptr,
 	get_key_data_key,
 }
+get_key_data_context_ptr :: GetKeyData_ContextPtr
+get_key_data_key :: GetKeyData_Key
+
+get_key_chord_name :: proc(key_chord: Key_Chord, out_buf_size: i32) -> (out_buf: i8) {
+	GetKeyChordName(key_chord, &out_buf, out_buf_size)
+	return
+}
+
+mouse_button_to_key :: MouseButtonToKey
+
+is_mouse_drag_past_threshold :: IsMouseDragPastThreshold
+
+get_key_magnitude2d :: GetKeyMagnitude2d
+
+get_nav_tweak_pressed_amount :: GetNavTweakPressedAmount
+
+calc_typematic_repeat_amount :: CalcTypematicRepeatAmount
+
+get_typematic_repeat_rate :: GetTypematicRepeatRate
+
+set_active_id_using_all_keyboard_keys :: SetActiveIdUsingAllKeyboardKeys
+
+is_active_id_using_nav_dir :: IsActiveIdUsingNavDir
+
+get_key_owner :: GetKeyOwner
+
+set_key_owner :: SetKeyOwner
+
+set_key_owners_for_key_chord :: SetKeyOwnersForKeyChord
+
+set_item_key_owner :: SetItemKeyOwner
+
+test_key_owner :: TestKeyOwner
+
+get_key_owner_data :: GetKeyOwnerData
+
+shortcut :: Shortcut
+
+set_shortcut_routing :: SetShortcutRouting
+
+test_shortcut_routing :: TestShortcutRouting
+
+get_shortcut_routing_data :: GetShortcutRoutingData
+
+push_focus_scope :: PushFocusScope
+
+pop_focus_scope :: PopFocusScope
+
+get_current_focus_scope :: GetCurrentFocusScope
+
+is_drag_drop_active :: IsDragDropActive
+
+begin_drag_drop_target_custom :: BeginDragDropTargetCustom
+
+clear_drag_drop :: ClearDragDrop
+
+is_drag_drop_payload_being_accepted :: IsDragDropPayloadBeingAccepted
+
+render_drag_drop_target_rect :: RenderDragDropTargetRect
+
+set_window_clip_rect_before_set_channel :: SetWindowClipRectBeforeSetChannel
+
+begin_columns :: proc(str_id: string, count: i32, flags: Old_Column_Flags = {  }) {
+	BeginColumns(semisafe_string_to_cstring(str_id), count, flags)
+}
+
+end_columns :: EndColumns
+
+push_column_clip_rect :: PushColumnClipRect
+
+push_columns_background :: PushColumnsBackground
+
+pop_columns_background :: PopColumnsBackground
+
+get_columns_id :: proc(str_id: string, count: i32) -> ID {
+	return GetColumnsID(semisafe_string_to_cstring(str_id), count)
+}
+
+find_or_create_columns :: FindOrCreateColumns
+
+get_column_offset_from_norm :: GetColumnOffsetFromNorm
+
+get_column_norm_from_offset :: GetColumnNormFromOffset
+
+table_open_context_menu :: TableOpenContextMenu
+
+table_set_column_width :: TableSetColumnWidth
+
+table_set_column_sort_direction :: TableSetColumnSortDirection
+
+table_get_hovered_column :: TableGetHoveredColumn
+
+table_get_header_row_height :: TableGetHeaderRowHeight
+
+table_push_background_channel :: TablePushBackgroundChannel
+
+table_pop_background_channel :: TablePopBackgroundChannel
+
+get_current_table :: GetCurrentTable
+
+table_find_by_id :: TableFindByID
+
+begin_table_ex :: proc(name: string, id: ID, columns_count: i32, flags: Table_Flags = {  }, outer_size: [2]f32 = {0, 0}, inner_width: f32 = 0.0) -> bool {
+	return BeginTableEx(semisafe_string_to_cstring(name), id, columns_count, flags, outer_size, inner_width)
+}
+
+table_begin_init_memory :: TableBeginInitMemory
+
+table_begin_apply_requests :: TableBeginApplyRequests
+
+table_setup_draw_channels :: TableSetupDrawChannels
+
+table_update_layout :: TableUpdateLayout
+
+table_update_borders :: TableUpdateBorders
+
+table_update_columns_weight_from_width :: TableUpdateColumnsWeightFromWidth
+
+table_draw_borders :: TableDrawBorders
+
+table_draw_context_menu :: TableDrawContextMenu
+
+table_begin_context_menu_popup :: TableBeginContextMenuPopup
+
+table_merge_draw_channels :: TableMergeDrawChannels
+
+table_get_instance_data :: TableGetInstanceData
+
+table_get_instance_id :: TableGetInstanceID
+
+table_sort_specs_sanitize :: TableSortSpecsSanitize
+
+table_sort_specs_build :: TableSortSpecsBuild
+
+table_get_column_next_sort_direction :: TableGetColumnNextSortDirection
+
+table_fix_column_sort_direction :: TableFixColumnSortDirection
+
+table_get_column_width_auto :: TableGetColumnWidthAuto
+
+table_begin_row :: TableBeginRow
+
+table_end_row :: TableEndRow
+
+table_begin_cell :: TableBeginCell
+
+table_end_cell :: TableEndCell
+
+table_get_cell_bg_rect :: proc(table: ^Table, column_n: i32) -> (p_out: Rect) {
+	TableGetCellBgRect(&p_out, table, column_n)
+	return
+}
+
+table_get_column_resize_id :: TableGetColumnResizeID
+
+table_get_max_column_width :: TableGetMaxColumnWidth
+
+table_set_column_width_auto_single :: TableSetColumnWidthAutoSingle
+
+table_set_column_width_auto_all :: TableSetColumnWidthAutoAll
+
+table_remove :: TableRemove
 
 table_gc_compact_transient_buffers :: proc {
 	table_gc_compact_transient_buffers_table_ptr,
 	table_gc_compact_transient_buffers_table_temp_data_ptr,
+}
+table_gc_compact_transient_buffers_table_ptr :: TableGcCompactTransientBuffers_TablePtr
+table_gc_compact_transient_buffers_table_temp_data_ptr :: TableGcCompactTransientBuffers_TableTempDataPtr
+
+table_gc_compact_settings :: TableGcCompactSettings
+
+table_load_settings :: TableLoadSettings
+
+table_save_settings :: TableSaveSettings
+
+table_reset_settings :: TableResetSettings
+
+table_get_bound_settings :: TableGetBoundSettings
+
+table_settings_add_settings_handler :: TableSettingsAddSettingsHandler
+
+table_settings_create :: TableSettingsCreate
+
+table_settings_find_by_id :: TableSettingsFindByID
+
+get_current_tab_bar :: GetCurrentTabBar
+
+begin_tab_bar_ex :: BeginTabBarEx
+
+tab_bar_find_tab_by_id :: TabBarFindTabByID
+
+tab_bar_find_tab_by_order :: TabBarFindTabByOrder
+
+tab_bar_get_current_tab :: TabBarGetCurrentTab
+
+tab_bar_get_tab_order :: TabBarGetTabOrder
+
+tab_bar_get_tab_name :: TabBarGetTabName
+
+tab_bar_remove_tab :: TabBarRemoveTab
+
+tab_bar_close_tab :: TabBarCloseTab
+
+tab_bar_queue_focus :: TabBarQueueFocus
+
+tab_bar_queue_reorder :: TabBarQueueReorder
+
+tab_bar_queue_reorder_from_mouse_pos :: TabBarQueueReorderFromMousePos
+
+tab_bar_process_reorder :: TabBarProcessReorder
+
+tab_item_ex :: proc(tab_bar: ^Tab_Bar, label: string, p_open: ^bool, flags: Tab_Item_Flags, docked_window: ^Window) -> bool {
+	return TabItemEx(tab_bar, semisafe_string_to_cstring(label), p_open, flags, docked_window)
 }
 
 tab_item_calc_size :: proc {
 	tab_item_calc_size_str,
 	tab_item_calc_size_window_ptr,
 }
+tab_item_calc_size_str :: proc(p_out: ^[2]f32, label: string, has_close_button_or_unsaved_marker: bool) {
+	TabItemCalcSize_Str(p_out, semisafe_string_to_cstring(label), has_close_button_or_unsaved_marker)
+}
+tab_item_calc_size_window_ptr :: TabItemCalcSize_WindowPtr
+
+tab_item_background :: TabItemBackground
+
+tab_item_label_and_close_button :: proc(draw_list: ^Draw_List, bb: Rect, flags: Tab_Item_Flags, frame_padding: [2]f32, label: string, tab_id: ID, close_button_id: ID, is_contents_visible: bool) -> (out_just_closed: bool, out_text_clipped: bool) {
+	TabItemLabelAndCloseButton(draw_list, bb, flags, frame_padding, semisafe_string_to_cstring(label), tab_id, close_button_id, is_contents_visible, &out_just_closed, &out_text_clipped)
+	return
+}
+
+render_text :: proc(pos: [2]f32, text: string, hide_text_after_hash: bool = true) {
+	RenderText(pos, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), hide_text_after_hash)
+}
+
+render_text_wrapped :: proc(pos: [2]f32, text: string, wrap_width: f32) {
+	RenderTextWrapped(pos, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), wrap_width)
+}
+
+render_text_clipped :: proc(pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32 = {0, 0}, clip_rect: ^Rect = nil) {
+	RenderTextClipped(pos_min, pos_max, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), text_size_if_known, align, clip_rect)
+}
+
+render_text_clipped_ex :: proc(draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, text: string, text_size_if_known: ^[2]f32, align: [2]f32 = {0, 0}, clip_rect: ^Rect = nil) {
+	RenderTextClippedEx(draw_list, pos_min, pos_max, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), text_size_if_known, align, clip_rect)
+}
+
+render_text_ellipsis :: proc(draw_list: ^Draw_List, pos_min: [2]f32, pos_max: [2]f32, clip_max_x: f32, ellipsis_max_x: f32, text: string, text_size_if_known: ^[2]f32) {
+	RenderTextEllipsis(draw_list, pos_min, pos_max, clip_max_x, ellipsis_max_x, raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), text_size_if_known)
+}
+
+render_frame :: RenderFrame
+
+render_frame_border :: RenderFrameBorder
+
+render_color_rect_with_alpha_checkerboard :: RenderColorRectWithAlphaCheckerboard
+
+render_nav_highlight :: RenderNavHighlight
+
+find_rendered_text_end :: proc(text: string) -> cstring {
+	return FindRenderedTextEnd(raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
+}
+
+render_mouse_cursor :: RenderMouseCursor
+
+render_arrow :: RenderArrow
+
+render_bullet :: RenderBullet
+
+render_check_mark :: RenderCheckMark
+
+render_arrow_pointing_at :: RenderArrowPointingAt
+
+render_rect_filled_range_h :: RenderRectFilledRangeH
+
+render_rect_filled_with_hole :: RenderRectFilledWithHole
+
+text_ex :: proc(text: string, flags: Text_Flags = {  }) {
+	TextEx(raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), flags)
+}
+
+button_ex :: proc(label: string, size_arg: [2]f32 = {0, 0}, flags: Button_Flags = {  }) -> bool {
+	return ButtonEx(semisafe_string_to_cstring(label), size_arg, flags)
+}
+
+arrow_button_ex :: proc(str_id: string, dir: Dir, size_arg: [2]f32, flags: Button_Flags = {  }) -> bool {
+	return ArrowButtonEx(semisafe_string_to_cstring(str_id), dir, size_arg, flags)
+}
+
+image_button_ex :: ImageButtonEx
+
+separator_ex :: SeparatorEx
+
+separator_text_ex :: proc(id: ID, label: string, extra_width: f32) {
+	SeparatorTextEx(id, raw_data(label), cast([^]u8) (uintptr(raw_data(label)) + uintptr(len(label))), extra_width)
+}
+
+close_button :: CloseButton
+
+collapse_button :: CollapseButton
+
+scrollbar :: Scrollbar
+
+scrollbar_ex :: ScrollbarEx
+
+get_window_scrollbar_rect :: proc(window: ^Window, axis: Axis) -> (p_out: Rect) {
+	GetWindowScrollbarRect(&p_out, window, axis)
+	return
+}
+
+get_window_scrollbar_id :: GetWindowScrollbarID
+
+get_window_resize_corner_id :: GetWindowResizeCornerID
+
+get_window_resize_border_id :: GetWindowResizeBorderID
+
+button_behavior :: proc(bb: Rect, id: ID, flags: Button_Flags = {  }) -> (orig_ret: bool, out_hovered: bool, out_held: bool) {
+	orig_ret = ButtonBehavior(bb, id, &out_hovered, &out_held, flags)
+	return
+}
+
+drag_behavior :: proc(id: ID, data_type: Data_Type, p_v: rawptr, v_speed: f32, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> bool {
+	return DragBehavior(id, data_type, p_v, v_speed, p_min, p_max, semisafe_string_to_cstring(format), flags)
+}
+
+slider_behavior :: proc(bb: Rect, id: ID, data_type: Data_Type, p_v: rawptr, p_min: rawptr, p_max: rawptr, format: string, flags: Slider_Flags) -> (orig_ret: bool, out_grab_bb: Rect) {
+	orig_ret = SliderBehavior(bb, id, data_type, p_v, p_min, p_max, semisafe_string_to_cstring(format), flags, &out_grab_bb)
+	return
+}
+
+splitter_behavior :: SplitterBehavior
+
+tree_node_behavior :: proc(id: ID, flags: Tree_Node_Flags, label: string) -> bool {
+	return TreeNodeBehavior(id, flags, raw_data(label), cast([^]u8) (uintptr(raw_data(label)) + uintptr(len(label))))
+}
+
+tree_push_override_id :: TreePushOverrideID
+
+tree_node_set_open :: TreeNodeSetOpen
+
+tree_node_update_next_open :: TreeNodeUpdateNextOpen
+
+data_type_get_info :: DataTypeGetInfo
+
+data_type_format_string :: proc(buf: []i8, data_type: Data_Type, p_data: rawptr, format: string) -> i32 {
+	return DataTypeFormatString(raw_data(buf), cast(i32)len(buf), data_type, p_data, semisafe_string_to_cstring(format))
+}
+
+data_type_apply_op :: DataTypeApplyOp
+
+data_type_apply_from_text :: proc(buf: string, data_type: Data_Type, p_data: rawptr, format: string) -> bool {
+	return DataTypeApplyFromText(semisafe_string_to_cstring(buf), data_type, p_data, semisafe_string_to_cstring(format))
+}
+
+data_type_compare :: DataTypeCompare
+
+data_type_clamp :: DataTypeClamp
+
+input_text_ex :: proc(label: string, hint: string, buf: []i8, size_arg: [2]f32, flags: Input_Text_Flags, callback: Input_Text_Callback = nil, user_data: rawptr = nil) -> bool {
+	return InputTextEx(semisafe_string_to_cstring(label), semisafe_string_to_cstring(hint), raw_data(buf), cast(i32)len(buf), size_arg, flags, callback, user_data)
+}
+
+input_text_deactivate_hook :: InputTextDeactivateHook
+
+temp_input_text :: proc(bb: Rect, id: ID, label: string, buf: []i8, flags: Input_Text_Flags) -> bool {
+	return TempInputText(bb, id, semisafe_string_to_cstring(label), raw_data(buf), cast(i32)len(buf), flags)
+}
+
+temp_input_scalar :: proc(bb: Rect, id: ID, label: string, data_type: Data_Type, p_data: rawptr, format: string, p_clamp_min: rawptr = nil, p_clamp_max: rawptr = nil) -> bool {
+	return TempInputScalar(bb, id, semisafe_string_to_cstring(label), data_type, p_data, semisafe_string_to_cstring(format), p_clamp_min, p_clamp_max)
+}
+
+temp_input_is_active :: TempInputIsActive
+
+get_input_text_state :: GetInputTextState
+
+color_tooltip :: proc(text: string, col: ^f32, flags: Color_Edit_Flags) {
+	ColorTooltip(semisafe_string_to_cstring(text), col, flags)
+}
+
+color_edit_options_popup :: ColorEditOptionsPopup
+
+color_picker_options_popup :: ColorPickerOptionsPopup
+
+plot_ex :: proc(plot_type: Plot_Type, label: string, values_getter: #type proc "c"(data: rawptr, idx: i32) -> f32, data: rawptr, values_count: i32, values_offset: i32, overlay_text: string, scale_min: f32, scale_max: f32, size_arg: [2]f32) -> i32 {
+	return PlotEx(plot_type, semisafe_string_to_cstring(label), values_getter, data, values_count, values_offset, semisafe_string_to_cstring(overlay_text), scale_min, scale_max, size_arg)
+}
+
+shade_verts_linear_color_gradient_keep_alpha :: ShadeVertsLinearColorGradientKeepAlpha
+
+shade_verts_linear_uv :: ShadeVertsLinearUV
+
+gc_compact_transient_misc_buffers :: GcCompactTransientMiscBuffers
+
+gc_compact_transient_window_buffers :: GcCompactTransientWindowBuffers
+
+gc_awake_transient_window_buffers :: GcAwakeTransientWindowBuffers
+
+debug_log :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	DebugLog("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+error_check_end_frame_recover :: ErrorCheckEndFrameRecover
+
+error_check_end_window_recover :: ErrorCheckEndWindowRecover
+
+error_check_using_set_cursor_pos_to_extend_parent_boundaries :: ErrorCheckUsingSetCursorPosToExtendParentBoundaries
+
+debug_locate_item :: DebugLocateItem
+
+debug_locate_item_on_hover :: DebugLocateItemOnHover
+
+debug_locate_item_resolve_with_last_item :: DebugLocateItemResolveWithLastItem
+
+debug_draw_item_rect :: DebugDrawItemRect
+
+debug_start_item_picker :: DebugStartItemPicker
+
+show_font_atlas :: ShowFontAtlas
+
+debug_hook_id_info :: DebugHookIdInfo
+
+debug_node_columns :: DebugNodeColumns
+
+debug_node_draw_list :: proc(window: ^Window, draw_list: ^Draw_List, label: string) {
+	DebugNodeDrawList(window, draw_list, semisafe_string_to_cstring(label))
+}
+
+debug_node_draw_cmd_show_mesh_and_bounding_box :: proc(draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) -> (out_draw_list: Draw_List) {
+	DebugNodeDrawCmdShowMeshAndBoundingBox(&out_draw_list, draw_list, draw_cmd, show_mesh, show_aabb)
+	return
+}
+
+debug_node_font :: DebugNodeFont
+
+debug_node_font_glyph :: DebugNodeFontGlyph
+
+debug_node_storage :: proc(storage: ^Storage, label: string) {
+	DebugNodeStorage(storage, semisafe_string_to_cstring(label))
+}
+
+debug_node_tab_bar :: proc(tab_bar: ^Tab_Bar, label: string) {
+	DebugNodeTabBar(tab_bar, semisafe_string_to_cstring(label))
+}
+
+debug_node_table :: DebugNodeTable
+
+debug_node_table_settings :: DebugNodeTableSettings
+
+debug_node_input_text_state :: DebugNodeInputTextState
+
+debug_node_window :: proc(window: ^Window, label: string) {
+	DebugNodeWindow(window, semisafe_string_to_cstring(label))
+}
+
+debug_node_window_settings :: DebugNodeWindowSettings
+
+debug_node_windows_list :: proc(windows: ^Vector(^Window), label: string) {
+	DebugNodeWindowsList(windows, semisafe_string_to_cstring(label))
+}
+
+debug_node_windows_list_by_begin_stack_parent :: proc(windows: []^Window, parent_in_begin_stack: ^Window) {
+	DebugNodeWindowsListByBeginStackParent(raw_data(windows), cast(i32)len(windows), parent_in_begin_stack)
+}
+
+debug_node_viewport :: DebugNodeViewport
+
+debug_render_keyboard_preview :: DebugRenderKeyboardPreview
+
+debug_render_viewport_thumbnail :: DebugRenderViewportThumbnail
+
+is_key_pressed_map :: IsKeyPressedMap
+
+im_font_atlas_get_builder_for_stb_truetype :: ImFontAtlasGetBuilderForStbTruetype
+
+im_font_atlas_build_init :: ImFontAtlasBuildInit
+
+im_font_atlas_build_setup_font :: ImFontAtlasBuildSetupFont
+
+im_font_atlas_build_pack_custom_rects :: ImFontAtlasBuildPackCustomRects
+
+im_font_atlas_build_finish :: ImFontAtlasBuildFinish
+
+im_font_atlas_build_render8bpp_rect_from_string :: proc(atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u8) {
+	ImFontAtlasBuildRender8bppRectFromString(atlas, x, y, w, h, semisafe_string_to_cstring(in_str), in_marker_char, in_marker_pixel_value)
+}
+
+im_font_atlas_build_render32bpp_rect_from_string :: proc(atlas: ^Font_Atlas, x: i32, y: i32, w: i32, h: i32, in_str: string, in_marker_char: i8, in_marker_pixel_value: u32) {
+	ImFontAtlasBuildRender32bppRectFromString(atlas, x, y, w, h, semisafe_string_to_cstring(in_str), in_marker_char, in_marker_pixel_value)
+}
+
+im_font_atlas_build_multiply_calc_lookup_table :: ImFontAtlasBuildMultiplyCalcLookupTable
+
+im_font_atlas_build_multiply_rect_alpha8 :: ImFontAtlasBuildMultiplyRectAlpha8
+
+log_text :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	LogText("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
+text_buffer_appendf :: proc(buffer: ^Text_Buffer, fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	TextBuffer_appendf(buffer, "%s", cstring(raw_data(_fmt_sb.buf)))
+}
+

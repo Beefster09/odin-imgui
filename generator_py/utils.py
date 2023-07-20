@@ -1,5 +1,8 @@
 import re
 
+from pycparser import c_ast
+
+
 TYPE_MAP = {
     'ImS8': 'i8',
     'ImU8': 'u8',
@@ -174,9 +177,9 @@ def camel_split(s: str) -> list[str]:
         if c.isupper():
             if _is_part_of_acronym(start, i):
                 continue
-            result.append(s[start:i])
+            result.append(s[start:i].rstrip('_'))
             start = i
-    result.append(s[start:])
+    result.append(s[start:].rstrip('_'))
     if result[0] == '':
         result = result[1:]
     return result

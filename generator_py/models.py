@@ -78,12 +78,11 @@ class UnionCType:
     fields: list[tuple[str, 'AnyCType']]
 
     def as_odin(self) -> str:
-        return f"""struct #raw_union {{ {
-            ', '.join([
-                f"{name}: {typ.as_odin()}"
-                for name, typ in self.fields
-            ])
-        } }}"""
+        inner = ''.join([
+            f"\t\t{name}: {typ.as_odin()},\n"
+            for name, typ in self.fields
+        ])
+        return f"struct #raw_union {{\n{inner}\t}}"
 
     def is_cstring(self) -> bool:
         return False
@@ -130,7 +129,7 @@ def ast_to_type(node: c_ast.Node) -> AnyCType:
         params: list[CParam] = []
         for param in node.args:
             if isinstance(param, c_ast.EllipsisParam):
-                raise TypeError(param)
+                params.append(CVarArgs())
             else:
                 params.append(CParam(param.name, ast_to_type(param.type)))
 
@@ -186,6 +185,24 @@ class CParam:
             return f"{name}: {typename} = {self.default}"
         else:
             return f"{name}: {typename}"
+
+
+@dataclass
+class _VA:
+    def as_odin(self):
+        return "..any"
+
+
+@dataclass
+class CVarArgs:
+    name: str = '#c_vararg _args_'
+    type: _VA = field(default_factory=_VA)
+
+    def is_out(self):
+        return False
+
+    def as_odin(self):
+        return "#c_vararg _args_: ..any"
 
 
 @dataclass(kw_only=True)
@@ -249,6 +266,13 @@ class Bits:
     def __str__(self):
         return f"{self.value} << {self.shift}"
 
+    def as_flags(self):
+        flagbits = []
+        for i, bit in enumerate(reversed(bin(self.value))):
+            if bit == '1':
+                flagbits.append(f".Bit{self.shift + i}")
+        return f"{{ {', '.join(flagbits)} }}"
+
 
 @dataclass
 class MultiFlag:
@@ -267,20 +291,44 @@ class Mask:
 
 
 @dataclass
+class Expr:
+    expr_node: str
+
+    def __str__(self):
+        return odin_expr(self.expr_node)
+
+
+@dataclass
 class CEnum:
     name: str
-    members: dict[str, int | FlagValue | Bits | Mask | MultiFlag | None]
+    members: dict[str, int | FlagValue | Bits | Mask | MultiFlag | Expr | None]
     is_flags: bool = False
 
     @classmethod
     def from_ast(cls, node: c_ast.Enum, name: str) -> Self:
         enum = cls(node.name or name, {})
 
+        bits_groups: dict[int, Bits] = {}
+        prev_member = None
         for member in node.values:
             value = cls._value(member.value)
             enum.members[member.name] = value
-            if isinstance(value, (FlagValue)):
+
+            if isinstance(value, FlagValue) and member.name.startswith(enum.name):
                 enum.is_flags = True
+
+            if isinstance(value, Bits):
+                if isinstance(prev_flag := enum.members[prev_member], FlagValue):
+                    enum.members[prev_member] = b = Bits(1, prev_flag.flag)
+                    bits_groups[value.shift] = [b]
+                bits_groups[value.shift].append(value)
+
+            prev_member = member.name
+
+        for shift, values in bits_groups.items():
+            bits_needed = max(v.value.bit_length() for v in values)
+            for i in range(bits_needed):
+                enum.members[f"{enum.name.rstrip('_')}_Bit{shift + i}"] = FlagValue(shift + i)
 
         return enum
 
@@ -294,6 +342,12 @@ class CEnum:
                 return Mask(value.value)
             else:
                 return int(value.value)
+
+        elif isinstance(value, c_ast.UnaryOp):
+            if value.op == '-':
+                inner = cls._value(value.expr)
+                if isinstance(inner, int):
+                    return -inner
 
         elif isinstance(value, c_ast.BinaryOp):
             if value.op == '<<':
@@ -319,6 +373,8 @@ class CEnum:
                 _walk(value.left)
                 _walk(value.right)
                 return MultiFlag(flags)
+
+        return Expr(value)
 
     def value_as_odin(self, cpp_value: str):
         if cpp_value.isdigit():
@@ -365,6 +421,13 @@ def odin_expr(value_node) -> str:
         return str(value_node)
 
     elif isinstance(value_node, c_ast.ID):
+        ident: str = value_node.name
+        if '_' in ident:
+            _, suffix = ident.rsplit('_', 1)
+            if suffix.isupper():
+                enum, _ = ident.split('_', 1)
+                return f"{odin_typename(enum)}.{odin_enumname(ident)}"
+
         return value_node.name
 
     elif isinstance(value_node, c_ast.Constant):

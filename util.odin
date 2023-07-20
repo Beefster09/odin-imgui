@@ -53,7 +53,7 @@ _cleanup_context :: proc (mem: rawptr) {
 }
 
 @private
-_alloc_wrapper :: proc "c" (size: i64, ctx_raw: rawptr) -> rawptr {
+_alloc_wrapper :: proc "c" (size: int, ctx_raw: rawptr) -> rawptr {
     context = (cast(^runtime.Context) ctx_raw)^
     mem, err := runtime.mem_alloc(int(size))
     if err != .None {

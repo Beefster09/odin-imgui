@@ -4,279 +4,94 @@
 
 package imgui
 
-Cond :: bit_set[ImGuiCond_; u32]
-Draw_Flags :: bit_set[ImDrawFlags_; u32]
-Draw_List_Flags :: bit_set[ImDrawListFlags_; u32]
-Font_Atlas_Flags :: bit_set[ImFontAtlasFlags_; u32]
-Backend_Flags :: bit_set[ImGuiBackendFlags_; u32]
-Button_Flags :: bit_set[ImGuiButtonFlags_; u32]
-Color_Edit_Flags :: bit_set[ImGuiColorEditFlags_; u32]
-Config_Flags :: bit_set[ImGuiConfigFlags_; u32]
-Combo_Flags :: bit_set[ImGuiComboFlags_; u32]
-Drag_Drop_Flags :: bit_set[ImGuiDragDropFlags_; u32]
-Focused_Flags :: bit_set[ImGuiFocusedFlags_; u32]
-Hovered_Flags :: bit_set[ImGuiHoveredFlags_; u32]
-Input_Text_Flags :: bit_set[ImGuiInputTextFlags_; u32]
-Key_Chord :: distinct i32
-Popup_Flags :: bit_set[ImGuiPopupFlags_; u32]
-Selectable_Flags :: bit_set[ImGuiSelectableFlags_; u32]
-Slider_Flags :: bit_set[ImGuiSliderFlags_; u32]
-Tab_Bar_Flags :: bit_set[ImGuiTabBarFlags_; u32]
-Tab_Item_Flags :: bit_set[ImGuiTabItemFlags_; u32]
-Table_Column_Flags :: bit_set[ImGuiTableColumnFlags_; u32]
-Table_Row_Flags :: bit_set[ImGuiTableRowFlags_; u32]
-Tree_Node_Flags :: bit_set[ImGuiTreeNodeFlags_; u32]
-Viewport_Flags :: bit_set[ImGuiViewportFlags_; u32]
-Window_Flags :: bit_set[ImGuiWindowFlags_; u32]
-Draw_Idx :: distinct u16
-ID :: distinct u32
 
-ImGuiWindowFlags_ :: enum {
-	No_Title_Bar = 0,
-	No_Resize = 1,
-	No_Move = 2,
-	No_Scrollbar = 3,
-	No_Scroll_With_Mouse = 4,
-	No_Collapse = 5,
-	Always_Auto_Resize = 6,
-	No_Background = 7,
-	No_Saved_Settings = 8,
-	No_Mouse_Inputs = 9,
-	Menu_Bar = 10,
-	Horizontal_Scrollbar = 11,
-	No_Focus_On_Appearing = 12,
-	No_Bring_To_Front_On_Focus = 13,
-	Always_Vertical_Scrollbar = 14,
-	Always_Horizontal_Scrollbar = 15,
-	Always_Use_Window_Padding = 16,
-	No_Nav_Inputs = 18,
-	No_Nav_Focus = 19,
-	Unsaved_Document = 20,
-	Nav_Flattened = 23,
-	Child_Window = 24,
-	Tooltip = 25,
-	Popup = 26,
-	Modal = 27,
-	Child_Menu = 28,
-}
-Window_Flags_NO_NAV :: Window_Flags{ .No_Nav_Inputs, .No_Nav_Focus }
-Window_Flags_NO_DECORATION :: Window_Flags{ .No_Title_Bar, .No_Resize, .No_Scrollbar, .No_Collapse }
-Window_Flags_NO_INPUTS :: Window_Flags{ .No_Mouse_Inputs, .No_Nav_Inputs, .No_Nav_Focus }
+// === Function Types ===
 
-ImGuiInputTextFlags_ :: enum {
-	Chars_Decimal = 0,
-	Chars_Hexadecimal = 1,
-	Chars_Uppercase = 2,
-	Chars_No_Blank = 3,
-	Auto_Select_All = 4,
-	Enter_Returns_True = 5,
-	Callback_Completion = 6,
-	Callback_History = 7,
-	Callback_Always = 8,
-	Callback_Char_Filter = 9,
-	Allow_Tab_Input = 10,
-	Ctrl_Enter_For_New_Line = 11,
-	No_Horizontal_Scroll = 12,
-	Always_Overwrite = 13,
-	Read_Only = 14,
-	Password = 15,
-	No_Undo_Redo = 16,
-	Chars_Scientific = 17,
-	Callback_Resize = 18,
-	Callback_Edit = 19,
-	Escape_Clears_All = 20,
+Input_Text_Callback :: #type proc "c"(data: ^Input_Text_Callback_Data) -> i32
+Size_Callback :: #type proc "c"(data: ^Size_Callback_Data)
+Mem_Alloc_Func :: #type proc "c"(sz: int, user_data: rawptr) -> rawptr
+Mem_Free_Func :: #type proc "c"(ptr: rawptr, user_data: rawptr)
+Draw_Callback :: #type proc "c"(parent_list: ^Draw_List, cmd: ^Draw_Cmd)
+Error_Log_Callback :: #type proc "c"(user_data: rawptr, fmt: cstring, #c_vararg _args_: ..any)
+Context_Hook_Callback :: #type proc "c"(ctx: ^Context, hook: ^Context_Hook)
+
+// === Enums ===
+
+Axis :: enum {
+	None = -1,
+	X = 0,
+	Y = 1,
 }
 
-ImGuiTreeNodeFlags_ :: enum {
-	Selected = 0,
-	Framed = 1,
-	Allow_Item_Overlap = 2,
-	No_Tree_Push_On_Open = 3,
-	No_Auto_Open_On_Log = 4,
-	Default_Open = 5,
-	Open_On_Double_Click = 6,
-	Open_On_Arrow = 7,
-	Leaf = 8,
-	Bullet = 9,
-	Frame_Padding = 10,
-	Span_Avail_Width = 11,
-	Span_Full_Width = 12,
-	Nav_Left_Jumps_Back_Here = 13,
-}
-Tree_Node_Flags_COLLAPSING_HEADER :: Tree_Node_Flags{ .Framed, .No_Tree_Push_On_Open, .No_Auto_Open_On_Log }
-
-ImGuiPopupFlags_ :: enum {
-	No_Open_Over_Existing_Popup = 5,
-	No_Open_Over_Items = 6,
-	Any_Popup_Id = 7,
-	Any_Popup_Level = 8,
-}
-Popup_Flags_ANY_POPUP :: Popup_Flags{ .Any_Popup_Id, .Any_Popup_Level }
-
-ImGuiSelectableFlags_ :: enum {
-	Dont_Close_Popups = 0,
-	Span_All_Columns = 1,
-	Allow_Double_Click = 2,
-	Disabled = 3,
-	Allow_Item_Overlap = 4,
-}
-
-ImGuiComboFlags_ :: enum {
-	Popup_Align_Left = 0,
-	Height_Small = 1,
-	Height_Regular = 2,
-	Height_Large = 3,
-	Height_Largest = 4,
-	No_Arrow_Button = 5,
-	No_Preview = 6,
-}
-Combo_Flags_HEIGHT_MASK :: Combo_Flags{ .Height_Small, .Height_Regular, .Height_Large, .Height_Largest }
-
-ImGuiTabBarFlags_ :: enum {
-	Reorderable = 0,
-	Auto_Select_New_Tabs = 1,
-	Tab_List_Popup_Button = 2,
-	No_Close_With_Middle_Mouse_Button = 3,
-	No_Tab_List_Scrolling_Buttons = 4,
-	No_Tooltip = 5,
-	Fitting_Policy_Resize_Down = 6,
-	Fitting_Policy_Scroll = 7,
-}
-Tab_Bar_Flags_FITTING_POLICY_MASK :: Tab_Bar_Flags{ .Fitting_Policy_Resize_Down, .Fitting_Policy_Scroll }
-
-ImGuiTabItemFlags_ :: enum {
-	Unsaved_Document = 0,
-	Set_Selected = 1,
-	No_Close_With_Middle_Mouse_Button = 2,
-	No_Push_Id = 3,
-	No_Tooltip = 4,
-	No_Reorder = 5,
-	Leading = 6,
-	Trailing = 7,
+Col :: enum {
+	Text,
+	Text_Disabled,
+	Window_Bg,
+	Child_Bg,
+	Popup_Bg,
+	Border,
+	Border_Shadow,
+	Frame_Bg,
+	Frame_Bg_Hovered,
+	Frame_Bg_Active,
+	Title_Bg,
+	Title_Bg_Active,
+	Title_Bg_Collapsed,
+	Menu_Bar_Bg,
+	Scrollbar_Bg,
+	Scrollbar_Grab,
+	Scrollbar_Grab_Hovered,
+	Scrollbar_Grab_Active,
+	Check_Mark,
+	Slider_Grab,
+	Slider_Grab_Active,
+	Button,
+	Button_Hovered,
+	Button_Active,
+	Header,
+	Header_Hovered,
+	Header_Active,
+	Separator,
+	Separator_Hovered,
+	Separator_Active,
+	Resize_Grip,
+	Resize_Grip_Hovered,
+	Resize_Grip_Active,
+	Tab,
+	Tab_Hovered,
+	Tab_Active,
+	Tab_Unfocused,
+	Tab_Unfocused_Active,
+	Plot_Lines,
+	Plot_Lines_Hovered,
+	Plot_Histogram,
+	Plot_Histogram_Hovered,
+	Table_Header_Bg,
+	Table_Border_Strong,
+	Table_Border_Light,
+	Table_Row_Bg,
+	Table_Row_Bg_Alt,
+	Text_Selected_Bg,
+	Drag_Drop_Target,
+	Nav_Highlight,
+	Nav_Windowing_Highlight,
+	Nav_Windowing_Dim_Bg,
+	Modal_Window_Dim_Bg,
+	COUNT,
 }
 
-Table_Flags :: distinct i32  // SPECIAL CASE GEN
-/* *** UGLY DEFINITIONS ON THIS LINE FOR GENERATOR IMPLEMENTATION CONVENIENCE; DO NOT USE THE CONSTANTS ON THIS LINE! *** */ImGuiTableFlags_None::Table_Flags(0);ImGuiTableFlags_Resizable::Table_Flags((1 << 0));ImGuiTableFlags_Reorderable::Table_Flags((1 << 1));ImGuiTableFlags_Hideable::Table_Flags((1 << 2));ImGuiTableFlags_Sortable::Table_Flags((1 << 3));ImGuiTableFlags_NoSavedSettings::Table_Flags((1 << 4));ImGuiTableFlags_ContextMenuInBody::Table_Flags((1 << 5));ImGuiTableFlags_RowBg::Table_Flags((1 << 6));ImGuiTableFlags_BordersInnerH::Table_Flags((1 << 7));ImGuiTableFlags_BordersOuterH::Table_Flags((1 << 8));ImGuiTableFlags_BordersInnerV::Table_Flags((1 << 9));ImGuiTableFlags_BordersOuterV::Table_Flags((1 << 10));ImGuiTableFlags_BordersH::Table_Flags((ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_BordersV::Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterV));ImGuiTableFlags_BordersInner::Table_Flags((ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH));ImGuiTableFlags_BordersOuter::Table_Flags((ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_BordersOuterH));ImGuiTableFlags_Borders::Table_Flags((ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersOuter));ImGuiTableFlags_NoBordersInBody::Table_Flags((1 << 11));ImGuiTableFlags_NoBordersInBodyUntilResize::Table_Flags((1 << 12));ImGuiTableFlags_SizingFixedFit::Table_Flags((1 << 13));ImGuiTableFlags_SizingFixedSame::Table_Flags((2 << 13));ImGuiTableFlags_SizingStretchProp::Table_Flags((3 << 13));ImGuiTableFlags_SizingStretchSame::Table_Flags((4 << 13));ImGuiTableFlags_NoHostExtendX::Table_Flags((1 << 16));ImGuiTableFlags_NoHostExtendY::Table_Flags((1 << 17));ImGuiTableFlags_NoKeepColumnsVisible::Table_Flags((1 << 18));ImGuiTableFlags_PreciseWidths::Table_Flags((1 << 19));ImGuiTableFlags_NoClip::Table_Flags((1 << 20));ImGuiTableFlags_PadOuterX::Table_Flags((1 << 21));ImGuiTableFlags_NoPadOuterX::Table_Flags((1 << 22));ImGuiTableFlags_NoPadInnerX::Table_Flags((1 << 23));ImGuiTableFlags_ScrollX::Table_Flags((1 << 24));ImGuiTableFlags_ScrollY::Table_Flags((1 << 25));ImGuiTableFlags_SortMulti::Table_Flags((1 << 26));ImGuiTableFlags_SortTristate::Table_Flags((1 << 27));ImGuiTableFlags_SizingMask_::Table_Flags((((ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_SizingFixedSame) | ImGuiTableFlags_SizingStretchProp) | ImGuiTableFlags_SizingStretchSame));
-// Use the following constants instead:
-	TF_NONE :: ImGuiTableFlags_None
-	TF_RESIZABLE :: ImGuiTableFlags_Resizable
-	TF_REORDERABLE :: ImGuiTableFlags_Reorderable
-	TF_HIDEABLE :: ImGuiTableFlags_Hideable
-	TF_SORTABLE :: ImGuiTableFlags_Sortable
-	TF_NO_SAVED_SETTINGS :: ImGuiTableFlags_NoSavedSettings
-	TF_CONTEXT_MENU_IN_BODY :: ImGuiTableFlags_ContextMenuInBody
-	TF_ROW_BG :: ImGuiTableFlags_RowBg
-	TF_BORDERS_INNER_H :: ImGuiTableFlags_BordersInnerH
-	TF_BORDERS_OUTER_H :: ImGuiTableFlags_BordersOuterH
-	TF_BORDERS_INNER_V :: ImGuiTableFlags_BordersInnerV
-	TF_BORDERS_OUTER_V :: ImGuiTableFlags_BordersOuterV
-	TF_BORDERS_H :: ImGuiTableFlags_BordersH
-	TF_BORDERS_V :: ImGuiTableFlags_BordersV
-	TF_BORDERS_INNER :: ImGuiTableFlags_BordersInner
-	TF_BORDERS_OUTER :: ImGuiTableFlags_BordersOuter
-	TF_BORDERS :: ImGuiTableFlags_Borders
-	TF_NO_BORDERS_IN_BODY :: ImGuiTableFlags_NoBordersInBody
-	TF_NO_BORDERS_IN_BODY_UNTIL_RESIZE :: ImGuiTableFlags_NoBordersInBodyUntilResize
-	TF_SIZING_FIXED_FIT :: ImGuiTableFlags_SizingFixedFit
-	TF_SIZING_FIXED_SAME :: ImGuiTableFlags_SizingFixedSame
-	TF_SIZING_STRETCH_PROP :: ImGuiTableFlags_SizingStretchProp
-	TF_SIZING_STRETCH_SAME :: ImGuiTableFlags_SizingStretchSame
-	TF_NO_HOST_EXTEND_X :: ImGuiTableFlags_NoHostExtendX
-	TF_NO_HOST_EXTEND_Y :: ImGuiTableFlags_NoHostExtendY
-	TF_NO_KEEP_COLUMNS_VISIBLE :: ImGuiTableFlags_NoKeepColumnsVisible
-	TF_PRECISE_WIDTHS :: ImGuiTableFlags_PreciseWidths
-	TF_NO_CLIP :: ImGuiTableFlags_NoClip
-	TF_PAD_OUTER_X :: ImGuiTableFlags_PadOuterX
-	TF_NO_PAD_OUTER_X :: ImGuiTableFlags_NoPadOuterX
-	TF_NO_PAD_INNER_X :: ImGuiTableFlags_NoPadInnerX
-	TF_SCROLL_X :: ImGuiTableFlags_ScrollX
-	TF_SCROLL_Y :: ImGuiTableFlags_ScrollY
-	TF_SORT_MULTI :: ImGuiTableFlags_SortMulti
-	TF_SORT_TRISTATE :: ImGuiTableFlags_SortTristate
-	TF_SIZING_MASK :: ImGuiTableFlags_SizingMask_
-// - END OF Table_Flags constants -
-
-ImGuiTableColumnFlags_ :: enum {
-	Disabled = 0,
-	Default_Hide = 1,
-	Default_Sort = 2,
-	Width_Stretch = 3,
-	Width_Fixed = 4,
-	No_Resize = 5,
-	No_Reorder = 6,
-	No_Hide = 7,
-	No_Clip = 8,
-	No_Sort = 9,
-	No_Sort_Ascending = 10,
-	No_Sort_Descending = 11,
-	No_Header_Label = 12,
-	No_Header_Width = 13,
-	Prefer_Sort_Ascending = 14,
-	Prefer_Sort_Descending = 15,
-	Indent_Enable = 16,
-	Indent_Disable = 17,
-	Is_Enabled = 24,
-	Is_Visible = 25,
-	Is_Sorted = 26,
-	Is_Hovered = 27,
-	No_Direct_Resize_ = 30,
-}
-Table_Column_Flags_WIDTH_MASK :: Table_Column_Flags{ .Width_Stretch, .Width_Fixed }
-Table_Column_Flags_INDENT_MASK :: Table_Column_Flags{ .Indent_Enable, .Indent_Disable }
-Table_Column_Flags_STATUS_MASK :: Table_Column_Flags{ .Is_Enabled, .Is_Visible, .Is_Sorted, .Is_Hovered }
-
-ImGuiTableRowFlags_ :: enum {
-	Headers = 0,
+Context_Hook_Type :: enum {
+	New_Frame_Pre,
+	New_Frame_Post,
+	End_Frame_Pre,
+	End_Frame_Post,
+	Render_Pre,
+	Render_Post,
+	Shutdown,
+	Pending_Removal,
 }
 
-Table_Bg_Target :: enum i32 {
-	None = 0,
-	Row_Bg0 = 1,
-	Row_Bg1 = 2,
-	Cell_Bg = 3,
-}
-
-
-
-ImGuiFocusedFlags_ :: enum {
-	Child_Windows = 0,
-	Root_Window = 1,
-	Any_Window = 2,
-	No_Popup_Hierarchy = 3,
-}
-Focused_Flags_ROOT_AND_CHILD_WINDOWS :: Focused_Flags{ .Root_Window, .Child_Windows }
-
-ImGuiHoveredFlags_ :: enum {
-	Child_Windows = 0,
-	Root_Window = 1,
-	Any_Window = 2,
-	No_Popup_Hierarchy = 3,
-	Allow_When_Blocked_By_Popup = 5,
-	Allow_When_Blocked_By_Active_Item = 7,
-	Allow_When_Overlapped = 8,
-	Allow_When_Disabled = 9,
-	No_Nav_Override = 10,
-	Delay_Normal = 11,
-	Delay_Short = 12,
-	No_Shared_Delay = 13,
-}
-Hovered_Flags_RECT_ONLY :: Hovered_Flags{ .Allow_When_Blocked_By_Popup, .Allow_When_Blocked_By_Active_Item, .Allow_When_Overlapped }
-Hovered_Flags_ROOT_AND_CHILD_WINDOWS :: Hovered_Flags{ .Root_Window, .Child_Windows }
-
-ImGuiDragDropFlags_ :: enum {
-	Source_No_Preview_Tooltip = 0,
-	Source_No_Disable_Hover = 1,
-	Source_No_Hold_To_Open_Others = 2,
-	Source_Allow_Null_ID = 3,
-	Source_Extern = 4,
-	Source_Auto_Expire_Payload = 5,
-	Accept_Before_Delivery = 10,
-	Accept_No_Draw_Default_Rect = 11,
-	Accept_No_Preview_Tooltip = 12,
-}
-Drag_Drop_Flags_ACCEPT_PEEK_ONLY :: Drag_Drop_Flags{ .Accept_Before_Delivery, .Accept_No_Draw_Default_Rect }
-
-Data_Type :: enum i32 {
+Data_Type :: enum {
 	S8,
 	U8,
 	S16,
@@ -287,31 +102,39 @@ Data_Type :: enum i32 {
 	U64,
 	Float,
 	Double,
+	COUNT,
 }
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiDataType_COUNT::len(Data_Type);
-Data_Type_COUNT :: ImGuiDataType_COUNT
 
-
-Dir :: enum i32 {
-	None = (-1),
+Dir :: enum {
+	None = -1,
 	Left = 0,
 	Right = 1,
 	Up = 2,
 	Down = 3,
+	COUNT,
 }
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiDir_COUNT::4;
-Dir_COUNT :: ImGuiDir_COUNT
 
-
-Sort_Direction :: enum i32 {
+Input_Event_Type :: enum {
 	None = 0,
-	Ascending = 1,
-	Descending = 2,
+	Mouse_Pos,
+	Mouse_Wheel,
+	Mouse_Button,
+	Key,
+	Text,
+	Focus,
+	COUNT,
 }
 
+Input_Source :: enum {
+	None = 0,
+	Mouse,
+	Keyboard,
+	Gamepad,
+	Clipboard,
+	COUNT,
+}
 
-
-Key :: enum i32 {
+Key :: enum {
 	None = 0,
 	Tab = 512,
 	Left_Arrow = 513,
@@ -453,24 +276,74 @@ Key :: enum i32 {
 	Reserved_For_Mod_Shift = 649,
 	Reserved_For_Mod_Alt = 650,
 	Reserved_For_Mod_Super = 651,
+	COUNT = 652,
+	Named_Key_BEGIN = 512,
+	Named_Key_END = COUNT,
+	Named_Key_COUNT = (Named_Key_END - Named_Key_BEGIN),
+	Keys_Data_SIZE = COUNT,
+	Keys_Data_OFFSET = 0,
 }
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiKey_COUNT::652;ImGuiMod_None::0;ImGuiMod_Ctrl::(1 << 12);ImGuiMod_Shift::(1 << 13);ImGuiMod_Alt::(1 << 14);ImGuiMod_Super::(1 << 15);ImGuiMod_Shortcut::(1 << 11);ImGuiMod_Mask_::0xF800;ImGuiKey_NamedKey_BEGIN::512;ImGuiKey_NamedKey_END::ImGuiKey_COUNT;ImGuiKey_NamedKey_COUNT::(ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN);ImGuiKey_KeysData_SIZE::ImGuiKey_COUNT;ImGuiKey_KeysData_OFFSET::0;
-Key_COUNT :: ImGuiKey_COUNT
-Key_None :: ImGuiMod_None
-Key_Ctrl :: ImGuiMod_Ctrl
-Key_Shift :: ImGuiMod_Shift
-Key_Alt :: ImGuiMod_Alt
-Key_Super :: ImGuiMod_Super
-Key_Shortcut :: ImGuiMod_Shortcut
-Key_Mask_ :: ImGuiMod_Mask_
-Key_Named_Key__BEGIN :: ImGuiKey_NamedKey_BEGIN
-Key_Named_Key__END :: ImGuiKey_NamedKey_END
-Key_Named_Key__COUNT :: ImGuiKey_NamedKey_COUNT
-Key_Keys_Data__SIZE :: ImGuiKey_KeysData_SIZE
-Key_Keys_Data__OFFSET :: ImGuiKey_KeysData_OFFSET
+ImGuiMod_None :: 0
+ImGuiMod_Ctrl :: 1 << 12
+ImGuiMod_Shift :: 1 << 13
+ImGuiMod_Alt :: 1 << 14
+ImGuiMod_Super :: 1 << 15
+ImGuiMod_Shortcut :: 1 << 11
+ImGuiMod_Mask_ :: 0xF800
 
+Layout_Type :: enum {
+	Horizontal = 0,
+	Vertical = 1,
+}
 
-Nav_Input :: enum i32 {
+Loc_Key :: enum {
+	Table_Size_One = 0,
+	Table_Size_All_Fit = 1,
+	Table_Size_All_Default = 2,
+	Table_Reset_Order = 3,
+	Windowing_Main_Menu_Bar = 4,
+	Windowing_Popup = 5,
+	Windowing_Untitled = 6,
+	COUNT = 7,
+}
+
+Log_Type :: enum {
+	None = 0,
+	TTY,
+	File,
+	Buffer,
+	Clipboard,
+}
+
+Mouse_Button :: enum {
+	Left = 0,
+	Right = 1,
+	Middle = 2,
+	COUNT = 5,
+}
+
+Mouse_Cursor :: enum {
+	None = -1,
+	Arrow = 0,
+	Text_Input,
+	Resize_All,
+	Resize_NS,
+	Resize_EW,
+	Resize_NESW,
+	Resize_NWSE,
+	Hand,
+	Not_Allowed,
+	COUNT,
+}
+
+Mouse_Source :: enum {
+	Mouse = 0,
+	Touch_Screen = 1,
+	Pen = 2,
+	COUNT = 3,
+}
+
+Nav_Input :: enum {
 	Activate,
 	Cancel,
 	Input,
@@ -487,89 +360,33 @@ Nav_Input :: enum i32 {
 	Focus_Next,
 	Tweak_Slow,
 	Tweak_Fast,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiNavInput_COUNT::len(Nav_Input);
-Nav_Input_COUNT :: ImGuiNavInput_COUNT
-
-
-ImGuiConfigFlags_ :: enum {
-	Nav_Enable_Keyboard = 0,
-	Nav_Enable_Gamepad = 1,
-	Nav_Enable_Set_Mouse_Pos = 2,
-	Nav_No_Capture_Keyboard = 3,
-	No_Mouse = 4,
-	No_Mouse_Cursor_Change = 5,
-	Is_S_RGB = 20,
-	Is_Touch_Screen = 21,
+	COUNT,
 }
 
-ImGuiBackendFlags_ :: enum {
-	Has_Gamepad = 0,
-	Has_Mouse_Cursors = 1,
-	Has_Set_Mouse_Pos = 2,
-	Renderer_Has_Vtx_Offset = 3,
+Nav_Layer :: enum {
+	Main = 0,
+	Menu = 1,
+	COUNT,
 }
 
-Col :: enum i32 {
-	Text,
-	Text_Disabled,
-	Window_Bg,
-	Child_Bg,
-	Popup_Bg,
-	Border,
-	Border_Shadow,
-	Frame_Bg,
-	Frame_Bg_Hovered,
-	Frame_Bg_Active,
-	Title_Bg,
-	Title_Bg_Active,
-	Title_Bg_Collapsed,
-	Menu_Bar_Bg,
-	Scrollbar_Bg,
-	Scrollbar_Grab,
-	Scrollbar_Grab_Hovered,
-	Scrollbar_Grab_Active,
-	Check_Mark,
-	Slider_Grab,
-	Slider_Grab_Active,
-	Button,
-	Button_Hovered,
-	Button_Active,
-	Header,
-	Header_Hovered,
-	Header_Active,
-	Separator,
-	Separator_Hovered,
-	Separator_Active,
-	Resize_Grip,
-	Resize_Grip_Hovered,
-	Resize_Grip_Active,
-	Tab,
-	Tab_Hovered,
-	Tab_Active,
-	Tab_Unfocused,
-	Tab_Unfocused_Active,
-	Plot_Lines,
-	Plot_Lines_Hovered,
-	Plot_Histogram,
-	Plot_Histogram_Hovered,
-	Table_Header_Bg,
-	Table_Border_Strong,
-	Table_Border_Light,
-	Table_Row_Bg,
-	Table_Row_Bg_Alt,
-	Text_Selected_Bg,
-	Drag_Drop_Target,
-	Nav_Highlight,
-	Nav_Windowing_Highlight,
-	Nav_Windowing_Dim_Bg,
-	Modal_Window_Dim_Bg,
+Plot_Type :: enum {
+	Lines,
+	Histogram,
 }
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiCol_COUNT::len(Col);
-Col_COUNT :: ImGuiCol_COUNT
 
+Popup_Position_Policy :: enum {
+	Default,
+	Combo_Box,
+	Tooltip,
+}
 
-Style_Var :: enum i32 {
+Sort_Direction :: enum {
+	None = 0,
+	Ascending = 1,
+	Descending = 2,
+}
+
+Style_Var :: enum {
 	Alpha,
 	Disabled_Alpha,
 	Window_Padding,
@@ -598,19 +415,78 @@ Style_Var :: enum i32 {
 	Separator_Text_Border_Size,
 	Separator_Text_Align,
 	Separator_Text_Padding,
+	COUNT,
 }
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiStyleVar_COUNT::len(Style_Var);
-Style_Var_COUNT :: ImGuiStyleVar_COUNT
 
+Table_Bg_Target :: enum {
+	None = 0,
+	Row_Bg0 = 1,
+	Row_Bg1 = 2,
+	Cell_Bg = 3,
+}
 
-ImGuiButtonFlags_ :: enum {
+Draw_Flags :: bit_set[Draw_Flags_; u32]
+Draw_Flags_ :: enum {
+	Closed = 0,
+	Round_Corners_Top_Left = 4,
+	Round_Corners_Top_Right = 5,
+	Round_Corners_Bottom_Left = 6,
+	Round_Corners_Bottom_Right = 7,
+	Round_Corners_None = 8,
+}
+Draw_Flags_None :: Draw_Flags{}
+Draw_Flags_Round_Corners_Top :: Draw_Flags{ .Round_Corners_Top_Left, .Round_Corners_Top_Right }
+Draw_Flags_Round_Corners_Bottom :: Draw_Flags{ .Round_Corners_Bottom_Left, .Round_Corners_Bottom_Right }
+Draw_Flags_Round_Corners_Left :: Draw_Flags{ .Round_Corners_Bottom_Left, .Round_Corners_Top_Left }
+Draw_Flags_Round_Corners_Right :: Draw_Flags{ .Round_Corners_Bottom_Right, .Round_Corners_Top_Right }
+Draw_Flags_Round_Corners_All :: Draw_Flags{ .Round_Corners_Top_Left, .Round_Corners_Top_Right, .Round_Corners_Bottom_Left, .Round_Corners_Bottom_Right }
+Draw_Flags_Round_Corners_Mask :: Draw_Flags{ .Round_Corners_None } | Draw_Flags_Round_Corners_All
+
+Draw_List_Flags :: bit_set[Draw_List_Flags_; u32]
+Draw_List_Flags_ :: enum {
+	Anti_Aliased_Lines = 0,
+	Anti_Aliased_Lines_Use_Tex = 1,
+	Anti_Aliased_Fill = 2,
+	Allow_Vtx_Offset = 3,
+}
+Draw_List_Flags_None :: Draw_List_Flags{}
+
+Font_Atlas_Flags :: bit_set[Font_Atlas_Flags_; u32]
+Font_Atlas_Flags_ :: enum {
+	No_Power_Of_Two_Height = 0,
+	No_Mouse_Cursors = 1,
+	No_Baked_Lines = 2,
+}
+Font_Atlas_Flags_None :: Font_Atlas_Flags{}
+
+Activate_Flags :: bit_set[Activate_Flags_; u32]
+Activate_Flags_ :: enum {
+	Prefer_Input = 0,
+	Prefer_Tweak = 1,
+	Try_To_Preserve_State = 2,
+}
+Activate_Flags_None :: Activate_Flags{}
+
+Backend_Flags :: bit_set[Backend_Flags_; u32]
+Backend_Flags_ :: enum {
+	Has_Gamepad = 0,
+	Has_Mouse_Cursors = 1,
+	Has_Set_Mouse_Pos = 2,
+	Renderer_Has_Vtx_Offset = 3,
+}
+Backend_Flags_None :: Backend_Flags{}
+
+Button_Flags :: bit_set[Button_Flags_; u32]
+Button_Flags_ :: enum {
 	Mouse_Button_Left = 0,
 	Mouse_Button_Right = 1,
 	Mouse_Button_Middle = 2,
 }
-Button_Flags_MOUSE_BUTTON_MASK :: Button_Flags{ .Mouse_Button_Left, .Mouse_Button_Right, .Mouse_Button_Middle }
+Button_Flags_None :: Button_Flags{}
+Button_Flags_Mouse_Button_Mask :: Button_Flags{ .Mouse_Button_Left, .Mouse_Button_Right, .Mouse_Button_Middle }
 
-ImGuiColorEditFlags_ :: enum {
+Color_Edit_Flags :: bit_set[Color_Edit_Flags_; u32]
+Color_Edit_Flags_ :: enum {
 	No_Alpha = 1,
 	No_Picker = 2,
 	No_Options = 3,
@@ -635,59 +511,482 @@ ImGuiColorEditFlags_ :: enum {
 	Input_RGB = 27,
 	Input_HSV = 28,
 }
-Color_Edit_Flags_DEFAULT_OPTIONS :: Color_Edit_Flags{ .Uint8, .Display_RGB, .Input_RGB, .Picker_Hue_Bar }
-Color_Edit_Flags_DISPLAY_MASK :: Color_Edit_Flags{ .Display_RGB, .Display_HSV, .Display_Hex }
-Color_Edit_Flags_DATA_TYPE_MASK :: Color_Edit_Flags{ .Uint8, .Float }
-Color_Edit_Flags_PICKER_MASK :: Color_Edit_Flags{ .Picker_Hue_Wheel, .Picker_Hue_Bar }
-Color_Edit_Flags_INPUT_MASK :: Color_Edit_Flags{ .Input_RGB, .Input_HSV }
+Color_Edit_Flags_None :: Color_Edit_Flags{}
+Color_Edit_Flags_Default_Options :: Color_Edit_Flags{ .Uint8, .Display_RGB, .Input_RGB, .Picker_Hue_Bar }
+Color_Edit_Flags_Display_Mask :: Color_Edit_Flags{ .Display_RGB, .Display_HSV, .Display_Hex }
+Color_Edit_Flags_Data_Type_Mask :: Color_Edit_Flags{ .Uint8, .Float }
+Color_Edit_Flags_Picker_Mask :: Color_Edit_Flags{ .Picker_Hue_Wheel, .Picker_Hue_Bar }
+Color_Edit_Flags_Input_Mask :: Color_Edit_Flags{ .Input_RGB, .Input_HSV }
 
-ImGuiSliderFlags_ :: enum {
-	Always_Clamp = 4,
-	Logarithmic = 5,
-	No_Round_To_Format = 6,
-	No_Input = 7,
+Combo_Flags :: bit_set[Combo_Flags_; u32]
+Combo_Flags_ :: enum {
+	Popup_Align_Left = 0,
+	Height_Small = 1,
+	Height_Regular = 2,
+	Height_Large = 3,
+	Height_Largest = 4,
+	No_Arrow_Button = 5,
+	No_Preview = 6,
 }
+Combo_Flags_None :: Combo_Flags{}
+Combo_Flags_Height_Mask :: Combo_Flags{ .Height_Small, .Height_Regular, .Height_Large, .Height_Largest }
 
-Mouse_Button :: enum i32 {
-	Left = 0,
-	Right = 1,
-	Middle = 2,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiMouseButton_COUNT::3;
-Mouse_Button_COUNT :: ImGuiMouseButton_COUNT
-
-
-Mouse_Cursor :: enum i32 {
-	None = (-1),
-	Arrow = 0,
-	Text_Input,
-	Resize_All,
-	Resize_NS,
-	Resize_EW,
-	Resize_NESW,
-	Resize_NWSE,
-	Hand,
-	Not_Allowed,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiMouseCursor_COUNT::9;
-Mouse_Cursor_COUNT :: ImGuiMouseCursor_COUNT
-
-
-Mouse_Source :: enum i32 {
-	Mouse = 0,
-	Touch_Screen = 1,
-	Pen = 2,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiMouseSource_COUNT::3;
-Mouse_Source_COUNT :: ImGuiMouseSource_COUNT
-
-
-ImGuiCond_ :: enum {
+Cond :: bit_set[Cond_; u32]
+Cond_ :: enum {
 	Always = 0,
 	Once = 1,
 	First_Use_Ever = 2,
 	Appearing = 3,
 }
+Cond_None :: Cond{}
+
+Config_Flags :: bit_set[Config_Flags_; u32]
+Config_Flags_ :: enum {
+	Nav_Enable_Keyboard = 0,
+	Nav_Enable_Gamepad = 1,
+	Nav_Enable_Set_Mouse_Pos = 2,
+	Nav_No_Capture_Keyboard = 3,
+	No_Mouse = 4,
+	No_Mouse_Cursor_Change = 5,
+	Is_S_RGB = 20,
+	Is_Touch_Screen = 21,
+}
+Config_Flags_None :: Config_Flags{}
+
+Debug_Log_Flags :: bit_set[Debug_Log_Flags_; u32]
+Debug_Log_Flags_ :: enum {
+	Event_Active_Id = 0,
+	Event_Focus = 1,
+	Event_Popup = 2,
+	Event_Nav = 3,
+	Event_Clipper = 4,
+	Event_Selection = 5,
+	Event_IO = 6,
+	Output_To_TTY = 10,
+}
+Debug_Log_Flags_None :: Debug_Log_Flags{}
+Debug_Log_Flags_Event_Mask :: Debug_Log_Flags{ .Event_Active_Id, .Event_Focus, .Event_Popup, .Event_Nav, .Event_Clipper, .Event_Selection, .Event_IO }
+
+Drag_Drop_Flags :: bit_set[Drag_Drop_Flags_; u32]
+Drag_Drop_Flags_ :: enum {
+	Source_No_Preview_Tooltip = 0,
+	Source_No_Disable_Hover = 1,
+	Source_No_Hold_To_Open_Others = 2,
+	Source_Allow_Null_ID = 3,
+	Source_Extern = 4,
+	Source_Auto_Expire_Payload = 5,
+	Accept_Before_Delivery = 10,
+	Accept_No_Draw_Default_Rect = 11,
+	Accept_No_Preview_Tooltip = 12,
+}
+Drag_Drop_Flags_None :: Drag_Drop_Flags{}
+Drag_Drop_Flags_Accept_Peek_Only :: Drag_Drop_Flags{ .Accept_Before_Delivery, .Accept_No_Draw_Default_Rect }
+
+Focused_Flags :: bit_set[Focused_Flags_; u32]
+Focused_Flags_ :: enum {
+	Child_Windows = 0,
+	Root_Window = 1,
+	Any_Window = 2,
+	No_Popup_Hierarchy = 3,
+}
+Focused_Flags_None :: Focused_Flags{}
+Focused_Flags_Root_And_Child_Windows :: Focused_Flags{ .Root_Window, .Child_Windows }
+
+Hovered_Flags :: bit_set[Hovered_Flags_; u32]
+Hovered_Flags_ :: enum {
+	Child_Windows = 0,
+	Root_Window = 1,
+	Any_Window = 2,
+	No_Popup_Hierarchy = 3,
+	Allow_When_Blocked_By_Popup = 5,
+	Allow_When_Blocked_By_Active_Item = 7,
+	Allow_When_Overlapped = 8,
+	Allow_When_Disabled = 9,
+	No_Nav_Override = 10,
+	Delay_Normal = 11,
+	Delay_Short = 12,
+	No_Shared_Delay = 13,
+}
+Hovered_Flags_None :: Hovered_Flags{}
+Hovered_Flags_Rect_Only :: Hovered_Flags{ .Allow_When_Blocked_By_Popup, .Allow_When_Blocked_By_Active_Item, .Allow_When_Overlapped }
+Hovered_Flags_Root_And_Child_Windows :: Hovered_Flags{ .Root_Window, .Child_Windows }
+
+Input_Flags :: bit_set[Input_Flags_; u32]
+Input_Flags_ :: enum {
+	Repeat = 0,
+	Repeat_Rate_Default = 1,
+	Repeat_Rate_Nav_Move = 2,
+	Repeat_Rate_Nav_Tweak = 3,
+	Cond_Hovered = 4,
+	Cond_Active = 5,
+	Lock_This_Frame = 6,
+	Lock_Until_Release = 7,
+	Route_Focused = 8,
+	Route_Global_Low = 9,
+	Route_Global = 10,
+	Route_Global_High = 11,
+	Route_Always = 12,
+	Route_Unless_Bg_Focused = 13,
+}
+Input_Flags_None :: Input_Flags{}
+Input_Flags_Repeat_Rate_Mask :: Input_Flags{ .Repeat_Rate_Default, .Repeat_Rate_Nav_Move, .Repeat_Rate_Nav_Tweak }
+Input_Flags_Cond_Default :: Input_Flags{ .Cond_Hovered, .Cond_Active }
+Input_Flags_Cond_Mask :: Input_Flags{ .Cond_Hovered, .Cond_Active }
+Input_Flags_Route_Mask :: Input_Flags{ .Route_Focused, .Route_Global, .Route_Global_Low, .Route_Global_High }
+Input_Flags_Route_Extra_Mask :: Input_Flags{ .Route_Always, .Route_Unless_Bg_Focused }
+Input_Flags_Supported_By_Is_Key_Pressed :: Input_Flags{ .Repeat } | Input_Flags_Repeat_Rate_Mask
+Input_Flags_Supported_By_Shortcut :: Input_Flags{ .Repeat } | Input_Flags_Repeat_Rate_Mask | Input_Flags_Route_Mask | Input_Flags_Route_Extra_Mask
+Input_Flags_Supported_By_Set_Key_Owner :: Input_Flags{ .Lock_This_Frame, .Lock_Until_Release }
+Input_Flags_Supported_By_Set_Item_Key_Owner :: Input_Flags_Supported_By_Set_Key_Owner | Input_Flags_Cond_Mask
+
+Input_Text_Flags :: bit_set[Input_Text_Flags_; u32]
+Input_Text_Flags_ :: enum {
+	Chars_Decimal = 0,
+	Chars_Hexadecimal = 1,
+	Chars_Uppercase = 2,
+	Chars_No_Blank = 3,
+	Auto_Select_All = 4,
+	Enter_Returns_True = 5,
+	Callback_Completion = 6,
+	Callback_History = 7,
+	Callback_Always = 8,
+	Callback_Char_Filter = 9,
+	Allow_Tab_Input = 10,
+	Ctrl_Enter_For_New_Line = 11,
+	No_Horizontal_Scroll = 12,
+	Always_Overwrite = 13,
+	Read_Only = 14,
+	Password = 15,
+	No_Undo_Redo = 16,
+	Chars_Scientific = 17,
+	Callback_Resize = 18,
+	Callback_Edit = 19,
+	Escape_Clears_All = 20,
+}
+Input_Text_Flags_None :: Input_Text_Flags{}
+
+Item_Flags :: bit_set[Item_Flags_; u32]
+Item_Flags_ :: enum {
+	No_Tab_Stop = 0,
+	Button_Repeat = 1,
+	Disabled = 2,
+	No_Nav = 3,
+	No_Nav_Default_Focus = 4,
+	Selectable_Dont_Close_Popup = 5,
+	Mixed_Value = 6,
+	Read_Only = 7,
+	No_Window_Hoverable_Check = 8,
+	Inputable = 10,
+}
+Item_Flags_None :: Item_Flags{}
+
+Item_Status_Flags :: bit_set[Item_Status_Flags_; u32]
+Item_Status_Flags_ :: enum {
+	Hovered_Rect = 0,
+	Has_Display_Rect = 1,
+	Edited = 2,
+	Toggled_Selection = 3,
+	Toggled_Open = 4,
+	Has_Deactivated = 5,
+	Deactivated = 6,
+	Hovered_Window = 7,
+	Focused_By_Tabbing = 8,
+	Visible = 9,
+}
+Item_Status_Flags_None :: Item_Status_Flags{}
+
+Nav_Highlight_Flags :: bit_set[Nav_Highlight_Flags_; u32]
+Nav_Highlight_Flags_ :: enum {
+	Type_Default = 0,
+	Type_Thin = 1,
+	Always_Draw = 2,
+	No_Rounding = 3,
+}
+Nav_Highlight_Flags_None :: Nav_Highlight_Flags{}
+
+Nav_Move_Flags :: bit_set[Nav_Move_Flags_; u32]
+Nav_Move_Flags_ :: enum {
+	Loop_X = 0,
+	Loop_Y = 1,
+	Wrap_X = 2,
+	Wrap_Y = 3,
+	Allow_Current_Nav_Id = 4,
+	Also_Score_Visible_Set = 5,
+	Scroll_To_Edge_Y = 6,
+	Forwarded = 7,
+	Debug_No_Result = 8,
+	Focus_Api = 9,
+	Tabbing = 10,
+	Activate = 11,
+	Dont_Set_Nav_Highlight = 12,
+}
+Nav_Move_Flags_None :: Nav_Move_Flags{}
+
+Next_Item_Data_Flags :: bit_set[Next_Item_Data_Flags_; u32]
+Next_Item_Data_Flags_ :: enum {
+	Has_Width = 0,
+	Has_Open = 1,
+}
+Next_Item_Data_Flags_None :: Next_Item_Data_Flags{}
+
+Next_Window_Data_Flags :: bit_set[Next_Window_Data_Flags_; u32]
+Next_Window_Data_Flags_ :: enum {
+	Has_Pos = 0,
+	Has_Size = 1,
+	Has_Content_Size = 2,
+	Has_Collapsed = 3,
+	Has_Size_Constraint = 4,
+	Has_Focus = 5,
+	Has_Bg_Alpha = 6,
+	Has_Scroll = 7,
+}
+Next_Window_Data_Flags_None :: Next_Window_Data_Flags{}
+
+Old_Column_Flags :: bit_set[Old_Column_Flags_; u32]
+Old_Column_Flags_ :: enum {
+	No_Border = 0,
+	No_Resize = 1,
+	No_Preserve_Widths = 2,
+	No_Force_Within_Window = 3,
+	Grow_Parent_Contents_Size = 4,
+}
+Old_Column_Flags_None :: Old_Column_Flags{}
+
+Popup_Flags :: bit_set[Popup_Flags_; u32]
+Popup_Flags_ :: enum {
+	No_Open_Over_Existing_Popup = 5,
+	No_Open_Over_Items = 6,
+	Any_Popup_Id = 7,
+	Any_Popup_Level = 8,
+}
+Popup_Flags_None :: Popup_Flags{}
+Popup_Flags_Mouse_Button_Left :: Popup_Flags{}
+Popup_Flags_Any_Popup :: Popup_Flags{ .Any_Popup_Id, .Any_Popup_Level }
+
+Scroll_Flags :: bit_set[Scroll_Flags_; u32]
+Scroll_Flags_ :: enum {
+	Keep_Visible_Edge_X = 0,
+	Keep_Visible_Edge_Y = 1,
+	Keep_Visible_Center_X = 2,
+	Keep_Visible_Center_Y = 3,
+	Always_Center_X = 4,
+	Always_Center_Y = 5,
+	No_Scroll_Parent = 6,
+}
+Scroll_Flags_None :: Scroll_Flags{}
+Scroll_Flags_Mask_X :: Scroll_Flags{ .Keep_Visible_Edge_X, .Keep_Visible_Center_X, .Always_Center_X }
+Scroll_Flags_Mask_Y :: Scroll_Flags{ .Keep_Visible_Edge_Y, .Keep_Visible_Center_Y, .Always_Center_Y }
+
+Selectable_Flags :: bit_set[Selectable_Flags_; u32]
+Selectable_Flags_ :: enum {
+	Dont_Close_Popups = 0,
+	Span_All_Columns = 1,
+	Allow_Double_Click = 2,
+	Disabled = 3,
+	Allow_Item_Overlap = 4,
+}
+Selectable_Flags_None :: Selectable_Flags{}
+
+Separator_Flags :: bit_set[Separator_Flags_; u32]
+Separator_Flags_ :: enum {
+	Horizontal = 0,
+	Vertical = 1,
+	Span_All_Columns = 2,
+}
+Separator_Flags_None :: Separator_Flags{}
+
+Slider_Flags :: bit_set[Slider_Flags_; u32]
+Slider_Flags_ :: enum {
+	Always_Clamp = 4,
+	Logarithmic = 5,
+	No_Round_To_Format = 6,
+	No_Input = 7,
+}
+Slider_Flags_None :: Slider_Flags{}
+
+Tab_Bar_Flags :: bit_set[Tab_Bar_Flags_; u32]
+Tab_Bar_Flags_ :: enum {
+	Reorderable = 0,
+	Auto_Select_New_Tabs = 1,
+	Tab_List_Popup_Button = 2,
+	No_Close_With_Middle_Mouse_Button = 3,
+	No_Tab_List_Scrolling_Buttons = 4,
+	No_Tooltip = 5,
+	Fitting_Policy_Resize_Down = 6,
+	Fitting_Policy_Scroll = 7,
+}
+Tab_Bar_Flags_None :: Tab_Bar_Flags{}
+Tab_Bar_Flags_Fitting_Policy_Mask :: Tab_Bar_Flags{ .Fitting_Policy_Resize_Down, .Fitting_Policy_Scroll }
+
+Tab_Item_Flags :: bit_set[Tab_Item_Flags_; u32]
+Tab_Item_Flags_ :: enum {
+	Unsaved_Document = 0,
+	Set_Selected = 1,
+	No_Close_With_Middle_Mouse_Button = 2,
+	No_Push_Id = 3,
+	No_Tooltip = 4,
+	No_Reorder = 5,
+	Leading = 6,
+	Trailing = 7,
+}
+Tab_Item_Flags_None :: Tab_Item_Flags{}
+
+Table_Column_Flags :: bit_set[Table_Column_Flags_; u32]
+Table_Column_Flags_ :: enum {
+	Disabled = 0,
+	Default_Hide = 1,
+	Default_Sort = 2,
+	Width_Stretch = 3,
+	Width_Fixed = 4,
+	No_Resize = 5,
+	No_Reorder = 6,
+	No_Hide = 7,
+	No_Clip = 8,
+	No_Sort = 9,
+	No_Sort_Ascending = 10,
+	No_Sort_Descending = 11,
+	No_Header_Label = 12,
+	No_Header_Width = 13,
+	Prefer_Sort_Ascending = 14,
+	Prefer_Sort_Descending = 15,
+	Indent_Enable = 16,
+	Indent_Disable = 17,
+	Is_Enabled = 24,
+	Is_Visible = 25,
+	Is_Sorted = 26,
+	Is_Hovered = 27,
+	No_Direct_Resize = 30,
+}
+Table_Column_Flags_None :: Table_Column_Flags{}
+Table_Column_Flags_Width_Mask :: Table_Column_Flags{ .Width_Stretch, .Width_Fixed }
+Table_Column_Flags_Indent_Mask :: Table_Column_Flags{ .Indent_Enable, .Indent_Disable }
+Table_Column_Flags_Status_Mask :: Table_Column_Flags{ .Is_Enabled, .Is_Visible, .Is_Sorted, .Is_Hovered }
+
+Table_Flags :: bit_set[Table_Flags_; u32]
+Table_Flags_ :: enum {
+	Resizable = 0,
+	Reorderable = 1,
+	Hideable = 2,
+	Sortable = 3,
+	No_Saved_Settings = 4,
+	Context_Menu_In_Body = 5,
+	Row_Bg = 6,
+	Borders_Inner_H = 7,
+	Borders_Outer_H = 8,
+	Borders_Inner_V = 9,
+	Borders_Outer_V = 10,
+	No_Borders_In_Body = 11,
+	No_Borders_In_Body_Until_Resize = 12,
+	No_Host_Extend_X = 16,
+	No_Host_Extend_Y = 17,
+	No_Keep_Columns_Visible = 18,
+	Precise_Widths = 19,
+	No_Clip = 20,
+	Pad_Outer_X = 21,
+	No_Pad_Outer_X = 22,
+	No_Pad_Inner_X = 23,
+	Scroll_X = 24,
+	Scroll_Y = 25,
+	Sort_Multi = 26,
+	Sort_Tristate = 27,
+	Bit13 = 13,
+	Bit14 = 14,
+	Bit15 = 15,
+}
+Table_Flags_None :: Table_Flags{}
+Table_Flags_Borders_H :: Table_Flags{ .Borders_Inner_H, .Borders_Outer_H }
+Table_Flags_Borders_V :: Table_Flags{ .Borders_Inner_V, .Borders_Outer_V }
+Table_Flags_Borders_Inner :: Table_Flags{ .Borders_Inner_V, .Borders_Inner_H }
+Table_Flags_Borders_Outer :: Table_Flags{ .Borders_Outer_V, .Borders_Outer_H }
+Table_Flags_Borders :: Table_Flags_Borders_Inner | Table_Flags_Borders_Outer
+Table_Flags_Sizing_Fixed_Fit :: Table_Flags{ .Bit13 }
+Table_Flags_Sizing_Fixed_Same :: Table_Flags{ .Bit14 }
+Table_Flags_Sizing_Stretch_Prop :: Table_Flags{ .Bit13, .Bit14 }
+Table_Flags_Sizing_Stretch_Same :: Table_Flags{ .Bit15 }
+Table_Flags_Sizing_Mask :: Table_Flags_Sizing_Fixed_Fit | Table_Flags_Sizing_Fixed_Same | Table_Flags_Sizing_Stretch_Prop | Table_Flags_Sizing_Stretch_Same
+
+Table_Row_Flags :: bit_set[Table_Row_Flags_; u32]
+Table_Row_Flags_ :: enum {
+	Headers = 0,
+}
+Table_Row_Flags_None :: Table_Row_Flags{}
+
+Text_Flags :: bit_set[Text_Flags_; u32]
+Text_Flags_ :: enum {
+	No_Width_For_Large_Clipped_Text = 0,
+}
+Text_Flags_None :: Text_Flags{}
+
+Tooltip_Flags :: bit_set[Tooltip_Flags_; u32]
+Tooltip_Flags_ :: enum {
+	Override_Previous_Tooltip = 0,
+}
+Tooltip_Flags_None :: Tooltip_Flags{}
+
+Tree_Node_Flags :: bit_set[Tree_Node_Flags_; u32]
+Tree_Node_Flags_ :: enum {
+	Selected = 0,
+	Framed = 1,
+	Allow_Item_Overlap = 2,
+	No_Tree_Push_On_Open = 3,
+	No_Auto_Open_On_Log = 4,
+	Default_Open = 5,
+	Open_On_Double_Click = 6,
+	Open_On_Arrow = 7,
+	Leaf = 8,
+	Bullet = 9,
+	Frame_Padding = 10,
+	Span_Avail_Width = 11,
+	Span_Full_Width = 12,
+	Nav_Left_Jumps_Back_Here = 13,
+}
+Tree_Node_Flags_None :: Tree_Node_Flags{}
+Tree_Node_Flags_Collapsing_Header :: Tree_Node_Flags{ .Framed, .No_Tree_Push_On_Open, .No_Auto_Open_On_Log }
+
+Viewport_Flags :: bit_set[Viewport_Flags_; u32]
+Viewport_Flags_ :: enum {
+	Is_Platform_Window = 0,
+	Is_Platform_Monitor = 1,
+	Owned_By_App = 2,
+}
+Viewport_Flags_None :: Viewport_Flags{}
+
+Window_Flags :: bit_set[Window_Flags_; u32]
+Window_Flags_ :: enum {
+	No_Title_Bar = 0,
+	No_Resize = 1,
+	No_Move = 2,
+	No_Scrollbar = 3,
+	No_Scroll_With_Mouse = 4,
+	No_Collapse = 5,
+	Always_Auto_Resize = 6,
+	No_Background = 7,
+	No_Saved_Settings = 8,
+	No_Mouse_Inputs = 9,
+	Menu_Bar = 10,
+	Horizontal_Scrollbar = 11,
+	No_Focus_On_Appearing = 12,
+	No_Bring_To_Front_On_Focus = 13,
+	Always_Vertical_Scrollbar = 14,
+	Always_Horizontal_Scrollbar = 15,
+	Always_Use_Window_Padding = 16,
+	No_Nav_Inputs = 18,
+	No_Nav_Focus = 19,
+	Unsaved_Document = 20,
+	Nav_Flattened = 23,
+	Child_Window = 24,
+	Tooltip = 25,
+	Popup = 26,
+	Modal = 27,
+	Child_Menu = 28,
+}
+Window_Flags_None :: Window_Flags{}
+Window_Flags_No_Nav :: Window_Flags{ .No_Nav_Inputs, .No_Nav_Focus }
+Window_Flags_No_Decoration :: Window_Flags{ .No_Title_Bar, .No_Resize, .No_Scrollbar, .No_Collapse }
+Window_Flags_No_Inputs :: Window_Flags{ .No_Mouse_Inputs, .No_Nav_Inputs, .No_Nav_Focus }
+
+
+// === Structs ===
 
 Style :: struct {
 	alpha: f32,
@@ -733,7 +1032,7 @@ Style :: struct {
 	anti_aliased_fill: bool,
 	curve_tessellation_tol: f32,
 	circle_tessellation_max_error: f32,
-	colors: [ImGuiCol_COUNT][4]f32,
+	colors: [Col.COUNT][4]f32,
 }
 
 Key_Data :: struct {
@@ -780,11 +1079,11 @@ IO :: struct {
 	backend_platform_user_data: rawptr,
 	backend_renderer_user_data: rawptr,
 	backend_language_user_data: rawptr,
-	get_clipboard_text_fn: #type proc "c" (user_data: rawptr) -> cstring,
-	set_clipboard_text_fn: #type proc "c" (user_data: rawptr, text: cstring),
+	get_clipboard_text_fn: #type proc "c"(user_data: rawptr) -> cstring,
+	set_clipboard_text_fn: #type proc "c"(user_data: rawptr, text: cstring),
 	clipboard_user_data: rawptr,
-	set_platform_ime_data_fn: #type proc "c" (viewport: ^Viewport, data: ^Platform_Ime_Data),
-	__unused_padding: rawptr,
+	set_platform_ime_data_fn: #type proc "c"(viewport: ^Viewport, data: ^Platform_Ime_Data),
+	unused_padding: rawptr,
 	want_capture_mouse: bool,
 	want_capture_keyboard: bool,
 	want_text_input: bool,
@@ -799,9 +1098,9 @@ IO :: struct {
 	metrics_active_windows: i32,
 	metrics_active_allocations: i32,
 	mouse_delta: [2]f32,
-	key_map: [ImGuiKey_COUNT]i32,
-	keys_down: [ImGuiKey_COUNT]bool,
-	nav_inputs: [ImGuiNavInput_COUNT]f32,
+	key_map: [Key.COUNT]i32,
+	keys_down: [Key.COUNT]bool,
+	nav_inputs: [Nav_Input.COUNT]f32,
 	ctx: ^Context,
 	mouse_pos: [2]f32,
 	mouse_down: [5]bool,
@@ -813,7 +1112,7 @@ IO :: struct {
 	key_alt: bool,
 	key_super: bool,
 	key_mods: Key_Chord,
-	keys_data: [ImGuiKey_KeysData_SIZE]Key_Data,
+	keys_data: [Key.Keys_Data_SIZE]Key_Data,
 	want_capture_mouse_unless_popup_close: bool,
 	mouse_pos_prev: [2]f32,
 	mouse_clicked_pos: [5][2]f32,
@@ -906,7 +1205,7 @@ Text_Buffer :: struct {
 
 Storage_Pair :: struct {
 	key: ID,
-	using _field_1: struct #raw_union {
+	using _1_: struct #raw_union {
 		val_i: i32,
 		val_f: f32,
 		val_p: rawptr,
@@ -954,36 +1253,14 @@ Draw_Cmd_Header :: struct {
 }
 
 Draw_Channel :: struct {
-	__cmd_buffer: Vector(Draw_Cmd),
-	__idx_buffer: Vector(Draw_Idx),
+	cmd_buffer: Vector(Draw_Cmd),
+	idx_buffer: Vector(Draw_Idx),
 }
 
 Draw_List_Splitter :: struct {
-	__current: i32,
-	__count: i32,
-	__channels: Vector(Draw_Channel),
-}
-
-ImDrawFlags_ :: enum {
-	Closed = 0,
-	Round_Corners_Top_Left = 4,
-	Round_Corners_Top_Right = 5,
-	Round_Corners_Bottom_Left = 6,
-	Round_Corners_Bottom_Right = 7,
-	Round_Corners_None = 8,
-}
-Draw_Flags_ROUND_CORNERS_TOP :: Draw_Flags{ .Round_Corners_Top_Left, .Round_Corners_Top_Right }
-Draw_Flags_ROUND_CORNERS_BOTTOM :: Draw_Flags{ .Round_Corners_Bottom_Left, .Round_Corners_Bottom_Right }
-Draw_Flags_ROUND_CORNERS_LEFT :: Draw_Flags{ .Round_Corners_Bottom_Left, .Round_Corners_Top_Left }
-Draw_Flags_ROUND_CORNERS_RIGHT :: Draw_Flags{ .Round_Corners_Bottom_Right, .Round_Corners_Top_Right }
-Draw_Flags_ROUND_CORNERS_ALL :: Draw_Flags{ .Round_Corners_Top_Left, .Round_Corners_Top_Right, .Round_Corners_Bottom_Left, .Round_Corners_Bottom_Right }
-Draw_Flags_ROUND_CORNERS_MASK :: Draw_Flags{ .Round_Corners_None } | Draw_Flags_ROUND_CORNERS_ALL
-
-ImDrawListFlags_ :: enum {
-	Anti_Aliased_Lines = 0,
-	Anti_Aliased_Lines_Use_Tex = 1,
-	Anti_Aliased_Fill = 2,
-	Allow_Vtx_Offset = 3,
+	current: i32,
+	count: i32,
+	channels: Vector(Draw_Channel),
 }
 
 Draw_List :: struct {
@@ -991,17 +1268,17 @@ Draw_List :: struct {
 	idx_buffer: Vector(Draw_Idx),
 	vtx_buffer: Vector(Draw_Vert),
 	flags: Draw_List_Flags,
-	__vtx_current_idx: u32,
-	__data: ^Draw_List_Shared_Data,
-	__owner_name: cstring,
-	__vtx_write_ptr: ^Draw_Vert,
-	__idx_write_ptr: ^Draw_Idx,
-	__clip_rect_stack: Vector([4]f32),
-	__texture_id_stack: Vector(Texture_ID),
-	__path: Vector([2]f32),
-	__cmd_header: Draw_Cmd_Header,
-	__splitter: Draw_List_Splitter,
-	__fringe_scale: f32,
+	vtx_current_idx: u32,
+	data: ^Draw_List_Shared_Data,
+	owner_name: cstring,
+	vtx_write_ptr: ^Draw_Vert,
+	idx_write_ptr: ^Draw_Idx,
+	clip_rect_stack: Vector([4]f32),
+	texture_id_stack: Vector(Texture_ID),
+	path: Vector([2]f32),
+	cmd_header: Draw_Cmd_Header,
+	splitter: Draw_List_Splitter,
+	fringe_scale: f32,
 }
 
 Draw_Data :: struct {
@@ -1067,12 +1344,6 @@ Font_Atlas_Custom_Rect :: struct {
 	font: ^Font,
 }
 
-ImFontAtlasFlags_ :: enum {
-	No_Power_Of_Two_Height = 0,
-	No_Mouse_Cursors = 1,
-	No_Baked_Lines = 2,
-}
-
 Font_Atlas :: struct {
 	flags: Font_Atlas_Flags,
 	tex_id: Texture_ID,
@@ -1121,12 +1392,6 @@ Font :: struct {
 	used4k_pages_map: [(((0xFFFF + 1) / 4096) / 8)]u8,
 }
 
-ImGuiViewportFlags_ :: enum {
-	Is_Platform_Window = 0,
-	Is_Platform_Monitor = 1,
-	Owned_By_App = 2,
-}
-
 Viewport :: struct {
 	flags: Viewport_Flags,
 	pos: [2]f32,
@@ -1141,20 +1406,6 @@ Platform_Ime_Data :: struct {
 	input_pos: [2]f32,
 	input_line_height: f32,
 }
-Activate_Flags :: bit_set[ImGuiActivateFlags_; u32]
-Debug_Log_Flags :: bit_set[ImGuiDebugLogFlags_; u32]
-Input_Flags :: bit_set[ImGuiInputFlags_; u32]
-Item_Flags :: bit_set[ImGuiItemFlags_; u32]
-Item_Status_Flags :: bit_set[ImGuiItemStatusFlags_; u32]
-Old_Column_Flags :: bit_set[ImGuiOldColumnFlags_; u32]
-Nav_Highlight_Flags :: bit_set[ImGuiNavHighlightFlags_; u32]
-Nav_Move_Flags :: bit_set[ImGuiNavMoveFlags_; u32]
-Next_Item_Data_Flags :: bit_set[ImGuiNextItemDataFlags_; u32]
-Next_Window_Data_Flags :: bit_set[ImGuiNextWindowDataFlags_; u32]
-Scroll_Flags :: bit_set[ImGuiScrollFlags_; u32]
-Separator_Flags :: bit_set[ImGuiSeparatorFlags_; u32]
-Text_Flags :: bit_set[ImGuiTextFlags_; u32]
-Tooltip_Flags :: bit_set[ImGuiTooltipFlags_; u32]
 
 Stb_Undo_Record :: struct {
 	where_: i32,
@@ -1172,7 +1423,7 @@ Stb_Undo_State :: struct {
 	redo_char_point: i32,
 }
 
-STB__Textedit_State :: struct {
+STB_Textedit_State :: struct {
 	cursor: i32,
 	select_start: i32,
 	select_end: i32,
@@ -1206,7 +1457,6 @@ Rect :: struct {
 Bit_Vector :: struct {
 	storage: Vector(u32),
 }
-Pool_Idx :: distinct i32
 
 Text_Index :: struct {
 	line_offsets: Vector(i32),
@@ -1232,86 +1482,6 @@ Draw_Data_Builder :: struct {
 	layers: [2]Vector(^Draw_List),
 }
 
-ImGuiItemFlags_ :: enum {
-	No_Tab_Stop = 0,
-	Button_Repeat = 1,
-	Disabled = 2,
-	No_Nav = 3,
-	No_Nav_Default_Focus = 4,
-	Selectable_Dont_Close_Popup = 5,
-	Mixed_Value = 6,
-	Read_Only = 7,
-	No_Window_Hoverable_Check = 8,
-	Inputable = 10,
-}
-
-ImGuiItemStatusFlags_ :: enum {
-	Hovered_Rect = 0,
-	Has_Display_Rect = 1,
-	Edited = 2,
-	Toggled_Selection = 3,
-	Toggled_Open = 4,
-	Has_Deactivated = 5,
-	Deactivated = 6,
-	Hovered_Window = 7,
-	Focused_By_Tabbing = 8,
-	Visible = 9,
-}
-
-ImGuiSeparatorFlags_ :: enum {
-	Horizontal = 0,
-	Vertical = 1,
-	Span_All_Columns = 2,
-}
-
-ImGuiTextFlags_ :: enum {
-	No_Width_For_Large_Clipped_Text = 0,
-}
-
-ImGuiTooltipFlags_ :: enum {
-	Override_Previous_Tooltip = 0,
-}
-
-Layout_Type :: enum i32 {
-	Horizontal = 0,
-	Vertical = 1,
-}
-
-
-
-Log_Type :: enum i32 {
-	None = 0,
-	TTY,
-	File,
-	Buffer,
-	Clipboard,
-}
-
-
-
-Axis :: enum i32 {
-	None = (-1),
-	X = 0,
-	Y = 1,
-}
-
-
-
-Plot_Type :: enum i32 {
-	Lines,
-	Histogram,
-}
-
-
-
-Popup_Position_Policy :: enum i32 {
-	Default,
-	Combo_Box,
-	Tooltip,
-}
-
-
-
 Data_Var_Info :: struct {
 	type: Data_Type,
 	count: u32,
@@ -1336,7 +1506,7 @@ Color_Mod :: struct {
 
 Style_Mod :: struct {
 	var_idx: Style_Var,
-	using _field_1: struct #raw_union {
+	using _1_: struct #raw_union {
 		BackupInt: [2]i32,
 		BackupFloat: [2]f32,
 	},
@@ -1392,7 +1562,7 @@ Input_Text_State :: struct {
 	text_a_is_valid: bool,
 	buf_capacity_a: i32,
 	scroll_x: f32,
-	stb: STB__Textedit_State,
+	stb: STB_Textedit_State,
 	cursor_anim: f32,
 	cursor_follow: bool,
 	selected_all_mouse_lock: bool,
@@ -1411,17 +1581,6 @@ Popup_Data :: struct {
 	open_mouse_pos: [2]f32,
 }
 
-ImGuiNextWindowDataFlags_ :: enum {
-	Has_Pos = 0,
-	Has_Size = 1,
-	Has_Content_Size = 2,
-	Has_Collapsed = 3,
-	Has_Size_Constraint = 4,
-	Has_Focus = 5,
-	Has_Bg_Alpha = 6,
-	Has_Scroll = 7,
-}
-
 Next_Window_Data :: struct {
 	flags: Next_Window_Data_Flags,
 	pos_cond: Cond,
@@ -1438,11 +1597,6 @@ Next_Window_Data :: struct {
 	size_callback_user_data: rawptr,
 	bg_alpha_val: f32,
 	menu_bar_offset_min_val: [2]f32,
-}
-
-ImGuiNextItemDataFlags_ :: enum {
-	Has_Width = 0,
-	Has_Open = 1,
 }
 
 Next_Item_Data :: struct {
@@ -1491,35 +1645,6 @@ Ptr_Or_Index :: struct {
 	index: i32,
 }
 
-Bit_Array__Im_Gui_Key__Named_Key__COUNT__less_Im_Gui_Key__Named_Key__BEGIN :: struct {
-	storage: [((ImGuiKey_NamedKey_COUNT + 31) >> 5)]u32,
-}
-Bit_Array_For_Named_Keys :: distinct Bit_Array__Im_Gui_Key__Named_Key__COUNT__less_Im_Gui_Key__Named_Key__BEGIN
-
-Input_Event_Type :: enum i32 {
-	None = 0,
-	Mouse_Pos,
-	Mouse_Wheel,
-	Mouse_Button,
-	Key,
-	Text,
-	Focus,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiInputEventType_COUNT::7;
-Input_Event_Type_COUNT :: ImGuiInputEventType_COUNT
-
-
-Input_Source :: enum i32 {
-	None = 0,
-	Mouse,
-	Keyboard,
-	Gamepad,
-	Clipboard,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiInputSource_COUNT::5;
-Input_Source_COUNT :: ImGuiInputSource_COUNT
-
-
 Input_Event_Mouse_Pos :: struct {
 	pos_x: f32,
 	pos_y: f32,
@@ -1556,7 +1681,7 @@ Input_Event :: struct {
 	type: Input_Event_Type,
 	source: Input_Source,
 	event_id: u32,
-	using _field_3: struct #raw_union {
+	using _3_: struct #raw_union {
 		MousePos: Input_Event_Mouse_Pos,
 		MouseWheel: Input_Event_Mouse_Wheel,
 		MouseButton: Input_Event_Mouse_Button,
@@ -1566,7 +1691,6 @@ Input_Event :: struct {
 	},
 	added_by_test_engine: bool,
 }
-Key_Routing_Index :: distinct i16
 
 Key_Routing_Data :: struct {
 	next_entry_index: Key_Routing_Index,
@@ -1577,7 +1701,7 @@ Key_Routing_Data :: struct {
 }
 
 Key_Routing_Table :: struct {
-	index: [ImGuiKey_NamedKey_COUNT]Key_Routing_Index,
+	index: [Key.Named_Key_COUNT]Key_Routing_Index,
 	entries: Vector(Key_Routing_Data),
 	entries_next: Vector(Key_Routing_Data),
 }
@@ -1588,32 +1712,6 @@ Key_Owner_Data :: struct {
 	lock_this_frame: bool,
 	lock_until_release: bool,
 }
-
-ImGuiInputFlags_ :: enum {
-	Repeat = 0,
-	Repeat_Rate_Default = 1,
-	Repeat_Rate_Nav_Move = 2,
-	Repeat_Rate_Nav_Tweak = 3,
-	Cond_Hovered = 4,
-	Cond_Active = 5,
-	Lock_This_Frame = 6,
-	Lock_Until_Release = 7,
-	Route_Focused = 8,
-	Route_Global_Low = 9,
-	Route_Global = 10,
-	Route_Global_High = 11,
-	Route_Always = 12,
-	Route_Unless_Bg_Focused = 13,
-}
-Input_Flags_REPEAT_RATE_MASK :: Input_Flags{ .Repeat_Rate_Default, .Repeat_Rate_Nav_Move, .Repeat_Rate_Nav_Tweak }
-Input_Flags_COND_DEFAULT :: Input_Flags{ .Cond_Hovered, .Cond_Active }
-Input_Flags_COND_MASK :: Input_Flags{ .Cond_Hovered, .Cond_Active }
-Input_Flags_ROUTE_MASK :: Input_Flags{ .Route_Focused, .Route_Global, .Route_Global_Low, .Route_Global_High }
-Input_Flags_ROUTE_EXTRA_MASK :: Input_Flags{ .Route_Always, .Route_Unless_Bg_Focused }
-Input_Flags_SUPPORTED_BY_IS_KEY_PRESSED :: Input_Flags{ .Repeat } | Input_Flags_REPEAT_RATE_MASK
-Input_Flags_SUPPORTED_BY_SHORTCUT :: Input_Flags{ .Repeat } | Input_Flags_REPEAT_RATE_MASK | Input_Flags_ROUTE_MASK | Input_Flags_ROUTE_EXTRA_MASK
-Input_Flags_SUPPORTED_BY_SET_KEY_OWNER :: Input_Flags{ .Lock_This_Frame, .Lock_Until_Release }
-Input_Flags_SUPPORTED_BY_SET_ITEM_KEY_OWNER :: Input_Flags{  } | Input_Flags_SUPPORTED_BY_SET_KEY_OWNER | Input_Flags_COND_MASK
 
 List_Clipper_Range :: struct {
 	min: i32,
@@ -1631,55 +1729,6 @@ List_Clipper_Data :: struct {
 	ranges: Vector(List_Clipper_Range),
 }
 
-ImGuiActivateFlags_ :: enum {
-	Prefer_Input = 0,
-	Prefer_Tweak = 1,
-	Try_To_Preserve_State = 2,
-}
-
-ImGuiScrollFlags_ :: enum {
-	Keep_Visible_Edge_X = 0,
-	Keep_Visible_Edge_Y = 1,
-	Keep_Visible_Center_X = 2,
-	Keep_Visible_Center_Y = 3,
-	Always_Center_X = 4,
-	Always_Center_Y = 5,
-	No_Scroll_Parent = 6,
-}
-Scroll_Flags_MASK_X :: Scroll_Flags{ .Keep_Visible_Edge_X, .Keep_Visible_Center_X, .Always_Center_X }
-Scroll_Flags_MASK_Y :: Scroll_Flags{ .Keep_Visible_Edge_Y, .Keep_Visible_Center_Y, .Always_Center_Y }
-
-ImGuiNavHighlightFlags_ :: enum {
-	Type_Default = 0,
-	Type_Thin = 1,
-	Always_Draw = 2,
-	No_Rounding = 3,
-}
-
-ImGuiNavMoveFlags_ :: enum {
-	Loop_X = 0,
-	Loop_Y = 1,
-	Wrap_X = 2,
-	Wrap_Y = 3,
-	Allow_Current_Nav_Id = 4,
-	Also_Score_Visible_Set = 5,
-	Scroll_To_Edge_Y = 6,
-	Forwarded = 7,
-	Debug_No_Result = 8,
-	Focus_Api = 9,
-	Tabbing = 10,
-	Activate = 11,
-	Dont_Set_Nav_Highlight = 12,
-}
-
-Nav_Layer :: enum i32 {
-	Main = 0,
-	Menu = 1,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiNavLayer_COUNT::2;
-Nav_Layer_COUNT :: ImGuiNavLayer_COUNT
-
-
 Nav_Item_Data :: struct {
 	window: ^Window,
 	id: ID,
@@ -1689,14 +1738,6 @@ Nav_Item_Data :: struct {
 	dist_box: f32,
 	dist_center: f32,
 	dist_axial: f32,
-}
-
-ImGuiOldColumnFlags_ :: enum {
-	No_Border = 0,
-	No_Resize = 1,
-	No_Preserve_Widths = 2,
-	No_Force_Within_Window = 3,
-	Grow_Parent_Contents_Size = 4,
 }
 
 Old_Column_Data :: struct {
@@ -1727,7 +1768,7 @@ Old_Columns :: struct {
 }
 
 Viewport_P :: struct {
-	__im_gui_viewport: Viewport,
+	im_gui_viewport: Viewport,
 	draw_lists_last_frame: [2]i32,
 	draw_lists: [2]^Draw_List,
 	draw_data_p: Draw_Data,
@@ -1750,44 +1791,19 @@ Window_Settings :: struct {
 Settings_Handler :: struct {
 	type_name: cstring,
 	type_hash: ID,
-	clear_all_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	read_init_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	read_open_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler, name: cstring) -> rawptr,
-	read_line_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: cstring),
-	apply_all_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler),
-	write_all_fn: #type proc "c" (ctx: ^Context, handler: ^Settings_Handler, out_buf: ^Text_Buffer),
+	clear_all_fn: #type proc "c"(ctx: ^Context, handler: ^Settings_Handler),
+	read_init_fn: #type proc "c"(ctx: ^Context, handler: ^Settings_Handler),
+	read_open_fn: #type proc "c"(ctx: ^Context, handler: ^Settings_Handler, name: cstring) -> rawptr,
+	read_line_fn: #type proc "c"(ctx: ^Context, handler: ^Settings_Handler, entry: rawptr, line: cstring),
+	apply_all_fn: #type proc "c"(ctx: ^Context, handler: ^Settings_Handler),
+	write_all_fn: #type proc "c"(ctx: ^Context, handler: ^Settings_Handler, out_buf: ^Text_Buffer),
 	user_data: rawptr,
 }
-
-Loc_Key :: enum i32 {
-	Table_Size_One = 0,
-	Table_Size_All_Fit = 1,
-	Table_Size_All_Default = 2,
-	Table_Reset_Order = 3,
-	Windowing_Main_Menu_Bar = 4,
-	Windowing_Popup = 5,
-	Windowing_Untitled = 6,
-}
-/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */ImGuiLocKey_COUNT::7;
-Loc_Key_COUNT :: ImGuiLocKey_COUNT
-
 
 Loc_Entry :: struct {
 	key: Loc_Key,
 	text: cstring,
 }
-
-ImGuiDebugLogFlags_ :: enum {
-	Event_Active_Id = 0,
-	Event_Focus = 1,
-	Event_Popup = 2,
-	Event_Nav = 3,
-	Event_Clipper = 4,
-	Event_Selection = 5,
-	Event_IO = 6,
-	Output_To_TTY = 10,
-}
-Debug_Log_Flags_EVENT_MASK :: Debug_Log_Flags{ .Event_Active_Id, .Event_Focus, .Event_Popup, .Event_Nav, .Event_Clipper, .Event_Selection, .Event_IO }
 
 Metrics_Config :: struct {
 	show_debug_log: bool,
@@ -1819,19 +1835,6 @@ Stack_Tool :: struct {
 	copy_to_clipboard_last_time: f32,
 }
 
-Context_Hook_Type :: enum i32 {
-	New_Frame_Pre,
-	New_Frame_Post,
-	End_Frame_Pre,
-	End_Frame_Post,
-	Render_Pre,
-	Render_Post,
-	Shutdown,
-	Pending_Removal_,
-}
-
-
-
 Context_Hook :: struct {
 	hook_id: ID,
 	type: Context_Hook_Type,
@@ -1840,25 +1843,25 @@ Context_Hook :: struct {
 	user_data: rawptr,
 }
 
-Pool__Im_Gui_Table :: struct {
+Pool_Im_Gui_Table :: struct {
 	buf: Vector(Table),
 	map_: Storage,
 	free_idx: Pool_Idx,
 	alive_count: Pool_Idx,
 }
 
-Pool__Im_Gui_Tab_Bar :: struct {
+Pool_Im_Gui_Tab_Bar :: struct {
 	buf: Vector(Tab_Bar),
 	map_: Storage,
 	free_idx: Pool_Idx,
 	alive_count: Pool_Idx,
 }
 
-Chunk_Stream__Im_Gui_Window_Settings :: struct {
+Chunk_Stream_Im_Gui_Window_Settings :: struct {
 	buf: Vector(i8),
 }
 
-Chunk_Stream__Im_Gui_Table_Settings :: struct {
+Chunk_Stream_Im_Gui_Table_Settings :: struct {
 	buf: Vector(i8),
 }
 
@@ -1928,7 +1931,7 @@ Context :: struct {
 	active_id_previous_frame_window: ^Window,
 	last_active_id: ID,
 	last_active_id_timer: f32,
-	keys_owner_data: [ImGuiKey_NamedKey_COUNT]Key_Owner_Data,
+	keys_owner_data: [Key.Named_Key_COUNT]Key_Owner_Data,
 	keys_routing_table: Key_Routing_Table,
 	active_id_using_nav_dir_mask: u32,
 	active_id_using_all_keyboard_keys: bool,
@@ -1948,7 +1951,7 @@ Context :: struct {
 	open_popup_stack: Vector(Popup_Data),
 	begin_popup_stack: Vector(Popup_Data),
 	begin_menu_count: i32,
-	viewports: Vector(^Viewport_P),
+	viewports: Vector(^^Viewport),
 	nav_window: ^Window,
 	nav_id: ID,
 	nav_focus_scope_id: ID,
@@ -2024,11 +2027,11 @@ Context :: struct {
 	current_table: ^Table,
 	tables_temp_data_stacked: i32,
 	tables_temp_data: Vector(Table_Temp_Data),
-	tables: Pool__Im_Gui_Table,
+	tables: Pool_Im_Gui_Table,
 	tables_last_time_active: Vector(f32),
 	draw_channels_temp_merge_buffer: Vector(Draw_Channel),
 	current_tab_bar: ^Tab_Bar,
-	tab_bars: Pool__Im_Gui_Tab_Bar,
+	tab_bars: Pool_Im_Gui_Tab_Bar,
 	current_tab_bar_stack: Vector(Ptr_Or_Index),
 	shrink_width_buffer: Vector(Shrink_Width_Item),
 	hover_delay_id: ID,
@@ -2067,11 +2070,11 @@ Context :: struct {
 	settings_dirty_timer: f32,
 	settings_ini_data: Text_Buffer,
 	settings_handlers: Vector(Settings_Handler),
-	settings_windows: Chunk_Stream__Im_Gui_Window_Settings,
-	settings_tables: Chunk_Stream__Im_Gui_Table_Settings,
+	settings_windows: Chunk_Stream_Im_Gui_Window_Settings,
+	settings_tables: Chunk_Stream_Im_Gui_Table_Settings,
 	hooks: Vector(Context_Hook),
 	hook_id_next: ID,
-	localization_table: [ImGuiLocKey_COUNT]cstring,
+	localization_table: [Loc_Key.COUNT]cstring,
 	log_enabled: bool,
 	log_type: Log_Type,
 	log_file: File_Handle,
@@ -2233,8 +2236,8 @@ Window :: struct {
 	root_window_for_title_bar_highlight: ^Window,
 	root_window_for_nav: ^Window,
 	nav_last_child_nav_window: ^Window,
-	nav_last_ids: [ImGuiNavLayer_COUNT]ID,
-	nav_rect_rel: [ImGuiNavLayer_COUNT]Rect,
+	nav_last_ids: [Nav_Layer.COUNT]ID,
+	nav_rect_rel: [Nav_Layer.COUNT]Rect,
 	nav_root_focus_scope_id: ID,
 	memory_draw_list_idx_capacity: i32,
 	memory_draw_list_vtx_capacity: i32,
@@ -2289,8 +2292,6 @@ Tab_Bar :: struct {
 	backup_cursor_pos: [2]f32,
 	tabs_names: Text_Buffer,
 }
-Table_Column_Idx :: distinct i16
-Table_Draw_Channel_Idx :: distinct u16
 
 Table_Column :: struct {
 	flags: Table_Column_Flags,
@@ -2356,9 +2357,9 @@ Table :: struct {
 	columns: Span(Table_Column),
 	display_order_to_index: Span(Table_Column_Idx),
 	row_cell_data: Span(Table_Cell_Data),
-	enabled_mask_by_display_order: rawptr,
-	enabled_mask_by_index: rawptr,
-	visible_mask_by_index: rawptr,
+	enabled_mask_by_display_order: [^]u8,
+	enabled_mask_by_index: [^]u8,
+	visible_mask_by_index: [^]u8,
 	settings_loaded_flags: Table_Flags,
 	settings_offset: i32,
 	last_frame_active: i32,
@@ -2492,5 +2493,6 @@ Table_Settings :: struct {
 }
 
 Font_Builder_IO :: struct {
-	font_builder__build: #type proc "c" (atlas: ^Font_Atlas) -> bool,
+	font_builder_build: #type proc "c"(atlas: ^Font_Atlas) -> bool,
 }
+

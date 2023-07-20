@@ -38,17 +38,13 @@ def main():
 
     class V(c_ast.NodeVisitor):
         def visit_Enum(self, node: c_ast.Enum, name: str | None):
-            try:
-                enums.append(models.CEnum.from_ast(node, name))
-            except Exception as err:
-                import traceback; traceback.print_exc()
-                sys.exit(1)
+            enums.append(models.CEnum.from_ast(node, name))
 
         def visit_Struct(self, node: c_ast.Struct):
             if node.decls is None:
                 return
 
-            if node.name.startswith(('ImVec', 'ImSpan_', 'BitArray_')):
+            if node.name.startswith(('ImVec', 'ImSpan_', 'ImBitArray_')):
                 return
 
             structs.append(models.CStruct.from_ast(node))
@@ -89,10 +85,10 @@ def main():
             foreign_funcs.append(func)
 
         else:
-            try:
-                V().visit(node)
-            except TypeError:
-                pass
+            V().visit(node)
+            # try:
+            # except TypeError:
+            #     pass
 
     types = {}
 
@@ -156,43 +152,76 @@ def generate_types(
 
         for enum in enums:
             typename = odin_typename(enum.name)
+            if typename.endswith('_Private'):
+                continue
 
             if enum.is_flags:
                 fp.write(f"{typename} :: bit_set[{typename}_; u32]\n")
                 fp.write(f"{typename}_ :: enum {{\n")
 
+                base_flags = []
+
                 for name, value in enum.members.items():
                     if isinstance(value, models.FlagValue):
+                        base_flags.append(name)
                         fp.write(f"\t{odin_enumname(name)} = {value.flag},\n")
 
                 fp.write('}\n')
 
-                fp.write("/* UGLY DEFINITIONS ON THIS LINE FOR IMPLEMENTATION CONVENIENCE */")
+                # non-flag values
 
                 for name, value in enum.members.items():
                     if isinstance(value, models.FlagValue):
                         continue
-                    fp.write(f"{name}::{value};")
+                    elif value == 0:
+                        fp.write(f"{typename}_{odin_enumname(name)} :: {typename}{{}}\n")
+                    elif isinstance(value, models.Bits):
+                        fp.write(f"{typename}_{odin_enumname(name)} :: {typename}{value.as_flags()}\n")
+                    elif isinstance(value, models.MultiFlag):
+                        base = []
+                        composite = []
+                        for flag in value.flags:
+                            if flag in base_flags:
+                                base.append('.' + odin_enumname(flag))
+                            else:
+                                composite.append(f"{typename}_{odin_enumname(flag)}")
+                        parts = [f"{typename}{{ {', '.join(base)} }}"] if base else []
+                        if composite:
+                            parts.append(' | '.join(composite))
+                        fp.write(f"{typename}_{odin_enumname(name)} :: {' | '.join(parts)}\n")
+
+                fp.write('\n')
 
             else:
                 fp.write(f"{typename} :: enum {{\n")
 
+                external_values = []
+
                 for name, value in enum.members.items():
-                    if value is None:
+                    if not name.startswith(enum.name):
+                        external_values.append((name, value))
+                    elif value is None:
                         fp.write(f"\t{odin_enumname(name)},\n")
                     else:
-                        fp.write(f"\t{odin_enumname(name)} = {value},\n")
+                        fp.write(f"\t{odin_enumname(name)} = {str(value).replace(f'{typename}.', '')},\n")
 
-                fp.write("}\n\n")
+                fp.write("}\n")
+
+                for name, value in external_values:
+                    fp.write(f"{name} :: {value}\n")
+
+                fp.write('\n')
 
         fp.write("\n// === Structs ===\n\n")
 
         for struct in structs:
             fp.write(f"{odin_typename(struct.name)} :: struct {{\n")
+
             for i, (name, typ) in enumerate(struct.fields):
                 fieldname = odin_id(name) if name else f'_{i}_'
                 using = 'using ' if name is None else ''
                 fp.write(f"\t{using}{fieldname}: {typ.as_odin()},\n")
+
             fp.write("}\n\n")
 
 
@@ -357,7 +386,6 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
                     fp.write(f"{odin_procname(func.name)} :: {func.odin_name}\n")
 
             fp.write('\n')
-
 
 
 def write_header(fp):
