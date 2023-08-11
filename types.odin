@@ -27,3 +27,16 @@ Span :: struct(T : typeid) {
 
 COL32_WHITE :: u32(0xFF_FFFFFF)
 COL32_BLACK :: u32(0xFF_000000)
+
+Font_Glyph :: struct {
+    codepoint_and_flags: u32,
+    advance_x: f32,
+    x0: f32,
+    y0: f32,
+    x1: f32,
+    y1: f32,
+    u0: f32,
+    v0: f32,
+    u1: f32,
+    v1: f32,
+}

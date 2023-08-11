@@ -138,13 +138,24 @@ def generate_types(
     enums: list[models.CEnum],
     structs: list[models.CStruct],
 ):
+    blacklist = []
+
+    with open(ODIN_DIR / 'types.odin', 'r') as fp:
+        for line in fp:
+            if m := re.match(r'^(\w+)\s*::', line):
+                blacklist.append(m[1])
+
     with open(ODIN_DIR / 'types_gen.odin', 'w') as fp:
         write_header(fp)
 
         fp.write("\n// === Function Types ===\n\n")
 
         for name, proctype in func_types.items():
-            fp.write(f"{odin_typename(name)} :: {proctype.as_odin()}\n")
+            oname = odin_typename(name)
+            if oname in blacklist:
+                continue
+
+            fp.write(f"{oname} :: {proctype.as_odin()}\n")
 
         fp.write("\n// === Enums ===\n\n")
 
@@ -152,7 +163,7 @@ def generate_types(
 
         for enum in enums:
             typename = odin_typename(enum.name)
-            if typename.endswith('_Private'):
+            if typename.endswith('_Private') or typename in blacklist:
                 continue
 
             if enum.is_flags:
@@ -215,7 +226,11 @@ def generate_types(
         fp.write("\n// === Structs ===\n\n")
 
         for struct in structs:
-            fp.write(f"{odin_typename(struct.name)} :: struct {{\n")
+            oname = odin_typename(struct.name)
+            if oname in blacklist:
+                continue
+
+            fp.write(f"{oname} :: struct {{\n")
 
             for i, (name, typ) in enumerate(struct.fields):
                 fieldname = odin_id(name) if name else f'_{i}_'

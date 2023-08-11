@@ -3,6 +3,8 @@ package imgui
 import "core:log"
 import "core:runtime"
 import "core:strings"
+import "core:math/linalg"
+import "core:fmt"
 
 
 semisafe_string_to_cstring :: proc(s: string) -> cstring {
@@ -38,6 +40,37 @@ draw_list_add_closure :: proc(dl: ^Draw_List, data: $T, $cb: #type proc(data: ^T
 
     draw_list_add_callback(dl, _wrapper, dwc)
 }
+
+// ported from https://github.com/ocornut/imgui/issues/705#issuecomment-1666829186
+draw_list_add_text_upward :: proc(dl: ^Draw_List, text: string, pos: [2]f32, text_color: u32) {
+    pos := linalg.round(pos)
+    font := get_font()
+    for c in text {
+        glyph := font_find_glyph_no_fallback(font, u16(c))
+        if glyph == nil {
+            continue
+        }
+
+        draw_list_prim_reserve(dl, 6, 4)
+        draw_list_prim_quad_uv(
+            dl,
+
+            pos + [2]f32{glyph.y0, -glyph.x0},
+            pos + [2]f32{glyph.y0, -glyph.x1},
+            pos + [2]f32{glyph.y1, -glyph.x1},
+            pos + [2]f32{glyph.y1, -glyph.x0},
+
+            [2]f32{glyph.u0, glyph.v0},
+            [2]f32{glyph.u1, glyph.v0},
+            [2]f32{glyph.u1, glyph.v1},
+            [2]f32{glyph.u0, glyph.v1},
+
+            text_color,
+        )
+        pos.y -= glyph.advance_x
+    }
+}
+
 
 @(deferred_out=_cleanup_context)
 use_current_odin_context :: proc() -> rawptr {

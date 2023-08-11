@@ -1314,21 +1314,6 @@ Font_Config :: struct {
 	dst_font: ^Font,
 }
 
-Font_Glyph :: struct {
-	colored: u32,
-	visible: u32,
-	codepoint: u32,
-	advance_x: f32,
-	x0: f32,
-	y0: f32,
-	x1: f32,
-	y1: f32,
-	u0: f32,
-	v0: f32,
-	u1: f32,
-	v1: f32,
-}
-
 Font_Glyph_Ranges_Builder :: struct {
 	used_chars: Vector(u32),
 }
