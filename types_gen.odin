@@ -62,6 +62,8 @@ Col :: enum {
 	Tab_Active,
 	Tab_Unfocused,
 	Tab_Unfocused_Active,
+	Docking_Preview,
+	Docking_Empty_Bg,
 	Plot_Lines,
 	Plot_Lines_Hovered,
 	Plot_Histogram,
@@ -91,6 +93,12 @@ Context_Hook_Type :: enum {
 	Pending_Removal,
 }
 
+Data_Authority :: enum {
+	Auto,
+	Dock_Node,
+	Window,
+}
+
 Data_Type :: enum {
 	S8,
 	U8,
@@ -114,11 +122,19 @@ Dir :: enum {
 	COUNT,
 }
 
+Dock_Node_State :: enum {
+	Unknown,
+	Host_Window_Hidden_Because_Single_Window,
+	Host_Window_Hidden_Because_Windows_Are_Resizing,
+	Host_Window_Visible,
+}
+
 Input_Event_Type :: enum {
 	None = 0,
 	Mouse_Pos,
 	Mouse_Wheel,
 	Mouse_Button,
+	Mouse_Viewport,
 	Key,
 	Text,
 	Focus,
@@ -297,14 +313,16 @@ Layout_Type :: enum {
 }
 
 Loc_Key :: enum {
-	Table_Size_One = 0,
-	Table_Size_All_Fit = 1,
-	Table_Size_All_Default = 2,
-	Table_Reset_Order = 3,
-	Windowing_Main_Menu_Bar = 4,
-	Windowing_Popup = 5,
-	Windowing_Untitled = 6,
-	COUNT = 7,
+	Version_Str = 0,
+	Table_Size_One = 1,
+	Table_Size_All_Fit = 2,
+	Table_Size_All_Default = 3,
+	Table_Reset_Order = 4,
+	Windowing_Main_Menu_Bar = 5,
+	Windowing_Popup = 6,
+	Windowing_Untitled = 7,
+	Docking_Hide_Tab_Bar = 8,
+	COUNT = 9,
 }
 
 Log_Type :: enum {
@@ -415,6 +433,7 @@ Style_Var :: enum {
 	Separator_Text_Border_Size,
 	Separator_Text_Align,
 	Separator_Text_Padding,
+	Docking_Separator_Size,
 	COUNT,
 }
 
@@ -423,6 +442,16 @@ Table_Bg_Target :: enum {
 	Row_Bg0 = 1,
 	Row_Bg1 = 2,
 	Cell_Bg = 3,
+}
+
+Window_Dock_Style_Col :: enum {
+	Text,
+	Tab,
+	Tab_Hovered,
+	Tab_Active,
+	Tab_Unfocused,
+	Tab_Unfocused_Active,
+	COUNT,
 }
 
 Draw_Flags :: bit_set[Draw_Flags_; u32]
@@ -473,6 +502,9 @@ Backend_Flags_ :: enum {
 	Has_Mouse_Cursors = 1,
 	Has_Set_Mouse_Pos = 2,
 	Renderer_Has_Vtx_Offset = 3,
+	Platform_Has_Viewports = 10,
+	Has_Mouse_Hovered_Viewport = 11,
+	Renderer_Has_Viewports = 12,
 }
 Backend_Flags_None :: Backend_Flags{}
 
@@ -548,6 +580,10 @@ Config_Flags_ :: enum {
 	Nav_No_Capture_Keyboard = 3,
 	No_Mouse = 4,
 	No_Mouse_Cursor_Change = 5,
+	Docking_Enable = 6,
+	Viewports_Enable = 10,
+	Dpi_Enable_Scale_Viewports = 14,
+	Dpi_Enable_Scale_Fonts = 15,
 	Is_S_RGB = 20,
 	Is_Touch_Screen = 21,
 }
@@ -562,10 +598,23 @@ Debug_Log_Flags_ :: enum {
 	Event_Clipper = 4,
 	Event_Selection = 5,
 	Event_IO = 6,
+	Event_Docking = 7,
+	Event_Viewport = 8,
 	Output_To_TTY = 10,
 }
 Debug_Log_Flags_None :: Debug_Log_Flags{}
-Debug_Log_Flags_Event_Mask :: Debug_Log_Flags{ .Event_Active_Id, .Event_Focus, .Event_Popup, .Event_Nav, .Event_Clipper, .Event_Selection, .Event_IO }
+Debug_Log_Flags_Event_Mask :: Debug_Log_Flags{ .Event_Active_Id, .Event_Focus, .Event_Popup, .Event_Nav, .Event_Clipper, .Event_Selection, .Event_IO, .Event_Docking, .Event_Viewport }
+
+Dock_Node_Flags :: bit_set[Dock_Node_Flags_; u32]
+Dock_Node_Flags_ :: enum {
+	Keep_Alive_Only = 0,
+	No_Docking_In_Central_Node = 2,
+	Passthru_Central_Node = 3,
+	No_Split = 4,
+	No_Resize = 5,
+	Auto_Hide_Tab_Bar = 6,
+}
+Dock_Node_Flags_None :: Dock_Node_Flags{}
 
 Drag_Drop_Flags :: bit_set[Drag_Drop_Flags_; u32]
 Drag_Drop_Flags_ :: enum {
@@ -582,12 +631,20 @@ Drag_Drop_Flags_ :: enum {
 Drag_Drop_Flags_None :: Drag_Drop_Flags{}
 Drag_Drop_Flags_Accept_Peek_Only :: Drag_Drop_Flags{ .Accept_Before_Delivery, .Accept_No_Draw_Default_Rect }
 
+Focus_Request_Flags :: bit_set[Focus_Request_Flags_; u32]
+Focus_Request_Flags_ :: enum {
+	Restore_Focused_Child = 0,
+	Unless_Below_Modal = 1,
+}
+Focus_Request_Flags_None :: Focus_Request_Flags{}
+
 Focused_Flags :: bit_set[Focused_Flags_; u32]
 Focused_Flags_ :: enum {
 	Child_Windows = 0,
 	Root_Window = 1,
 	Any_Window = 2,
 	No_Popup_Hierarchy = 3,
+	Dock_Hierarchy = 4,
 }
 Focused_Flags_None :: Focused_Flags{}
 Focused_Flags_Root_And_Child_Windows :: Focused_Flags{ .Root_Window, .Child_Windows }
@@ -598,17 +655,23 @@ Hovered_Flags_ :: enum {
 	Root_Window = 1,
 	Any_Window = 2,
 	No_Popup_Hierarchy = 3,
+	Dock_Hierarchy = 4,
 	Allow_When_Blocked_By_Popup = 5,
 	Allow_When_Blocked_By_Active_Item = 7,
-	Allow_When_Overlapped = 8,
-	Allow_When_Disabled = 9,
-	No_Nav_Override = 10,
-	Delay_Normal = 11,
-	Delay_Short = 12,
-	No_Shared_Delay = 13,
+	Allow_When_Overlapped_By_Item = 8,
+	Allow_When_Overlapped_By_Window = 9,
+	Allow_When_Disabled = 10,
+	No_Nav_Override = 11,
+	For_Tooltip = 12,
+	Stationary = 13,
+	Delay_None = 14,
+	Delay_Short = 15,
+	Delay_Normal = 16,
+	No_Shared_Delay = 17,
 }
 Hovered_Flags_None :: Hovered_Flags{}
-Hovered_Flags_Rect_Only :: Hovered_Flags{ .Allow_When_Blocked_By_Popup, .Allow_When_Blocked_By_Active_Item, .Allow_When_Overlapped }
+Hovered_Flags_Allow_When_Overlapped :: Hovered_Flags{ .Allow_When_Overlapped_By_Item, .Allow_When_Overlapped_By_Window }
+Hovered_Flags_Rect_Only :: Hovered_Flags{ .Allow_When_Blocked_By_Popup, .Allow_When_Blocked_By_Active_Item } | Hovered_Flags_Allow_When_Overlapped
 Hovered_Flags_Root_And_Child_Windows :: Hovered_Flags{ .Root_Window, .Child_Windows }
 
 Input_Flags :: bit_set[Input_Flags_; u32]
@@ -676,6 +739,7 @@ Item_Flags_ :: enum {
 	Mixed_Value = 6,
 	Read_Only = 7,
 	No_Window_Hoverable_Check = 8,
+	Allow_Overlap = 9,
 	Inputable = 10,
 }
 Item_Flags_None :: Item_Flags{}
@@ -716,11 +780,14 @@ Nav_Move_Flags_ :: enum {
 	Forwarded = 7,
 	Debug_No_Result = 8,
 	Focus_Api = 9,
-	Tabbing = 10,
-	Activate = 11,
-	Dont_Set_Nav_Highlight = 12,
+	Is_Tabbing = 10,
+	Is_Page_Move = 11,
+	Activate = 12,
+	No_Select = 13,
+	No_Set_Nav_Highlight = 14,
 }
 Nav_Move_Flags_None :: Nav_Move_Flags{}
+Nav_Move_Flags_Wrap_Mask :: Nav_Move_Flags{ .Loop_X, .Loop_Y, .Wrap_X, .Wrap_Y }
 
 Next_Item_Data_Flags :: bit_set[Next_Item_Data_Flags_; u32]
 Next_Item_Data_Flags_ :: enum {
@@ -739,6 +806,9 @@ Next_Window_Data_Flags_ :: enum {
 	Has_Focus = 5,
 	Has_Bg_Alpha = 6,
 	Has_Scroll = 7,
+	Has_Viewport = 8,
+	Has_Dock = 9,
+	Has_Window_Class = 10,
 }
 Next_Window_Data_Flags_None :: Next_Window_Data_Flags{}
 
@@ -783,7 +853,7 @@ Selectable_Flags_ :: enum {
 	Span_All_Columns = 1,
 	Allow_Double_Click = 2,
 	Disabled = 3,
-	Allow_Item_Overlap = 4,
+	Allow_Overlap = 4,
 }
 Selectable_Flags_None :: Selectable_Flags{}
 
@@ -919,7 +989,7 @@ Text_Flags_None :: Text_Flags{}
 
 Tooltip_Flags :: bit_set[Tooltip_Flags_; u32]
 Tooltip_Flags_ :: enum {
-	Override_Previous_Tooltip = 0,
+	Override_Previous = 1,
 }
 Tooltip_Flags_None :: Tooltip_Flags{}
 
@@ -927,7 +997,7 @@ Tree_Node_Flags :: bit_set[Tree_Node_Flags_; u32]
 Tree_Node_Flags_ :: enum {
 	Selected = 0,
 	Framed = 1,
-	Allow_Item_Overlap = 2,
+	Allow_Overlap = 2,
 	No_Tree_Push_On_Open = 3,
 	No_Auto_Open_On_Log = 4,
 	Default_Open = 5,
@@ -948,6 +1018,17 @@ Viewport_Flags_ :: enum {
 	Is_Platform_Window = 0,
 	Is_Platform_Monitor = 1,
 	Owned_By_App = 2,
+	No_Decoration = 3,
+	No_Task_Bar_Icon = 4,
+	No_Focus_On_Appearing = 5,
+	No_Focus_On_Click = 6,
+	No_Inputs = 7,
+	No_Renderer_Clear = 8,
+	No_Auto_Merge = 9,
+	Top_Most = 10,
+	Can_Host_Other_Windows = 11,
+	Is_Minimized = 12,
+	Is_Focused = 13,
 }
 Viewport_Flags_None :: Viewport_Flags{}
 
@@ -973,12 +1054,14 @@ Window_Flags_ :: enum {
 	No_Nav_Inputs = 18,
 	No_Nav_Focus = 19,
 	Unsaved_Document = 20,
+	No_Docking = 21,
 	Nav_Flattened = 23,
 	Child_Window = 24,
 	Tooltip = 25,
 	Popup = 26,
 	Modal = 27,
 	Child_Menu = 28,
+	Dock_Node_Host = 29,
 }
 Window_Flags_None :: Window_Flags{}
 Window_Flags_No_Nav :: Window_Flags{ .No_Nav_Inputs, .No_Nav_Focus }
@@ -1026,6 +1109,7 @@ Style :: struct {
 	separator_text_padding: [2]f32,
 	display_window_padding: [2]f32,
 	display_safe_area_padding: [2]f32,
+	docking_separator_size: f32,
 	mouse_cursor_scale: f32,
 	anti_aliased_lines: bool,
 	anti_aliased_lines_use_tex: bool,
@@ -1033,6 +1117,11 @@ Style :: struct {
 	curve_tessellation_tol: f32,
 	circle_tessellation_max_error: f32,
 	colors: [Col.COUNT][4]f32,
+	hover_stationary_delay: f32,
+	hover_delay_short: f32,
+	hover_delay_normal: f32,
+	hover_flags_for_tooltip_mouse: Hovered_Flags,
+	hover_flags_for_tooltip_nav: Hovered_Flags,
 }
 
 Key_Data :: struct {
@@ -1050,19 +1139,20 @@ IO :: struct {
 	ini_saving_rate: f32,
 	ini_filename: cstring,
 	log_filename: cstring,
-	mouse_double_click_time: f32,
-	mouse_double_click_max_dist: f32,
-	mouse_drag_threshold: f32,
-	key_repeat_delay: f32,
-	key_repeat_rate: f32,
-	hover_delay_normal: f32,
-	hover_delay_short: f32,
 	user_data: rawptr,
 	fonts: ^Font_Atlas,
 	font_global_scale: f32,
 	font_allow_user_scaling: bool,
 	font_default: ^Font,
 	display_framebuffer_scale: [2]f32,
+	config_docking_no_split: bool,
+	config_docking_with_shift: bool,
+	config_docking_always_tab_bar: bool,
+	config_docking_transparent_payload: bool,
+	config_viewports_no_auto_merge: bool,
+	config_viewports_no_task_bar_icon: bool,
+	config_viewports_no_decoration: bool,
+	config_viewports_no_default_parent: bool,
 	mouse_draw_cursor: bool,
 	config_mac_osx_behaviors: bool,
 	config_input_trickle_event_queue: bool,
@@ -1072,8 +1162,15 @@ IO :: struct {
 	config_windows_resize_from_edges: bool,
 	config_windows_move_from_title_bar_only: bool,
 	config_memory_compact_timer: f32,
+	mouse_double_click_time: f32,
+	mouse_double_click_max_dist: f32,
+	mouse_drag_threshold: f32,
+	key_repeat_delay: f32,
+	key_repeat_rate: f32,
 	config_debug_begin_return_value_once: bool,
 	config_debug_begin_return_value_loop: bool,
+	config_debug_ignore_focus_loss: bool,
+	config_debug_ini_settings: bool,
 	backend_platform_name: cstring,
 	backend_renderer_name: cstring,
 	backend_platform_user_data: rawptr,
@@ -1107,6 +1204,7 @@ IO :: struct {
 	mouse_wheel: f32,
 	mouse_wheel_h: f32,
 	mouse_source: Mouse_Source,
+	mouse_hovered_viewport: ID,
 	key_ctrl: bool,
 	key_shift: bool,
 	key_alt: bool,
@@ -1127,6 +1225,7 @@ IO :: struct {
 	mouse_wheel_request_axis_swap: bool,
 	mouse_down_duration: [5]f32,
 	mouse_down_duration_prev: [5]f32,
+	mouse_drag_max_distance_abs: [5][2]f32,
 	mouse_drag_max_distance_sqr: [5]f32,
 	pen_pressure: f32,
 	app_focus_lost: bool,
@@ -1158,6 +1257,17 @@ Size_Callback_Data :: struct {
 	pos: [2]f32,
 	current_size: [2]f32,
 	desired_size: [2]f32,
+}
+
+Window_Class :: struct {
+	class_id: ID,
+	parent_viewport_id: ID,
+	viewport_flags_override_set: Viewport_Flags,
+	viewport_flags_override_clear: Viewport_Flags,
+	tab_item_flags_override_set: Tab_Item_Flags,
+	dock_node_flags_override_set: Dock_Node_Flags,
+	docking_always_tab_bar: bool,
+	docking_allow_unclassed: bool,
 }
 
 Payload :: struct {
@@ -1286,10 +1396,11 @@ Draw_Data :: struct {
 	cmd_lists_count: i32,
 	total_idx_count: i32,
 	total_vtx_count: i32,
-	cmd_lists: ^^Draw_List,
+	cmd_lists: Vector(^Draw_List),
 	display_pos: [2]f32,
 	display_size: [2]f32,
 	framebuffer_scale: [2]f32,
+	owner_viewport: ^Viewport,
 }
 
 Font_Config :: struct {
@@ -1378,12 +1489,60 @@ Font :: struct {
 }
 
 Viewport :: struct {
+	id: ID,
 	flags: Viewport_Flags,
 	pos: [2]f32,
 	size: [2]f32,
 	work_pos: [2]f32,
 	work_size: [2]f32,
+	dpi_scale: f32,
+	parent_viewport_id: ID,
+	draw_data: ^Draw_Data,
+	renderer_user_data: rawptr,
+	platform_user_data: rawptr,
+	platform_handle: rawptr,
 	platform_handle_raw: rawptr,
+	platform_window_created: bool,
+	platform_request_move: bool,
+	platform_request_resize: bool,
+	platform_request_close: bool,
+}
+
+Platform_IO :: struct {
+	platform_create_window: #type proc "c"(vp: ^Viewport),
+	platform_destroy_window: #type proc "c"(vp: ^Viewport),
+	platform_show_window: #type proc "c"(vp: ^Viewport),
+	platform_set_window_pos: #type proc "c"(vp: ^Viewport, pos: [2]f32),
+	platform_get_window_pos: #type proc "c"(vp: ^Viewport) -> [2]f32,
+	platform_set_window_size: #type proc "c"(vp: ^Viewport, size: [2]f32),
+	platform_get_window_size: #type proc "c"(vp: ^Viewport) -> [2]f32,
+	platform_set_window_focus: #type proc "c"(vp: ^Viewport),
+	platform_get_window_focus: #type proc "c"(vp: ^Viewport) -> bool,
+	platform_get_window_minimized: #type proc "c"(vp: ^Viewport) -> bool,
+	platform_set_window_title: #type proc "c"(vp: ^Viewport, str: cstring),
+	platform_set_window_alpha: #type proc "c"(vp: ^Viewport, alpha: f32),
+	platform_update_window: #type proc "c"(vp: ^Viewport),
+	platform_render_window: #type proc "c"(vp: ^Viewport, render_arg: rawptr),
+	platform_swap_buffers: #type proc "c"(vp: ^Viewport, render_arg: rawptr),
+	platform_get_window_dpi_scale: #type proc "c"(vp: ^Viewport) -> f32,
+	platform_on_changed_viewport: #type proc "c"(vp: ^Viewport),
+	platform_create_vk_surface: #type proc "c"(vp: ^Viewport, vk_inst: u64, vk_allocators: rawptr, out_vk_surface: ^u64) -> i32,
+	renderer_create_window: #type proc "c"(vp: ^Viewport),
+	renderer_destroy_window: #type proc "c"(vp: ^Viewport),
+	renderer_set_window_size: #type proc "c"(vp: ^Viewport, size: [2]f32),
+	renderer_render_window: #type proc "c"(vp: ^Viewport, render_arg: rawptr),
+	renderer_swap_buffers: #type proc "c"(vp: ^Viewport, render_arg: rawptr),
+	monitors: Vector(Platform_Monitor),
+	viewports: Vector(^Viewport),
+}
+
+Platform_Monitor :: struct {
+	main_pos: [2]f32,
+	main_size: [2]f32,
+	work_pos: [2]f32,
+	work_size: [2]f32,
+	dpi_scale: f32,
+	platform_handle: rawptr,
 }
 
 Platform_Ime_Data :: struct {
@@ -1464,7 +1623,8 @@ Draw_List_Shared_Data :: struct {
 }
 
 Draw_Data_Builder :: struct {
-	layers: [2]Vector(^Draw_List),
+	layers: [2]^Vector(^Draw_List),
+	layer_data1: Vector(^Draw_List),
 }
 
 Data_Var_Info :: struct {
@@ -1571,21 +1731,27 @@ Next_Window_Data :: struct {
 	pos_cond: Cond,
 	size_cond: Cond,
 	collapsed_cond: Cond,
+	dock_cond: Cond,
 	pos_val: [2]f32,
 	pos_pivot_val: [2]f32,
 	size_val: [2]f32,
 	content_size_val: [2]f32,
 	scroll_val: [2]f32,
+	pos_undock: bool,
 	collapsed_val: bool,
 	size_constraint_rect: Rect,
 	size_callback: Size_Callback,
 	size_callback_user_data: rawptr,
 	bg_alpha_val: f32,
+	viewport_id: ID,
+	dock_id: ID,
+	window_class: Window_Class,
 	menu_bar_offset_min_val: [2]f32,
 }
 
 Next_Item_Data :: struct {
 	flags: Next_Item_Data_Flags,
+	item_flags: Item_Flags,
 	width: f32,
 	focus_scope_id: ID,
 	open_cond: Cond,
@@ -1648,6 +1814,10 @@ Input_Event_Mouse_Button :: struct {
 	mouse_source: Mouse_Source,
 }
 
+Input_Event_Mouse_Viewport :: struct {
+	hovered_viewport_id: ID,
+}
+
 Input_Event_Key :: struct {
 	key: Key,
 	down: bool,
@@ -1670,6 +1840,7 @@ Input_Event :: struct {
 		MousePos: Input_Event_Mouse_Pos,
 		MouseWheel: Input_Event_Mouse_Wheel,
 		MouseButton: Input_Event_Mouse_Button,
+		MouseViewport: Input_Event_Mouse_Viewport,
 		Key: Input_Event_Key,
 		Text: Input_Event_Text,
 		AppFocused: Input_Event_App_Focused,
@@ -1752,12 +1923,81 @@ Old_Columns :: struct {
 	splitter: Draw_List_Splitter,
 }
 
+Dock_Node :: struct {
+	id: ID,
+	shared_flags: Dock_Node_Flags,
+	local_flags: Dock_Node_Flags,
+	local_flags_in_windows: Dock_Node_Flags,
+	merged_flags: Dock_Node_Flags,
+	state: Dock_Node_State,
+	parent_node: ^Dock_Node,
+	child_nodes: [2]^Dock_Node,
+	windows: Vector(^Window),
+	tab_bar: ^Tab_Bar,
+	pos: [2]f32,
+	size: [2]f32,
+	size_ref: [2]f32,
+	split_axis: Axis,
+	window_class: Window_Class,
+	last_bg_color: u32,
+	host_window: ^Window,
+	visible_window: ^Window,
+	central_node: ^Dock_Node,
+	only_node_with_windows: ^Dock_Node,
+	count_node_with_windows: i32,
+	last_frame_alive: i32,
+	last_frame_active: i32,
+	last_frame_focused: i32,
+	last_focused_node_id: ID,
+	selected_tab_id: ID,
+	want_close_tab_id: ID,
+	ref_viewport_id: ID,
+	authority_for_pos: Data_Authority,
+	authority_for_size: Data_Authority,
+	authority_for_viewport: Data_Authority,
+	is_visible: bool,
+	is_focused: bool,
+	is_bg_drawn_this_frame: bool,
+	has_close_button: bool,
+	has_window_menu_button: bool,
+	has_central_node_child: bool,
+	want_close_all: bool,
+	want_lock_size_once: bool,
+	want_mouse_move: bool,
+	want_hidden_tab_bar_update: bool,
+	want_hidden_tab_bar_toggle: bool,
+}
+
+Window_Dock_Style :: struct {
+	colors: [Window_Dock_Style_Col.COUNT]u32,
+}
+
+Dock_Context :: struct {
+	nodes: Storage,
+	requests: Vector(Dock_Request),
+	nodes_settings: Vector(Dock_Node_Settings),
+	want_full_rebuild: bool,
+}
+
 Viewport_P :: struct {
 	im_gui_viewport: Viewport,
+	window: ^Window,
+	idx: i32,
+	last_frame_active: i32,
+	last_focused_stamp_count: i32,
+	last_name_hash: ID,
+	last_pos: [2]f32,
+	alpha: f32,
+	last_alpha: f32,
+	last_focused_had_nav_window: bool,
+	platform_monitor: i16,
 	draw_lists_last_frame: [2]i32,
 	draw_lists: [2]^Draw_List,
 	draw_data_p: Draw_Data,
 	draw_data_builder: Draw_Data_Builder,
+	last_platform_pos: [2]f32,
+	last_platform_size: [2]f32,
+	last_renderer_size: [2]f32,
 	work_offset_min: [2]f32,
 	work_offset_max: [2]f32,
 	build_work_offset_min: [2]f32,
@@ -1768,6 +2008,11 @@ Window_Settings :: struct {
 	id: ID,
 	pos: [2]i16,
 	size: [2]i16,
+	viewport_pos: [2]i16,
+	viewport_id: ID,
+	dock_id: ID,
+	class_id: ID,
+	dock_order: i16,
 	collapsed: bool,
 	want_apply: bool,
 	want_delete: bool,
@@ -1799,6 +2044,7 @@ Metrics_Config :: struct {
 	show_draw_cmd_mesh: bool,
 	show_draw_cmd_bounding_boxes: bool,
 	show_atlas_tinted_with_text_color: bool,
+	show_docking_nodes: bool,
 	show_windows_rects_type: i32,
 	show_tables_rects_type: i32,
 }
@@ -1854,7 +2100,10 @@ Context :: struct {
 	initialized: bool,
 	font_atlas_owned_by_context: bool,
 	io: IO,
+	platform_io: Platform_IO,
 	style: Style,
+	config_flags_curr_frame: Config_Flags,
+	config_flags_last_frame: Config_Flags,
 	font: ^Font,
 	font_size: f32,
 	font_base_size: f32,
@@ -1862,6 +2111,7 @@ Context :: struct {
 	time: f64,
 	frame_count: i32,
 	frame_count_ended: i32,
+	frame_count_platform_ended: i32,
 	frame_count_rendered: i32,
 	within_frame_scope: bool,
 	within_frame_scope_with_implicit_window: bool,
@@ -1937,6 +2187,15 @@ Context :: struct {
 	begin_popup_stack: Vector(Popup_Data),
 	begin_menu_count: i32,
 	viewports: Vector(^^Viewport),
+	current_dpi_scale: f32,
+	current_viewport: ^Viewport_P,
+	mouse_viewport: ^Viewport_P,
+	mouse_last_hovered_viewport: ^Viewport_P,
+	platform_last_focused_viewport_id: ID,
+	fallback_monitor: Platform_Monitor,
+	viewport_created_count: i32,
+	platform_windows_created_count: i32,
+	viewport_focused_stamp_count: i32,
 	nav_window: ^Window,
 	nav_id: ID,
 	nav_focus_scope_id: ID,
@@ -1958,8 +2217,7 @@ Context :: struct {
 	nav_any_request: bool,
 	nav_init_request: bool,
 	nav_init_request_from_move: bool,
-	nav_init_result_id: ID,
-	nav_init_result_rect_rel: Rect,
+	nav_init_result: Nav_Item_Data,
 	nav_move_submitted: bool,
 	nav_move_scoring_items: bool,
 	nav_move_forward_to_next_frame: bool,
@@ -1989,7 +2247,6 @@ Context :: struct {
 	nav_windowing_accum_delta_pos: [2]f32,
 	nav_windowing_accum_delta_size: [2]f32,
 	dim_bg_ratio: f32,
-	mouse_cursor: Mouse_Cursor,
 	drag_drop_active: bool,
 	drag_drop_within_source: bool,
 	drag_drop_within_target: bool,
@@ -2019,10 +2276,14 @@ Context :: struct {
 	tab_bars: Pool_Im_Gui_Tab_Bar,
 	current_tab_bar_stack: Vector(Ptr_Or_Index),
 	shrink_width_buffer: Vector(Shrink_Width_Item),
-	hover_delay_id: ID,
-	hover_delay_id_previous_frame: ID,
-	hover_delay_timer: f32,
-	hover_delay_clear_timer: f32,
+	hover_item_delay_id: ID,
+	hover_item_delay_id_previous_frame: ID,
+	hover_item_delay_timer: f32,
+	hover_item_delay_clear_timer: f32,
+	hover_item_unlocked_stationary_id: ID,
+	hover_window_unlocked_stationary_id: ID,
+	mouse_cursor: Mouse_Cursor,
+	mouse_stationary_timer: f32,
 	mouse_last_valid_pos: [2]f32,
 	input_text_state: Input_Text_State,
 	input_text_deactivated_state: Input_Text_Deactivated_State,
@@ -2050,7 +2311,10 @@ Context :: struct {
 	menus_id_submitted_this_frame: Vector(ID),
 	platform_ime_data: Platform_Ime_Data,
 	platform_ime_data_prev: Platform_Ime_Data,
+	platform_ime_viewport: ID,
 	platform_locale_decimal_point: i8,
+	dock_context: Dock_Context,
+	dock_node_window_menu_handler: #type proc "c"(ctx: ^Context, node: ^Dock_Node, tab_bar: ^Tab_Bar),
 	settings_loaded: bool,
 	settings_dirty_timer: f32,
 	settings_ini_data: Text_Buffer,
@@ -2082,6 +2346,7 @@ Context :: struct {
 	debug_item_picker_break_id: ID,
 	debug_metrics_config: Metrics_Config,
 	debug_stack_tool: Stack_Tool,
+	debug_hovered_dock_node: ^Dock_Node,
 	framerate_sec_per_frame: [60]f32,
 	framerate_sec_per_frame_idx: i32,
 	framerate_sec_per_frame_count: i32,
@@ -2111,8 +2376,9 @@ Window_Temp_Data :: struct {
 	nav_layer_current: Nav_Layer,
 	nav_layers_active_mask: i16,
 	nav_layers_active_mask_next: i16,
+	nav_is_scroll_pushable_x: bool,
 	nav_hide_highlight_one_frame: bool,
-	nav_has_scroll: bool,
+	nav_window_has_scroll_y: bool,
 	menu_bar_appending: bool,
 	menu_bar_offset: [2]f32,
 	menu_columns: Menu_Columns,
@@ -2135,7 +2401,12 @@ Window :: struct {
 	name: ^i8,
 	id: ID,
 	flags: Window_Flags,
+	flags_previous_frame: Window_Flags,
+	window_class: Window_Class,
 	viewport: ^Viewport_P,
+	viewport_id: ID,
+	viewport_pos: [2]f32,
+	viewport_allow_platform_monitor_extend: i32,
 	pos: [2]f32,
 	size: [2]f32,
 	size_full: [2]f32,
@@ -2153,6 +2424,7 @@ Window :: struct {
 	deco_inner_size_y1: f32,
 	name_buf_len: i32,
 	move_id: ID,
+	tab_id: ID,
 	child_id: ID,
 	scroll: [2]f32,
 	scroll_max: [2]f32,
@@ -2162,6 +2434,7 @@ Window :: struct {
 	scrollbar_sizes: [2]f32,
 	scrollbar_x: bool,
 	scrollbar_y: bool,
+	viewport_owned: bool,
 	active: bool,
 	was_active: bool,
 	write_accessed: bool,
@@ -2192,6 +2465,7 @@ Window :: struct {
 	set_window_pos_allow_flags: Cond,
 	set_window_size_allow_flags: Cond,
 	set_window_collapsed_allow_flags: Cond,
+	set_window_dock_allow_flags: Cond,
 	set_window_pos_val: [2]f32,
 	set_window_pos_pivot: [2]f32,
 	id_stack: Vector(ID),
@@ -2206,11 +2480,13 @@ Window :: struct {
 	hit_test_hole_size: [2]i16,
 	hit_test_hole_offset: [2]i16,
 	last_frame_active: i32,
+	last_frame_just_focused: i32,
 	last_time_active: f32,
 	item_width_default: f32,
 	state_storage: Storage,
 	columns_storage: Vector(Old_Columns),
 	font_window_scale: f32,
+	font_dpi_scale: f32,
 	settings_offset: i32,
 	draw_list: ^Draw_List,
 	draw_list_inst: Draw_List,
@@ -2218,20 +2494,34 @@ Window :: struct {
 	parent_window_in_begin_stack: ^Window,
 	root_window: ^Window,
 	root_window_popup_tree: ^Window,
+	root_window_dock_tree: ^Window,
 	root_window_for_title_bar_highlight: ^Window,
 	root_window_for_nav: ^Window,
 	nav_last_child_nav_window: ^Window,
 	nav_last_ids: [Nav_Layer.COUNT]ID,
 	nav_rect_rel: [Nav_Layer.COUNT]Rect,
+	nav_preferred_scoring_pos_rel: [Nav_Layer.COUNT][2]f32,
 	nav_root_focus_scope_id: ID,
 	memory_draw_list_idx_capacity: i32,
 	memory_draw_list_vtx_capacity: i32,
 	memory_compacted: bool,
+	dock_is_active: bool,
+	dock_node_is_visible: bool,
+	dock_tab_is_visible: bool,
+	dock_tab_want_close: bool,
+	dock_order: i16,
+	dock_style: Window_Dock_Style,
+	dock_node: ^Dock_Node,
+	dock_node_as_host: ^Dock_Node,
+	dock_id: ID,
+	dock_tab_item_status_flags: Item_Status_Flags,
+	dock_tab_item_rect: Rect,
 }
 
 Tab_Item :: struct {
 	id: ID,
 	flags: Tab_Item_Flags,
+	window: ^Window,
 	last_frame_visible: i32,
 	last_frame_selected: i32,
 	offset: f32,
@@ -2332,6 +2622,8 @@ Table_Instance_Data :: struct {
 	last_outer_height: f32,
 	last_first_row_height: f32,
 	last_frozen_height: f32,
+	hovered_row_last: i32,
+	hovered_row_next: i32,
 }
 
 Table :: struct {

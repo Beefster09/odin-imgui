@@ -51,7 +51,10 @@ def odin_typename(name: str) -> str:
     if name.startswith('ImVector_'):
         _, elem = name.split('_', 1)
 
-        if elem.endswith('PPtr'):
+        if elem == "const_charPtr":
+            return "Vector(cstring)"
+
+        elif elem.endswith('PPtr'):
             return f"Vector(^^{odin_typename(elem[:-4])})"
 
         elif elem.endswith('Ptr'):

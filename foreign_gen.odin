@@ -83,6 +83,8 @@ foreign cimgui {
 	IsWindowHovered :: proc(flags: Hovered_Flags = {  }) -> bool ---
 	@(link_name = "igGetWindowDrawList")
 	GetWindowDrawList :: proc() -> ^Draw_List ---
+	@(link_name = "igGetWindowDpiScale")
+	GetWindowDpiScale :: proc() -> f32 ---
 	@(link_name = "igGetWindowPos")
 	GetWindowPos :: proc(p_out: ^[2]f32) ---
 	@(link_name = "igGetWindowSize")
@@ -91,6 +93,8 @@ foreign cimgui {
 	GetWindowWidth :: proc() -> f32 ---
 	@(link_name = "igGetWindowHeight")
 	GetWindowHeight :: proc() -> f32 ---
+	@(link_name = "igGetWindowViewport")
+	GetWindowViewport :: proc() -> ^Viewport ---
 	@(link_name = "igSetNextWindowPos")
 	SetNextWindowPos :: proc(pos: [2]f32, cond: Cond = {  }, pivot: [2]f32 = {0, 0}) ---
 	@(link_name = "igSetNextWindowSize")
@@ -107,6 +111,8 @@ foreign cimgui {
 	SetNextWindowScroll :: proc(scroll: [2]f32) ---
 	@(link_name = "igSetNextWindowBgAlpha")
 	SetNextWindowBgAlpha :: proc(alpha: f32) ---
+	@(link_name = "igSetNextWindowViewport")
+	SetNextWindowViewport :: proc(viewport_id: ID) ---
 	@(link_name = "igSetWindowPos_Vec2")
 	SetWindowPos_Vec2 :: proc(pos: [2]f32, cond: Cond = {  }) ---
 	@(link_name = "igSetWindowSize_Vec2")
@@ -481,6 +487,10 @@ foreign cimgui {
 	EndTooltip :: proc() ---
 	@(link_name = "igSetTooltip")
 	SetTooltip :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
+	@(link_name = "igBeginItemTooltip")
+	BeginItemTooltip :: proc() -> bool ---
+	@(link_name = "igSetItemTooltip")
+	SetItemTooltip :: proc(fmt_: cstring, #c_vararg _args_: ..any) ---
 	@(link_name = "igBeginPopup")
 	BeginPopup :: proc(str_id: cstring, flags: Window_Flags = {  }) -> bool ---
 	@(link_name = "igBeginPopupModal")
@@ -565,6 +575,18 @@ foreign cimgui {
 	TabItemButton :: proc(label: cstring, flags: Tab_Item_Flags = {  }) -> bool ---
 	@(link_name = "igSetTabItemClosed")
 	SetTabItemClosed :: proc(tab_or_docked_window_label: cstring) ---
+	@(link_name = "igDockSpace")
+	DockSpace :: proc(id: ID, size: [2]f32 = {0, 0}, flags: Dock_Node_Flags = {  }, window_class: ^Window_Class = nil) -> ID ---
+	@(link_name = "igDockSpaceOverViewport")
+	DockSpaceOverViewport :: proc(viewport: ^Viewport = nil, flags: Dock_Node_Flags = {  }, window_class: ^Window_Class = nil) -> ID ---
+	@(link_name = "igSetNextWindowDockID")
+	SetNextWindowDockID :: proc(dock_id: ID, cond: Cond = {  }) ---
+	@(link_name = "igSetNextWindowClass")
+	SetNextWindowClass :: proc(window_class: ^Window_Class) ---
+	@(link_name = "igGetWindowDockID")
+	GetWindowDockID :: proc() -> ID ---
+	@(link_name = "igIsWindowDocked")
+	IsWindowDocked :: proc() -> bool ---
 	@(link_name = "igLogToTTY")
 	LogToTTY :: proc(auto_open_depth: i32 = -1) ---
 	@(link_name = "igLogToFile")
@@ -601,6 +623,8 @@ foreign cimgui {
 	SetItemDefaultFocus :: proc() ---
 	@(link_name = "igSetKeyboardFocusHere")
 	SetKeyboardFocusHere :: proc(offset: i32 = 0) ---
+	@(link_name = "igSetNextItemAllowOverlap")
+	SetNextItemAllowOverlap :: proc() ---
 	@(link_name = "igIsItemHovered")
 	IsItemHovered :: proc(flags: Hovered_Flags = {  }) -> bool ---
 	@(link_name = "igIsItemActive")
@@ -635,14 +659,16 @@ foreign cimgui {
 	GetItemRectMax :: proc(p_out: ^[2]f32) ---
 	@(link_name = "igGetItemRectSize")
 	GetItemRectSize :: proc(p_out: ^[2]f32) ---
-	@(link_name = "igSetItemAllowOverlap")
-	SetItemAllowOverlap :: proc() ---
 	@(link_name = "igGetMainViewport")
 	GetMainViewport :: proc() -> ^Viewport ---
 	@(link_name = "igGetBackgroundDrawList_Nil")
 	GetBackgroundDrawList_Nil :: proc() -> ^Draw_List ---
 	@(link_name = "igGetForegroundDrawList_Nil")
 	GetForegroundDrawList_Nil :: proc() -> ^Draw_List ---
+	@(link_name = "igGetBackgroundDrawList_ViewportPtr")
+	GetBackgroundDrawList_ViewportPtr :: proc(viewport: ^Viewport) -> ^Draw_List ---
+	@(link_name = "igGetForegroundDrawList_ViewportPtr")
+	GetForegroundDrawList_ViewportPtr :: proc(viewport: ^Viewport) -> ^Draw_List ---
 	@(link_name = "igIsRectVisible_Nil")
 	IsRectVisible_Nil :: proc(size: [2]f32) -> bool ---
 	@(link_name = "igIsRectVisible_Vec2")
@@ -737,6 +763,18 @@ foreign cimgui {
 	SetAllocatorFunctions :: proc(alloc_func: Mem_Alloc_Func, free_func: Mem_Free_Func, user_data: rawptr = nil) ---
 	@(link_name = "igGetAllocatorFunctions")
 	GetAllocatorFunctions :: proc(p_alloc_func: ^Mem_Alloc_Func, p_free_func: ^Mem_Free_Func, p_user_data: ^rawptr) ---
+	@(link_name = "igGetPlatformIO")
+	GetPlatformIO :: proc() -> ^Platform_IO ---
+	@(link_name = "igUpdatePlatformWindows")
+	UpdatePlatformWindows :: proc() ---
+	@(link_name = "igRenderPlatformWindowsDefault")
+	RenderPlatformWindowsDefault :: proc(platform_render_arg: rawptr = nil, renderer_render_arg: rawptr = nil) ---
+	@(link_name = "igDestroyPlatformWindows")
+	DestroyPlatformWindows :: proc() ---
+	@(link_name = "igFindViewportByID")
+	FindViewportByID :: proc(id: ID) -> ^Viewport ---
+	@(link_name = "igFindViewportByPlatformHandle")
+	FindViewportByPlatformHandle :: proc(platform_handle: rawptr) -> ^Viewport ---
 	@(link_name = "ImGuiStyle_ImGuiStyle")
 	Style_new :: proc() -> ^Style ---
 	@(link_name = "ImGuiStyle_destroy")
@@ -755,6 +793,8 @@ foreign cimgui {
 	IO_AddMouseWheelEvent :: proc(self: ^IO, wheel_x: f32, wheel_y: f32) ---
 	@(link_name = "ImGuiIO_AddMouseSourceEvent")
 	IO_AddMouseSourceEvent :: proc(self: ^IO, source: Mouse_Source) ---
+	@(link_name = "ImGuiIO_AddMouseViewportEvent")
+	IO_AddMouseViewportEvent :: proc(self: ^IO, id: ID) ---
 	@(link_name = "ImGuiIO_AddFocusEvent")
 	IO_AddFocusEvent :: proc(self: ^IO, focused: bool) ---
 	@(link_name = "ImGuiIO_AddInputCharacter")
@@ -767,8 +807,8 @@ foreign cimgui {
 	IO_SetKeyEventNativeData :: proc(self: ^IO, key: Key, native_keycode: i32, native_scancode: i32, native_legacy_index: i32 = -1) ---
 	@(link_name = "ImGuiIO_SetAppAcceptingEvents")
 	IO_SetAppAcceptingEvents :: proc(self: ^IO, accepting_events: bool) ---
-	@(link_name = "ImGuiIO_ClearInputCharacters")
-	IO_ClearInputCharacters :: proc(self: ^IO) ---
+	@(link_name = "ImGuiIO_ClearEventsQueue")
+	IO_ClearEventsQueue :: proc(self: ^IO) ---
 	@(link_name = "ImGuiIO_ClearInputKeys")
 	IO_ClearInputKeys :: proc(self: ^IO) ---
 	@(link_name = "ImGuiIO_ImGuiIO")
@@ -789,6 +829,10 @@ foreign cimgui {
 	InputTextCallbackData_ClearSelection :: proc(self: ^Input_Text_Callback_Data) ---
 	@(link_name = "ImGuiInputTextCallbackData_HasSelection")
 	InputTextCallbackData_HasSelection :: proc(self: ^Input_Text_Callback_Data) -> bool ---
+	@(link_name = "ImGuiWindowClass_ImGuiWindowClass")
+	WindowClass_new :: proc() -> ^Window_Class ---
+	@(link_name = "ImGuiWindowClass_destroy")
+	WindowClass_destroy :: proc(self: ^Window_Class) ---
 	@(link_name = "ImGuiPayload_ImGuiPayload")
 	Payload_new :: proc() -> ^Payload ---
 	@(link_name = "ImGuiPayload_destroy")
@@ -905,8 +949,8 @@ foreign cimgui {
 	ListClipper_End :: proc(self: ^List_Clipper) ---
 	@(link_name = "ImGuiListClipper_Step")
 	ListClipper_Step :: proc(self: ^List_Clipper) -> bool ---
-	@(link_name = "ImGuiListClipper_ForceDisplayRangeByIndices")
-	ListClipper_ForceDisplayRangeByIndices :: proc(self: ^List_Clipper, item_min: i32, item_max: i32) ---
+	@(link_name = "ImGuiListClipper_IncludeRangeByIndices")
+	ListClipper_IncludeRangeByIndices :: proc(self: ^List_Clipper, item_begin: i32, item_end: i32) ---
 	@(link_name = "ImColor_ImColor_Nil")
 	Color_Color_Nil :: proc() -> ^Color ---
 	@(link_name = "ImColor_destroy")
@@ -1057,6 +1101,8 @@ foreign cimgui {
 	DrawData_destroy :: proc(self: ^Draw_Data) ---
 	@(link_name = "ImDrawData_Clear")
 	DrawData_Clear :: proc(self: ^Draw_Data) ---
+	@(link_name = "ImDrawData_AddDrawList")
+	DrawData_AddDrawList :: proc(self: ^Draw_Data, draw_list: ^Draw_List) ---
 	@(link_name = "ImDrawData_DeIndexAllBuffers")
 	DrawData_DeIndexAllBuffers :: proc(self: ^Draw_Data) ---
 	@(link_name = "ImDrawData_ScaleClipRects")
@@ -1195,6 +1241,14 @@ foreign cimgui {
 	Viewport_GetCenter :: proc(p_out: ^[2]f32, self: ^Viewport) ---
 	@(link_name = "ImGuiViewport_GetWorkCenter")
 	Viewport_GetWorkCenter :: proc(p_out: ^[2]f32, self: ^Viewport) ---
+	@(link_name = "ImGuiPlatformIO_ImGuiPlatformIO")
+	PlatformIO_new :: proc() -> ^Platform_IO ---
+	@(link_name = "ImGuiPlatformIO_destroy")
+	PlatformIO_destroy :: proc(self: ^Platform_IO) ---
+	@(link_name = "ImGuiPlatformMonitor_ImGuiPlatformMonitor")
+	PlatformMonitor_new :: proc() -> ^Platform_Monitor ---
+	@(link_name = "ImGuiPlatformMonitor_destroy")
+	PlatformMonitor_destroy :: proc(self: ^Platform_Monitor) ---
 	@(link_name = "ImGuiPlatformImeData_ImGuiPlatformImeData")
 	PlatformImeData_new :: proc() -> ^Platform_Ime_Data ---
 	@(link_name = "ImGuiPlatformImeData_destroy")
@@ -1283,14 +1337,10 @@ foreign cimgui {
 	DrawListSharedData_destroy :: proc(self: ^Draw_List_Shared_Data) ---
 	@(link_name = "ImDrawListSharedData_SetCircleTessellationMaxError")
 	DrawListSharedData_SetCircleTessellationMaxError :: proc(self: ^Draw_List_Shared_Data, max_error: f32) ---
-	@(link_name = "ImDrawDataBuilder_Clear")
-	DrawDataBuilder_Clear :: proc(self: ^Draw_Data_Builder) ---
-	@(link_name = "ImDrawDataBuilder_ClearFreeMemory")
-	DrawDataBuilder_ClearFreeMemory :: proc(self: ^Draw_Data_Builder) ---
-	@(link_name = "ImDrawDataBuilder_GetDrawListCount")
-	DrawDataBuilder_GetDrawListCount :: proc(self: ^Draw_Data_Builder) -> i32 ---
-	@(link_name = "ImDrawDataBuilder_FlattenIntoSingleLayer")
-	DrawDataBuilder_FlattenIntoSingleLayer :: proc(self: ^Draw_Data_Builder) ---
+	@(link_name = "ImDrawDataBuilder_ImDrawDataBuilder")
+	DrawDataBuilder_new :: proc() -> ^Draw_Data_Builder ---
+	@(link_name = "ImDrawDataBuilder_destroy")
+	DrawDataBuilder_destroy :: proc(self: ^Draw_Data_Builder) ---
 	@(link_name = "ImGuiDataVarInfo_GetVarPtr")
 	DataVarInfo_GetVarPtr :: proc(self: ^Data_Var_Info, parent: rawptr) -> rawptr ---
 	@(link_name = "ImGuiStyleMod_ImGuiStyleMod_Int")
@@ -1427,10 +1477,44 @@ foreign cimgui {
 	OldColumns_new :: proc() -> ^Old_Columns ---
 	@(link_name = "ImGuiOldColumns_destroy")
 	OldColumns_destroy :: proc(self: ^Old_Columns) ---
+	@(link_name = "ImGuiDockNode_ImGuiDockNode")
+	DockNode_new :: proc(id: ID) -> ^Dock_Node ---
+	@(link_name = "ImGuiDockNode_destroy")
+	DockNode_destroy :: proc(self: ^Dock_Node) ---
+	@(link_name = "ImGuiDockNode_IsRootNode")
+	DockNode_IsRootNode :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsDockSpace")
+	DockNode_IsDockSpace :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsFloatingNode")
+	DockNode_IsFloatingNode :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsCentralNode")
+	DockNode_IsCentralNode :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsHiddenTabBar")
+	DockNode_IsHiddenTabBar :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsNoTabBar")
+	DockNode_IsNoTabBar :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsSplitNode")
+	DockNode_IsSplitNode :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsLeafNode")
+	DockNode_IsLeafNode :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_IsEmpty")
+	DockNode_IsEmpty :: proc(self: ^Dock_Node) -> bool ---
+	@(link_name = "ImGuiDockNode_Rect")
+	DockNode_Rect :: proc(p_out: ^Rect, self: ^Dock_Node) ---
+	@(link_name = "ImGuiDockNode_SetLocalFlags")
+	DockNode_SetLocalFlags :: proc(self: ^Dock_Node, flags: Dock_Node_Flags) ---
+	@(link_name = "ImGuiDockNode_UpdateMergedFlags")
+	DockNode_UpdateMergedFlags :: proc(self: ^Dock_Node) ---
+	@(link_name = "ImGuiDockContext_ImGuiDockContext")
+	DockContext_new :: proc() -> ^Dock_Context ---
+	@(link_name = "ImGuiDockContext_destroy")
+	DockContext_destroy :: proc(self: ^Dock_Context) ---
 	@(link_name = "ImGuiViewportP_ImGuiViewportP")
 	ViewportP_new :: proc() -> ^Viewport_P ---
 	@(link_name = "ImGuiViewportP_destroy")
 	ViewportP_destroy :: proc(self: ^Viewport_P) ---
+	@(link_name = "ImGuiViewportP_ClearRequestFlags")
+	ViewportP_ClearRequestFlags :: proc(self: ^Viewport_P) ---
 	@(link_name = "ImGuiViewportP_CalcWorkRectPos")
 	ViewportP_CalcWorkRectPos :: proc(p_out: ^[2]f32, self: ^Viewport_P, off_min: [2]f32) ---
 	@(link_name = "ImGuiViewportP_CalcWorkRectSize")
@@ -1540,7 +1624,7 @@ foreign cimgui {
 	@(link_name = "igCalcWindowNextAutoFitSize")
 	CalcWindowNextAutoFitSize :: proc(p_out: ^[2]f32, window: ^Window) ---
 	@(link_name = "igIsWindowChildOf")
-	IsWindowChildOf :: proc(window: ^Window, potential_parent: ^Window, popup_hierarchy: bool) -> bool ---
+	IsWindowChildOf :: proc(window: ^Window, potential_parent: ^Window, popup_hierarchy: bool, dock_hierarchy: bool) -> bool ---
 	@(link_name = "igIsWindowWithinBeginStackOf")
 	IsWindowWithinBeginStackOf :: proc(window: ^Window, potential_parent: ^Window) -> bool ---
 	@(link_name = "igIsWindowAbove")
@@ -1561,10 +1645,12 @@ foreign cimgui {
 	WindowRectAbsToRel :: proc(p_out: ^Rect, window: ^Window, r: Rect) ---
 	@(link_name = "igWindowRectRelToAbs")
 	WindowRectRelToAbs :: proc(p_out: ^Rect, window: ^Window, r: Rect) ---
+	@(link_name = "igWindowPosRelToAbs")
+	WindowPosRelToAbs :: proc(p_out: ^[2]f32, window: ^Window, p: [2]f32) ---
 	@(link_name = "igFocusWindow")
-	FocusWindow :: proc(window: ^Window) ---
+	FocusWindow :: proc(window: ^Window, flags: Focus_Request_Flags = {  }) ---
 	@(link_name = "igFocusTopMostWindowUnderOne")
-	FocusTopMostWindowUnderOne :: proc(under_this_window: ^Window, ignore_window: ^Window) ---
+	FocusTopMostWindowUnderOne :: proc(under_this_window: ^Window, ignore_window: ^Window, filter_viewport: ^Viewport, flags: Focus_Request_Flags) ---
 	@(link_name = "igBringWindowToFocusFront")
 	BringWindowToFocusFront :: proc(window: ^Window) ---
 	@(link_name = "igBringWindowToDisplayFront")
@@ -1583,10 +1669,8 @@ foreign cimgui {
 	GetDefaultFont :: proc() -> ^Font ---
 	@(link_name = "igGetForegroundDrawList_WindowPtr")
 	GetForegroundDrawList_WindowPtr :: proc(window: ^Window) -> ^Draw_List ---
-	@(link_name = "igGetBackgroundDrawList_ViewportPtr")
-	GetBackgroundDrawList_ViewportPtr :: proc(viewport: ^Viewport) -> ^Draw_List ---
-	@(link_name = "igGetForegroundDrawList_ViewportPtr")
-	GetForegroundDrawList_ViewportPtr :: proc(viewport: ^Viewport) -> ^Draw_List ---
+	@(link_name = "igAddDrawListToDrawDataEx")
+	AddDrawListToDrawDataEx :: proc(draw_data: ^Draw_Data, out_list: ^Vector(^Draw_List), draw_list: ^Draw_List) ---
 	@(link_name = "igInitialize")
 	Initialize :: proc() ---
 	@(link_name = "igShutdown")
@@ -1597,6 +1681,8 @@ foreign cimgui {
 	UpdateHoveredWindowAndCaptureFlags :: proc() ---
 	@(link_name = "igStartMouseMovingWindow")
 	StartMouseMovingWindow :: proc(window: ^Window) ---
+	@(link_name = "igStartMouseMovingWindowOrNode")
+	StartMouseMovingWindowOrNode :: proc(window: ^Window, node: ^Dock_Node, undock_floating_node: bool) ---
 	@(link_name = "igUpdateMouseMovingWindowNewFrame")
 	UpdateMouseMovingWindowNewFrame :: proc() ---
 	@(link_name = "igUpdateMouseMovingWindowEndFrame")
@@ -1607,8 +1693,20 @@ foreign cimgui {
 	RemoveContextHook :: proc(context_: ^Context, hook_to_remove: ID) ---
 	@(link_name = "igCallContextHooks")
 	CallContextHooks :: proc(context_: ^Context, type: Context_Hook_Type) ---
+	@(link_name = "igTranslateWindowsInViewport")
+	TranslateWindowsInViewport :: proc(viewport: ^Viewport_P, old_pos: [2]f32, new_pos: [2]f32) ---
+	@(link_name = "igScaleWindowsInViewport")
+	ScaleWindowsInViewport :: proc(viewport: ^Viewport_P, scale: f32) ---
+	@(link_name = "igDestroyPlatformWindow")
+	DestroyPlatformWindow :: proc(viewport: ^Viewport_P) ---
 	@(link_name = "igSetWindowViewport")
 	SetWindowViewport :: proc(window: ^Window, viewport: ^Viewport_P) ---
+	@(link_name = "igSetCurrentViewport")
+	SetCurrentViewport :: proc(window: ^Window, viewport: ^Viewport_P) ---
+	@(link_name = "igGetViewportPlatformMonitor")
+	GetViewportPlatformMonitor :: proc(viewport: ^Viewport) -> ^Platform_Monitor ---
+	@(link_name = "igFindHoveredViewportFromPlatformWindowStack")
+	FindHoveredViewportFromPlatformWindowStack :: proc(mouse_platform_pos: [2]f32) -> ^Viewport_P ---
 	@(link_name = "igMarkIniSettingsDirty_Nil")
 	MarkIniSettingsDirty_Nil :: proc() ---
 	@(link_name = "igMarkIniSettingsDirty_WindowPtr")
@@ -1684,7 +1782,7 @@ foreign cimgui {
 	@(link_name = "igItemAdd")
 	ItemAdd :: proc(bb: Rect, id: ID, nav_bb: ^Rect = nil, extra_flags: Item_Flags = {  }) -> bool ---
 	@(link_name = "igItemHoverable")
-	ItemHoverable :: proc(bb: Rect, id: ID) -> bool ---
+	ItemHoverable :: proc(bb: Rect, id: ID, item_flags: Item_Flags) -> bool ---
 	@(link_name = "igIsWindowContentHoverable")
 	IsWindowContentHoverable :: proc(window: ^Window, flags: Hovered_Flags = {  }) -> bool ---
 	@(link_name = "igIsClippedEx")
@@ -1739,6 +1837,8 @@ foreign cimgui {
 	GetTopMostPopupModal :: proc() -> ^Window ---
 	@(link_name = "igGetTopMostAndVisiblePopupModal")
 	GetTopMostAndVisiblePopupModal :: proc() -> ^Window ---
+	@(link_name = "igFindBlockingModal")
+	FindBlockingModal :: proc(window: ^Window) -> ^Window ---
 	@(link_name = "igFindBestWindowPosForPopup")
 	FindBestWindowPosForPopup :: proc(p_out: ^[2]f32, window: ^Window) ---
 	@(link_name = "igFindBestWindowPosForPopupEx")
@@ -1773,12 +1873,18 @@ foreign cimgui {
 	NavMoveRequestApplyResult :: proc() ---
 	@(link_name = "igNavMoveRequestTryWrapping")
 	NavMoveRequestTryWrapping :: proc(window: ^Window, move_flags: Nav_Move_Flags) ---
-	@(link_name = "igActivateItem")
-	ActivateItem :: proc(id: ID) ---
+	@(link_name = "igNavClearPreferredPosForAxis")
+	NavClearPreferredPosForAxis :: proc(axis: Axis) ---
+	@(link_name = "igNavUpdateCurrentWindowIsScrollPushableX")
+	NavUpdateCurrentWindowIsScrollPushableX :: proc() ---
 	@(link_name = "igSetNavWindow")
 	SetNavWindow :: proc(window: ^Window) ---
 	@(link_name = "igSetNavID")
 	SetNavID :: proc(id: ID, nav_layer: Nav_Layer, focus_scope_id: ID, rect_rel: Rect) ---
+	@(link_name = "igFocusItem")
+	FocusItem :: proc() ---
+	@(link_name = "igActivateItemByID")
+	ActivateItemByID :: proc(id: ID) ---
 	@(link_name = "igIsNamedKey")
 	IsNamedKey :: proc(key: Key) -> bool ---
 	@(link_name = "igIsNamedKeyOrModKey")
@@ -1851,6 +1957,90 @@ foreign cimgui {
 	TestShortcutRouting :: proc(key_chord: Key_Chord, owner_id: ID) -> bool ---
 	@(link_name = "igGetShortcutRoutingData")
 	GetShortcutRoutingData :: proc(key_chord: Key_Chord) -> ^Key_Routing_Data ---
+	@(link_name = "igDockContextInitialize")
+	DockContextInitialize :: proc(ctx: ^Context) ---
+	@(link_name = "igDockContextShutdown")
+	DockContextShutdown :: proc(ctx: ^Context) ---
+	@(link_name = "igDockContextClearNodes")
+	DockContextClearNodes :: proc(ctx: ^Context, root_id: ID, clear_settings_refs: bool) ---
+	@(link_name = "igDockContextRebuildNodes")
+	DockContextRebuildNodes :: proc(ctx: ^Context) ---
+	@(link_name = "igDockContextNewFrameUpdateUndocking")
+	DockContextNewFrameUpdateUndocking :: proc(ctx: ^Context) ---
+	@(link_name = "igDockContextNewFrameUpdateDocking")
+	DockContextNewFrameUpdateDocking :: proc(ctx: ^Context) ---
+	@(link_name = "igDockContextEndFrame")
+	DockContextEndFrame :: proc(ctx: ^Context) ---
+	@(link_name = "igDockContextGenNodeID")
+	DockContextGenNodeID :: proc(ctx: ^Context) -> ID ---
+	@(link_name = "igDockContextQueueDock")
+	DockContextQueueDock :: proc(ctx: ^Context, target: ^Window, target_node: ^Dock_Node, payload: ^Window, split_dir: Dir, split_ratio: f32, split_outer: bool) ---
+	@(link_name = "igDockContextQueueUndockWindow")
+	DockContextQueueUndockWindow :: proc(ctx: ^Context, window: ^Window) ---
+	@(link_name = "igDockContextQueueUndockNode")
+	DockContextQueueUndockNode :: proc(ctx: ^Context, node: ^Dock_Node) ---
+	@(link_name = "igDockContextProcessUndockWindow")
+	DockContextProcessUndockWindow :: proc(ctx: ^Context, window: ^Window, clear_persistent_docking_ref: bool = true) ---
+	@(link_name = "igDockContextProcessUndockNode")
+	DockContextProcessUndockNode :: proc(ctx: ^Context, node: ^Dock_Node) ---
+	@(link_name = "igDockContextCalcDropPosForDocking")
+	DockContextCalcDropPosForDocking :: proc(target: ^Window, target_node: ^Dock_Node, payload_window: ^Window, payload_node: ^Dock_Node, split_dir: Dir, split_outer: bool, out_pos: ^[2]f32) -> bool ---
+	@(link_name = "igDockContextFindNodeByID")
+	DockContextFindNodeByID :: proc(ctx: ^Context, id: ID) -> ^Dock_Node ---
+	@(link_name = "igDockNodeWindowMenuHandler_Default")
+	DockNodeWindowMenuHandler_Default :: proc(ctx: ^Context, node: ^Dock_Node, tab_bar: ^Tab_Bar) ---
+	@(link_name = "igDockNodeBeginAmendTabBar")
+	DockNodeBeginAmendTabBar :: proc(node: ^Dock_Node) -> bool ---
+	@(link_name = "igDockNodeEndAmendTabBar")
+	DockNodeEndAmendTabBar :: proc() ---
+	@(link_name = "igDockNodeGetRootNode")
+	DockNodeGetRootNode :: proc(node: ^Dock_Node) -> ^Dock_Node ---
+	@(link_name = "igDockNodeIsInHierarchyOf")
+	DockNodeIsInHierarchyOf :: proc(node: ^Dock_Node, parent: ^Dock_Node) -> bool ---
+	@(link_name = "igDockNodeGetDepth")
+	DockNodeGetDepth :: proc(node: ^Dock_Node) -> i32 ---
+	@(link_name = "igDockNodeGetWindowMenuButtonId")
+	DockNodeGetWindowMenuButtonId :: proc(node: ^Dock_Node) -> ID ---
+	@(link_name = "igGetWindowDockNode")
+	GetWindowDockNode :: proc() -> ^Dock_Node ---
+	@(link_name = "igGetWindowAlwaysWantOwnTabBar")
+	GetWindowAlwaysWantOwnTabBar :: proc(window: ^Window) -> bool ---
+	@(link_name = "igBeginDocked")
+	BeginDocked :: proc(window: ^Window, p_open: ^bool) ---
+	@(link_name = "igBeginDockableDragDropSource")
+	BeginDockableDragDropSource :: proc(window: ^Window) ---
+	@(link_name = "igBeginDockableDragDropTarget")
+	BeginDockableDragDropTarget :: proc(window: ^Window) ---
+	@(link_name = "igSetWindowDock")
+	SetWindowDock :: proc(window: ^Window, dock_id: ID, cond: Cond) ---
+	@(link_name = "igDockBuilderDockWindow")
+	DockBuilderDockWindow :: proc(window_name: cstring, node_id: ID) ---
+	@(link_name = "igDockBuilderGetNode")
+	DockBuilderGetNode :: proc(node_id: ID) -> ^Dock_Node ---
+	@(link_name = "igDockBuilderGetCentralNode")
+	DockBuilderGetCentralNode :: proc(node_id: ID) -> ^Dock_Node ---
+	@(link_name = "igDockBuilderAddNode")
+	DockBuilderAddNode :: proc(node_id: ID = 0, flags: Dock_Node_Flags = {  }) -> ID ---
+	@(link_name = "igDockBuilderRemoveNode")
+	DockBuilderRemoveNode :: proc(node_id: ID) ---
+	@(link_name = "igDockBuilderRemoveNodeDockedWindows")
+	DockBuilderRemoveNodeDockedWindows :: proc(node_id: ID, clear_settings_refs: bool = true) ---
+	@(link_name = "igDockBuilderRemoveNodeChildNodes")
+	DockBuilderRemoveNodeChildNodes :: proc(node_id: ID) ---
+	@(link_name = "igDockBuilderSetNodePos")
+	DockBuilderSetNodePos :: proc(node_id: ID, pos: [2]f32) ---
+	@(link_name = "igDockBuilderSetNodeSize")
+	DockBuilderSetNodeSize :: proc(node_id: ID, size: [2]f32) ---
+	@(link_name = "igDockBuilderSplitNode")
+	DockBuilderSplitNode :: proc(node_id: ID, split_dir: Dir, size_ratio_for_node_at_dir: f32, out_id_at_dir: ^ID, out_id_at_opposite_dir: ^ID) -> ID ---
+	@(link_name = "igDockBuilderCopyDockSpace")
+	DockBuilderCopyDockSpace :: proc(src_dockspace_id: ID, dst_dockspace_id: ID, in_window_remap_pairs: ^Vector(cstring)) ---
+	@(link_name = "igDockBuilderCopyNode")
+	DockBuilderCopyNode :: proc(src_node_id: ID, dst_node_id: ID, out_node_remap_pairs: ^Vector(ID)) ---
+	@(link_name = "igDockBuilderCopyWindowSettings")
+	DockBuilderCopyWindowSettings :: proc(src_name: cstring, dst_name: cstring) ---
+	@(link_name = "igDockBuilderFinish")
+	DockBuilderFinish :: proc(node_id: ID) ---
 	@(link_name = "igPushFocusScope")
 	PushFocusScope :: proc(id: ID) ---
 	@(link_name = "igPopFocusScope")
@@ -1895,6 +2085,8 @@ foreign cimgui {
 	TableSetColumnSortDirection :: proc(column_n: i32, sort_direction: Sort_Direction, append_to_sort_specs: bool) ---
 	@(link_name = "igTableGetHoveredColumn")
 	TableGetHoveredColumn :: proc() -> i32 ---
+	@(link_name = "igTableGetHoveredRow")
+	TableGetHoveredRow :: proc() -> i32 ---
 	@(link_name = "igTableGetHeaderRowHeight")
 	TableGetHeaderRowHeight :: proc() -> f32 ---
 	@(link_name = "igTablePushBackgroundChannel")
@@ -1986,17 +2178,21 @@ foreign cimgui {
 	@(link_name = "igGetCurrentTabBar")
 	GetCurrentTabBar :: proc() -> ^Tab_Bar ---
 	@(link_name = "igBeginTabBarEx")
-	BeginTabBarEx :: proc(tab_bar: ^Tab_Bar, bb: Rect, flags: Tab_Bar_Flags) -> bool ---
+	BeginTabBarEx :: proc(tab_bar: ^Tab_Bar, bb: Rect, flags: Tab_Bar_Flags, dock_node: ^Dock_Node) -> bool ---
 	@(link_name = "igTabBarFindTabByID")
 	TabBarFindTabByID :: proc(tab_bar: ^Tab_Bar, tab_id: ID) -> ^Tab_Item ---
 	@(link_name = "igTabBarFindTabByOrder")
 	TabBarFindTabByOrder :: proc(tab_bar: ^Tab_Bar, order: i32) -> ^Tab_Item ---
+	@(link_name = "igTabBarFindMostRecentlySelectedTabForActiveWindow")
+	TabBarFindMostRecentlySelectedTabForActiveWindow :: proc(tab_bar: ^Tab_Bar) -> ^Tab_Item ---
 	@(link_name = "igTabBarGetCurrentTab")
 	TabBarGetCurrentTab :: proc(tab_bar: ^Tab_Bar) -> ^Tab_Item ---
 	@(link_name = "igTabBarGetTabOrder")
 	TabBarGetTabOrder :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> i32 ---
 	@(link_name = "igTabBarGetTabName")
 	TabBarGetTabName :: proc(tab_bar: ^Tab_Bar, tab: ^Tab_Item) -> cstring ---
+	@(link_name = "igTabBarAddTab")
+	TabBarAddTab :: proc(tab_bar: ^Tab_Bar, tab_flags: Tab_Item_Flags, window: ^Window) ---
 	@(link_name = "igTabBarRemoveTab")
 	TabBarRemoveTab :: proc(tab_bar: ^Tab_Bar, tab_id: ID) ---
 	@(link_name = "igTabBarCloseTab")
@@ -2049,10 +2245,14 @@ foreign cimgui {
 	RenderCheckMark :: proc(draw_list: ^Draw_List, pos: [2]f32, col: u32, sz: f32) ---
 	@(link_name = "igRenderArrowPointingAt")
 	RenderArrowPointingAt :: proc(draw_list: ^Draw_List, pos: [2]f32, half_sz: [2]f32, direction: Dir, col: u32) ---
+	@(link_name = "igRenderArrowDockMenu")
+	RenderArrowDockMenu :: proc(draw_list: ^Draw_List, p_min: [2]f32, sz: f32, col: u32) ---
 	@(link_name = "igRenderRectFilledRangeH")
 	RenderRectFilledRangeH :: proc(draw_list: ^Draw_List, rect: Rect, col: u32, x_start_norm: f32, x_end_norm: f32, rounding: f32) ---
 	@(link_name = "igRenderRectFilledWithHole")
 	RenderRectFilledWithHole :: proc(draw_list: ^Draw_List, outer: Rect, inner: Rect, col: u32, rounding: f32) ---
+	@(link_name = "igCalcRoundingFlagsForRectInRect")
+	CalcRoundingFlagsForRectInRect :: proc(r_in: Rect, r_outer: Rect, threshold: f32) -> Draw_Flags ---
 	@(link_name = "igTextEx")
 	TextEx :: proc(text: [^]u8, text_end: [^]u8, flags: Text_Flags = {  }) ---
 	@(link_name = "igButtonEx")
@@ -2062,7 +2262,7 @@ foreign cimgui {
 	@(link_name = "igImageButtonEx")
 	ImageButtonEx :: proc(id: ID, texture_id: Texture_ID, size: [2]f32, uv0: [2]f32, uv1: [2]f32, bg_col: [4]f32, tint_col: [4]f32, flags: Button_Flags = {  }) -> bool ---
 	@(link_name = "igSeparatorEx")
-	SeparatorEx :: proc(flags: Separator_Flags) ---
+	SeparatorEx :: proc(flags: Separator_Flags, thickness: f32 = 1.0) ---
 	@(link_name = "igSeparatorTextEx")
 	SeparatorTextEx :: proc(id: ID, label: [^]u8, label_end: [^]u8, extra_width: f32) ---
 	@(link_name = "igCheckboxFlags_S64Ptr")
@@ -2072,7 +2272,7 @@ foreign cimgui {
 	@(link_name = "igCloseButton")
 	CloseButton :: proc(id: ID, pos: [2]f32) -> bool ---
 	@(link_name = "igCollapseButton")
-	CollapseButton :: proc(id: ID, pos: [2]f32) -> bool ---
+	CollapseButton :: proc(id: ID, pos: [2]f32, dock_node: ^Dock_Node) -> bool ---
 	@(link_name = "igScrollbar")
 	Scrollbar :: proc(axis: Axis) ---
 	@(link_name = "igScrollbarEx")
@@ -2167,8 +2367,10 @@ foreign cimgui {
 	DebugHookIdInfo :: proc(id: ID, data_type: Data_Type, data_id: rawptr, data_id_end: rawptr) ---
 	@(link_name = "igDebugNodeColumns")
 	DebugNodeColumns :: proc(columns: ^Old_Columns) ---
+	@(link_name = "igDebugNodeDockNode")
+	DebugNodeDockNode :: proc(node: ^Dock_Node, label: cstring) ---
 	@(link_name = "igDebugNodeDrawList")
-	DebugNodeDrawList :: proc(window: ^Window, draw_list: ^Draw_List, label: cstring) ---
+	DebugNodeDrawList :: proc(window: ^Window, viewport: ^Viewport_P, draw_list: ^Draw_List, label: cstring) ---
 	@(link_name = "igDebugNodeDrawCmdShowMeshAndBoundingBox")
 	DebugNodeDrawCmdShowMeshAndBoundingBox :: proc(out_draw_list: ^Draw_List, draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) ---
 	@(link_name = "igDebugNodeFont")

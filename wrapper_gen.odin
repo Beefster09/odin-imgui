@@ -85,6 +85,8 @@ is_window_hovered :: IsWindowHovered
 
 get_window_draw_list :: GetWindowDrawList
 
+get_window_dpi_scale :: GetWindowDpiScale
+
 get_window_pos :: proc() -> (p_out: [2]f32) {
 	GetWindowPos(&p_out)
 	return
@@ -98,6 +100,8 @@ get_window_size :: proc() -> (p_out: [2]f32) {
 get_window_width :: GetWindowWidth
 
 get_window_height :: GetWindowHeight
+
+get_window_viewport :: GetWindowViewport
 
 set_next_window_pos :: SetNextWindowPos
 
@@ -114,6 +118,8 @@ set_next_window_focus :: SetNextWindowFocus
 set_next_window_scroll :: SetNextWindowScroll
 
 set_next_window_bg_alpha :: SetNextWindowBgAlpha
+
+set_next_window_viewport :: SetNextWindowViewport
 
 set_window_pos :: proc {
 	set_window_pos_vec2,
@@ -360,13 +366,6 @@ get_id_ptr :: GetID_Ptr
 
 text_unformatted :: proc(text: string) {
 	TextUnformatted(raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))))
-}
-
-text :: proc(fmt_: string, _args_: ..any) {
-	_fmt_sb := strings.builder_make(context.temp_allocator)
-	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
-	append(&_fmt_sb.buf, 0)
-	Text("%s", cstring(raw_data(_fmt_sb.buf)))
 }
 
 text_colored :: proc(col: [4]f32, fmt_: string, _args_: ..any) {
@@ -846,6 +845,15 @@ set_tooltip :: proc(fmt_: string, _args_: ..any) {
 	SetTooltip("%s", cstring(raw_data(_fmt_sb.buf)))
 }
 
+begin_item_tooltip :: BeginItemTooltip
+
+set_item_tooltip :: proc(fmt_: string, _args_: ..any) {
+	_fmt_sb := strings.builder_make(context.temp_allocator)
+	fmt.sbprintf(&_fmt_sb, fmt_, .._args_)
+	append(&_fmt_sb.buf, 0)
+	SetItemTooltip("%s", cstring(raw_data(_fmt_sb.buf)))
+}
+
 begin_popup :: proc(str_id: string, flags: Window_Flags = {  }) -> bool {
 	return BeginPopup(semisafe_string_to_cstring(str_id), flags)
 }
@@ -975,6 +983,18 @@ set_tab_item_closed :: proc(tab_or_docked_window_label: string) {
 	SetTabItemClosed(semisafe_string_to_cstring(tab_or_docked_window_label))
 }
 
+dock_space :: DockSpace
+
+dock_space_over_viewport :: DockSpaceOverViewport
+
+set_next_window_dock_id :: SetNextWindowDockID
+
+set_next_window_class :: SetNextWindowClass
+
+get_window_dock_id :: GetWindowDockID
+
+is_window_docked :: IsWindowDocked
+
 log_to_tty :: LogToTTY
 
 log_to_file :: proc(auto_open_depth: i32 = -1, filename: string = "") {
@@ -1016,6 +1036,8 @@ pop_clip_rect :: PopClipRect
 set_item_default_focus :: SetItemDefaultFocus
 
 set_keyboard_focus_here :: SetKeyboardFocusHere
+
+set_next_item_allow_overlap :: SetNextItemAllowOverlap
 
 is_item_hovered :: IsItemHovered
 
@@ -1060,8 +1082,6 @@ get_item_rect_size :: proc() -> (p_out: [2]f32) {
 	return
 }
 
-set_item_allow_overlap :: SetItemAllowOverlap
-
 get_main_viewport :: GetMainViewport
 
 get_background_draw_list :: proc {
@@ -1073,12 +1093,12 @@ get_background_draw_list_viewport_ptr :: GetBackgroundDrawList_ViewportPtr
 
 get_foreground_draw_list :: proc {
 	get_foreground_draw_list_nil,
-	get_foreground_draw_list_window_ptr,
 	get_foreground_draw_list_viewport_ptr,
+	get_foreground_draw_list_window_ptr,
 }
 get_foreground_draw_list_nil :: GetForegroundDrawList_Nil
-get_foreground_draw_list_window_ptr :: GetForegroundDrawList_WindowPtr
 get_foreground_draw_list_viewport_ptr :: GetForegroundDrawList_ViewportPtr
+get_foreground_draw_list_window_ptr :: GetForegroundDrawList_WindowPtr
 
 is_rect_visible :: proc {
 	is_rect_visible_nil,
@@ -1243,6 +1263,18 @@ set_allocator_functions :: SetAllocatorFunctions
 
 get_allocator_functions :: GetAllocatorFunctions
 
+get_platform_io :: GetPlatformIO
+
+update_platform_windows :: UpdatePlatformWindows
+
+render_platform_windows_default :: RenderPlatformWindowsDefault
+
+destroy_platform_windows :: DestroyPlatformWindows
+
+find_viewport_by_id :: FindViewportByID
+
+find_viewport_by_platform_handle :: FindViewportByPlatformHandle
+
 style_new :: Style_new
 
 style_destroy :: Style_destroy
@@ -1261,6 +1293,8 @@ io_add_mouse_wheel_event :: IO_AddMouseWheelEvent
 
 io_add_mouse_source_event :: IO_AddMouseSourceEvent
 
+io_add_mouse_viewport_event :: IO_AddMouseViewportEvent
+
 io_add_focus_event :: IO_AddFocusEvent
 
 io_add_input_character :: IO_AddInputCharacter
@@ -1275,7 +1309,7 @@ io_set_key_event_native_data :: IO_SetKeyEventNativeData
 
 io_set_app_accepting_events :: IO_SetAppAcceptingEvents
 
-io_clear_input_characters :: IO_ClearInputCharacters
+io_clear_events_queue :: IO_ClearEventsQueue
 
 io_clear_input_keys :: IO_ClearInputKeys
 
@@ -1298,6 +1332,10 @@ input_text_callback_data_select_all :: InputTextCallbackData_SelectAll
 input_text_callback_data_clear_selection :: InputTextCallbackData_ClearSelection
 
 input_text_callback_data_has_selection :: InputTextCallbackData_HasSelection
+
+window_class_new :: WindowClass_new
+
+window_class_destroy :: WindowClass_destroy
 
 payload_new :: Payload_new
 
@@ -1433,7 +1471,7 @@ list_clipper_end :: ListClipper_End
 
 list_clipper_step :: ListClipper_Step
 
-list_clipper_force_display_range_by_indices :: ListClipper_ForceDisplayRangeByIndices
+list_clipper_include_range_by_indices :: ListClipper_IncludeRangeByIndices
 
 color_new :: proc {
 	color_new_nil,
@@ -1603,6 +1641,8 @@ draw_data_new :: DrawData_new
 draw_data_destroy :: DrawData_destroy
 
 draw_data_clear :: DrawData_Clear
+
+draw_data_add_draw_list :: DrawData_AddDrawList
 
 draw_data_de_index_all_buffers :: DrawData_DeIndexAllBuffers
 
@@ -1776,6 +1816,14 @@ viewport_get_work_center :: proc(self: ^Viewport) -> (p_out: [2]f32) {
 	return
 }
 
+platform_io_new :: PlatformIO_new
+
+platform_io_destroy :: PlatformIO_destroy
+
+platform_monitor_new :: PlatformMonitor_new
+
+platform_monitor_destroy :: PlatformMonitor_destroy
+
 platform_ime_data_new :: PlatformImeData_new
 
 platform_ime_data_destroy :: PlatformImeData_destroy
@@ -1915,13 +1963,9 @@ draw_list_shared_data_destroy :: DrawListSharedData_destroy
 
 draw_list_shared_data_set_circle_tessellation_max_error :: DrawListSharedData_SetCircleTessellationMaxError
 
-draw_data_builder_clear :: DrawDataBuilder_Clear
+draw_data_builder_new :: DrawDataBuilder_new
 
-draw_data_builder_clear_free_memory :: DrawDataBuilder_ClearFreeMemory
-
-draw_data_builder_get_draw_list_count :: DrawDataBuilder_GetDrawListCount
-
-draw_data_builder_flatten_into_single_layer :: DrawDataBuilder_FlattenIntoSingleLayer
+draw_data_builder_destroy :: DrawDataBuilder_destroy
 
 data_var_info_get_var_ptr :: DataVarInfo_GetVarPtr
 
@@ -2065,9 +2109,46 @@ old_columns_new :: OldColumns_new
 
 old_columns_destroy :: OldColumns_destroy
 
+dock_node_new :: DockNode_new
+
+dock_node_destroy :: DockNode_destroy
+
+dock_node_is_root_node :: DockNode_IsRootNode
+
+dock_node_is_dock_space :: DockNode_IsDockSpace
+
+dock_node_is_floating_node :: DockNode_IsFloatingNode
+
+dock_node_is_central_node :: DockNode_IsCentralNode
+
+dock_node_is_hidden_tab_bar :: DockNode_IsHiddenTabBar
+
+dock_node_is_no_tab_bar :: DockNode_IsNoTabBar
+
+dock_node_is_split_node :: DockNode_IsSplitNode
+
+dock_node_is_leaf_node :: DockNode_IsLeafNode
+
+dock_node_is_empty :: DockNode_IsEmpty
+
+dock_node_rect :: proc(self: ^Dock_Node) -> (p_out: Rect) {
+	DockNode_Rect(&p_out, self)
+	return
+}
+
+dock_node_set_local_flags :: DockNode_SetLocalFlags
+
+dock_node_update_merged_flags :: DockNode_UpdateMergedFlags
+
+dock_context_new :: DockContext_new
+
+dock_context_destroy :: DockContext_destroy
+
 viewport_p_new :: ViewportP_new
 
 viewport_p_destroy :: ViewportP_destroy
+
+viewport_p_clear_request_flags :: ViewportP_ClearRequestFlags
 
 viewport_p_calc_work_rect_pos :: proc(self: ^Viewport_P, off_min: [2]f32) -> (p_out: [2]f32) {
 	ViewportP_CalcWorkRectPos(&p_out, self, off_min)
@@ -2235,6 +2316,11 @@ window_rect_rel_to_abs :: proc(window: ^Window, r: Rect) -> (p_out: Rect) {
 	return
 }
 
+window_pos_rel_to_abs :: proc(window: ^Window, p: [2]f32) -> (p_out: [2]f32) {
+	WindowPosRelToAbs(&p_out, window, p)
+	return
+}
+
 focus_window :: FocusWindow
 
 focus_top_most_window_under_one :: FocusTopMostWindowUnderOne
@@ -2255,6 +2341,11 @@ set_current_font :: SetCurrentFont
 
 get_default_font :: GetDefaultFont
 
+add_draw_list_to_draw_data_ex :: proc(draw_data: ^Draw_Data, draw_list: ^Draw_List) -> (out_list: Vector(^Draw_List)) {
+	AddDrawListToDrawDataEx(draw_data, &out_list, draw_list)
+	return
+}
+
 initialize :: Initialize
 
 shutdown :: Shutdown
@@ -2264,6 +2355,8 @@ update_input_events :: UpdateInputEvents
 update_hovered_window_and_capture_flags :: UpdateHoveredWindowAndCaptureFlags
 
 start_mouse_moving_window :: StartMouseMovingWindow
+
+start_mouse_moving_window_or_node :: StartMouseMovingWindowOrNode
 
 update_mouse_moving_window_new_frame :: UpdateMouseMovingWindowNewFrame
 
@@ -2275,7 +2368,19 @@ remove_context_hook :: RemoveContextHook
 
 call_context_hooks :: CallContextHooks
 
+translate_windows_in_viewport :: TranslateWindowsInViewport
+
+scale_windows_in_viewport :: ScaleWindowsInViewport
+
+destroy_platform_window :: DestroyPlatformWindow
+
 set_window_viewport :: SetWindowViewport
+
+set_current_viewport :: SetCurrentViewport
+
+get_viewport_platform_monitor :: GetViewportPlatformMonitor
+
+find_hovered_viewport_from_platform_window_stack :: FindHoveredViewportFromPlatformWindowStack
 
 mark_ini_settings_dirty :: proc {
 	mark_ini_settings_dirty_nil,
@@ -2434,6 +2539,8 @@ get_top_most_popup_modal :: GetTopMostPopupModal
 
 get_top_most_and_visible_popup_modal :: GetTopMostAndVisiblePopupModal
 
+find_blocking_modal :: FindBlockingModal
+
 find_best_window_pos_for_popup :: proc(window: ^Window) -> (p_out: [2]f32) {
 	FindBestWindowPosForPopup(&p_out, window)
 	return
@@ -2480,11 +2587,17 @@ nav_move_request_apply_result :: NavMoveRequestApplyResult
 
 nav_move_request_try_wrapping :: NavMoveRequestTryWrapping
 
-activate_item :: ActivateItem
+nav_clear_preferred_pos_for_axis :: NavClearPreferredPosForAxis
+
+nav_update_current_window_is_scroll_pushable_x :: NavUpdateCurrentWindowIsScrollPushableX
 
 set_nav_window :: SetNavWindow
 
 set_nav_id :: SetNavID
+
+focus_item :: FocusItem
+
+activate_item_by_id :: ActivateItemByID
 
 is_named_key :: IsNamedKey
 
@@ -2555,6 +2668,103 @@ test_shortcut_routing :: TestShortcutRouting
 
 get_shortcut_routing_data :: GetShortcutRoutingData
 
+dock_context_initialize :: DockContextInitialize
+
+dock_context_shutdown :: DockContextShutdown
+
+dock_context_clear_nodes :: DockContextClearNodes
+
+dock_context_rebuild_nodes :: DockContextRebuildNodes
+
+dock_context_new_frame_update_undocking :: DockContextNewFrameUpdateUndocking
+
+dock_context_new_frame_update_docking :: DockContextNewFrameUpdateDocking
+
+dock_context_end_frame :: DockContextEndFrame
+
+dock_context_gen_node_id :: DockContextGenNodeID
+
+dock_context_queue_dock :: DockContextQueueDock
+
+dock_context_queue_undock_window :: DockContextQueueUndockWindow
+
+dock_context_queue_undock_node :: DockContextQueueUndockNode
+
+dock_context_process_undock_window :: DockContextProcessUndockWindow
+
+dock_context_process_undock_node :: DockContextProcessUndockNode
+
+dock_context_calc_drop_pos_for_docking :: proc(target: ^Window, target_node: ^Dock_Node, payload_window: ^Window, payload_node: ^Dock_Node, split_dir: Dir, split_outer: bool) -> (orig_ret: bool, out_pos: [2]f32) {
+	orig_ret = DockContextCalcDropPosForDocking(target, target_node, payload_window, payload_node, split_dir, split_outer, &out_pos)
+	return
+}
+
+dock_context_find_node_by_id :: DockContextFindNodeByID
+
+dock_node_window_menu_handler_default :: DockNodeWindowMenuHandler_Default
+
+dock_node_begin_amend_tab_bar :: DockNodeBeginAmendTabBar
+
+dock_node_end_amend_tab_bar :: DockNodeEndAmendTabBar
+
+dock_node_get_root_node :: DockNodeGetRootNode
+
+dock_node_is_in_hierarchy_of :: DockNodeIsInHierarchyOf
+
+dock_node_get_depth :: DockNodeGetDepth
+
+dock_node_get_window_menu_button_id :: DockNodeGetWindowMenuButtonId
+
+get_window_dock_node :: GetWindowDockNode
+
+get_window_always_want_own_tab_bar :: GetWindowAlwaysWantOwnTabBar
+
+begin_docked :: BeginDocked
+
+begin_dockable_drag_drop_source :: BeginDockableDragDropSource
+
+begin_dockable_drag_drop_target :: BeginDockableDragDropTarget
+
+set_window_dock :: SetWindowDock
+
+dock_builder_dock_window :: proc(window_name: string, node_id: ID) {
+	DockBuilderDockWindow(semisafe_string_to_cstring(window_name), node_id)
+}
+
+dock_builder_get_node :: DockBuilderGetNode
+
+dock_builder_get_central_node :: DockBuilderGetCentralNode
+
+dock_builder_add_node :: DockBuilderAddNode
+
+dock_builder_remove_node :: DockBuilderRemoveNode
+
+dock_builder_remove_node_docked_windows :: DockBuilderRemoveNodeDockedWindows
+
+dock_builder_remove_node_child_nodes :: DockBuilderRemoveNodeChildNodes
+
+dock_builder_set_node_pos :: DockBuilderSetNodePos
+
+dock_builder_set_node_size :: DockBuilderSetNodeSize
+
+dock_builder_split_node :: proc(node_id: ID, split_dir: Dir, size_ratio_for_node_at_dir: f32) -> (orig_ret: ID, out_id_at_dir: ID, out_id_at_opposite_dir: ID) {
+	orig_ret = DockBuilderSplitNode(node_id, split_dir, size_ratio_for_node_at_dir, &out_id_at_dir, &out_id_at_opposite_dir)
+	return
+}
+
+dock_builder_copy_dock_space :: DockBuilderCopyDockSpace
+
+dock_builder_copy_node :: proc(src_node_id: ID, dst_node_id: ID) -> (out_node_remap_pairs: Vector(ID)) {
+	DockBuilderCopyNode(src_node_id, dst_node_id, &out_node_remap_pairs)
+	return
+}
+
+dock_builder_copy_window_settings :: proc(src_name: string, dst_name: string) {
+	DockBuilderCopyWindowSettings(semisafe_string_to_cstring(src_name), semisafe_string_to_cstring(dst_name))
+}
+
+dock_builder_finish :: DockBuilderFinish
+
 push_focus_scope :: PushFocusScope
 
 pop_focus_scope :: PopFocusScope
@@ -2602,6 +2812,8 @@ table_set_column_width :: TableSetColumnWidth
 table_set_column_sort_direction :: TableSetColumnSortDirection
 
 table_get_hovered_column :: TableGetHoveredColumn
+
+table_get_hovered_row :: TableGetHoveredRow
 
 table_get_header_row_height :: TableGetHeaderRowHeight
 
@@ -2705,11 +2917,15 @@ tab_bar_find_tab_by_id :: TabBarFindTabByID
 
 tab_bar_find_tab_by_order :: TabBarFindTabByOrder
 
+tab_bar_find_most_recently_selected_tab_for_active_window :: TabBarFindMostRecentlySelectedTabForActiveWindow
+
 tab_bar_get_current_tab :: TabBarGetCurrentTab
 
 tab_bar_get_tab_order :: TabBarGetTabOrder
 
 tab_bar_get_tab_name :: TabBarGetTabName
+
+tab_bar_add_tab :: TabBarAddTab
 
 tab_bar_remove_tab :: TabBarRemoveTab
 
@@ -2789,9 +3005,13 @@ render_check_mark :: RenderCheckMark
 
 render_arrow_pointing_at :: RenderArrowPointingAt
 
+render_arrow_dock_menu :: RenderArrowDockMenu
+
 render_rect_filled_range_h :: RenderRectFilledRangeH
 
 render_rect_filled_with_hole :: RenderRectFilledWithHole
+
+calc_rounding_flags_for_rect_in_rect :: CalcRoundingFlagsForRectInRect
 
 text_ex :: proc(text: string, flags: Text_Flags = {  }) {
 	TextEx(raw_data(text), cast([^]u8) (uintptr(raw_data(text)) + uintptr(len(text))), flags)
@@ -2943,8 +3163,12 @@ debug_hook_id_info :: DebugHookIdInfo
 
 debug_node_columns :: DebugNodeColumns
 
-debug_node_draw_list :: proc(window: ^Window, draw_list: ^Draw_List, label: string) {
-	DebugNodeDrawList(window, draw_list, semisafe_string_to_cstring(label))
+debug_node_dock_node :: proc(node: ^Dock_Node, label: string) {
+	DebugNodeDockNode(node, semisafe_string_to_cstring(label))
+}
+
+debug_node_draw_list :: proc(window: ^Window, viewport: ^Viewport_P, draw_list: ^Draw_List, label: string) {
+	DebugNodeDrawList(window, viewport, draw_list, semisafe_string_to_cstring(label))
 }
 
 debug_node_draw_cmd_show_mesh_and_bounding_box :: proc(draw_list: ^Draw_List, draw_cmd: ^Draw_Cmd, show_mesh: bool, show_aabb: bool) -> (out_draw_list: Draw_List) {

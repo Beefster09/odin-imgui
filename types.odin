@@ -40,3 +40,6 @@ Font_Glyph :: struct {
     u1: f32,
     v1: f32,
 }
+
+Dock_Request :: struct{ /* OPAQUE */ }
+Dock_Node_Settings :: struct{ /* OPAQUE */ }

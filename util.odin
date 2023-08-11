@@ -3,6 +3,7 @@ package imgui
 import "core:log"
 import "core:runtime"
 import "core:strings"
+import "core:slice"
 import "core:math/linalg"
 import "core:fmt"
 
@@ -19,7 +20,7 @@ semisafe_string_to_cstring :: proc(s: string) -> cstring {
 }
 
 vector_to_slice :: #force_inline proc(vec: Vector($T)) -> []T {
-    return from_ptr(vec.data, int(vec.size))
+    return slice.from_ptr(vec.data, int(vec.size))
 }
 
 draw_list_add_closure :: proc(dl: ^Draw_List, data: $T, $cb: #type proc(data: ^T, dl: ^Draw_List, cmd: ^Draw_Cmd)) {

@@ -291,6 +291,13 @@ def generate_foreign(funcs: Iterable[models.CFunc], types: dict):
 
 
 def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
+    blacklist = []
+
+    with open(ODIN_DIR / 'wrapper.odin', 'r') as fp:
+        for line in fp:
+            if m := re.match(r'^(\w+)\s*::', line):
+                blacklist.append(m[1])
+
     with open(ODIN_DIR / 'wrapper_gen.odin', 'w') as fp:
         write_header(fp)
         fp.write(textwrap.dedent('''
@@ -300,6 +307,9 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
         '''))
 
         for group, funcs in overloads.items():
+            if group in blacklist:
+                continue
+
             if len(funcs) > 1:
                 fp.write(f"{group} :: proc {{\n")
                 for func in funcs:
@@ -307,6 +317,11 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
                 fp.write("}\n")
 
             for func in funcs:
+                oname = odin_procname(func.name)
+
+                if oname in blacklist:
+                    continue
+
                 in_params = []
                 call_args = []
                 multiple_returns = []
@@ -383,7 +398,7 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
                     else:
                         returns = ''
 
-                    fp.write(f"{odin_procname(func.name)} :: proc({', '.join(in_params)}){returns} {{\n")
+                    fp.write(f"{oname} :: proc({', '.join(in_params)}){returns} {{\n")
 
                     for line in setup_lines:
                         fp.write(f"\t{line}\n")
@@ -403,7 +418,7 @@ def generate_wrapper(overloads: dict[str, list[models.CFunc]], types: dict):
                     fp.write('}\n')
 
                 else:
-                    fp.write(f"{odin_procname(func.name)} :: {func.odin_name}\n")
+                    fp.write(f"{oname} :: {func.odin_name}\n")
 
             fp.write('\n')
 
