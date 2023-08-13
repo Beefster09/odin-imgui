@@ -43,7 +43,7 @@ draw_list_add_closure :: proc(dl: ^Draw_List, data: $T, $cb: #type proc(data: ^T
 }
 
 // ported from https://github.com/ocornut/imgui/issues/705#issuecomment-602188635
-draw_list_add_text_upward :: proc(dl: ^Draw_List, text: string, pos: [2]f32, text_color: u32) {
+draw_list_add_text_upward :: proc(dl: ^Draw_List, pos: [2]f32, text_color: u32, text: string) {
     pos := linalg.round(pos)
     font := get_font()
     for c in text {
