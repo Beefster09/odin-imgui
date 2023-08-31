@@ -1693,10 +1693,6 @@ font_atlas_add_font_from_file_ttf :: proc(self: ^Font_Atlas, filename: string, s
 	return FontAtlas_AddFontFromFileTTF(self, semisafe_string_to_cstring(filename), size_pixels, font_cfg, glyph_ranges)
 }
 
-font_atlas_add_font_from_memory_ttf :: FontAtlas_AddFontFromMemoryTTF
-
-font_atlas_add_font_from_memory_compressed_ttf :: FontAtlas_AddFontFromMemoryCompressedTTF
-
 font_atlas_add_font_from_memory_compressed_base85_ttf :: proc(self: ^Font_Atlas, compressed_font_data_base85: string, size_pixels: f32, font_cfg: ^Font_Config = nil, glyph_ranges: ^u16 = nil) -> ^Font {
 	return FontAtlas_AddFontFromMemoryCompressedBase85TTF(self, semisafe_string_to_cstring(compressed_font_data_base85), size_pixels, font_cfg, glyph_ranges)
 }
