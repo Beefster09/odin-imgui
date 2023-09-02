@@ -15,10 +15,10 @@ font_atlas_add_font_from_memory_ttf :: proc(
 	font_data: []u8,
 	size_pixels: f32,
 	font_config: ^Font_Config = nil,
-	glyph_ranges: [][2]u16 = nil,
+	glyph_ranges: ..[2]u16,
 ) -> ^Font {
 	glyph_ranges_array: []u16
-	if glyph_ranges != nil {
+	if len(glyph_ranges) > 0 {
 		glyph_ranges_array = make([]u16, len(glyph_ranges) * 2 + 1, context.temp_allocator)
 		for range, i in glyph_ranges {
 			glyph_ranges_array[2*i + 0] = range[0]
@@ -35,10 +35,10 @@ font_atlas_add_font_from_memory_compressed_ttf :: proc(
 	font_data: []u8,
 	size_pixels: f32,
 	font_config: ^Font_Config = nil,
-	glyph_ranges: [][2]u16 = nil,
+	glyph_ranges: ..[2]u16,
 ) -> ^Font {
 	glyph_ranges_array: []u16
-	if glyph_ranges != nil {
+	if len(glyph_ranges) > 0 {
 		glyph_ranges_array = make([]u16, len(glyph_ranges) * 2 + 1, context.temp_allocator)
 		for range, i in glyph_ranges {
 			glyph_ranges_array[2*i + 0] = range[0]
